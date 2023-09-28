@@ -25,15 +25,15 @@
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Signals.hpp>
+#include <core/com/signals.hpp>
 
 #include <data/Material.hpp>
 #include <data/ModelSeries.hpp>
 
-#include <service/INotifier.hpp>
+#include <service/notifier.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/interactor/IInteractor.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/interactor/base.hpp>
 
 #include <OgreManualObject.h>
 #include <OgreSceneNode.h>
@@ -82,14 +82,14 @@ namespace sight::module::viz::scene3d::adaptor
  * otherwise the slot validate() should be called (through a button, or connected to another signal).
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SShapeExtruder final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::interactor::IInteractor,
-    private service::INotifier
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::interactor::base,
+    private service::notifier
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SShapeExtruder, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SShapeExtruder, sight::viz::scene3d::adaptor);
 
     /// Initializes the slot and the signal.
     MODULE_VIZ_SCENE3D_API SShapeExtruder() noexcept;
@@ -379,7 +379,7 @@ private:
     Ogre::ManualObject* m_lastLassoLine {nullptr};
 
     /// Contains the signal sent when interactions are finished.
-    core::com::Signal<void()>::sptr m_toolDisabledSig;
+    core::com::signal<void()>::sptr m_toolDisabledSig;
 
     sight::data::ptr<sight::data::ModelSeries, sight::data::Access::inout> m_extrudedMeshes {this, "extrudedMeshes"};
 

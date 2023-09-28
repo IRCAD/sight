@@ -20,12 +20,12 @@
  ***********************************************************************/
 
 #pragma once
-#include "ITest.hpp"
+#include "test.hpp"
 
 namespace sight::sightviewer::test::ui
 {
 
-class AddDistance : public ITest
+class AddDistance : public test
 {
 CPPUNIT_TEST_SUITE(AddDistance);
 CPPUNIT_TEST(test);

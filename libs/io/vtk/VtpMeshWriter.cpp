@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 #include "io/vtk/helper/vtkLambdaCommand.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -42,8 +42,8 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-VtpMeshWriter::VtpMeshWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
-    m_job(core::jobs::Observer::New("VTP Mesh writer"))
+VtpMeshWriter::VtpMeshWriter() :
+    m_job(std::make_shared<core::jobs::observer>("VTP Mesh writer"))
 {
 }
 
@@ -70,21 +70,21 @@ void VtpMeshWriter::write()
     vtkSmartPointer<vtkPolyData> vtkMesh         = vtkSmartPointer<vtkPolyData>::New();
     io::vtk::helper::Mesh::toVTKMesh(pMesh, vtkMesh);
     writer->SetInputData(vtkMesh);
-    writer->SetFileName(this->getFile().string().c_str());
+    writer->SetFileName(this->get_file().string().c_str());
     writer->SetDataModeToBinary();
 
-    vtkSmartPointer<vtkLambdaCommand> progressCallback;
+    vtkSmartPointer<vtkLambdaCommand> progress_callback;
 
-    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progressCallback->SetCallback(
+    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progress_callback->SetCallback(
         [&](vtkObject* caller, std::uint64_t, void*)
         {
             auto* const filter = static_cast<vtkXMLPolyDataWriter*>(caller);
-            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
-    writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+    writer->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->addSimpleCancelHook([&]{writer->AbortExecuteOn();});
+    m_job->add_simple_cancel_hook([&]{writer->AbortExecuteOn();});
 
     writer->Update();
 
@@ -100,7 +100,7 @@ std::string VtpMeshWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-core::jobs::IJob::sptr VtpMeshWriter::getJob() const
+core::jobs::base::sptr VtpMeshWriter::getJob() const
 {
     return m_job;
 }

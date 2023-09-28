@@ -24,13 +24,13 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
+#include <core/com/signals.hpp>
+#include <core/com/slot.hpp>
 
 #include <data/Image.hpp>
 #include <data/Material.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/Texture.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
@@ -63,15 +63,15 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b useAlpha (optional, bool, default=true) : whether or not the alpha channel is used
  *  - \b dynamic (optional, bool, default=false) : whether or not the texture is updated frequently
  */
-class MODULE_VIZ_SCENE3D_CLASS_API STexture final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API STexture final : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STexture, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(STexture, sight::viz::scene3d::adaptor);
 
     /// Defines the keys of the slot @ref textureSwapped().
-    MODULE_VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_TEXTURE_SWAPPED_SIG;
+    MODULE_VIZ_SCENE3D_API static const core::com::signals::key_t TEXTURE_SWAPPED_SIG;
 
     /// Creates the adaptor and the signal.
     MODULE_VIZ_SCENE3D_API STexture() noexcept;
@@ -106,10 +106,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to IService::slots::s_UPDATE
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to IService::slots::s_UPDATE
+     * Connect data::Image::BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to service::slots::UPDATE
+     * Connect data::Image::BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Updates the attached texture.
     MODULE_VIZ_SCENE3D_API void updating() final;
@@ -138,7 +138,7 @@ private:
     bool m_isDynamic {false};
 
     /// Defines the signal emitted when the texture has to be changed on the associated material.
-    typedef core::com::Signal<void ()> TextureSwappedSignalType;
+    typedef core::com::signal<void ()> TextureSwappedSignalType;
     TextureSwappedSignalType::sptr m_sigTextureSwapped;
 
     static constexpr std::string_view s_TEXTURE_INOUT = "image";

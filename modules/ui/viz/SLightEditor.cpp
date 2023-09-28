@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "modules/ui/viz/helper/Utils.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Composite.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/helper/Scene.hpp>
 
@@ -48,13 +48,13 @@ using sight::viz::scene3d::Layer;
 
 //------------------------------------------------------------------------------
 
-static const core::com::Slots::SlotKeyType s_EDIT_LIGHT_SLOT = "editLight";
+static const core::com::slots::key_t EDIT_LIGHT_SLOT = "editLight";
 
 //------------------------------------------------------------------------------
 
 SLightEditor::SLightEditor() noexcept
 {
-    newSlot(s_EDIT_LIGHT_SLOT, &SLightEditor::editLight, this);
+    new_slot(EDIT_LIGHT_SLOT, &SLightEditor::editLight, this);
 }
 
 //------------------------------------------------------------------------------
@@ -75,9 +75,9 @@ void SLightEditor::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    const auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     qtContainer->getQtContainer()->setObjectName(serviceID);
@@ -520,7 +520,7 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
 
 Ogre::ColourValue SLightEditor::editColor(const Ogre::ColourValue& _currentColor, const std::string& _title)
 {
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     QWidget* const container = qtContainer->getQtContainer();

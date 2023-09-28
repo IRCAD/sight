@@ -24,8 +24,8 @@
 
 #include "modules/viz/scene3d/adaptor/SNegato3D.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
@@ -44,27 +44,27 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_NEWIMAGE_SLOT            = "newImage";
-static const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT           = "sliceType";
-static const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT          = "sliceIndex";
-static const core::com::Slots::SlotKeyType s_UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
-static const core::com::Slots::SlotKeyType s_SET_TRANSPARENCY_SLOT    = "setTransparency";
-static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT           = "updateTF";
+static const core::com::slots::key_t NEWIMAGE_SLOT            = "newImage";
+static const core::com::slots::key_t SLICETYPE_SLOT           = "sliceType";
+static const core::com::slots::key_t SLICEINDEX_SLOT          = "sliceIndex";
+static const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
+static const core::com::slots::key_t SET_TRANSPARENCY_SLOT    = "setTransparency";
+static const core::com::slots::key_t UPDATE_TF_SLOT           = "updateTF";
 
-static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
+static const core::com::signals::key_t PICKED_VOXEL_SIG = "pickedVoxel";
 
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept
 {
-    newSlot(s_NEWIMAGE_SLOT, &SNegato3D::newImage, this);
-    newSlot(s_SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
-    newSlot(s_SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
-    newSlot(s_SET_TRANSPARENCY_SLOT, &SNegato3D::setTransparency, this);
-    newSlot(s_UPDATE_SLICES_FROM_WORLD, &SNegato3D::updateSlicesFromWorld, this);
-    newSlot(s_UPDATE_TF_SLOT, &SNegato3D::updateTF, this);
+    new_slot(NEWIMAGE_SLOT, &SNegato3D::newImage, this);
+    new_slot(SLICETYPE_SLOT, &SNegato3D::changeSliceType, this);
+    new_slot(SLICEINDEX_SLOT, &SNegato3D::changeSliceIndex, this);
+    new_slot(SET_TRANSPARENCY_SLOT, &SNegato3D::setTransparency, this);
+    new_slot(UPDATE_SLICES_FROM_WORLD, &SNegato3D::updateSlicesFromWorld, this);
+    new_slot(UPDATE_TF_SLOT, &SNegato3D::updateTF, this);
 
-    m_pickedVoxelSignal = newSignal<PickedVoxelSigType>(s_PICKED_VOXEL_SIG);
+    m_pickedVoxelSignal = new_signal<PickedVoxelSigType>(PICKED_VOXEL_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ void SNegato3D::configuring()
     m_border      = config.get<bool>(s_BORDER_CONFIG, m_border);
 
     const std::string transformId =
-        config.get<std::string>(sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
+        config.get<std::string>(sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG, this->get_id() + "_transform");
     this->setTransformId(transformId);
 }
 
@@ -155,7 +155,7 @@ void SNegato3D::starting()
     for(auto& plane : m_planes)
     {
         plane = std::make_shared<sight::viz::scene3d::Plane>(
-            this->getID(),
+            this->get_id(),
             m_negatoSceneNode,
             this->getSceneManager(),
             m_3DOgreTexture,
@@ -174,11 +174,11 @@ void SNegato3D::starting()
 
     if(m_interactive)
     {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
         this->getLayer()->addInteractor(interactor, m_priority);
 
         m_pickingCross = std::make_unique<sight::viz::scene3d::PickingCross>(
-            this->getID(),
+            this->get_id(),
             *this->getSceneManager(),
             *m_negatoSceneNode
         );
@@ -190,16 +190,16 @@ void SNegato3D::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
+service::connections_t SNegato3D::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT},
-        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT},
-        {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT},
-        {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT},
-        {s_TF_INOUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
-        {s_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
-        {s_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}
+        {s_IMAGE_IN, data::Image::MODIFIED_SIG, NEWIMAGE_SLOT},
+        {s_IMAGE_IN, data::Image::BUFFER_MODIFIED_SIG, NEWIMAGE_SLOT},
+        {s_IMAGE_IN, data::Image::SLICE_TYPE_MODIFIED_SIG, SLICETYPE_SLOT},
+        {s_IMAGE_IN, data::Image::SLICE_INDEX_MODIFIED_SIG, SLICEINDEX_SLOT},
+        {s_TF_INOUT, data::TransferFunction::MODIFIED_SIG, UPDATE_TF_SLOT},
+        {s_TF_INOUT, data::TransferFunction::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
+        {s_TF_INOUT, data::TransferFunction::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
     };
 }
 
@@ -218,7 +218,7 @@ void SNegato3D::stopping()
 
     if(m_interactive)
     {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
         this->getLayer()->removeInteractor(interactor);
     }
 
@@ -303,7 +303,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 {
     const auto image = m_image.lock();
 
-    auto imgSize = image->getSize();
+    auto imgSize = image->size();
 
     // Sometimes, the image can contain only one slice,
     // it results into a division by 0 when the range is transformed between [0-1].
@@ -343,7 +343,7 @@ void SNegato3D::updateTF()
 
 void SNegato3D::setTransparency(double _transparency)
 {
-    SIGHT_ASSERT("Service not started", this->getStatus() == IService::STARTED);
+    SIGHT_ASSERT("Service not started", this->isStarted());
 
     const float opacity = 1.F - static_cast<float>(_transparency);
     std::ranges::for_each(m_planes, [opacity](auto& p){p->setEntityOpacity(opacity);});
@@ -437,7 +437,7 @@ void SNegato3D::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, 
     }
 
     m_pickingCross->setVisible(false);
-    m_pickedVoxelSignal->asyncEmit("");
+    m_pickedVoxelSignal->async_emit("");
     this->setPlanesQueryFlags(m_queryFlags); // Make all planes pickable again.
 }
 
@@ -468,8 +468,8 @@ void SNegato3D::moveSlices(int _x, int _y)
 
         const Ogre::Vector3i pickedPtI(pickedPt);
         const auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>
-                             (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
-        sig->asyncEmit(pickedPtI[2], pickedPtI[1], pickedPtI[0]);
+                             (data::Image::SLICE_INDEX_MODIFIED_SIG);
+        sig->async_emit(pickedPtI[2], pickedPtI[1], pickedPtI[0]);
     }
 }
 
@@ -485,23 +485,23 @@ void SNegato3D::updateSlicesFromWorld(double _x, double _y, double _z)
     {
         slice_idx = sight::viz::scene3d::Utils::worldToSlices(*image, point);
     }
-    catch(core::Exception& _e)
+    catch(core::exception& _e)
     {
         SIGHT_WARN("Cannot update slice index: " << _e.what());
         return;
     }
 
     const auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>
-                         (data::Image::s_SLICE_INDEX_MODIFIED_SIG);
+                         (data::Image::SLICE_INDEX_MODIFIED_SIG);
 
-    sig->asyncEmit(slice_idx[2], slice_idx[1], slice_idx[0]);
+    sig->async_emit(slice_idx[2], slice_idx[1], slice_idx[0]);
 }
 
 //------------------------------------------------------------------------------
 
 void SNegato3D::pickIntensity(int _x, int _y)
 {
-    if(m_pickedVoxelSignal->numConnections() > 0)
+    if(m_pickedVoxelSignal->num_connections() > 0)
     {
         const auto pickedPos = this->getPickedSlices(_x, _y);
 
@@ -521,7 +521,7 @@ void SNegato3D::pickIntensity(int _x, int _y)
             auto crossLines = m_pickedPlane->computeCross(*pickedPos, origin);
             m_pickingCross->update(crossLines[0], crossLines[1], crossLines[2], crossLines[3]);
             const std::string pickingText = sight::viz::scene3d::Utils::pickImage(*image, *pickedPos, origin, spacing);
-            m_pickedVoxelSignal->asyncEmit(pickingText);
+            m_pickedVoxelSignal->async_emit(pickingText);
 
             this->requestRender();
 
@@ -566,10 +566,10 @@ void SNegato3D::updateWindowing(double _dw, double _dl)
         tf->setWindow(newWindow);
         tf->setLevel(newLevel);
         const auto sig = tf->signal<data::TransferFunction::WindowingModifiedSignalType>(
-            data::TransferFunction::s_WINDOWING_MODIFIED_SIG
+            data::TransferFunction::WINDOWING_MODIFIED_SIG
         );
         {
-            sig->asyncEmit(newWindow, newLevel);
+            sig->async_emit(newWindow, newLevel);
         }
     }
 }

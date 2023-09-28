@@ -22,11 +22,11 @@
 
 #include "modules/filter/mesh/SVTKMesher.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slots.hxx>
-#include <core/tools/fwID.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+#include <core/com/slots.hxx>
+#include <core/tools/id.hpp>
 
 #include <data/ImageSeries.hpp>
 #include <data/Mesh.hpp>
@@ -49,13 +49,13 @@ namespace sight::module::filter::mesh
 {
 
 //-----------------------------------------------------------------------------
-static const sight::core::com::Slots::SlotKeyType s_UPDATE_THRESHOLD_SLOT = "updateThreshold";
+static const sight::core::com::slots::key_t UPDATE_THRESHOLD_SLOT = "updateThreshold";
 
 //-----------------------------------------------------------------------------
 
 SVTKMesher::SVTKMesher() noexcept
 {
-    newSlot(s_UPDATE_THRESHOLD_SLOT, &SVTKMesher::updateThreshold, this);
+    new_slot(UPDATE_THRESHOLD_SLOT, &SVTKMesher::updateThreshold, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,9 +75,9 @@ void SVTKMesher::stopping()
 
 void SVTKMesher::configuring()
 {
-    const service::IService::ConfigType& srvConfig = this->getConfiguration();
+    const service::config_t& srvConfig = this->getConfiguration();
     SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1);
-    const service::IService::ConfigType& config = srvConfig.get_child("config");
+    const service::config_t& config = srvConfig.get_child("config");
     m_threshold = config.get<unsigned int>("<xmlattr>.threshold");
     m_reduction = config.get<unsigned int>("<xmlattr>.percentReduction");
 }
@@ -88,9 +88,9 @@ void SVTKMesher::updating()
 {
     auto imageSeries = m_image.lock();
 
-    auto modelSeries = data::ModelSeries::New();
+    auto modelSeries = std::make_shared<data::ModelSeries>();
 
-    modelSeries->Series::deepCopy(imageSeries.get_shared());
+    modelSeries->Series::deep_copy(imageSeries.get_shared());
 
     // vtk img
     auto vtkImage = vtkSmartPointer<vtkImageData>::New();
@@ -117,7 +117,7 @@ void SVTKMesher::updating()
 
     // Get polyData
     vtkSmartPointer<vtkPolyData> polyData;
-    auto mesh = data::Mesh::New();
+    auto mesh = std::make_shared<data::Mesh>();
 
     // decimate filter
     if(m_reduction > 0)
@@ -139,7 +139,7 @@ void SVTKMesher::updating()
         io::vtk::helper::Mesh::fromVTKMesh(polyData, mesh);
     }
 
-    auto reconstruction = data::Reconstruction::New();
+    auto reconstruction = std::make_shared<data::Reconstruction>();
 
     static unsigned int organNumber = 0;
     ++organNumber;

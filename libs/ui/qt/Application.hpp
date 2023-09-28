@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-#include <ui/base/Application.hpp>
+#include <ui/__/application.hpp>
 
 namespace sight::ui::qt
 {
@@ -34,13 +34,9 @@ namespace sight::ui::qt
 /**
  * @brief   Gives access to the qml application part.
  */
-class UI_QT_CLASS_API Application : public ui::base::Application
+class UI_QT_CLASS_API Application : public ui::application
 {
 public:
-
-    Application(ui::base::GuiBaseObject::Key /*unused*/)
-    {
-    }
 
     ~Application() override
     = default;

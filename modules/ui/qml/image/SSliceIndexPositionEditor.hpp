@@ -26,7 +26,7 @@
 
 #include <data/helper/MedicalImage.hpp>
 
-#include <ui/qml/IQmlEditor.hpp>
+#include <ui/qml/editor.hpp>
 
 #include <QObject>
 
@@ -83,14 +83,14 @@ namespace sight::module::ui::qml::image
  * @subsection In-Out In-Out
  * - \b image [sight::data::Image]: image on which the slice index will be changed
  */
-class MODULE_UI_QML_CLASS_API SSliceIndexPositionEditor : public sight::ui::qml::IQmlEditor
+class MODULE_UI_QML_CLASS_API SSliceIndexPositionEditor : public sight::ui::qml::editor
 {
 Q_OBJECT
 Q_PROPERTY(int sliceIndex READ getSliceIndex WRITE setSliceIndex)
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SSliceIndexPositionEditor, sight::ui::qml::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SSliceIndexPositionEditor() noexcept;
@@ -133,12 +133,12 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
-     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
+     * Connect Image::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect Image::SLICE_INDEX_MODIFIED_SIG to this::UPDATE_SLICE_INDEX_SLOT
+     * Connect Image::SLICE_TYPE_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
+     * Connect Image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
      */
-    MODULE_UI_QML_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QML_API connections_t getAutoConnections() const override;
 
     /// Update the editor slider from the image slice index.
     MODULE_UI_QML_API void updateSliceIndexFromImg();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "io/dicom/config.hpp"
 
-#include <core/Exception.hpp>
+#include <core/exception.hpp>
 
 namespace sight::io::dicom::exception
 {
@@ -32,7 +32,7 @@ namespace sight::io::dicom::exception
 /**
  * @brief InvalidTag exception
  */
-class IO_DICOM_CLASS_API InvalidTag : public core::Exception
+class IO_DICOM_CLASS_API InvalidTag : public core::exception
 {
 public:
 

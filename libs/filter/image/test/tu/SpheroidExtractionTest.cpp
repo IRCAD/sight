@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -129,13 +129,13 @@ void SpheroidExtractionTest::tearDown()
 
 void SpheroidExtractionTest::extractionTest()
 {
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
 
     const data::Image::Size SIZE = {{128, 128, 128}};
 
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::Type TYPE              = core::Type::INT16;
+    const core::type TYPE              = core::type::INT16;
 
     utestData::generator::Image::generateImage(
         image,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,24 +23,24 @@
 #include "SSeriesSetWriter.hpp"
 
 #include <core/base.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/ProgressToLogger.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/progress_to_logger.hpp>
 
 #include <data/Series.hpp>
 #include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 #include <io/dicom/helper/Fiducial.hpp>
 #include <io/dicom/writer/SeriesSet.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
-#include <ui/base/dialog/SelectorDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
+#include <ui/__/dialog/selector.hpp>
 
 namespace sight::module::io::dicom
 {
@@ -56,19 +56,19 @@ SSeriesSetWriter::SSeriesSetWriter() noexcept :
 
 void SSeriesSetWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(ui::base::dialog::LocationDialog::FOLDER);
+    dialogFile.setOption(ui::dialog::location::WRITE);
+    dialogFile.setType(ui::dialog::location::FOLDER);
 
-    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
     if(result && this->selectFiducialsExportMode())
     {
-        defaultDirectory->setFolder(result->getFolder());
-        this->setFolder(result->getFolder());
+        defaultDirectory->set_folder(result->get_folder());
+        this->set_folder(result->get_folder());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -93,7 +93,7 @@ void SSeriesSetWriter::stopping()
 
 void SSeriesSetWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -104,20 +104,20 @@ void SSeriesSetWriter::updating()
 
     if(this->hasLocationDefined())
     {
-        const std::filesystem::path& folder = this->getFolder();
+        const std::filesystem::path& folder = this->get_folder();
         if(!std::filesystem::is_empty(folder))
         {
-            sight::ui::base::dialog::MessageDialog dialog;
+            sight::ui::dialog::message dialog;
             dialog.setMessage(
                 "Folder '" + folder.string() + "' isn't empty, files can be overwritten."
                                                "\nDo you want to continue ?"
             );
             dialog.setTitle("Folder not empty.");
-            dialog.setIcon(ui::base::dialog::MessageDialog::QUESTION);
-            dialog.addButton(sight::ui::base::dialog::MessageDialog::YES_NO);
-            sight::ui::base::dialog::MessageDialog::Buttons button = dialog.show();
+            dialog.setIcon(ui::dialog::message::QUESTION);
+            dialog.addButton(sight::ui::dialog::message::YES_NO);
+            sight::ui::dialog::message::Buttons button = dialog.show();
 
-            if(button == sight::ui::base::dialog::MessageDialog::NO)
+            if(button == sight::ui::dialog::message::NO)
             {
                 return;
             }
@@ -128,16 +128,16 @@ void SSeriesSetWriter::updating()
         const auto vector = std::dynamic_pointer_cast<const data::Vector>(data.get_shared());
 
         // Create SeriesSet
-        const auto series_set = data::SeriesSet::New();
+        const auto series_set = std::make_shared<data::SeriesSet>();
 
         for(const auto& object : *vector)
         {
-            const auto& series = data::Series::dynamicCast(object);
+            const auto& series = std::dynamic_pointer_cast<data::Series>(object);
             SIGHT_ASSERT("The container should only contain series.", series);
             series_set->push_back(series);
         }
 
-        sight::ui::base::BusyCursor cursor;
+        sight::ui::BusyCursor cursor;
 
         saveSeriesSet(folder, series_set);
     }
@@ -149,15 +149,15 @@ void SSeriesSetWriter::saveSeriesSet(const std::filesystem::path folder, data::S
 {
     m_writeFailed = true;
 
-    auto writer = sight::io::dicom::writer::SeriesSet::New();
+    auto writer = std::make_shared<sight::io::dicom::writer::SeriesSet>();
     writer->setObject(series_set);
     writer->setFiducialsExportMode(m_fiducialsExportMode);
-    writer->setFolder(folder);
+    writer->set_folder(folder);
 
     try
     {
-        sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving series ");
-        writer->addHandler(progressMeterGUI);
+        sight::ui::dialog::progress progressMeterGUI("Saving series ");
+        writer->add_handler(progressMeterGUI);
         writer->write();
 
         m_writeFailed = false;
@@ -166,27 +166,27 @@ void SSeriesSetWriter::saveSeriesSet(const std::filesystem::path folder, data::S
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
     catch(...)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             "Warning during saving",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
 }
 
 //-----------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SSeriesSetWriter::getIOPathType() const
+sight::io::service::IOPathType SSeriesSetWriter::getIOPathType() const
 {
-    return sight::io::base::service::FOLDER;
+    return sight::io::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
@@ -198,11 +198,11 @@ bool SSeriesSetWriter::selectFiducialsExportMode()
     const auto vector = std::dynamic_pointer_cast<const data::Vector>(data.get_shared());
 
     // Create SeriesSet
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     for(const auto& object : *vector)
     {
-        const auto& series = data::Series::dynamicCast(object);
+        const auto& series = std::dynamic_pointer_cast<data::Series>(object);
         SIGHT_ASSERT("The container should only contain series.", series);
         series_set->push_back(series);
     }
@@ -231,11 +231,11 @@ bool SSeriesSetWriter::selectFiducialsExportMode()
         exportModes.push_back(comprehensive3DSRIOD);
 
         // Create selector
-        auto selector = sight::ui::base::dialog::SelectorDialog::New();
+        auto selector = std::make_shared<sight::ui::dialog::selector>();
 
         selector->setTitle("Fiducials export mode");
-        selector->setSelections(exportModes);
-        const std::string mode             = selector->show();
+        selector->set_choices(exportModes);
+        const std::string mode             = selector->show()[0];
         const bool modeSelectionIsCanceled = mode.empty();
 
         if(mode == fiducialIOD)

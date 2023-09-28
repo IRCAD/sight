@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "io/dicom/helper/SegmentedPropertyRegistry.hpp"
 
-#include "io/base/reader/CsvReader.hpp"
+#include "io/__/reader/CsvReader.hpp"
 #include "io/dicom/helper/DicomCodedAttribute.hpp"
 
-#include <core/log/Logger.hpp>
+#include <core/log/logger.hpp>
 
 #include <filesystem>
 
@@ -47,7 +47,7 @@ SegmentedPropertyRegistry::SegmentedPropertyRegistry()
 bool checkAndFormatEntry(
     const std::string& structureType,
     SegmentedPropertyRegistry::EntryType& entry,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 {
     bool result = true;
@@ -121,7 +121,7 @@ bool checkAndFormatEntry(
 bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(
     const std::filesystem::path& filepath,
     bool omitFirstLine,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 {
     if(std::filesystem::exists(filepath))
@@ -129,7 +129,7 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(
         bool result = true;
 
         // Read CSV
-        io::base::reader::CsvReader reader(filepath);
+        io::reader::CsvReader reader(filepath);
 
         const std::string separator = "|";
         auto tokens                 = reader.getLine(separator);

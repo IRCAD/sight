@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "modules/filter/image/SLabelGeometryImage.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -34,13 +34,13 @@
 namespace sight::module::filter::image
 {
 
-const core::com::Slots::SlotKeyType s_UPDATE_SELECTED_POINT_LIST = "updateSelectedPointList";
+const core::com::slots::key_t UPDATE_SELECTED_POINT_LIST = "updateSelectedPointList";
 
 //-----------------------------------------------------------------------------
 
 SLabelGeometryImage::SLabelGeometryImage()
 {
-    newSlot(s_UPDATE_SELECTED_POINT_LIST, &SLabelGeometryImage::updateSelectedPointList, this);
+    new_slot(UPDATE_SELECTED_POINT_LIST, &SLabelGeometryImage::updateSelectedPointList, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ void SLabelGeometryImage::configuring()
         }
 
         m_lPointListLabels.push_back(clusterLabels);
-        m_lPointListCentroids.push_back(data::PointList::New());
+        m_lPointListCentroids.push_back(std::make_shared<data::PointList>());
     }
 }
 
@@ -95,8 +95,8 @@ void SLabelGeometryImage::updating()
 
         for(const auto& point : landmarks->getPoints())
         {
-            auto sig = image->signal<data::Image::LandmarkAddedSignalType>(data::Image::s_LANDMARK_ADDED_SIG);
-            sig->asyncEmit(point);
+            auto sig = image->signal<data::Image::LandmarkAddedSignalType>(data::Image::LANDMARK_ADDED_SIG);
+            sig->async_emit(point);
         }
     }
     else
@@ -104,7 +104,7 @@ void SLabelGeometryImage::updating()
         this->updateSelectedPointList("1", "");
     }
 
-    m_sigComputed->asyncEmit();
+    m_sigComputed->async_emit();
 }
 
 //-----------------------------------------------------------------------------

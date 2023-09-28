@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,9 @@
 
 #include <filter/image/AutomaticRegistration.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
-#include <ui/base/IHasParameters.hpp>
+#include <ui/__/has_parameters.hpp>
 
 namespace sight::module::filter::image
 {
@@ -78,12 +78,12 @@ namespace sight::module::filter::image
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SAutomaticRegistration : public service::IFilter,
-                                                             public ui::base::IHasParameters
+class MODULE_FILTER_IMAGE_CLASS_API SAutomaticRegistration : public service::filter,
+                                                             public ui::has_parameters
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SAutomaticRegistration, service::IFilter);
+    SIGHT_DECLARE_SERVICE(SAutomaticRegistration, service::filter);
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SAutomaticRegistration();
@@ -111,7 +111,7 @@ protected:
      * - Update service when one of the two images is modified.
      * - Update service when the transform matrix is modified.
      */
-    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API connections_t getAutoConnections() const override;
 
 private:
 

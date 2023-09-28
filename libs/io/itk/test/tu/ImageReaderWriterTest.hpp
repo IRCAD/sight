@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,11 +57,11 @@ public:
 
 private:
 
-    static void inrStressTestWithType(core::Type type, int nbTest);
+    static void inrStressTestWithType(core::type type, int nbTest);
     static void inrReadWriteCheck(data::Image::sptr image);
     static void niftiReadCheck(
         const data::Image::sptr& imageToTest,
-        const core::Type& expectedType,
+        const core::type& expectedType,
         std::size_t expectedDim,
         const data::Image::Spacing& expectedSpacing,
         const data::Image::Origin& expectedOrigin,

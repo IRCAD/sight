@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ void ClassFactoryRegistryInfo::updating()
     m_tree->clear();
 
     using ServiceRegistry = service::extension::Factory;
-    const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->getFactoryKeys();
+    const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->get_factory_keys();
 
     for(const ServiceRegistry::KeyVectorType::value_type& key : factoryKeys)
     {
@@ -68,14 +68,14 @@ void ClassFactoryRegistryInfo::updating()
 
 void ClassFactoryRegistryInfo::configuring()
 {
-    this->sight::ui::base::IAction::initialize();
+    this->sight::ui::action::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void ClassFactoryRegistryInfo::starting()
 {
-    this->sight::ui::base::IAction::actionServiceStarting();
+    this->sight::ui::action::actionServiceStarting();
 
     QWidget* parent = qApp->activeWindow();
     m_dialog = new QDialog(parent);
@@ -104,7 +104,7 @@ void ClassFactoryRegistryInfo::stopping()
     delete m_tree;
     delete m_dialog;
 
-    this->sight::ui::base::IAction::actionServiceStopping();
+    this->sight::ui::action::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

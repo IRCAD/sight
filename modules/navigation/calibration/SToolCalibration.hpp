@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/Matrix4.hpp>
 #include <data/Vector.hpp>
 
-#include <service/IRegisterer.hpp>
+#include <service/registerer.hpp>
 
 namespace sight::module::navigation::calibration
 {
@@ -54,11 +54,11 @@ namespace sight::module::navigation::calibration
  * is moved
  *
  */
-class MODULE_NAVIGATION_CALIBRATION_CLASS_API SToolCalibration : public service::IRegisterer
+class MODULE_NAVIGATION_CALIBRATION_CLASS_API SToolCalibration : public service::registerer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SToolCalibration, sight::service::IRegisterer);
+    SIGHT_DECLARE_SERVICE(SToolCalibration, sight::service::registerer);
 
     /**
      * @brief Constructor.
@@ -85,7 +85,7 @@ protected:
     MODULE_NAVIGATION_CALIBRATION_API void stopping() override;
 
     /// Registers matrix slot
-    MODULE_NAVIGATION_CALIBRATION_API void computeRegistration(core::HiResClock::HiResClockType timestamp)
+    MODULE_NAVIGATION_CALIBRATION_API void computeRegistration(core::hires_clock::type timestamp)
     override;
 
 private:

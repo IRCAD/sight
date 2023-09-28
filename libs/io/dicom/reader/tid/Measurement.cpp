@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ Measurement::Measurement(
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Image::sptr& image,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 ) :
     io::dicom::reader::tid::TemplateID<data::Image>(dicomSeries, reader, instance, image, logger)
 {
@@ -88,12 +88,12 @@ void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& no
                                 std::size_t(frameNumber)
                             );
 
-                            auto origin = data::Point::New(
+                            auto origin = std::make_shared<data::Point>(
                                 static_cast<double>(coordinates[0]),
                                 static_cast<double>(coordinates[1]),
                                 zCoordinate
                             );
-                            auto destination = data::Point::New(
+                            auto destination = std::make_shared<data::Point>(
                                 static_cast<double>(coordinates[2]),
                                 static_cast<double>(coordinates[3]),
                                 zCoordinate
@@ -114,8 +114,8 @@ void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& no
                     io::dicom::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
                         scoord3DNode->getGraphicDataContainer();
                     this->addDistance(
-                        data::Point::New(coordinates[0], coordinates[1], coordinates[2]),
-                        data::Point::New(coordinates[3], coordinates[4], coordinates[5])
+                        std::make_shared<data::Point>(coordinates[0], coordinates[1], coordinates[2]),
+                        std::make_shared<data::Point>(coordinates[3], coordinates[4], coordinates[5])
                     );
                 }
             }
@@ -134,11 +134,11 @@ void Measurement::addDistance(
 
     if(!distanceVector)
     {
-        distanceVector = data::Vector::New();
+        distanceVector = std::make_shared<data::Vector>();
         data::helper::MedicalImage::setDistances(*m_object, distanceVector);
     }
 
-    data::PointList::sptr pointList = data::PointList::New();
+    data::PointList::sptr pointList = std::make_shared<data::PointList>();
     pointList->getPoints().push_back(point1);
     pointList->getPoints().push_back(point2);
 

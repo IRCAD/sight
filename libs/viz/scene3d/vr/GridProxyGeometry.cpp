@@ -43,7 +43,7 @@ namespace sight::viz::scene3d::vr
 
 //------------------------------------------------------------------------------
 
-GridProxyGeometry* GridProxyGeometry::New(
+GridProxyGeometry* GridProxyGeometry::make(
     const std::string& _name,
     Ogre::SceneManager* _sceneManager,
     const viz::scene3d::Texture::sptr& _3DImageTexture,

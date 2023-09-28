@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,12 @@
 #include "modules/viz/scene3d/adaptor/SMesh.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Slot.hpp>
+#include <core/com/slot.hpp>
 
 #include <data/Reconstruction.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 namespace sight::data
 {
@@ -72,13 +72,13 @@ namespace sight::module::viz::scene3d::adaptor
  *      match the flag.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SReconstruction final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SReconstruction, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SReconstruction, sight::viz::scene3d::adaptor);
 
     /// Initialise slots.
     MODULE_VIZ_SCENE3D_API SReconstruction() noexcept;
@@ -122,10 +122,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Reconstruction::s_MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to s_CHANGE_MESH_SLOT
-     * Connect data::Reconstruction::s_VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to s_VISIBILITY_SLOT
+     * Connect data::Reconstruction::MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to CHANGE_MESH_SLOT
+     * Connect data::Reconstruction::VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to VISIBILITY_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Stops and unregisters created services.
     MODULE_VIZ_SCENE3D_API void stopping() final;
@@ -151,7 +151,7 @@ private:
     void createMeshService();
 
     /// Contains the associated mesh service.
-    sight::viz::scene3d::IAdaptor::wptr m_meshAdaptor;
+    sight::viz::scene3d::adaptor::wptr m_meshAdaptor;
 
     /// Defines if the camera has to be reset automatically.
     bool m_autoResetCamera {true};

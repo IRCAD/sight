@@ -4,13 +4,13 @@
     <requirement id="sight::module::ui::console" />
 
     <extension implements="sight::service::extension::Factory" >
-        <type>sight::service::IService</type>
+        <type>sight::service::base</type>
         <service>ExTimeLine::SProducer</service>
         <object>ExTimeLine::MessageTL</object>
     </extension>
 
     <extension implements="sight::service::extension::Factory" >
-        <type>sight::service::IService</type>
+        <type>sight::service::base</type>
         <service>ExTimeLine::SConsumer</service>
         <object>ExTimeLine::MessageTL</object>
     </extension>

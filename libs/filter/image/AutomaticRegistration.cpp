@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,7 +113,7 @@ public:
     inline static double computeVolume(const data::Image::csptr& _img)
     {
         const auto& spacing = _img->getSpacing();
-        const auto& size    = _img->getSize();
+        const auto& size    = _img->size();
 
         SIGHT_ASSERT(
             "Degenerated image. Spacing and size should be of the same dimension.",

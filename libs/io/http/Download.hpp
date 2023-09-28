@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,7 @@ namespace sight::io::http
  * the file should not already exists, the function doesn't handle overwriting, test should be done before @see throw
  * section.
  * @param _verbose: to enable verbosity of libCURL (VERY verbose), disabled by default.
- * @throw core::Exception:
+ * @throw core::exception:
  * - _url or _file_location is empty
  * - _file_location already exists (tests should be made BEFORE calling this function)
  * - _file_location parent folder isn't writable

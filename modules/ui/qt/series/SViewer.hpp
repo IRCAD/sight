@@ -26,8 +26,8 @@
 
 #include <data/Vector.hpp>
 
-#include <service/IAppConfigManager.hpp>
-#include <service/IController.hpp>
+#include <service/app_config_manager.hpp>
+#include <service/controller.hpp>
 
 #include <map>
 
@@ -65,11 +65,11 @@ namespace sight::module::ui::qt::series
  *     - \b replace: name of the parameter to be replaced
  *     - \b by: specific value to replace for the parameter
  */
-class MODULE_UI_QT_CLASS_API SViewer : public service::IController
+class MODULE_UI_QT_CLASS_API SViewer : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SViewer, service::IController);
+    SIGHT_DECLARE_SERVICE(SViewer, service::controller);
 
     /// Constructor
     MODULE_UI_QT_API SViewer() = default;
@@ -102,10 +102,10 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Vector::s_ADDED_OBJECTS_SIG to this::IService::slots::s_UPDATE
-     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::IService::slots::s_UPDATE
+     * Connect Vector::ADDED_OBJECTS_SIG to this::service::slots::UPDATE
+     * Connect Vector::REMOVED_OBJECTS_SIG to this::service::slots::UPDATE
      */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
     void info(std::ostream& _sstream) override;
 
@@ -126,7 +126,7 @@ private:
     typedef std::map<std::string, SeriesConfigInfo> SeriesConfigMapType;
 
     /// Config manager
-    service::IAppConfigManager::sptr m_configTemplateManager;
+    service::app_config_manager::sptr m_configTemplateManager;
 
     /// Stores the wid of the view where the config will install its windows.
     std::string m_parentView;

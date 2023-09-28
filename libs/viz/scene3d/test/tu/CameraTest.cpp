@@ -101,7 +101,7 @@ void CameraTest::computeProjectionMatrix()
                            0.F, 0.F, -1.F, 0.F);
 
     // Original camera
-    data::Camera::sptr camera = data::Camera::New();
+    data::Camera::sptr camera = std::make_shared<data::Camera>();
     camera->setCx(cx);
     camera->setCy(cy);
     camera->setFx(fx);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,19 +24,19 @@
 
 #include "io/vtk/config.hpp"
 
-#include <core/location/SingleFile.hpp>
+#include <core/location/single_file.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/reader/GenericObjectReader.hpp>
+#include <io/__/reader/GenericObjectReader.hpp>
 
 #include <vector>
 
 namespace sight::core::jobs
 {
 
-class Observer;
-class IJob;
+class observer;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -48,21 +48,21 @@ namespace sight::io::vtk
  *
  * Read a Bitmap Image using the VTK library
  */
-class BitmapImageReader : public base::reader::GenericObjectReader<data::Image>,
-                          public core::location::SingleFile
+class BitmapImageReader : public reader::GenericObjectReader<data::Image>,
+                          public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         BitmapImageReader,
-        io::base::reader::GenericObjectReader<data::Image>,
-        io::base::reader::factory::New<BitmapImageReader>
+        io::reader::GenericObjectReader<data::Image>,
+        io::reader::factory::make<BitmapImageReader>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
-    IO_VTK_API BitmapImageReader(io::base::reader::IObjectReader::Key key);
+    IO_VTK_API BitmapImageReader();
 
     //! @brief Destructor.
     IO_VTK_API ~BitmapImageReader() override;
@@ -74,7 +74,7 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::IJob) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
 
     /// @return A vector of the available bitmap extensions for the vtkImageReader2 class
     IO_VTK_API static void getAvailableExtensions(std::vector<std::string>& ext);
@@ -82,7 +82,7 @@ public:
 private:
 
     ///Internal job
-    SPTR(core::jobs::Observer) m_job;
+    SPTR(core::jobs::observer) m_job;
 
     /// Available file extensions for bitmap files
     std::string m_availableExtensions;

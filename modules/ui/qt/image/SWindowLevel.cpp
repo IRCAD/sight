@@ -22,8 +22,8 @@
 
 #include "modules/ui/qt/image/SWindowLevel.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/helper/MedicalImage.hpp>
@@ -32,7 +32,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 #include <ui/qt/widget/QRangeSlider.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
@@ -53,13 +53,13 @@
 namespace sight::module::ui::qt::image
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
+static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTF";
 
 //------------------------------------------------------------------------------
 
 SWindowLevel::SWindowLevel() noexcept
 {
-    newSlot(s_UPDATE_TF_SLOT, &SWindowLevel::updateTF, this);
+    new_slot(UPDATE_TF_SLOT, &SWindowLevel::updateTF, this);
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ void SWindowLevel::starting()
         SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
 
         this->create();
-        auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+        auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
             this->getContainer()
         );
 
@@ -115,11 +115,11 @@ void SWindowLevel::starting()
         {
             m_toggleTFButton = new QToolButton();
             QIcon ico;
-            std::string squareIcon(core::runtime::getModuleResourceFilePath(
+            std::string squareIcon(core::runtime::get_module_resource_file_path(
                                        "sight::module::ui::qt",
                                        "square.png"
             ).string());
-            std::string rampIcon(core::runtime::getModuleResourceFilePath(
+            std::string rampIcon(core::runtime::get_module_resource_file_path(
                                      "sight::module::ui::qt",
                                      "ramp.png"
             ).string());
@@ -131,12 +131,12 @@ void SWindowLevel::starting()
 
             m_toggleAutoButton = new QToolButton();
             QIcon icon;
-            std::string win(core::runtime::getModuleResourceFilePath(
+            std::string win(core::runtime::get_module_resource_file_path(
                                 "sight::module::ui::qt",
                                 "windowing.svg"
             ).string());
             icon.addFile(QString::fromStdString(win), QSize(), QIcon::Normal, QIcon::On);
-            std::string nowindo(core::runtime::getModuleResourceFilePath(
+            std::string nowindo(core::runtime::get_module_resource_file_path(
                                     "sight::module::ui::qt",
                                     "nowindowing.svg"
             ).string());
@@ -309,11 +309,11 @@ void SWindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
         )
     );
     auto sig = tf->signal<data::TransferFunction::WindowingModifiedSignalType>(
-        data::TransferFunction::s_WINDOWING_MODIFIED_SIG
+        data::TransferFunction::WINDOWING_MODIFIED_SIG
     );
     {
-        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_TF_SLOT)));
-        sig->asyncEmit(tf->window(), tf->level());
+        const core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_TF_SLOT)));
+        sig->async_emit(tf->window(), tf->level());
     }
 }
 
@@ -400,11 +400,11 @@ void SWindowLevel::onToggleTF(bool squareTF)
 
     if(squareTF)
     {
-        newTF = data::TransferFunction::New();
+        newTF = std::make_shared<data::TransferFunction>();
         data::TransferFunction::color_t color(1., 1., 1., 1.);
         newTF->setName("SquareTF");
 
-        auto tfData = newTF->pieces().emplace_back(data::TransferFunctionPiece::New());
+        auto tfData = newTF->pieces().emplace_back(std::make_shared<data::TransferFunctionPiece>());
         tfData->insert({0.0, color});
         tfData->insert({1.0, color});
         tfData->setClamped(true);
@@ -426,15 +426,15 @@ void SWindowLevel::onToggleTF(bool squareTF)
 
     m_previousTF = data::Object::copy(currentTF.get_shared());
 
-    currentTF->deepCopy(newTF);
+    currentTF->deep_copy(newTF);
 
     // Send signal
     auto sig = currentTF->signal<data::TransferFunction::PointsModifiedSignalType>(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG
+        data::TransferFunction::POINTS_MODIFIED_SIG
     );
     {
-        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_TF_SLOT)));
-        sig->asyncEmit();
+        const core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_TF_SLOT)));
+        sig->async_emit();
     }
 }
 
@@ -507,14 +507,14 @@ void SWindowLevel::setWidgetDynamicRange(double min, double max)
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SWindowLevel::getAutoConnections() const
+service::connections_t SWindowLevel::getAutoConnections() const
 {
     return {
-        {s_IMAGE, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_TF, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
-        {s_TF, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
-        {s_TF, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}
+        {s_IMAGE, data::Image::MODIFIED_SIG, service::slots::UPDATE},
+        {s_IMAGE, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {s_TF, data::TransferFunction::MODIFIED_SIG, UPDATE_TF_SLOT},
+        {s_TF, data::TransferFunction::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
+        {s_TF, data::TransferFunction::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
     };
 }
 

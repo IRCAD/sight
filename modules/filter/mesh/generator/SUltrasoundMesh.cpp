@@ -22,8 +22,8 @@
 
 #include "modules/filter/mesh/generator/SUltrasoundMesh.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <geometry/data/IntrasecTypes.hpp>
 #include <geometry/data/Mesh.hpp>
@@ -44,8 +44,8 @@ static const char* s_WIDTH       = "width";
 static const char* s_DELTA_DEPTH = "deltaDepth";
 static const char* s_SHAPE       = "shape";
 
-static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT  = "setIntParameter";
-static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
+static const core::com::slots::key_t SET_INT_PARAMETER_SLOT  = "setIntParameter";
+static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
 
 static const std::string s_RESOLUTION_X_CONFIG    = "resolutionX";
 static const std::string s_RESOLUTION_Y_CONFIG    = "resolutionY";
@@ -59,8 +59,8 @@ static const std::string s_IS_CONVEX_SHAPE_CONFIG = "isConvexShape";
 
 SUltrasoundMesh::SUltrasoundMesh() noexcept
 {
-    newSlot(s_SET_INT_PARAMETER_SLOT, &SUltrasoundMesh::setIntParameter, this);
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SUltrasoundMesh::setBoolParameter, this);
+    new_slot(SET_INT_PARAMETER_SLOT, &SUltrasoundMesh::setIntParameter, this);
+    new_slot(SET_BOOL_PARAMETER_SLOT, &SUltrasoundMesh::setBoolParameter, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -227,9 +227,9 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
 
     geometry::data::Mesh::generatePointNormals(_mesh);
 
-    const auto sig = _mesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-    sig->asyncEmit();
+    const auto sig = _mesh->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+    sig->async_emit();
 }
 
 // -----------------------------------------------------------------------------
@@ -257,9 +257,9 @@ void SUltrasoundMesh::updateQuadMesh(const data::Mesh::sptr& _mesh)
     }
 
     const auto sig = _mesh->signal<data::Mesh::signal_t>(
-        data::Mesh::s_VERTEX_MODIFIED_SIG
+        data::Mesh::VERTEX_MODIFIED_SIG
     );
-    sig->asyncEmit();
+    sig->async_emit();
 }
 
 // -----------------------------------------------------------------------------

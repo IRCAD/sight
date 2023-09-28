@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,33 +30,17 @@
 namespace sight::filter::dicom
 {
 
-class IFilter;
+class filter;
 
 namespace factory
 {
 
-template<class CLASSNAME>
-SPTR(CLASSNAME)  New();
-
-/**
- * @brief Key class used to restrict access to Filter construction.
- * See http://www.drdobbs.com/184402053
- */
-class Key
-{
-template<typename CLASSNAME>
-friend SPTR(CLASSNAME) filter::dicom::factory::New();
-
-Key()
-= default;
-};
-
-FILTER_DICOM_API SPTR(filter::dicom::IFilter) New(const filter::dicom::registry::KeyType& classname);
+FILTER_DICOM_API SPTR(sight::filter::dicom::filter) make(const sight::filter::dicom::registry::KeyType& classname);
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  New()
+SPTR(CLASSNAME)  make()
 {
-    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>();
     return obj;
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "SBitwiseAnd.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/tools/Dispatcher.hpp>
+#include <core/com/signal.hxx>
+#include <core/tools/dispatcher.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -104,7 +104,7 @@ struct AndImageFilterCaller
     void operator()(AndImageFilterParameters& params)
     {
         const auto maskType = params.mask->getType();
-        core::tools::Dispatcher<core::tools::IntegerTypes, AndImageFilter<PIXELTYPE> >::invoke(maskType, params);
+        core::tools::dispatcher<core::tools::integer_types, AndImageFilter<PIXELTYPE> >::invoke(maskType, params);
     }
 };
 
@@ -140,7 +140,7 @@ void SBitwiseAnd::updating()
     const auto mask = m_mask.lock();
     SIGHT_ASSERT("mask does not exist.", mask);
 
-    data::Image::sptr outputImage = data::Image::New();
+    data::Image::sptr outputImage = std::make_shared<data::Image>();
 
     AndImageFilterParameters params;
     params.inputImage  = image.get_shared();
@@ -148,11 +148,11 @@ void SBitwiseAnd::updating()
     params.outputImage = outputImage;
 
     const auto type = image->getType();
-    core::tools::Dispatcher<core::tools::IntegerTypes, AndImageFilterCaller>::invoke(type, params);
+    core::tools::dispatcher<core::tools::integer_types, AndImageFilterCaller>::invoke(type, params);
 
     this->setOutput(s_OUTPUTIMAGE_OUT, outputImage);
 
-    m_sigComputed->asyncEmit();
+    m_sigComputed->async_emit();
 }
 
 //-----------------------------------------------------------------------------

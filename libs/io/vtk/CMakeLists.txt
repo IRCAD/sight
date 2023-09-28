@@ -14,7 +14,7 @@ target_link_libraries(
            VTK::RenderingOpenGL2
 )
 
-target_link_libraries(io_vtk PUBLIC core data io_base geometry_data)
+target_link_libraries(io_vtk PUBLIC core data io geometry_data)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)

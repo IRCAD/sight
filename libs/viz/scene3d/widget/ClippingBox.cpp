@@ -104,10 +104,10 @@ bool ClippingBox::belongsToWidget(const Ogre::MovableObject* const _object) cons
 //-----------------------------------------------------------------------------
 
 std::array<Ogre::Vector3,
-           4> ClippingBox::getFacePositions(viz::scene3d::vr::IVolumeRenderer::CubeFace _faceName) const
+           4> ClippingBox::getFacePositions(viz::scene3d::vr::volume_renderer::CubeFace _faceName) const
 {
-    const vr::IVolumeRenderer::CubeFacePositionList positionIndices =
-        vr::IVolumeRenderer::s_cubeFaces.at(_faceName);
+    const vr::volume_renderer::CubeFacePositionList positionIndices =
+        vr::volume_renderer::s_cubeFaces.at(_faceName);
     std::array<Ogre::Vector3, 4> facePositions;
 
     const auto BBpositions = this->getClippingBoxPositions();
@@ -123,7 +123,7 @@ std::array<Ogre::Vector3,
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector3 ClippingBox::getFaceCenter(viz::scene3d::vr::IVolumeRenderer::CubeFace _faceName) const
+Ogre::Vector3 ClippingBox::getFaceCenter(viz::scene3d::vr::volume_renderer::CubeFace _faceName) const
 {
     const auto facePositions = this->getFacePositions(_faceName);
     return std::accumulate(facePositions.cbegin() + 1, facePositions.cend(), facePositions[0]) / 4.F;
@@ -157,7 +157,7 @@ void ClippingBox::updateWidgets()
         // Box
         for(unsigned i = 0 ; i < 12 ; ++i)
         {
-            const auto cubeEdge = vr::IVolumeRenderer::s_cubeEdges[i];
+            const auto cubeEdge = vr::volume_renderer::s_cubeEdges[i];
 
             m_boundingBox->position(clippingBoxPositions[cubeEdge.first]);
             m_boundingBox->position(clippingBoxPositions[cubeEdge.second]);
@@ -166,8 +166,8 @@ void ClippingBox::updateWidgets()
         // Cross
         for(unsigned i = 0 ; i < 6 ; i += 2)
         {
-            const auto faceCenter         = this->getFaceCenter(static_cast<vr::IVolumeRenderer::CubeFace>(i));
-            const auto oppositeFaceCenter = this->getFaceCenter(static_cast<vr::IVolumeRenderer::CubeFace>(i + 1));
+            const auto faceCenter         = this->getFaceCenter(static_cast<vr::volume_renderer::CubeFace>(i));
+            const auto oppositeFaceCenter = this->getFaceCenter(static_cast<vr::volume_renderer::CubeFace>(i + 1));
 
             m_boundingBox->position(faceCenter);
             m_boundingBox->position(oppositeFaceCenter);
@@ -226,7 +226,7 @@ void ClippingBox::initWidgets()
     {
         for(unsigned i = 0 ; i < 12 ; ++i)
         {
-            const auto cubeEdge = vr::IVolumeRenderer::s_cubeEdges[i];
+            const auto cubeEdge = vr::volume_renderer::s_cubeEdges[i];
 
             m_boundingBox->position(clippingBoxPositions[cubeEdge.first]);
             m_boundingBox->position(clippingBoxPositions[cubeEdge.second]);
@@ -235,8 +235,8 @@ void ClippingBox::initWidgets()
         // Cross
         for(unsigned i = 0 ; i < 6 ; i += 2)
         {
-            const auto faceCenter         = this->getFaceCenter(static_cast<vr::IVolumeRenderer::CubeFace>(i));
-            const auto oppositeFaceCenter = this->getFaceCenter(static_cast<vr::IVolumeRenderer::CubeFace>(i + 1));
+            const auto faceCenter         = this->getFaceCenter(static_cast<vr::volume_renderer::CubeFace>(i));
+            const auto oppositeFaceCenter = this->getFaceCenter(static_cast<vr::volume_renderer::CubeFace>(i + 1));
 
             m_boundingBox->position(faceCenter);
             m_boundingBox->position(oppositeFaceCenter);
@@ -261,7 +261,7 @@ void ClippingBox::initWidgets()
     // Create a pickable sphere for each cube face
     for(unsigned i = 0 ; i < 6 ; ++i)
     {
-        const auto currentFace = static_cast<vr::IVolumeRenderer::CubeFace>(i);
+        const auto currentFace = static_cast<vr::volume_renderer::CubeFace>(i);
 
         Ogre::Entity* newWidget = m_sceneManager->createEntity(Ogre::SceneManager::PT_SPHERE);
         newWidget->setMaterial(m_handleMtl);
@@ -288,7 +288,7 @@ void ClippingBox::initWidgets()
 
 //-----------------------------------------------------------------------------
 
-void ClippingBox::selectFace(viz::scene3d::vr::IVolumeRenderer::CubeFace _faceName)
+void ClippingBox::selectFace(viz::scene3d::vr::volume_renderer::CubeFace _faceName)
 {
     m_selectedFace->beginUpdate(0);
     {
@@ -324,7 +324,7 @@ void ClippingBox::widgetPicked(Ogre::MovableObject* _pickedWidget, int _screenX,
 
     if(this->getVisibility())
     {
-        const viz::scene3d::vr::IVolumeRenderer::CubeFace widgetFace = face.first;
+        const viz::scene3d::vr::volume_renderer::CubeFace widgetFace = face.first;
         const Ogre::SceneNode* widgetSceneNode                       = face.second;
 
         const auto vpPos = helper::Camera::convertFromWindowToViewportSpace(*m_camera, _screenX, _screenY);
@@ -342,27 +342,27 @@ void ClippingBox::widgetPicked(Ogre::MovableObject* _pickedWidget, int _screenX,
 
         switch(widgetFace)
         {
-            case vr::IVolumeRenderer::X_NEGATIVE:
+            case vr::volume_renderer::X_NEGATIVE:
                 tmpClippingCube[0].x = newPos.x;
                 break;
 
-            case vr::IVolumeRenderer::X_POSITIVE:
+            case vr::volume_renderer::X_POSITIVE:
                 tmpClippingCube[1].x = newPos.x;
                 break;
 
-            case vr::IVolumeRenderer::Y_NEGATIVE:
+            case vr::volume_renderer::Y_NEGATIVE:
                 tmpClippingCube[0].y = newPos.y;
                 break;
 
-            case vr::IVolumeRenderer::Y_POSITIVE:
+            case vr::volume_renderer::Y_POSITIVE:
                 tmpClippingCube[1].y = newPos.y;
                 break;
 
-            case vr::IVolumeRenderer::Z_NEGATIVE:
+            case vr::volume_renderer::Z_NEGATIVE:
                 tmpClippingCube[0].z = newPos.z;
                 break;
 
-            case vr::IVolumeRenderer::Z_POSITIVE:
+            case vr::volume_renderer::Z_POSITIVE:
                 tmpClippingCube[1].z = newPos.z;
                 break;
         }

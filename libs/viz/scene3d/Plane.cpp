@@ -40,7 +40,7 @@ namespace sight::viz::scene3d
 //-----------------------------------------------------------------------------
 
 Plane::Plane(
-    const core::tools::fwID::IDType& _negatoId,
+    const core::tools::id::type& _negatoId,
     Ogre::SceneNode* _parentSceneNode,
     Ogre::SceneManager* _sceneManager,
     viz::scene3d::Texture::sptr _tex,

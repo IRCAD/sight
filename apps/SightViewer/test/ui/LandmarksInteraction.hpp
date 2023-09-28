@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include "ITest.hpp"
+#include "test.hpp"
 
 namespace sight::sightviewer::test::ui
 {
 
-class LandmarksInteraction : public ITest
+class LandmarksInteraction : public test
 {
 CPPUNIT_TEST_SUITE(LandmarksInteraction);
 CPPUNIT_TEST(test);

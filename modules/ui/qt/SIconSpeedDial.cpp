@@ -21,15 +21,15 @@
 
 #include "SIconSpeedDial.hpp"
 
-#include "core/thread/Worker.hpp"
+#include "core/thread/worker.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <service/op/Get.hpp>
 
-#include <ui/base/IAction.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/action.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -86,9 +86,9 @@ namespace sight::module::ui::qt
 
 SIconSpeedDial::SIconSpeedDial()
 {
-    newSlot(SIconSpeedDial::slots::s_FOLD, [this]{m_speedDial->fold();});
-    newSlot(SIconSpeedDial::slots::s_UNFOLD, [this]{m_speedDial->unfold();});
-    newSlot(SIconSpeedDial::slots::s_UPDATE_ACTIONS, &SIconSpeedDial::updateActions, this);
+    new_slot(SIconSpeedDial::slots::FOLD, [this]{m_speedDial->fold();});
+    new_slot(SIconSpeedDial::slots::UNFOLD, [this]{m_speedDial->unfold();});
+    new_slot(SIconSpeedDial::slots::UPDATE_ACTIONS, &SIconSpeedDial::updateActions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ void SIconSpeedDial::configuring()
     }
     else
     {
-        SIGHT_ASSERT("Invalid direction " << direction << " for SpeedDial " << getID(), false);
+        SIGHT_ASSERT("Invalid direction " << direction << " for SpeedDial " << get_id(), false);
     }
 
     m_spacing           = config.get("config.<xmlattr>.spacing", -1);
@@ -145,9 +145,9 @@ void SIconSpeedDial::starting()
 {
     create();
 
-    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+    const std::string serviceID = get_id().substr(get_id().find_last_of('_') + 1);
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     auto* layout     = new QBoxLayout(QBoxLayout::TopToBottom);
     m_speedDial = new sight::ui::qt::widget::SpeedDial(m_direction);
     m_speedDial->setObjectName(QString::fromStdString(serviceID));
@@ -159,7 +159,7 @@ void SIconSpeedDial::starting()
     if(!m_icon.empty())
     {
         QIcon icon = m_speedDial->icon();
-        icon.addFile(QString::fromStdString(core::runtime::getModuleResourceFilePath(m_icon).string()));
+        icon.addFile(QString::fromStdString(core::runtime::get_module_resource_file_path(m_icon).string()));
         m_speedDial->setIcon(icon);
     }
 
@@ -167,7 +167,7 @@ void SIconSpeedDial::starting()
     {
         QIcon icon = m_speedDial->icon();
         icon.addFile(
-            QString::fromStdString(core::runtime::getModuleResourceFilePath(m_unfoldedIcon).string()),
+            QString::fromStdString(core::runtime::get_module_resource_file_path(m_unfoldedIcon).string()),
             {},
             QIcon::Normal,
             QIcon::On
@@ -186,30 +186,38 @@ void SIconSpeedDial::starting()
         qAction->setFixedSize(m_speedDial->size());
         qAction->setObjectName(QString::fromStdString(action.name.empty() ? action.sid : action.name));
         std::string sid = action.sid;
-        auto service    = sight::ui::base::IAction::dynamicCast(service::get(sid));
-        SIGHT_ASSERT("SIconSpeedDial only supports IAction", service != nullptr);
+        auto service    = std::dynamic_pointer_cast<sight::ui::action>(sight::service::get(sid));
+        SIGHT_ASSERT("SIconSpeedDial only supports action", service != nullptr);
         if(!service->isStarted())
         {
-            service::get(sid)->start();
+            sight::service::get(sid)->start();
         }
 
         auto updateIfEnabled = [sid]
                                {
                                    if(auto action =
-                                          sight::ui::base::IAction::dynamicCast(service::get(sid));
+                                          std::dynamic_pointer_cast<sight::ui::action>(sight::service::get(sid));
                                       action != nullptr && action->enabled())
                                    {
-                                       service::get(sid)->update();
+                                       sight::service::get(sid)->update();
                                    }
                                };
         QObject::connect(qAction, &QPushButton::clicked, updateIfEnabled);
         qAction->setEnabled(service->enabled());
-        auto isEnabledSlot = newSlot("setEnabledQt_" + action.sid, &QPushButton::setEnabled, qAction);
-        isEnabledSlot->setWorker(worker());
+        auto isEnabledSlot = new_slot("setEnabledQt_" + action.sid, &QPushButton::setEnabled, qAction);
+        isEnabledSlot->set_worker(worker());
         service->signal("isEnabled")->connect(isEnabledSlot);
-        service->signal("isVisible")->connect(slot(slots::s_UPDATE_ACTIONS));
+        service->signal("isVisible")->connect(slot(slots::UPDATE_ACTIONS));
         qAction->setToolTip(QString::fromStdString(action.name));
-        qAction->setIcon(QIcon(QString::fromStdString(core::runtime::getModuleResourceFilePath(action.icon).string())));
+        qAction->setIcon(
+            QIcon(
+                QString::fromStdString(
+                    core::runtime::get_module_resource_file_path(
+                        action.icon
+                    ).string()
+                )
+            )
+        );
         if(!action.shortcut.empty())
         {
             auto* shortcut = new QShortcut(QString::fromStdString(action.shortcut), m_speedDial->window());
@@ -245,7 +253,7 @@ void SIconSpeedDial::stopping()
         m_actions,
         [](const Action& a)
         {
-            if(auto service = service::get(a.sid); service != nullptr && !service->isStopped())
+            if(auto service = sight::service::get(a.sid); service != nullptr && !service->isStopped())
             {
                 service->stop();
             }
@@ -260,7 +268,7 @@ void SIconSpeedDial::updateActions()
     for(std::size_t i = 0 ; i < m_actions.size() ; i++)
     {
         if(auto action =
-               sight::ui::base::IAction::dynamicCast(service::get(m_actions[i].sid));
+               std::dynamic_pointer_cast<sight::ui::action>(sight::service::get(m_actions[i].sid));
            action != nullptr && action->visible())
         {
             actions.push_back(m_widgets[i]);

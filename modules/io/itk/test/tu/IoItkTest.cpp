@@ -22,14 +22,14 @@
 
 #include "IoItkTest.hpp"
 
-#include <core/os/TempPath.hpp>
-#include <core/thread/Worker.hpp>
-#include <core/tools/dateAndTime.hpp>
+#include <core/os/temp_path.hpp>
+#include <core/thread/worker.hpp>
+#include <core/tools/date_and_time.hpp>
 
 #include <data/ImageSeries.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <io/base/service/ioTypes.hpp>
+#include <io/__/service/ioTypes.hpp>
 
 #include <service/op/Add.hpp>
 #include <service/registry.hpp>
@@ -68,16 +68,16 @@ void executeService(
     const data::Access access = data::Access::inout
 )
 {
-    service::IService::sptr srv = service::add(srvImpl);
+    service::base::sptr srv = service::add(srvImpl);
     CPPUNIT_ASSERT(srv);
 
     if(access == data::Access::inout)
     {
-        srv->setInOut(obj, sight::io::base::service::s_DATA_KEY);
+        srv->setInOut(obj, sight::io::service::s_DATA_KEY);
     }
     else
     {
-        srv->setInput(obj, sight::io::base::service::s_DATA_KEY);
+        srv->setInput(obj, sight::io::service::s_DATA_KEY);
     }
 
     srv->setConfiguration(cfg);
@@ -93,14 +93,14 @@ void executeService(
 void IoItkTest::testImageSeriesWriterJPG()
 {
     // Create image series
-    auto imageSeries = data::ImageSeries::New();
-    utestData::generator::Image::generateRandomImage(imageSeries, core::Type::INT16);
+    auto imageSeries = std::make_shared<data::ImageSeries>();
+    utestData::generator::Image::generateRandomImage(imageSeries, core::type::INT16);
 
     // Create path
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     // Create Config
-    service::IService::ConfigType srvCfg;
+    service::config_t srvCfg;
     srvCfg.add("folder", tmpDir.string());
 
     // Create and execute service
@@ -123,19 +123,19 @@ double tolerance(double num)
 
 void IoItkTest::testSaveLoadInr()
 {
-    data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
+    data::Image::sptr image = std::make_shared<data::Image>();
+    utestData::generator::Image::generateRandomImage(image, core::type::INT16);
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
     image->setOrigin(origin);
 
     // save image in inr
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto& path = tmpDir / "image.inr.gz";
 
     // Create Config
-    service::IService::ConfigType srvCfg;
+    service::config_t srvCfg;
     srvCfg.add("file", path.string());
 
     // Create and execute service
@@ -147,7 +147,7 @@ void IoItkTest::testSaveLoadInr()
     );
 
     // load Image
-    data::Image::sptr image2 = data::Image::New();
+    data::Image::sptr image2 = std::make_shared<data::Image>();
     executeService(
         image2,
         "sight::module::io::itk::SImageReader",
@@ -170,18 +170,18 @@ void IoItkTest::testSaveLoadInr()
 
 void IoItkTest::testSaveLoadNifti()
 {
-    data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
+    data::Image::sptr image = std::make_shared<data::Image>();
+    utestData::generator::Image::generateRandomImage(image, core::type::INT16);
 
     const data::Image::Origin origin = {0.5F, 0.2F, 1.2F};
     image->setOrigin(origin);
 
     // save image in inr
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto& path = tmpDir / "image.nii";
 
     // Create Config
-    service::IService::ConfigType srvCfg;
+    service::config_t srvCfg;
     srvCfg.add("file", path.string());
 
     // Create and execute service
@@ -193,7 +193,7 @@ void IoItkTest::testSaveLoadNifti()
     );
 
     // load Image
-    data::Image::sptr image2 = data::Image::New();
+    data::Image::sptr image2 = std::make_shared<data::Image>();
     executeService(
         image2,
         "sight::module::io::itk::SImageReader",
@@ -216,19 +216,19 @@ void IoItkTest::testSaveLoadNifti()
 
 void IoItkTest::ImageSeriesInrTest()
 {
-    auto imageSeries = data::ImageSeries::New();
-    utestData::generator::Image::generateRandomImage(imageSeries, core::Type::INT16);
+    auto imageSeries = std::make_shared<data::ImageSeries>();
+    utestData::generator::Image::generateRandomImage(imageSeries, core::type::INT16);
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
     imageSeries->setOrigin(origin);
 
     // save image in inr
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto& path = tmpDir / "imageseries.inr.gz";
 
     // Create Config
-    service::IService::ConfigType srvCfg;
+    service::config_t srvCfg;
     srvCfg.add("file", path.string());
 
     // Create and execute service
@@ -240,7 +240,7 @@ void IoItkTest::ImageSeriesInrTest()
     );
 
     // load Image
-    auto imageSeries2 = data::ImageSeries::New();
+    auto imageSeries2 = std::make_shared<data::ImageSeries>();
     executeService(
         imageSeries2,
         "sight::module::io::itk::SImageSeriesReader",
@@ -258,8 +258,8 @@ void IoItkTest::ImageSeriesInrTest()
 
     // ITK reader change the description of the image, the modality is set to "OT", etc ...
     // We only compare "Image" part...
-    const auto image  = data::Image::dynamicCast(imageSeries);
-    const auto image2 = data::Image::dynamicCast(imageSeries2);
+    const auto image  = std::dynamic_pointer_cast<data::Image>(imageSeries);
+    const auto image2 = std::dynamic_pointer_cast<data::Image>(imageSeries2);
     image2->setDescription(image->getDescription());
 
     CPPUNIT_ASSERT(*image == *image2);
@@ -269,19 +269,19 @@ void IoItkTest::ImageSeriesInrTest()
 
 void IoItkTest::ImageSeriesNiftiTest()
 {
-    auto imageSeries = data::ImageSeries::New();
-    utestData::generator::Image::generateRandomImage(imageSeries, core::Type::INT16);
+    auto imageSeries = std::make_shared<data::ImageSeries>();
+    utestData::generator::Image::generateRandomImage(imageSeries, core::type::INT16);
 
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
     imageSeries->setOrigin(origin);
 
     // save image in inr
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto& path = tmpDir / "imageseries.nii";
 
     // Create Config
-    service::IService::ConfigType srvCfg;
+    service::config_t srvCfg;
     srvCfg.add("file", path.string());
 
     // Create and execute service
@@ -293,7 +293,7 @@ void IoItkTest::ImageSeriesNiftiTest()
     );
 
     // load Image
-    data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
+    data::ImageSeries::sptr imageSeries2 = std::make_shared<data::ImageSeries>();
     executeService(
         imageSeries2,
         "sight::module::io::itk::SImageSeriesReader",
@@ -311,8 +311,8 @@ void IoItkTest::ImageSeriesNiftiTest()
 
     // ITK reader change the description of the image, the modality is set to "OT", etc ...
     // We only compare "Image" part...
-    const auto image  = data::Image::dynamicCast(imageSeries);
-    const auto image2 = data::Image::dynamicCast(imageSeries2);
+    const auto image  = std::dynamic_pointer_cast<data::Image>(imageSeries);
+    const auto image2 = std::dynamic_pointer_cast<data::Image>(imageSeries2);
     image2->setDescription(image->getDescription());
 
     CPPUNIT_ASSERT(*image == *image2);
@@ -340,12 +340,12 @@ void IoItkTest::SeriesSetInrTest()
     );
 
     // Create Config
-    service::IService::ConfigType srvCfg;
+    service::config_t srvCfg;
     srvCfg.add("file", imageFile.string());
     srvCfg.add("file", skinFile.string());
 
     // load SeriesSet
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
     executeService(
         series_set,
         "sight::module::io::itk::SSeriesSetReader",
@@ -357,22 +357,22 @@ void IoItkTest::SeriesSetInrTest()
     const data::Image::Size size       = {512, 512, 134};
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
-    data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(series_set->at(0));
+    data::ImageSeries::sptr imgSeries = std::dynamic_pointer_cast<data::ImageSeries>(series_set->at(0));
     CPPUNIT_ASSERT(imgSeries);
     CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
 
     CPPUNIT_ASSERT_EQUAL(std::string("int16"), imgSeries->getType().name());
-    CPPUNIT_ASSERT(size == imgSeries->getSize());
+    CPPUNIT_ASSERT(size == imgSeries->size());
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], imgSeries->getSpacing()[0], EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], imgSeries->getSpacing()[1], EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], imgSeries->getSpacing()[2], EPSILON);
 
-    imgSeries = data::ImageSeries::dynamicCast(series_set->at(1));
+    imgSeries = std::dynamic_pointer_cast<data::ImageSeries>(series_set->at(1));
     CPPUNIT_ASSERT(imgSeries);
     CPPUNIT_ASSERT_EQUAL(std::string("OT"), imgSeries->getModality());
 
     CPPUNIT_ASSERT_EQUAL(std::string("uint8"), imgSeries->getType().name());
-    CPPUNIT_ASSERT(size == imgSeries->getSize());
+    CPPUNIT_ASSERT(size == imgSeries->size());
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[0], imgSeries->getSpacing()[0], EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[1], imgSeries->getSpacing()[1], EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(spacing[2], imgSeries->getSpacing()[2], EPSILON);

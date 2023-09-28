@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "PointListTest.hpp"
 
-#include <core/Exception.hpp>
+#include <core/exception.hpp>
 
 #include <data/Point.hpp>
 
@@ -66,8 +66,8 @@ void PointListTest::computeDistance()
 
     // Simple test with empty point lists
     {
-        pl1 = sight::data::PointList::New();
-        pl2 = sight::data::PointList::New();
+        pl1 = std::make_shared<sight::data::PointList>();
+        pl2 = std::make_shared<sight::data::PointList>();
 
         // Compare the point lists
         auto outputArray = geometry::data::PointList::computeDistance(pl1, pl2);
@@ -77,18 +77,18 @@ void PointListTest::computeDistance()
 
     // Simple test with parallel point lists
     {
-        pl1 = sight::data::PointList::New();
-        pl2 = sight::data::PointList::New();
+        pl1 = std::make_shared<sight::data::PointList>();
+        pl2 = std::make_shared<sight::data::PointList>();
 
         // Build 2 pointlists:
         // The first one with increasing x values
         // And the second one with inscreasing x values but shifted in y
         for(std::size_t i = 0 ; i < nbPoints ; i++)
         {
-            p = sight::data::Point::New(static_cast<float>(i), 0.0F, 0.0F);
+            p = std::make_shared<sight::data::Point>(static_cast<float>(i), 0.0F, 0.0F);
             pl1->pushBack(p);
 
-            p = sight::data::Point::New(static_cast<float>(i), 1.0F, 0.0F);
+            p = std::make_shared<sight::data::Point>(static_cast<float>(i), 1.0F, 0.0F);
             pl2->pushBack(p);
         }
 
@@ -106,18 +106,18 @@ void PointListTest::computeDistance()
 
     // Simple test with diverging point lists
     {
-        pl1 = sight::data::PointList::New();
-        pl2 = sight::data::PointList::New();
+        pl1 = std::make_shared<sight::data::PointList>();
+        pl2 = std::make_shared<sight::data::PointList>();
 
         // Build 2 point lists:
         // The first one with increasing x values
         // And the second one with increasing x values but shifted in y
         for(std::size_t i = 0 ; i < nbPoints ; i++)
         {
-            p = sight::data::Point::New(static_cast<float>(i), 0.0F, 0.0F);
+            p = std::make_shared<sight::data::Point>(static_cast<float>(i), 0.0F, 0.0F);
             pl1->pushBack(p);
 
-            p = sight::data::Point::New(static_cast<float>(i), static_cast<float>(i), 0.0F);
+            p = std::make_shared<sight::data::Point>(static_cast<float>(i), static_cast<float>(i), 0.0F);
             pl2->pushBack(p);
         }
 
@@ -141,29 +141,29 @@ void PointListTest::transform()
     // Simple test with identity
     {
         // Test sample
-        sight::data::PointList::sptr pl1 = sight::data::PointList::New();
-        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 0.0F));
+        sight::data::PointList::sptr pl1 = std::make_shared<sight::data::PointList>();
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 0.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 1.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 1.0F, 0.0F));
 
-        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 0.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 1.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 1.0F, 1.0F));
 
         // Reference list
         const sight::data::PointList::PointListContainer points1 = pl1->getPoints();
         const std::size_t size                                   = points1.size();
 
-        sight::data::PointList::sptr pl2 = sight::data::PointList::New();
+        sight::data::PointList::sptr pl2 = std::make_shared<sight::data::PointList>();
         for(std::size_t i = 0 ; i < size ; i++)
         {
             const sight::data::Point::PointCoordArrayType tmp = points1[i]->getCoord();
-            pl2->pushBack(sight::data::Point::New(tmp[0], tmp[1], tmp[2]));
+            pl2->pushBack(std::make_shared<sight::data::Point>(tmp[0], tmp[1], tmp[2]));
         }
 
-        const auto tf1 = sight::data::Matrix4::New();
+        const auto tf1 = std::make_shared<sight::data::Matrix4>();
         geometry::data::PointList::transform(pl1, tf1);
 
         const sight::data::PointList::PointListContainer points2 = pl2->getPoints();
@@ -186,27 +186,27 @@ void PointListTest::transform()
         translation[2] = 32.0;
 
         // Test sample
-        sight::data::PointList::sptr pl1 = sight::data::PointList::New();
-        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 0.0F));
+        sight::data::PointList::sptr pl1 = std::make_shared<sight::data::PointList>();
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 0.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 1.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 1.0F, 0.0F));
 
-        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 0.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 1.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 1.0F, 1.0F));
 
         // Reference list
         const sight::data::PointList::PointListContainer points1 = pl1->getPoints();
         const std::size_t size                                   = points1.size();
 
-        sight::data::PointList::sptr pl2 = sight::data::PointList::New();
+        sight::data::PointList::sptr pl2 = std::make_shared<sight::data::PointList>();
         for(std::size_t i = 0 ; i < size ; i++)
         {
             const sight::data::Point::PointCoordArrayType tmp = points1[i]->getCoord();
             pl2->pushBack(
-                sight::data::Point::New(
+                std::make_shared<sight::data::Point>(
                     tmp[0] + translation[0],
                     tmp[1] + translation[1],
                     tmp[2] + translation[2]
@@ -214,7 +214,7 @@ void PointListTest::transform()
             );
         }
 
-        const auto tf1 = sight::data::Matrix4::New();
+        const auto tf1 = std::make_shared<sight::data::Matrix4>();
         (*tf1)(0, 3) = translation[0];
         (*tf1)(1, 3) = translation[1];
         (*tf1)(2, 3) = translation[2];
@@ -234,30 +234,30 @@ void PointListTest::transform()
 
     // Simple test with rotation
     {
-        sight::data::PointList::sptr pl1 = sight::data::PointList::New();
-        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 0.0F));
+        sight::data::PointList::sptr pl1 = std::make_shared<sight::data::PointList>();
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 0.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 1.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 1.0F, 0.0F));
 
-        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 0.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 1.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(0.0F, 1.0F, 1.0F));
 
-        sight::data::PointList::sptr pl2 = sight::data::PointList::New();
-        pl2->pushBack(sight::data::Point::New(0.0F, 0.0F, 0.0F));
-        pl2->pushBack(sight::data::Point::New(-1.0F, 0.0F, 0.0F));
-        pl2->pushBack(sight::data::Point::New(-1.0F, -1.0F, 0.0F));
-        pl2->pushBack(sight::data::Point::New(0.0F, -1.0F, 0.0F));
+        sight::data::PointList::sptr pl2 = std::make_shared<sight::data::PointList>();
+        pl2->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 0.0F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(-1.0F, 0.0F, 0.0F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(-1.0F, -1.0F, 0.0F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(0.0F, -1.0F, 0.0F));
 
-        pl2->pushBack(sight::data::Point::New(0.0F, 0.0F, 1.0F));
-        pl2->pushBack(sight::data::Point::New(-1.0F, 0.0F, 1.0F));
-        pl2->pushBack(sight::data::Point::New(-1.0F, -1.0F, 1.0F));
-        pl2->pushBack(sight::data::Point::New(0.0F, -1.0F, 1.0F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 1.0F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(-1.0F, 0.0F, 1.0F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(-1.0F, -1.0F, 1.0F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(0.0F, -1.0F, 1.0F));
 
         // Perform a 180 degrees rotation around Z
-        const auto tf1 = sight::data::Matrix4::New();
+        const auto tf1 = std::make_shared<sight::data::Matrix4>();
         (*tf1)(0, 0) = -1.0F;
         (*tf1)(0, 1) = 0.0F;
         (*tf1)(1, 0) = 0.0F;
@@ -294,8 +294,8 @@ void PointListTest::associate()
 
     // Simple test with empty point lists
     {
-        pl1 = sight::data::PointList::New();
-        pl2 = sight::data::PointList::New();
+        pl1 = std::make_shared<sight::data::PointList>();
+        pl2 = std::make_shared<sight::data::PointList>();
 
         // Associate empty point lists
         geometry::data::PointList::associate(pl1, pl2);
@@ -307,23 +307,23 @@ void PointListTest::associate()
     // Create two lists with the same sets of points and shift them with transformation matrices
     // Associating them should make the x components match
     {
-        pl1 = sight::data::PointList::New();
-        pl2 = sight::data::PointList::New();
+        pl1 = std::make_shared<sight::data::PointList>();
+        pl2 = std::make_shared<sight::data::PointList>();
 
         // Build 2 point lists with the same points, the point are in the inverse order in the second list
         for(std::size_t i = 0 ; i <= nbPoints ; i++)
         {
-            p = sight::data::Point::New(static_cast<float>(i), 0.0F, 0.0F);
+            p = std::make_shared<sight::data::Point>(static_cast<float>(i), 0.0F, 0.0F);
             pl1->pushBack(p);
 
-            p = sight::data::Point::New(static_cast<float>(nbPoints - i), 0.0F, 0.0F);
+            p = std::make_shared<sight::data::Point>(static_cast<float>(nbPoints - i), 0.0F, 0.0F);
             pl2->pushBack(p);
         }
 
         // Transform the point lists, shift the points in y
-        auto tf1 = sight::data::Matrix4::New();
+        auto tf1 = std::make_shared<sight::data::Matrix4>();
         (*tf1)(1, 3) = 42.0;
-        auto tf2 = sight::data::Matrix4::New();
+        auto tf2 = std::make_shared<sight::data::Matrix4>();
         (*tf2)(1, 3) = -42.0;
 
         geometry::data::PointList::transform(pl1, tf1);
@@ -364,25 +364,25 @@ void PointListTest::associate()
     // Check that the matched points are really the closest
     {
         // Create an initial octahedron with points
-        pl1 = sight::data::PointList::New();
-        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(2.0F, 0.0F, 1.0F));
-        pl1->pushBack(sight::data::Point::New(2.0F, 0.8F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(2.0F, 0.0F, -1.0F));
-        pl1->pushBack(sight::data::Point::New(2.0F, -0.8F, 0.0F));
-        pl1->pushBack(sight::data::Point::New(3.0F, 0.0F, 0.0F));
+        pl1 = std::make_shared<sight::data::PointList>();
+        pl1->pushBack(std::make_shared<sight::data::Point>(1.0F, 0.0F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(2.0F, 0.0F, 1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(2.0F, 0.8F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(2.0F, 0.0F, -1.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(2.0F, -0.8F, 0.0F));
+        pl1->pushBack(std::make_shared<sight::data::Point>(3.0F, 0.0F, 0.0F));
 
         // Reference final octahedron
-        pl2 = sight::data::PointList::New();
-        pl2->pushBack(sight::data::Point::New(0.0F, 0.0F, 5.2F));
-        pl2->pushBack(sight::data::Point::New(1.0F, 0.0F, 6.2F));
-        pl2->pushBack(sight::data::Point::New(0.0F, 0.8F, 6.2F));
-        pl2->pushBack(sight::data::Point::New(-1.0F, 0.0F, 6.2F));
-        pl2->pushBack(sight::data::Point::New(0.0F, -0.8F, 6.2F));
-        pl2->pushBack(sight::data::Point::New(0.0F, 0.0F, 7.2F));
+        pl2 = std::make_shared<sight::data::PointList>();
+        pl2->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 5.2F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(1.0F, 0.0F, 6.2F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.8F, 6.2F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(-1.0F, 0.0F, 6.2F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(0.0F, -0.8F, 6.2F));
+        pl2->pushBack(std::make_shared<sight::data::Point>(0.0F, 0.0F, 7.2F));
 
         // Transform the point list
-        auto tf1 = sight::data::Matrix4::New();
+        auto tf1 = std::make_shared<sight::data::Matrix4>();
         // Shift the points in Z
         (*tf1)(2, 3) = 4.2;
 
@@ -424,13 +424,13 @@ void PointListTest::associate()
 void PointListTest::removeClosestPointNominal()
 {
     const std::size_t nbPoints      = 42;
-    sight::data::PointList::sptr pl = sight::data::PointList::New();
+    sight::data::PointList::sptr pl = std::make_shared<sight::data::PointList>();
 
     // Remove points in an empty list
     for(std::size_t i = 0 ; i < nbPoints ; ++i)
     {
         const auto p =
-            sight::data::Point::New(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
+            std::make_shared<sight::data::Point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         CPPUNIT_ASSERT(
             geometry::data::PointList::removeClosestPoint(
                 pl,
@@ -445,14 +445,14 @@ void PointListTest::removeClosestPointNominal()
     for(std::size_t i = 0 ; i < nbPoints ; ++i)
     {
         const auto p =
-            sight::data::Point::New(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
+            std::make_shared<sight::data::Point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         pl->pushBack(p);
     }
 
     // Remove points with an unmatched delta
     for(std::size_t i = 0 ; i < nbPoints ; ++i)
     {
-        const auto p = sight::data::Point::New(
+        const auto p = std::make_shared<sight::data::Point>(
             static_cast<float>(nbPoints + 1),
             static_cast<float>(nbPoints + 1),
             static_cast<float>(nbPoints + 1)
@@ -471,7 +471,7 @@ void PointListTest::removeClosestPointNominal()
     for(std::size_t i = 0 ; i < nbPoints ; ++i)
     {
         const auto p =
-            sight::data::Point::New(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
+            std::make_shared<sight::data::Point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         const auto pRes =
             geometry::data::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(pRes != nullptr);
@@ -486,13 +486,13 @@ void PointListTest::removeClosestPointNominal()
 void PointListTest::removeClosestPointExtreme()
 {
     const std::size_t nbPoints      = 42;
-    sight::data::PointList::sptr pl = sight::data::PointList::New();
+    sight::data::PointList::sptr pl = std::make_shared<sight::data::PointList>();
 
     // Build a list
     for(std::size_t i = 0 ; i < nbPoints ; ++i)
     {
         const auto p =
-            sight::data::Point::New(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
+            std::make_shared<sight::data::Point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         pl->pushBack(p);
     }
 
@@ -500,7 +500,7 @@ void PointListTest::removeClosestPointExtreme()
     for(std::size_t i = 0 ; i < nbPoints ; ++i)
     {
         const auto p =
-            sight::data::Point::New(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
+            std::make_shared<sight::data::Point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         CPPUNIT_ASSERT(
             geometry::data::PointList::removeClosestPoint(
                 pl,
@@ -515,7 +515,7 @@ void PointListTest::removeClosestPointExtreme()
     for(std::size_t i = 0 ; i < nbPoints ; ++i)
     {
         const auto p =
-            sight::data::Point::New(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
+            std::make_shared<sight::data::Point>(static_cast<float>(i), static_cast<float>(i), static_cast<float>(i));
         const auto pRes =
             geometry::data::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(pRes != nullptr);

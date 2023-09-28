@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ void moveFromItk(
     _dataImage->setOrigin(vOrigin);
     _dataImage->setSpacing(vSpacing);
 
-    const auto pixelType = core::Type::get<typename ITKIMAGE::PixelType>();
+    const auto pixelType = core::type::get<typename ITKIMAGE::PixelType>();
     const auto dumpLock  = _dataImage->dump_lock();
     if(_bufferManagerIsDataImage)
     {
@@ -73,7 +73,7 @@ void moveFromItk(
             pixelType,
             vSize,
             data::Image::GRAY_SCALE,
-            core::memory::BufferNewPolicy::New()
+            std::make_shared<core::memory::buffer_new_policy>()
         );
         /// itk image release its management buffer. dataImage must now deal memory
         _itkImage->GetPixelContainer()->SetContainerManageMemory(false);
@@ -95,7 +95,7 @@ void moveFromItk(
     }
 
     // Post Condition correct PixelType
-    SIGHT_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::Type::NONE);
+    SIGHT_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::type::NONE);
 }
 
 //------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void moveFromItk(
 template<class ITKIMAGE>
 data::Image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage)
 {
-    data::Image::sptr data = data::Image::New();
+    data::Image::sptr data = std::make_shared<data::Image>();
     io::itk::moveFromItk<ITKIMAGE>(itkImage, data, bufferManagerIsDataImage);
     return data;
 }
@@ -149,7 +149,7 @@ typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData)
     for(std::uint8_t d = 0 ; d < ITKIMAGE::ImageDimension ; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getOrigin()[d]) );
-        itkRegion.SetSize(d, static_cast<std::uint64_t>(imageData->getSize()[d]));
+        itkRegion.SetSize(d, static_cast<std::uint64_t>(imageData->size()[d]));
         nb_pixels *= static_cast<std::uint64_t>(itkRegion.GetSize()[d]);
     }
 
@@ -157,7 +157,7 @@ typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData)
 
     itkImage->GetPixelContainer()->SetImportPointer(
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        static_cast<typename ITKIMAGE::PixelType*>(const_cast<void*>(imageData->getBuffer())),
+        static_cast<typename ITKIMAGE::PixelType*>(const_cast<void*>(imageData->buffer())),
         nb_pixels,
         false
     );

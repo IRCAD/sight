@@ -24,34 +24,28 @@
 
 #include "io/itk/config.hpp"
 
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/progress_adviser.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 #include <filesystem>
 
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API JpgImageWriter : public base::writer::GenericObjectWriter<data::Image>,
-                                        public core::location::SingleFolder,
-                                        public core::tools::ProgressAdviser
+class IO_ITK_CLASS_API JpgImageWriter : public writer::GenericObjectWriter<data::Image>,
+                                        public core::location::single_folder,
+                                        public core::tools::progress_adviser
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        JpgImageWriter,
-        io::base::writer::GenericObjectWriter<data::Image>,
-        io::base::writer::factory::New<JpgImageWriter>
-    );
+    SIGHT_DECLARE_CLASS(JpgImageWriter, io::writer::GenericObjectWriter<data::Image>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_ITK_API JpgImageWriter(io::base::writer::IObjectWriter::Key key);
-
-    IO_ITK_API ~JpgImageWriter() override;
+    IO_ITK_API ~JpgImageWriter() override = default;
 
     IO_ITK_API void write() override;
 

@@ -6,7 +6,7 @@ add_dependencies(
     module_memory
     module_data
     data
-    module_ui_base
+    module_ui
     module_ui_qt
     module_io_dicom
     module_ui_dicom

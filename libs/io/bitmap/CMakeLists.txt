@@ -1,5 +1,5 @@
 sight_add_target(io_bitmap TYPE LIBRARY)
-target_link_libraries(io_bitmap PUBLIC core data io_base)
+target_link_libraries(io_bitmap PUBLIC core data io)
 
 option(SIGHT_ENABLE_NVJPEG "Enable nvJPEG support." OFF)
 option(SIGHT_ENABLE_NVJPEG2K "Enable nvJPEG2000 support." OFF)

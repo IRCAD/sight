@@ -45,12 +45,12 @@ static data::Image::sptr genImage(
     std::uint8_t _numChannels
 )
 {
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
     const auto dumpLock     = image->dump_lock();
 
     SIGHT_ASSERT("Width should be at least 1", _w >= 1);
 
-    const core::Type imageType  = core::Type::get<T>();
+    const core::type imageType  = core::type::get<T>();
     data::Image::Size imageSize = {0, 0, 0};
     imageSize[0] = _w;
     if(_h > 0)
@@ -108,7 +108,7 @@ static void compareImages(
 )
 {
     const auto dumpLock  = _image->dump_lock();
-    const T* imageBuffer = reinterpret_cast<const T*>(_image->getBuffer());
+    const T* imageBuffer = reinterpret_cast<const T*>(_image->buffer());
 
     std::vector<cv::Mat> channels(_numChannels);
     cv::split(_cvImage, channels);
@@ -188,7 +188,7 @@ static void testMoveToCV(std::size_t _w, std::size_t _h, std::size_t _d, std::ui
 
     // Since we share the same buffer, compare the pointers
     const auto dumpLock = image->dump_lock();
-    CPPUNIT_ASSERT_EQUAL(image->getBuffer(), static_cast<void*>(cvImage.data));
+    CPPUNIT_ASSERT_EQUAL(image->buffer(), static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
 }
@@ -201,12 +201,12 @@ static void testCopyFromCV(std::size_t _w, std::size_t _h, std::size_t _d, std::
     const std::vector<T> imageBuffer = genImageBuffer<T>(_w, _h, _d, _numChannels);
     const cv::Mat cvImage            = genCvImage<T>(imageBuffer, _w, _h, _d, _numChannels);
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
     io::opencv::Image::copyFromCv(*image.get(), cvImage);
 
     // Since we copy the buffer, ensure the pointers are different
     const auto dumpLock = image->dump_lock();
-    CPPUNIT_ASSERT(image->getBuffer() != static_cast<void*>(cvImage.data));
+    CPPUNIT_ASSERT(image->buffer() != static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
 }
@@ -223,7 +223,7 @@ static void testCopyToCV(std::size_t _w, std::size_t _h, std::size_t _d, std::ui
 
     // Since we copy the buffer, ensure the pointers are different
     const auto dumpLock = image->dump_lock();
-    CPPUNIT_ASSERT(image->getBuffer() != static_cast<void*>(cvImage.data));
+    CPPUNIT_ASSERT(image->buffer() != static_cast<void*>(cvImage.data));
 
     compareImages<T>(cvImage, image, _w, _h, _d, _numChannels);
 }

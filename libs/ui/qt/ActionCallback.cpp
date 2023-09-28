@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,23 +22,12 @@
 
 #include "ui/qt/ActionCallback.hpp"
 
-#include <ui/base/registry/macros.hpp>
+#include <ui/__/macros.hpp>
 
-SIGHT_REGISTER_GUI(sight::ui::qt::ActionCallback, sight::ui::base::ActionCallbackBase::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::ActionCallback, sight::ui::ActionCallbackBase::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {
-
-//-----------------------------------------------------------------------------
-
-ActionCallback::ActionCallback(ui::base::GuiBaseObject::Key /*unused*/)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-ActionCallback::~ActionCallback()
-= default;
 
 //-----------------------------------------------------------------------------
 

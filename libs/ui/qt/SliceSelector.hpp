@@ -73,7 +73,7 @@ public:
  * @brief A Qt panel used to control a VTK 2D Negatoscope view.
  *
  */
-class UI_QT_CLASS_QT_API SliceSelector : public QWidget
+class UI_QT_CLASS_API_QT SliceSelector : public QWidget
 {
 Q_OBJECT
 
@@ -83,24 +83,24 @@ public:
      * @brief Constructor.
      * @param parent The parent widget.
      */
-    UI_QT_QT_API SliceSelector(bool displayAxisSelector, bool displayStepButtons, QWidget* parent = nullptr) noexcept;
+    UI_QT_API_QT SliceSelector(bool displayAxisSelector, bool displayStepButtons, QWidget* parent = nullptr) noexcept;
 
     /// @brief Destructor.
-    UI_QT_QT_API ~SliceSelector() noexcept override;
+    UI_QT_API_QT ~SliceSelector() noexcept override;
 
-    UI_QT_QT_API void setSliceRange(int min, int max);
+    UI_QT_API_QT void setSliceRange(int min, int max);
 
-    UI_QT_QT_API void setSliceValue(int index);
+    UI_QT_API_QT void setSliceValue(int index);
 
-    UI_QT_QT_API void setTypeSelection(int type);
+    UI_QT_API_QT void setTypeSelection(int type);
 
-    UI_QT_QT_API void setEnable(bool enable);
+    UI_QT_API_QT void setEnable(bool enable);
 
     typedef std::function<void (int)> ChangeIndexCallback;
-    UI_QT_QT_API void setChangeIndexCallback(ChangeIndexCallback fct);
+    UI_QT_API_QT void setChangeIndexCallback(ChangeIndexCallback fct);
 
     typedef std::function<void (int)> ChangeTypeCallback;
-    UI_QT_QT_API void setChangeTypeCallback(ChangeTypeCallback fct);
+    UI_QT_API_QT void setChangeTypeCallback(ChangeTypeCallback fct);
 
 protected Q_SLOTS:
 
@@ -108,13 +108,13 @@ protected Q_SLOTS:
      * @brief Event handler for a slice type change.
      * @param index index of the selected type item.
      */
-    UI_QT_QT_API void onSliceTypeChange(int index);
+    UI_QT_API_QT void onSliceTypeChange(int index);
 
     /**
      * @brief Event handler for a slice index change.
      * @param value current value of the slice index slider.
      */
-    UI_QT_QT_API void onSliceIndexChange(int value) noexcept;
+    UI_QT_API_QT void onSliceIndexChange(int value) noexcept;
 
 private:
 

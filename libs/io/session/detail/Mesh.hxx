@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -71,7 +71,7 @@ inline static void write(
 
     // Create the output file inside the archive
     const auto& ostream = archive.openFile(
-        std::filesystem::path(mesh->getUUID() + s_mesh),
+        std::filesystem::path(mesh->get_uuid() + s_mesh),
         password
     );
 

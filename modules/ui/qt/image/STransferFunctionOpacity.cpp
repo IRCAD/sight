@@ -21,7 +21,7 @@
 
 #include "modules/ui/qt/image/STransferFunctionOpacity.hpp"
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 #include <QSlider>
@@ -48,7 +48,7 @@ void STransferFunctionOpacity::configuring()
 void STransferFunctionOpacity::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* layout = new QHBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
@@ -140,21 +140,21 @@ void STransferFunctionOpacity::changeOpacity(int value)
 
     m_previous_value = value;
 
-    auto sig = tf->signal<data::Object::ModifiedSignalType>(data::TransferFunction::s_POINTS_MODIFIED_SIG);
+    auto sig = tf->signal<data::Object::ModifiedSignalType>(data::TransferFunction::POINTS_MODIFIED_SIG);
     {
-        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap STransferFunctionOpacity::getAutoConnections() const
+service::connections_t STransferFunctionOpacity::getAutoConnections() const
 {
     return {
-        {s_TF, data::TransferFunction::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_TF, data::TransferFunction::s_POINTS_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_TF, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, IService::slots::s_UPDATE}
+        {s_TF, data::TransferFunction::MODIFIED_SIG, service::slots::UPDATE},
+        {s_TF, data::TransferFunction::POINTS_MODIFIED_SIG, service::slots::UPDATE},
+        {s_TF, data::TransferFunction::WINDOWING_MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

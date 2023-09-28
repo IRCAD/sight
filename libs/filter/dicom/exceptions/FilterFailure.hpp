@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "filter/dicom/config.hpp"
 
-#include <core/Exception.hpp>
+#include <core/exception.hpp>
 
 namespace sight::filter::dicom::exceptions
 {
@@ -32,7 +32,7 @@ namespace sight::filter::dicom::exceptions
 /**
  * @brief FilterFailure Exceptions
  */
-class FILTER_DICOM_CLASS_API FilterFailure : public core::Exception
+class FILTER_DICOM_CLASS_API FilterFailure : public core::exception
 {
 public:
 

@@ -23,7 +23,7 @@
 
 #include "viz/scene3d/registry/macros.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreCamera.h>
@@ -46,8 +46,8 @@ PredefinedPositionInteractor::PredefinedPositionInteractor(
     const std::optional<std::string>& _default_position,
     bool _animate
 ) :
-    IInteractor(_layer, _layerOrderDependant),
-    m_timer(core::thread::getDefaultWorker()->createTimer()),
+    base(_layer, _layerOrderDependant),
+    m_timer(core::thread::get_default_worker()->create_timer()),
     m_predefined_positions(std::move(_positions)),
     m_animate(_animate)
 {
@@ -96,7 +96,7 @@ void PredefinedPositionInteractor::mouseMoveEvent(
     {
         if(button == LEFT)
         {
-            if(!m_timer->isRunning())
+            if(!m_timer->is_running())
             {
                 this->cameraRotateByMouse(dx, dy);
                 m_layer.lock()->requestRender();
@@ -157,7 +157,7 @@ void PredefinedPositionInteractor::keyPressEvent(int key, Modifier /*_mods*/, in
     {
         if(auto layer = m_layer.lock())
         {
-            if(isInLayer(_mouseX, _mouseY, layer, m_layerOrderDependant) && !m_timer->isRunning())
+            if(isInLayer(_mouseX, _mouseY, layer, m_layerOrderDependant) && !m_timer->is_running())
             {
                 layer->resetCameraCoordinates();
                 this->init();
@@ -326,7 +326,7 @@ void PredefinedPositionInteractor::toPredefinedPosition(std::size_t _idx, bool _
     if(auto layer = m_layer.lock())
     {
         // 1. Stop timer if needed
-        if(m_timer->isRunning())
+        if(m_timer->is_running())
         {
             m_timer->stop();
         }
@@ -371,10 +371,10 @@ void PredefinedPositionInteractor::toPredefinedPosition(std::size_t _idx, bool _
             // Avoid to have gigantic step.
             const float step = (nb_step > 0.001F) ? 1.F / nb_step : 1.F;
 
-            m_timer->setFunction(
+            m_timer->set_function(
                 [this, layer, origin, destination, camNode, step]()
                 {
-                    if(m_timer->isRunning())
+                    if(m_timer->is_running())
                     {
                         m_timer->stop();
                     }
@@ -403,7 +403,7 @@ void PredefinedPositionInteractor::toPredefinedPosition(std::size_t _idx, bool _
                     }
                     else
                     {
-                        m_timer->setDuration(
+                        m_timer->set_duration(
                             std::max(
                                 std::chrono::milliseconds(0),
                                 std::chrono::milliseconds(10) - std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -413,13 +413,13 @@ void PredefinedPositionInteractor::toPredefinedPosition(std::size_t _idx, bool _
                         );
 
                         m_last_step_time = std::chrono::system_clock::now();
-                        m_timer->setOneShot(true);
+                        m_timer->set_one_shot(true);
                         m_timer->start();
                     }
                 });
 
-            m_timer->setDuration(std::chrono::milliseconds(0));
-            m_timer->setOneShot(true);
+            m_timer->set_duration(std::chrono::milliseconds(0));
+            m_timer->set_one_shot(true);
             m_timer->start();
         }
         else
@@ -434,7 +434,7 @@ void PredefinedPositionInteractor::toPredefinedPosition(std::size_t _idx, bool _
 
 // ----------------------------------------------------------------------------
 
-void PredefinedPositionInteractor::setParameter(ui::base::parameter_t _value, std::string _key)
+void PredefinedPositionInteractor::setParameter(ui::parameter_t _value, std::string _key)
 {
     if(_key == "position")
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <viz/scene3d/Utils.hpp>
 
 #define FW_PROFILING_DISABLED
-#include <core/Profiling.hpp>
+#include <core/profiling.hpp>
 
 #include <geometry/data/Mesh.hpp>
 
@@ -569,7 +569,7 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
             {
                 const std::string name           = std::to_string(static_cast<int>(cellType));
                 const std::string r2vbObjectName = m_ogreMesh->getName() + "_r2vbObject_" + name;
-                m_r2vbObject[cellType] = viz::scene3d::R2VBRenderable::New(
+                m_r2vbObject[cellType] = viz::scene3d::R2VBRenderable::make(
                     r2vbObjectName,
                     subEntity,
                     &_sceneMgr,

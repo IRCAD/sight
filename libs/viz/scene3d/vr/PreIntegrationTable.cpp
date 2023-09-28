@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "viz/scene3d/vr/PreIntegrationTable.hpp"
 
-#include <core/memory/BufferManager.hpp>
-#include <core/memory/BufferObject.hpp>
-#include <core/Profiling.hpp>
+#include <core/memory/buffer_manager.hpp>
+#include <core/memory/buffer_object.hpp>
+#include <core/profiling.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/Utils.hpp>
@@ -34,6 +34,13 @@
 #include <OGRE/OgreTextureManager.h>
 
 #include <algorithm>
+
+// Usual nolint comment does not work for an unknown reason (clang 17)
+// cspell:ignore Wunknown
+#ifdef __clang_analyzer__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
 
 namespace sight::viz::scene3d::vr
 {
@@ -87,7 +94,7 @@ void PreIntegrationTable::imageUpdate(
         {
             case Ogre::PF_L8: //uint8
             {
-                const auto* ucharImgBuffer = static_cast<const uint8_t*>(_img->getBuffer());
+                const auto* ucharImgBuffer = static_cast<const uint8_t*>(_img->buffer());
                 auto minMax                = std::minmax_element(ucharImgBuffer, ucharImgBuffer + nbPixels);
 
                 m_valueInterval.first  = *minMax.first;
@@ -98,7 +105,7 @@ void PreIntegrationTable::imageUpdate(
 
             case Ogre::PF_L16: //int16
             {
-                const auto* ushortImgBuffer = static_cast<const int16_t*>(_img->getBuffer());
+                const auto* ushortImgBuffer = static_cast<const int16_t*>(_img->buffer());
                 auto minMax                 = std::minmax_element(ushortImgBuffer, ushortImgBuffer + nbPixels);
 
                 m_valueInterval.first  = *minMax.first;
@@ -109,7 +116,7 @@ void PreIntegrationTable::imageUpdate(
 
             case ::Ogre::PF_R32_SINT: //int32
             {
-                const auto* uintImgBuffer = static_cast<const int32_t*>(_img->getBuffer());
+                const auto* uintImgBuffer = static_cast<const int32_t*>(_img->buffer());
                 auto minMax               = std::minmax_element(uintImgBuffer, uintImgBuffer + nbPixels);
 
                 m_valueInterval.first  = *minMax.first;
@@ -185,6 +192,7 @@ void PreIntegrationTable::tfUpdate(const data::TransferFunction::csptr& _tf, flo
         // Inverse of the sampling accounted by the TF.
         const float samplingAdjustmentFactor = 200.F;
 
+        // NOLINTNEXTLINE(clang-diagnostic-unknown-pragmas)
         #pragma omp parallel for schedule(dynamic)
         for(int sb = 0 ; sb < static_cast<int>(m_textureSize) ; ++sb)
         {
@@ -247,3 +255,7 @@ void PreIntegrationTable::tfUpdate(const data::TransferFunction::csptr& _tf, flo
 //-----------------------------------------------------------------------------
 
 } // namespace sight::viz::scene3d::vr
+
+#ifdef __clang_analyzer__
+#pragma clang diagnostic pop
+#endif

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,18 +43,6 @@ namespace sight::ui::dicom::sorter
 const std::string TagValueConfigurableSorter::s_FILTER_NAME        = "Tag value configurable sorter";
 const std::string TagValueConfigurableSorter::s_FILTER_DESCRIPTION =
     "Sort instances using a tag value.";
-
-//-----------------------------------------------------------------------------
-
-TagValueConfigurableSorter::TagValueConfigurableSorter(filter::dicom::IFilter::Key key) :
-    filter::dicom::sorter::TagValueSorter(key)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-TagValueConfigurableSorter::~TagValueConfigurableSorter()
-= default;
 
 //-----------------------------------------------------------------------------
 

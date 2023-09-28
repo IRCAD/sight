@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 #include <QString>
 
@@ -68,11 +68,11 @@ namespace sight::module::ui::qt
         <service uid="..." type="sight::module::ui::qt::SStyleSelector" />
    @endcode
  */
-class MODULE_UI_QT_CLASS_API SStyleSelector : public service::IController
+class MODULE_UI_QT_CLASS_API SStyleSelector : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SStyleSelector, sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SStyleSelector, sight::service::controller);
 
     /// Constructor, initializes slots.
     MODULE_UI_QT_API SStyleSelector() noexcept;
@@ -82,7 +82,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from service::IService )
+    /** @name Service methods ( override from service::base )
      * @{
      */
 

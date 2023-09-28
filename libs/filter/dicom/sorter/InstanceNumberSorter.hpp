@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,18 +33,18 @@ namespace sight::filter::dicom::sorter
 /**
  * @brief Filter that uses the InstanceNumber tag to sort the instances.
  */
-class FILTER_DICOM_CLASS_API InstanceNumberSorter : public filter::dicom::sorter::TagValueSorter
+class FILTER_DICOM_CLASS_API InstanceNumberSorter : public sight::filter::dicom::sorter::TagValueSorter
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         InstanceNumberSorter,
-        filter::dicom::sorter::TagValueSorter,
-        filter::dicom::factory::New<InstanceNumberSorter>
+        sight::filter::dicom::sorter::TagValueSorter,
+        sight::filter::dicom::factory::make<InstanceNumberSorter>
     );
 
     /// Constructor
-    FILTER_DICOM_API InstanceNumberSorter(filter::dicom::IFilter::Key key);
+    FILTER_DICOM_API InstanceNumberSorter();
 
     /// Destructor
     FILTER_DICOM_API ~InstanceNumberSorter() override;

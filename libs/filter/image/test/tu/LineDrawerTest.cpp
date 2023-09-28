@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "LineDrawerTest.hpp"
 
-#include <core/Type.hpp>
+#include <core/type.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -58,13 +58,13 @@ void LineDrawerTest::circleTest()
         const data::Image::Size SIZE       = {{120, 120, 120}};
         const data::Image::Spacing SPACING = {{1., 1., 1.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::Type TYPE              = core::Type::INT16;
+        const core::type TYPE              = core::type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{20, 20, 20}};
         const double THICKNESS                                 = 0.0001;
         const std::int16_t VALUE                               = 152;
 
-        data::Image::sptr image = data::Image::New();
+        data::Image::sptr image = std::make_shared<data::Image>();
 
         utestData::generator::Image::generateImage(
             image,
@@ -102,14 +102,14 @@ void LineDrawerTest::circleTest()
         const data::Image::Size SIZE       = {{120, 120, 120}};
         const data::Image::Spacing SPACING = {{1., 1., 1.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::Type TYPE              = core::Type::INT16;
+        const core::type TYPE              = core::type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{20, 20, 20}};
 
         const double THICKNESS   = 5;
         const std::int16_t VALUE = 152;
 
-        data::Image::sptr image = data::Image::New();
+        data::Image::sptr image = std::make_shared<data::Image>();
 
         utestData::generator::Image::generateImage(
             image,
@@ -243,14 +243,14 @@ void LineDrawerTest::ellipseTest()
         const data::Image::Size SIZE       = {{120, 120, 120}};
         const data::Image::Spacing SPACING = {{1., 4., 1.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::Type TYPE              = core::Type::INT16;
+        const core::type TYPE              = core::type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{50, 50, 50}};
 
         const double THICKNESS   = 10;
         const std::int16_t VALUE = 152;
 
-        data::Image::sptr image = data::Image::New();
+        data::Image::sptr image = std::make_shared<data::Image>();
 
         utestData::generator::Image::generateImage(
             image,
@@ -351,14 +351,14 @@ void LineDrawerTest::borderTest()
         const data::Image::Size SIZE       = {{50, 50, 50}};
         const data::Image::Spacing SPACING = {{2., 4., 8.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::Type TYPE              = core::Type::INT16;
+        const core::type TYPE              = core::type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{45, 3, 20}};
 
         const double THICKNESS   = 15;
         const std::int16_t VALUE = 1952;
 
-        data::Image::sptr image = data::Image::New();
+        data::Image::sptr image = std::make_shared<data::Image>();
 
         utestData::generator::Image::generateImage(
             image,
@@ -428,7 +428,7 @@ void LineDrawerTest::roiTest()
         const data::Image::Size SIZE       = {{150, 150, 150}};
         const data::Image::Spacing SPACING = {{2., 4., 8.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::Type TYPE              = core::Type::INT16;
+        const core::type TYPE              = core::type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{45, 45, 40}};
 
@@ -437,8 +437,8 @@ void LineDrawerTest::roiTest()
         const double THICKNESS   = 15;
         const std::int16_t VALUE = 1952;
 
-        data::Image::sptr image    = data::Image::New();
-        data::Image::sptr roiImage = data::Image::New();
+        data::Image::sptr image    = std::make_shared<data::Image>();
+        data::Image::sptr roiImage = std::make_shared<data::Image>();
 
         utestData::generator::Image::generateImage(
             image,

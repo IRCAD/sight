@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #pragma once
 
+#include "ui/history/command.hpp"
 #include "ui/history/config.hpp"
-#include "ui/history/ICommand.hpp"
 
 #include <deque>
 #include <limits>
@@ -56,7 +56,7 @@ public:
      *
      * @return false if the enqueue failed.
      */
-    UI_HISTORY_API bool enqueue(ICommand::sptr cmd);
+    UI_HISTORY_API bool enqueue(command::sptr cmd);
 
     /**
      * @brief Execute the next command if any.
@@ -95,7 +95,7 @@ public:
 
 private:
 
-    typedef std::deque<ICommand::sptr> CommandHistoryType;
+    typedef std::deque<command::sptr> CommandHistoryType;
 
     /// Maximum amount of memory (in bytes) that can be used by the manager.
     std::size_t m_maxMemory;

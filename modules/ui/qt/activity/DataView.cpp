@@ -22,9 +22,9 @@
 
 #include "DataView.hpp"
 
-#include <activity/IActivityValidator.hpp>
-#include <activity/IObjectValidator.hpp>
-#include <activity/IValidator.hpp>
+#include <activity/validator/activity.hpp>
+#include <activity/validator/base.hpp>
+#include <activity/validator/object.hpp>
 
 #include <core/runtime/helper.hpp>
 
@@ -39,10 +39,10 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <io/base/service/ioTypes.hpp>
+#include <io/__/service/ioTypes.hpp>
 
+#include <service/base.hpp>
 #include <service/extension/Config.hpp>
-#include <service/IService.hpp>
 #include <service/op/Add.hpp>
 #include <service/registry.hpp>
 
@@ -160,8 +160,8 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
                 if(!uid.empty())
                 {
                     // insert the object if it is in the required type
-                    data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
-                    if(obj && obj->isA(requirement.type))
+                    data::Object::sptr obj = std::dynamic_pointer_cast<data::Object>(core::tools::id::get_object(uid));
+                    if(obj && obj->is_a(requirement.type))
                     {
                         // Insert the new object
                         tree->addTopLevelItem(itemToAdd);
@@ -294,8 +294,8 @@ void DataView::fillInformation(const ActivityInfo& _info)
 
         // If the type is a Series, we add a button to import the data from a SeriesSet,
         // we also improve the tree header by adding more informations.
-        data::Object::sptr newObject = data::factory::New(req.type);
-        if(newObject && data::Series::dynamicCast(newObject))
+        data::Object::sptr newObject = data::factory::make(req.type);
+        if(newObject && std::dynamic_pointer_cast<data::Series>(newObject))
         {
             auto* const buttonAddFromSDB = new QPushButton("Import");
             buttonLayout->addWidget(buttonAddFromSDB);
@@ -314,7 +314,7 @@ void DataView::fillInformation(const ActivityInfo& _info)
             << "Study description" << "Date" << "Time"
             << "Patient age";
 
-            if(data::ImageSeries::dynamicCast(newObject))
+            if(std::dynamic_pointer_cast<data::ImageSeries>(newObject))
             {
                 headers << "Body part examined" << "Patient position" << "Contrast agent" << "Acquisition time"
                 << "Contrast/bolus time";
@@ -385,7 +385,7 @@ void DataView::fillInformation(const data::Activity::sptr& _activity)
             {
                 if(req.container == "vector")
                 {
-                    data::Vector::sptr vector = data::Vector::dynamicCast(obj);
+                    data::Vector::sptr vector = std::dynamic_pointer_cast<data::Vector>(obj);
                     if(vector)
                     {
                         for(const auto& subObj : *vector)
@@ -400,7 +400,7 @@ void DataView::fillInformation(const data::Activity::sptr& _activity)
                 }
                 else // container == composite
                 {
-                    data::Composite::sptr composite = data::Composite::dynamicCast(obj);
+                    data::Composite::sptr composite = std::dynamic_pointer_cast<data::Composite>(obj);
                     if(composite)
                     {
                         for(const auto& subObj : *composite)
@@ -441,8 +441,8 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
             std::string uid =
                 item->data(int(ColumnCommunType::ID), DataView::s_UID_ROLE).toString().toStdString();
 
-            data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
-            if(obj && obj->isA(req.type))
+            data::Object::sptr obj = std::dynamic_pointer_cast<data::Object>(core::tools::id::get_object(uid));
+            if(obj && obj->is_a(req.type))
             {
                 object = obj;
             }
@@ -455,7 +455,7 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {
-                object = data::factory::New(req.type);
+                object = data::factory::make(req.type);
             }
             else
             {
@@ -481,7 +481,7 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
         {
             if(req.container == "vector")
             {
-                data::Vector::sptr vector = data::Vector::New();
+                data::Vector::sptr vector = std::make_shared<data::Vector>();
 
                 for(unsigned int i = 0 ; i < nbObj ; ++i)
                 {
@@ -489,8 +489,8 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
                     std::string uid           =
                         itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
 
-                    data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
-                    if(obj && obj->isA(req.type))
+                    data::Object::sptr obj = std::dynamic_pointer_cast<data::Object>(core::tools::id::get_object(uid));
+                    if(obj && obj->is_a(req.type))
                     {
                         vector->push_back(obj);
                     }
@@ -508,7 +508,7 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
             }
             else // container == composite
             {
-                data::Composite::sptr composite = data::Composite::New();
+                data::Composite::sptr composite = std::make_shared<data::Composite>();
 
                 for(unsigned int i = 0 ; i < nbObj ; ++i)
                 {
@@ -516,8 +516,8 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
                     std::string uid           =
                         itemData->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
 
-                    data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
-                    if(obj && obj->isA(req.type))
+                    data::Object::sptr obj = std::dynamic_pointer_cast<data::Object>(core::tools::id::get_object(uid));
+                    if(obj && obj->is_a(req.type))
                     {
                         std::string key = req.keys[i].key;
                         (*composite)[key] = obj;
@@ -540,11 +540,11 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
     if(object && !req.validator.empty())
     {
         /// Process object validator
-        auto validator     = sight::activity::validator::factory::New(req.validator);
-        auto dataValidator = sight::activity::IObjectValidator::dynamicCast(validator);
+        auto validator     = sight::activity::validator::factory::make(req.validator);
+        auto dataValidator = std::dynamic_pointer_cast<sight::activity::validator::object>(validator);
         SIGHT_ASSERT("Validator '" + req.validator + "' instantiation failed", dataValidator);
 
-        sight::activity::IValidator::ValidationType validation = dataValidator->validate(object);
+        sight::activity::validator::return_t validation = dataValidator->validate(object);
         if(!validation.first)
         {
             _errorMsg += "\n" + validation.second;
@@ -582,12 +582,12 @@ bool DataView::checkAndComputeData(const data::Activity::sptr& activity, std::st
     for(const std::string& validatotImpl : m_activityInfo.validatorsImpl)
     {
         /// Process activity validator
-        auto validator         = sight::activity::validator::factory::New(validatotImpl);
-        auto activityValidator = sight::activity::IActivityValidator::dynamicCast(validator);
+        auto validator         = sight::activity::validator::factory::make(validatotImpl);
+        auto activityValidator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
 
         SIGHT_ASSERT("Validator '" + validatotImpl + "' instantiation failed", activityValidator);
 
-        sight::activity::IValidator::ValidationType validation = activityValidator->validate(activity);
+        sight::activity::validator::return_t validation = activityValidator->validate(activity);
         if(!validation.first)
         {
             ok        = false;
@@ -651,7 +651,7 @@ void DataView::createNewObject()
         return;
     }
 
-    data::Object::sptr newObject = data::factory::New(type);
+    data::Object::sptr newObject = data::factory::make(type);
 
     m_importedObject.push_back(newObject);
     this->addObjectItem(index, newObject);
@@ -710,10 +710,13 @@ void DataView::importObjectFromSDB()
         return;
     }
 
-    data::Object::sptr newObject = data::factory::New(type);
+    data::Object::sptr newObject = data::factory::make(type);
     if(newObject)
     {
-        SIGHT_ERROR_IF("Imported object must inherit from 'Series'.", !data::Series::dynamicCast(newObject));
+        SIGHT_ERROR_IF(
+            "Imported object must inherit from 'Series'.",
+            !std::dynamic_pointer_cast<data::Series>(newObject)
+        );
 
         // We use the SeriesSet reader and then extract the object of this type.
         auto obj = sight::module::ui::qt::activity::DataView::readObject(
@@ -721,13 +724,13 @@ void DataView::importObjectFromSDB()
             m_sdbIoSelectorSrvConfig
         );
 
-        auto series_set = data::SeriesSet::dynamicCast(obj);
+        auto series_set = std::dynamic_pointer_cast<data::SeriesSet>(obj);
         if(series_set)
         {
             unsigned int nbImportedObj = 0;
             for(const data::Series::sptr& series : *series_set)
             {
-                if(series->isA(type))
+                if(series->is_a(type))
                 {
                     ++nbImportedObj;
                     m_importedObject.push_back(series);
@@ -758,22 +761,22 @@ data::Object::sptr DataView::readObject(
 )
 {
     data::Object::sptr obj;
-    service::IService::sptr ioSelectorSrv;
-    ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
+    service::base::sptr ioSelectorSrv;
+    ioSelectorSrv = service::add("sight::module::ui::io::SSelector");
 
     auto ioConfig = service::extension::Config::getDefault()->getServiceConfig(
         _ioSelectorSrvConfig,
-        "sight::module::ui::base::io::SSelector"
+        "sight::module::ui::io::SSelector"
     );
 
     ioConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
 
     try
     {
-        obj = data::factory::New(_classname);
+        obj = data::factory::make(_classname);
         ioSelectorSrv->setConfiguration(ioConfig);
         ioSelectorSrv->configure();
-        ioSelectorSrv->setInOut(obj, io::base::service::s_DATA_KEY);
+        ioSelectorSrv->setInOut(obj, io::service::s_DATA_KEY);
         ioSelectorSrv->start();
         ioSelectorSrv->update();
         ioSelectorSrv->stop();
@@ -804,14 +807,14 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
 
     auto* const newItem = new QTreeWidgetItem();
     newItem->setFlags(newItem->flags() & ~Qt::ItemIsDropEnabled);
-    newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->getID())));
+    newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->get_id())));
 
-    const data::Series::csptr series   = data::Series::dynamicCast(_obj);
-    const data::String::csptr strObj   = data::String::dynamicCast(_obj);
-    const data::Integer::csptr intObj  = data::Integer::dynamicCast(_obj);
-    const data::Float::csptr floatObj  = data::Float::dynamicCast(_obj);
-    const data::Boolean::csptr boolObj = data::Boolean::dynamicCast(_obj);
-    const data::Matrix4::csptr trf     = data::Matrix4::dynamicCast(_obj);
+    const auto series   = std::dynamic_pointer_cast<const data::Series>(_obj);
+    const auto strObj   = std::dynamic_pointer_cast<const data::String>(_obj);
+    const auto intObj   = std::dynamic_pointer_cast<const data::Integer>(_obj);
+    const auto floatObj = std::dynamic_pointer_cast<const data::Float>(_obj);
+    const auto boolObj  = std::dynamic_pointer_cast<const data::Boolean>(_obj);
+    const auto trf      = std::dynamic_pointer_cast<const data::Matrix4>(_obj);
     if(series)
     {
         newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatientName()));
@@ -862,7 +865,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
 
         newItem->setText(int(ColumnSeriesType::PATIENT_AGE), QString::fromStdString(patientAge));
 
-        const data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(_obj);
+        const auto imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(_obj);
         if(imageSeries)
         {
             newItem->setText(
@@ -985,7 +988,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
         std::string description = strObj->value();
         if(description.empty())
         {
-            description = _obj->getClassname();
+            description = _obj->get_classname();
         }
 
         newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(description));
@@ -1010,11 +1013,11 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
     }
     else
     {
-        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(_obj->getClassname()));
+        newItem->setText(int(ColumnObjectType::DESC), QString::fromStdString(_obj->get_classname()));
     }
 
     // set icon
-    auto iter = m_objectIcons.find(_obj->getClassname());
+    auto iter = m_objectIcons.find(_obj->get_classname());
     if(iter != m_objectIcons.end())
     {
         newItem->setIcon(int(ColumnCommunType::ID), QIcon(QString::fromStdString(iter->second)));
@@ -1036,12 +1039,12 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
         std::string uid = _item->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
         if(!uid.empty())
         {
-            data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
+            data::Object::sptr obj = std::dynamic_pointer_cast<data::Object>(core::tools::id::get_object(uid));
             if(obj)
             {
-                if(obj->isA("sight::data::String"))
+                if(obj->is_a("sight::data::String"))
                 {
-                    data::String::sptr str = data::String::dynamicCast(obj);
+                    data::String::sptr str = std::dynamic_pointer_cast<data::String>(obj);
                     bool isOkClicked       = false;
                     QString value          = QInputDialog::getText(
                         this,
@@ -1058,9 +1061,9 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                         _item->setText(int(ColumnObjectType::DESC), value);
                     }
                 }
-                else if(obj->isA("sight::data::Integer"))
+                else if(obj->is_a("sight::data::Integer"))
                 {
-                    data::Integer::sptr intObj = data::Integer::dynamicCast(obj);
+                    data::Integer::sptr intObj = std::dynamic_pointer_cast<data::Integer>(obj);
 
                     bool isOkClicked = false;
                     int value        = QInputDialog::getInt(
@@ -1079,9 +1082,9 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                         _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
-                else if(obj->isA("sight::data::Float"))
+                else if(obj->is_a("sight::data::Float"))
                 {
-                    data::Float::sptr floatObj = data::Float::dynamicCast(obj);
+                    data::Float::sptr floatObj = std::dynamic_pointer_cast<data::Float>(obj);
 
                     bool isOkClicked = false;
                     double value     = QInputDialog::getDouble(
@@ -1100,9 +1103,9 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                         _item->setText(int(ColumnObjectType::DESC), QString("%1").arg(value));
                     }
                 }
-                else if(obj->isA("sight::data::Boolean"))
+                else if(obj->is_a("sight::data::Boolean"))
                 {
-                    data::Boolean::sptr boolObj        = data::Boolean::dynamicCast(obj);
+                    data::Boolean::sptr boolObj        = std::dynamic_pointer_cast<data::Boolean>(obj);
                     QMessageBox::StandardButton button = QMessageBox::question(
                         this,
                         "Edition",
@@ -1111,9 +1114,9 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                     boolObj->value() = (button == QMessageBox::Yes);
                     _item->setText(int(ColumnObjectType::DESC), boolObj->value() ? "true" : "false");
                 }
-                else if(obj->isA("sight::data::Matrix4"))
+                else if(obj->is_a("sight::data::Matrix4"))
                 {
-                    data::Matrix4::sptr trf = data::Matrix4::dynamicCast(obj);
+                    data::Matrix4::sptr trf = std::dynamic_pointer_cast<data::Matrix4>(obj);
                     std::stringstream str;
                     str << *trf;
 

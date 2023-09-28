@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,21 +35,18 @@ namespace sight::ui::dicom::splitter
  * @brief Filter that remove instances if a tag has a certain value.
  */
 class UI_DICOM_CLASS_API TagValueInstanceRemoveConfigurableSplitter :
-    public filter::dicom::splitter::TagValueInstanceRemoveSplitter
+    public sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         TagValueInstanceRemoveConfigurableSplitter,
-        filter::dicom::splitter::TagValueInstanceRemoveSplitter,
-        filter::dicom::factory::New<TagValueInstanceRemoveConfigurableSplitter>
+        sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter,
+        sight::filter::dicom::factory::make<TagValueInstanceRemoveConfigurableSplitter>
     );
 
-    /// Constructor
-    UI_DICOM_API TagValueInstanceRemoveConfigurableSplitter(filter::dicom::IFilter::Key key);
-
     /// Destructor
-    UI_DICOM_API ~TagValueInstanceRemoveConfigurableSplitter() override;
+    UI_DICOM_API ~TagValueInstanceRemoveConfigurableSplitter() override = default;
 
     /// Return the name of the filter
     UI_DICOM_API std::string getName() const override;

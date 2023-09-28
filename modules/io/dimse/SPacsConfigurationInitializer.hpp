@@ -26,7 +26,7 @@
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 #include <filesystem>
 
@@ -67,12 +67,12 @@ namespace sight::module::io::dimse
  * - \b retrieveMethod (mandatory, GET/MOVE): Retrieve method protocol.
  * - \b preferenceKey (mandatory, string): Key used to store all these values in preferences.
  */
-class MODULE_IO_DIMSE_CLASS_API SPacsConfigurationInitializer : public service::IController
+class MODULE_IO_DIMSE_CLASS_API SPacsConfigurationInitializer : public service::controller
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPacsConfigurationInitializer, service::IController);
+    SIGHT_DECLARE_SERVICE(SPacsConfigurationInitializer, service::controller);
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SPacsConfigurationInitializer() noexcept;
@@ -92,10 +92,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect sight::io::dimse::data::PacsConfiguration::s_MODIFIED_SIG of s_CONFIG_INOUT to
-     *::module::io::dimse::SPacsConfigurationInitializer::IService::slots::s_UPDATE.
+     * Connect sight::io::dimse::data::PacsConfiguration::MODIFIED_SIG of s_CONFIG_INOUT to
+     *::module::io::dimse::SPacsConfigurationInitializer::service::slots::UPDATE.
      */
-    MODULE_IO_DIMSE_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_IO_DIMSE_API service::connections_t getAutoConnections() const final;
 
     /// Stores the PACS configuration into preferences.
     MODULE_IO_DIMSE_API void updating() override;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace sight::io::dicom::reader::iod
 ComprehensiveSRIOD::ComprehensiveSRIOD(
     const data::DicomSeries::csptr& dicomSeries,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -57,16 +57,16 @@ ComprehensiveSRIOD::~ComprehensiveSRIOD()
 void ComprehensiveSRIOD::read(data::Series::sptr series)
 {
     // Retrieve image series
-    data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
+    data::ImageSeries::sptr imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
     SPTR(gdcm::Reader) reader = std::make_shared<gdcm::Reader>();
 
     // Read the first file
-    const auto& dicomContainer                               = m_dicomSeries->getDicomContainer();
-    const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
-    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const auto& dicomContainer                                 = m_dicomSeries->getDicomContainer();
+    const core::memory::buffer_object::sptr bufferObj          = dicomContainer.begin()->second;
+    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
     const bool success = reader->Read();
@@ -74,7 +74,7 @@ void ComprehensiveSRIOD::read(data::Series::sptr series)
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed(
             "Unable to read the DICOM instance \""
-            + bufferObj->getStreamInfo().fsFile.string()
+            + bufferObj->get_stream_info().fs_file.string()
             + "\" using the GDCM Image Reader."
         ),
         !success

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "geometry/vision/detail/ReprojectionError.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <geometry/eigen/helper.hpp>
 
@@ -237,9 +237,9 @@ void calibratePointingTool(
     Eigen::Vector4d vectorSum;
     vectorSum.fill(0);
 
-    for(std::size_t i = 0 ; i < _matricesVector->size() ; ++i)
+    for(const auto& i : *_matricesVector)
     {
-        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(_matricesVector->at(i));
+        data::Matrix4::csptr m1 = std::dynamic_pointer_cast<data::Matrix4>(i);
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
         geometry::eigen::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
@@ -266,9 +266,9 @@ void calibratePointingTool(
 
     Eigen::Vector3d translation;
     translation.fill(0);
-    for(std::size_t i = 0 ; i < _matricesVector->size() ; ++i)
+    for(const auto& i : *_matricesVector)
     {
-        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(_matricesVector->at(i));
+        data::Matrix4::csptr m1 = std::dynamic_pointer_cast<data::Matrix4>(i);
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
         const geometry::eigen::helper::EigenMatrix pointMatrix = geometry::eigen::helper::toEigen(m1);
         geometry::eigen::helper::EigenMatrix centerMatrix(pointMatrix);
@@ -352,11 +352,11 @@ data::PointList::sptr detectChessboard(
         cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
         cv::cornerSubPix(grayImg, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
 
-        pointlist = data::PointList::New();
+        pointlist = std::make_shared<data::PointList>();
         data::PointList::PointListContainer& points = pointlist->getPoints();
         points.reserve(corners.size());
 
-        const auto cv2SightPt = [](const cv::Point2f& p){return data::Point::New(p.x, p.y);};
+        const auto cv2SightPt = [](const cv::Point2f& p){return std::make_shared<data::Point>(p.x, p.y);};
         std::ranges::transform(corners, std::back_inserter(points), cv2SightPt);
     }
 

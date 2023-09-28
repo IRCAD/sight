@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -50,11 +50,11 @@ namespace sight::module::filter::image
  * - \b result [sight::data::Image]: substract image.
  */
 
-class MODULE_FILTER_IMAGE_CLASS_API SImagesSubstract final : public service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SImagesSubstract final : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SImagesSubstract, sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SImagesSubstract, sight::service::filter);
 
     MODULE_FILTER_IMAGE_API SImagesSubstract()           = default;
     MODULE_FILTER_IMAGE_API ~SImagesSubstract() override = default;

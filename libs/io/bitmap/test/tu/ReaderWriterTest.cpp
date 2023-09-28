@@ -23,7 +23,7 @@
 
 #include "helper.hxx"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <io/bitmap/Reader.hpp>
 #include <io/bitmap/Writer.hpp>
@@ -36,38 +36,38 @@ namespace sight::io::bitmap::ut
 
 //------------------------------------------------------------------------------
 
-template<data::Image::PixelFormat F, core::Type::Type_t T, Backend B>
+template<data::Image::PixelFormat F, core::type::type_t T, Backend B>
 inline static void testBackend(bool write_must_fail = false)
 {
     // Create a temporary directory
-    core::os::TempDir tmp_dir;
+    core::os::temp_dir tmp_dir;
 
     // Create the synthetic image
     const auto& expected_image = getSyntheticImage(0, T, F);
 
     // Create the writer
-    auto writer = Writer::New();
+    auto writer = std::make_shared<Writer>();
     CPPUNIT_ASSERT_NO_THROW_MESSAGE(backendToString(B).first, writer->setObject(expected_image));
 
     // Create the reader
-    auto actual_image = data::Image::New();
-    auto reader       = Reader::New();
+    auto actual_image = std::make_shared<data::Image>();
+    auto reader       = std::make_shared<Reader>();
     reader->setObject(actual_image);
 
     // Test write modes
     for(const auto& mode : {Writer::Mode::BEST, Writer::Mode::FAST})
     {
-        constexpr core::Type type = T;
+        constexpr core::type type = T;
 
         const auto& file_path = tmp_dir / (
             pixelFormatToString(F) + "_" + type.name() + "_" + fileSuffix(B, mode)
         );
 
-        CPPUNIT_ASSERT_NO_THROW_MESSAGE(backendToString(B).first, writer->setFile(file_path));
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE(backendToString(B).first, writer->set_file(file_path));
 
         if(write_must_fail)
         {
-            CPPUNIT_ASSERT_THROW_MESSAGE(backendToString(B).first, writer->write(B, mode), core::Exception);
+            CPPUNIT_ASSERT_THROW_MESSAGE(backendToString(B).first, writer->write(B, mode), core::exception);
 
             // Do not try to read the image
             continue;
@@ -76,7 +76,7 @@ inline static void testBackend(bool write_must_fail = false)
         CPPUNIT_ASSERT_NO_THROW_MESSAGE(backendToString(B).first, writer->write(B, mode));
 
         // Read back the image
-        reader->setFile(file_path);
+        reader->set_file(file_path);
         CPPUNIT_ASSERT_NO_THROW(reader->read(B));
 
         // Check the image
@@ -91,8 +91,8 @@ inline static void testBackend(bool write_must_fail = false)
         else
         {
             // Compare at least sizes...
-            const auto& expected_size = expected_image->getSize();
-            const auto& actual_size   = actual_image->getSize();
+            const auto& expected_size = expected_image->size();
+            const auto& actual_size   = actual_image->size();
             CPPUNIT_ASSERT_EQUAL_MESSAGE(backendToString(B).first, expected_size[0], actual_size[0]);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(backendToString(B).first, expected_size[1], actual_size[1]);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(backendToString(B).first, expected_size[2], actual_size[2]);
@@ -133,19 +133,19 @@ void ReaderWriterTest::tearDown()
 
 void ReaderWriterTest::grayscaleUINT8Test()
 {
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT8, Backend::LIBJPEG>();
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT8, Backend::LIBPNG>();
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT8, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT8, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::LIBJPEG>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::LIBPNG>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT8, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT8, Backend::NVJPEG2K>();
+        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT8, Backend::NVJPEG2K>();
     }
 }
 
@@ -153,19 +153,19 @@ void ReaderWriterTest::grayscaleUINT8Test()
 
 void ReaderWriterTest::grayscaleUINT16Test()
 {
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT16, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT16, Backend::LIBPNG>();
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT16, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT16, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::LIBPNG>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT16, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::UINT16, Backend::NVJPEG2K>();
+        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::UINT16, Backend::NVJPEG2K>();
     }
 }
 
@@ -173,19 +173,19 @@ void ReaderWriterTest::grayscaleUINT16Test()
 
 void ReaderWriterTest::grayscaleINT8Test()
 {
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT8, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT8, Backend::LIBPNG>(true);
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT8, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT8, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::LIBPNG>(true);
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT8, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT8, Backend::NVJPEG2K>(true);
+        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT8, Backend::NVJPEG2K>(true);
     }
 }
 
@@ -193,19 +193,19 @@ void ReaderWriterTest::grayscaleINT8Test()
 
 void ReaderWriterTest::grayscaleINT16Test()
 {
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT16, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT16, Backend::LIBPNG>(true);
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT16, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT16, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::LIBPNG>(true);
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT16, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::Type::Type_t::INT16, Backend::NVJPEG2K>(true);
+        testBackend<data::Image::PixelFormat::GRAY_SCALE, core::type::type_t::INT16, Backend::NVJPEG2K>(true);
     }
 }
 
@@ -213,19 +213,19 @@ void ReaderWriterTest::grayscaleINT16Test()
 
 void ReaderWriterTest::rgbUINT8Test()
 {
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT8, Backend::LIBJPEG>();
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT8, Backend::LIBPNG>();
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT8, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT8, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::LIBJPEG>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::LIBPNG>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT8, Backend::NVJPEG>();
+        testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::NVJPEG>();
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT8, Backend::NVJPEG2K>();
+        testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT8, Backend::NVJPEG2K>();
     }
 }
 
@@ -233,19 +233,19 @@ void ReaderWriterTest::rgbUINT8Test()
 
 void ReaderWriterTest::rgbUINT16Test()
 {
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT16, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT16, Backend::LIBPNG>();
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT16, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT16, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::LIBPNG>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT16, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::UINT16, Backend::NVJPEG2K>();
+        testBackend<data::Image::PixelFormat::RGB, core::type::type_t::UINT16, Backend::NVJPEG2K>();
     }
 }
 
@@ -253,19 +253,19 @@ void ReaderWriterTest::rgbUINT16Test()
 
 void ReaderWriterTest::rgbINT8Test()
 {
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT8, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT8, Backend::LIBPNG>(true);
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT8, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT8, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT8, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT8, Backend::LIBPNG>(true);
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT8, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT8, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT8, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT8, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT8, Backend::NVJPEG2K>(true);
+        testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT8, Backend::NVJPEG2K>(true);
     }
 }
 
@@ -273,19 +273,19 @@ void ReaderWriterTest::rgbINT8Test()
 
 void ReaderWriterTest::rgbINT16Test()
 {
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT16, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT16, Backend::LIBPNG>(true);
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT16, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT16, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT16, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT16, Backend::LIBPNG>(true);
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT16, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT16, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT16, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT16, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::RGB, core::Type::Type_t::INT16, Backend::NVJPEG2K>(true);
+        testBackend<data::Image::PixelFormat::RGB, core::type::type_t::INT16, Backend::NVJPEG2K>(true);
     }
 }
 
@@ -293,19 +293,19 @@ void ReaderWriterTest::rgbINT16Test()
 
 void ReaderWriterTest::rgbaUINT8Test()
 {
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT8, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT8, Backend::LIBPNG>();
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT8, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT8, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::LIBPNG>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT8, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT8, Backend::NVJPEG2K>();
+        testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT8, Backend::NVJPEG2K>();
     }
 }
 
@@ -313,19 +313,19 @@ void ReaderWriterTest::rgbaUINT8Test()
 
 void ReaderWriterTest::rgbaUINT16Test()
 {
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT16, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT16, Backend::LIBPNG>();
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT16, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT16, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::LIBPNG>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT16, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::UINT16, Backend::NVJPEG2K>(true);
+        testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::UINT16, Backend::NVJPEG2K>(true);
     }
 }
 
@@ -333,19 +333,19 @@ void ReaderWriterTest::rgbaUINT16Test()
 
 void ReaderWriterTest::rgbaINT8Test()
 {
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT8, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT8, Backend::LIBPNG>(true);
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT8, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT8, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::LIBPNG>(true);
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT8, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT8, Backend::NVJPEG2K>(true);
+        testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT8, Backend::NVJPEG2K>(true);
     }
 }
 
@@ -353,19 +353,19 @@ void ReaderWriterTest::rgbaINT8Test()
 
 void ReaderWriterTest::rgbaINT16Test()
 {
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT16, Backend::LIBJPEG>(true);
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT16, Backend::LIBPNG>(true);
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT16, Backend::LIBTIFF>();
-    testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT16, Backend::OPENJPEG>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::LIBJPEG>(true);
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::LIBPNG>(true);
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::LIBTIFF>();
+    testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::OPENJPEG>();
 
     if(io::bitmap::nvJPEG())
     {
-        testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT16, Backend::NVJPEG>(true);
+        testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::NVJPEG>(true);
     }
 
     if(io::bitmap::nvJPEG2K())
     {
-        testBackend<data::Image::PixelFormat::RGBA, core::Type::Type_t::INT16, Backend::NVJPEG2K>(true);
+        testBackend<data::Image::PixelFormat::RGBA, core::type::type_t::INT16, Backend::NVJPEG2K>(true);
     }
 }
 

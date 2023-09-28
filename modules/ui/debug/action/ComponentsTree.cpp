@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,8 @@
 #include "modules/ui/debug/action/ComponentsTree.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/Extension.hpp>
-#include <core/runtime/Module.hpp>
+#include <core/runtime/extension.hpp>
+#include <core/runtime/module.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <service/macros.hpp>
@@ -52,10 +52,10 @@ void ComponentsTree::updating()
     m_treeContainer->clearSelection();
     m_treeContainer->clear();
 
-    for(const auto& module : core::runtime::getModules())
+    for(const auto& module : core::runtime::modules())
     {
-        const std::string moduleName = module->getIdentifier();
-        const bool isModuleEnabled   = module->isEnabled();
+        const std::string moduleName = module->identifier();
+        const bool isModuleEnabled   = module->enabled();
         auto* const moduleItem       = new QTreeWidgetItem();
         if(!isModuleEnabled)
         {
@@ -70,10 +70,10 @@ void ComponentsTree::updating()
         extensionsItem->setText(0, QObject::tr("Extensions"));
         moduleItem->addChild(extensionsItem);
 
-        for(const auto& extension : module->getExtensions())
+        for(const auto& extension : module->extensions())
         {
-            const std::string point       = extension->getPoint();
-            const bool isExtensionEnabled = extension->isEnabled();
+            const std::string point       = extension->point();
+            const bool isExtensionEnabled = extension->enabled();
             auto* const item              = new QTreeWidgetItem();
             if(!isExtensionEnabled)
             {
@@ -92,14 +92,14 @@ void ComponentsTree::updating()
 
 void ComponentsTree::configuring()
 {
-    this->sight::ui::base::IAction::initialize();
+    this->sight::ui::action::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void ComponentsTree::starting()
 {
-    this->sight::ui::base::IAction::actionServiceStarting();
+    this->sight::ui::action::actionServiceStarting();
 
     QWidget* parent = qApp->activeWindow();
     m_dialog = new QDialog(parent);
@@ -120,7 +120,7 @@ void ComponentsTree::stopping()
     delete m_treeContainer;
     delete m_dialog;
 
-    this->sight::ui::base::IAction::actionServiceStopping();
+    this->sight::ui::action::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

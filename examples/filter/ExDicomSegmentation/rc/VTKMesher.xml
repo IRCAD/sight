@@ -19,9 +19,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" minWidth="300" />
@@ -36,7 +36,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="VTK Mesher" icon="sight::module::ui::flaticons/YellowMenu.svg" />
@@ -49,9 +49,9 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="sight::module::ui::base::SView">
+        <service uid="containerView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -63,9 +63,9 @@
             </registry>
         </service>
 
-        <service uid="parametersView" type="sight::module::ui::base::SView">
+        <service uid="parametersView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="50" />
                     <view proportion="1" />
@@ -79,9 +79,9 @@
             </registry>
         </service>
 
-        <service uid="materialView" type="sight::module::ui::base::SView">
+        <service uid="materialView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::ToolboxLayoutManager">
+                <layout type="sight::ui::layout::toolbox">
                     <orientation value="vertical" />
                     <view caption="Organs" expanded="true" />
                     <view caption="Material" expanded="true" />
@@ -103,7 +103,7 @@
             <config percentReduction="0" threshold="255" />
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="true">
+        <service uid="exportAct" type="sight::module::ui::series::SExport" autoConnect="true">
             <inout key="container" uid="${seriesSet}" />
             <inout key="data" uid="modelSeries" />
         </service>

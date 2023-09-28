@@ -22,7 +22,7 @@
 
 #include "viz/scene3d/registry/detail.hpp"
 
-#include <core/LazyInstantiator.hpp>
+#include <core/lazy_instantiator.hpp>
 
 namespace sight::viz::scene3d::registry
 {
@@ -31,49 +31,49 @@ struct FwRenderOgreRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    using InstantiatorType = core::LazyInstantiator<Type, FwRenderOgreRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using InstantiatorType = core::lazy_instantiator<Type, FwRenderOgreRegistryInstantiatorTag>;
+    return InstantiatorType::get_instance();
 }
 
 struct InteractorOffscreenMgrRegistryInstantiatorTag {};
 
 SPTR(OffscreenMgrType) getOffscreenMgr()
 {
-    using InstantiatorType = core::LazyInstantiator<OffscreenMgrType,
-                                                    InteractorOffscreenMgrRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using InstantiatorType = core::lazy_instantiator<OffscreenMgrType,
+                                                     InteractorOffscreenMgrRegistryInstantiatorTag>;
+    return InstantiatorType::get_instance();
 }
 
 struct InteractorRegistryInstantiatorTag {};
 
 SPTR(InteractorFactoryType) getInteractorRegistry()
 {
-    using InstantiatorType = core::LazyInstantiator<InteractorFactoryType, InteractorRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using InstantiatorType = core::lazy_instantiator<InteractorFactoryType, InteractorRegistryInstantiatorTag>;
+    return InstantiatorType::get_instance();
 }
 
 struct CameraRegistryInstantiatorTag {};
 
 SPTR(CameraFactoryType) getCameraRegistry()
 {
-    using InstantiatorType = core::LazyInstantiator<CameraFactoryType, CameraRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using InstantiatorType = core::lazy_instantiator<CameraFactoryType, CameraRegistryInstantiatorTag>;
+    return InstantiatorType::get_instance();
 }
 
 struct LightRegistryInstantiatorTag {};
 
 SPTR(LightFactoryType) getLightRegistry()
 {
-    using InstantiatorType = core::LazyInstantiator<LightFactoryType, LightRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using InstantiatorType = core::lazy_instantiator<LightFactoryType, LightRegistryInstantiatorTag>;
+    return InstantiatorType::get_instance();
 }
 
 struct TextRegistryInstantiatorTag {};
 
 SPTR(TextFactoryType) getTextRegistry()
 {
-    using InstantiatorType = core::LazyInstantiator<TextFactoryType, TextRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using InstantiatorType = core::lazy_instantiator<TextFactoryType, TextRegistryInstantiatorTag>;
+    return InstantiatorType::get_instance();
 }
 
 } // namespace sight::viz::scene3d::registry

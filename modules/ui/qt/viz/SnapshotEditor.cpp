@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,15 +23,15 @@
 #include "modules/ui/qt/viz/SnapshotEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 #include <core/runtime/path.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 #include <QIcon>
@@ -44,13 +44,13 @@ namespace sight::module::ui::qt::viz
 
 //------------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
+const core::com::signals::key_t SnapshotEditor::SNAPPED_SIG = "snapped";
 
 //------------------------------------------------------------------------------
 
 SnapshotEditor::SnapshotEditor() noexcept
 {
-    m_sigSnapped = newSignal<SnappedSignalType>(s_SNAPPED_SIG);
+    m_sigSnapped = new_signal<SnappedSignalType>(SNAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -64,9 +64,12 @@ void SnapshotEditor::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
-    std::filesystem::path path = core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "camera-photo.png");
+    std::filesystem::path path = core::runtime::get_module_resource_file_path(
+        "sight::module::ui::qt",
+        "camera-photo.png"
+    );
     QIcon icon(QString::fromStdString(path.string()));
     m_snapButton = new QPushButton(icon, "");
     m_snapButton->setToolTip(QObject::tr("Snapshot"));
@@ -110,7 +113,7 @@ void SnapshotEditor::info(std::ostream& /*_sstream*/)
 
 void SnapshotEditor::onSnapButton()
 {
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     QWidget* container = qtContainer->getQtContainer();
@@ -121,17 +124,17 @@ void SnapshotEditor::onSnapButton()
 
         if(!filename.empty())
         {
-            m_sigSnapped->asyncEmit(filename);
+            m_sigSnapped->async_emit(filename);
         }
     }
     else
     {
         std::string msgInfo("It is not possible to snapshot the negato view. This view is not shown on screen.");
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Negato view snapshot");
         messageBox.setMessage(msgInfo);
-        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(sight::ui::dialog::message::WARNING);
+        messageBox.addButton(sight::ui::dialog::message::OK);
         messageBox.show();
     }
 }
@@ -140,10 +143,10 @@ void SnapshotEditor::onSnapButton()
 
 std::string SnapshotEditor::requestFileName()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
     std::string fileName;
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle("Save snapshot as");
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("Image file", "*.jpg *.jpeg *.bmp *.png *.tiff");
@@ -152,13 +155,13 @@ std::string SnapshotEditor::requestFileName()
     dialogFile.addFilter("png", "*.png");
     dialogFile.addFilter("tiff", "*.tiff");
     dialogFile.addFilter("all", "*.*");
-    dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(sight::ui::dialog::location::WRITE);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        fileName = result->getFile().string();
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        fileName = result->get_file().string();
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
 

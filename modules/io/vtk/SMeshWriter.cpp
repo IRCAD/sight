@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,12 @@
 #include "modules/io/vtk/SMeshWriter.hpp"
 
 #include <core/base.hpp>
-#include <core/com/HasSignals.hpp>
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/jobs/IJob.hpp>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/has_signals.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/jobs/base.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/Mesh.hpp>
 
@@ -40,37 +40,37 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::vtk
 {
 
-static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SMeshWriter::SMeshWriter() noexcept
 {
-    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SMeshWriter::getIOPathType() const
+sight::io::service::IOPathType SMeshWriter::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMeshWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to save Mesh" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("OBJ File(.obj)", "*.obj");
@@ -78,14 +78,14 @@ void SMeshWriter::openLocationDialog()
     dialogFile.addFilter("STL File(.stl)", "*.stl");
     dialogFile.addFilter("VTK Legacy File(.vtk)", "*.vtk");
     dialogFile.addFilter("VTK Polydata File(.vtp)", "*.vtp");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::dialog::location::WRITE);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        this->setFile(result->getFile());
+        this->set_file(result->get_file());
         m_selectedExtension = dialogFile.getSelectedExtensions().front();
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -110,7 +110,7 @@ void SMeshWriter::stopping()
 
 void SMeshWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -125,8 +125,8 @@ void SMeshWriter::info(std::ostream& _sstream)
 template<typename WRITER>
 typename WRITER::sptr configureWriter(const std::filesystem::path& _file)
 {
-    typename WRITER::sptr writer = WRITER::New();
-    writer->setFile(_file);
+    typename WRITER::sptr writer = std::make_shared<WRITER>();
+    writer->set_file(_file);
     return writer;
 }
 
@@ -146,15 +146,15 @@ void SMeshWriter::updating()
             "The object is not a '"
             + data::Mesh::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             mesh
         );
 
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
+        sight::ui::cursor cursor;
+        cursor.setCursor(ui::cursor_base::BUSY);
 
-        std::filesystem::path fileToWrite   = this->getFile();
+        std::filesystem::path fileToWrite   = this->get_file();
         const std::string providedExtension = fileToWrite.extension().string();
         std::string extensionToUse;
 
@@ -170,7 +170,7 @@ void SMeshWriter::updating()
             extensionToUse = providedExtension;
         }
 
-        sight::io::base::writer::IObjectWriter::sptr meshWriter;
+        sight::io::writer::IObjectWriter::sptr meshWriter;
 
         if(extensionToUse == ".vtk")
         {
@@ -195,7 +195,7 @@ void SMeshWriter::updating()
         else
         {
             SIGHT_THROW_EXCEPTION(
-                core::tools::Failed(
+                core::tools::failed(
                     "Extension '" + fileToWrite.extension().string()
                     + "' is not managed by module::io::vtk::SMeshWriter."
                 )
@@ -211,16 +211,16 @@ void SMeshWriter::updating()
             meshWriter->write();
             m_writeFailed = false;
         }
-        catch(core::tools::Failed& e)
+        catch(core::tools::failed& e)
         {
             m_writeFailed = true;
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
 
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Warning",
                 ss.str(),
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
 
             // Raise exception  for superior level
@@ -232,19 +232,19 @@ void SMeshWriter::updating()
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();
 
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Warning",
                 ss.str(),
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
         catch(...)
         {
             m_writeFailed = true;
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Warning",
                 "Warning during saving",
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
 

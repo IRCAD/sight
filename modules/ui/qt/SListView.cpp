@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,12 @@
 #include "SListView.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QEvent>
 #include <QHBoxLayout>
@@ -37,23 +37,23 @@
 namespace sight::module::ui::qt
 {
 
-const core::com::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG          = "itemAdded";
-const core::com::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";
-const core::com::Signals::SignalKeyType SListView::s_ITEM_DOUBLE_CLICKED_SIG = "itemDoubleClicked";
+const core::com::signals::key_t SListView::ITEM_ADDED_SIG          = "itemAdded";
+const core::com::signals::key_t SListView::ITEM_REMOVED_SIG        = "itemRemoved";
+const core::com::signals::key_t SListView::ITEM_DOUBLE_CLICKED_SIG = "itemDoubleClicked";
 
-const core::com::Slots::SlotKeyType SListView::s_INSERT_ITEM_SLOT = "insertItem";
-const core::com::Slots::SlotKeyType SListView::s_REMOVE_ITEM_SLOT = "removeItem";
+const core::com::slots::key_t SListView::INSERT_ITEM_SLOT = "insertItem";
+const core::com::slots::key_t SListView::REMOVE_ITEM_SLOT = "removeItem";
 
 //------------------------------------------------------------------------------
 
 SListView::SListView() noexcept
 {
-    newSignal<ItemAddedSignalType>(s_ITEM_ADDED_SIG);
-    newSignal<ItemRemovedSignalType>(s_ITEM_REMOVED_SIG);
-    newSignal<ItemDoubleClickedSignalType>(s_ITEM_DOUBLE_CLICKED_SIG);
+    new_signal<ItemAddedSignalType>(ITEM_ADDED_SIG);
+    new_signal<ItemRemovedSignalType>(ITEM_REMOVED_SIG);
+    new_signal<ItemDoubleClickedSignalType>(ITEM_DOUBLE_CLICKED_SIG);
 
-    newSlot(s_INSERT_ITEM_SLOT, &SListView::insertItem, this);
-    newSlot(s_REMOVE_ITEM_SLOT, &SListView::removeItem, this);
+    new_slot(INSERT_ITEM_SLOT, &SListView::insertItem, this);
+    new_slot(REMOVE_ITEM_SLOT, &SListView::removeItem, this);
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void SListView::configuring()
 void SListView::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     layout->setObjectName("SListViewLayout");
@@ -133,7 +133,7 @@ void SListView::insertItem(int index, std::string value)
     m_listWidget->insertItem(index, newItem);
 
     // notify
-    this->signal<ItemAddedSignalType>(s_ITEM_ADDED_SIG)->asyncEmit(index);
+    this->signal<ItemAddedSignalType>(ITEM_ADDED_SIG)->async_emit(index);
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ void SListView::removeItem(int index)
     delete m_listWidget->takeItem(index);
 
     // notify
-    this->signal<ItemRemovedSignalType>(s_ITEM_REMOVED_SIG)->asyncEmit(index);
+    this->signal<ItemRemovedSignalType>(ITEM_REMOVED_SIG)->async_emit(index);
 }
 
 //------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ void SListView::removeItem(int index)
 void SListView::onItemDoubleClicked(QListWidgetItem* item)
 {
     const int index = m_listWidget->row(item);
-    this->signal<ItemDoubleClickedSignalType>(s_ITEM_DOUBLE_CLICKED_SIG)->asyncEmit(index);
+    this->signal<ItemDoubleClickedSignalType>(ITEM_DOUBLE_CLICKED_SIG)->async_emit(index);
 }
 
 //------------------------------------------------------------------------------

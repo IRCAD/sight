@@ -19,7 +19,7 @@ target_link_libraries(
            ITKIONIFTI
 )
 
-target_link_libraries(io_itk PUBLIC core data io_base)
+target_link_libraries(io_itk PUBLIC core data io)
 
 # This is a hack to allow both Clang and gcc support
 # @todo: remove this when ITK >= 5.3 is released

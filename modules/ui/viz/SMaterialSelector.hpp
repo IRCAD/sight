@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Reconstruction.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QComboBox>
 #include <QLabel>
@@ -60,13 +60,13 @@ namespace sight::module::ui::viz
  * @brief
  */
 class MODULE_UI_VIZ_CLASS_API SMaterialSelector : public QObject,
-                                                  public sight::ui::base::IEditor
+                                                  public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SMaterialSelector, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SMaterialSelector, sight::ui::editor);
 
     /// Constructor.
     MODULE_UI_VIZ_API SMaterialSelector() noexcept;
@@ -78,8 +78,8 @@ public:
      * @name Signals API
      * @{
      */
-    MODULE_UI_VIZ_API static const core::com::Signals::SignalKeyType s_SELECTED_SIG;
-    typedef core::com::Signal<void (std::string)> SelectedSignalType;
+    MODULE_UI_VIZ_API static const core::com::signals::key_t SELECTED_SIG;
+    typedef core::com::signal<void (std::string)> SelectedSignalType;
 /** @} */
 
 protected:

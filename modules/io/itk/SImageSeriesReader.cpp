@@ -23,27 +23,27 @@
 
 #include "modules/io/itk/SImageReader.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/dateAndTime.hpp>
-#include <core/tools/Failed.hpp>
-#include <core/tools/Os.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/com/signal.hxx>
+#include <core/jobs/base.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/date_and_time.hpp>
+#include <core/tools/failed.hpp>
+#include <core/tools/os.hpp>
+#include <core/tools/uuid.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/service/ioTypes.hpp>
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/ioTypes.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -59,31 +59,31 @@ SImageSeriesReader::SImageSeriesReader() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SImageSeriesReader::getIOPathType() const
+sight::io::service::IOPathType SImageSeriesReader::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesReader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(ui::dialog::location::READ);
+    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
-        this->setFile(result->getFile());
+        this->set_file(result->get_file());
     }
     else
     {
@@ -107,7 +107,7 @@ void SImageSeriesReader::stopping()
 
 void SImageSeriesReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -121,10 +121,10 @@ void SImageSeriesReader::info(std::ostream& _sstream)
 
 void initSeries(data::Series::sptr series)
 {
-    const std::string instanceUID      = core::tools::UUID::generateUUID();
+    const std::string instanceUID      = core::tools::UUID::generate();
     const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
-    const std::string date             = core::tools::getDate(now);
-    const std::string time             = core::tools::getTime(now);
+    const std::string date             = core::tools::get_date(now);
+    const std::string time             = core::tools::get_time(now);
 
     series->setModality("OT");
     series->setSeriesDate(date);
@@ -133,7 +133,7 @@ void initSeries(data::Series::sptr series)
     std::string physicians = series->getPerformingPhysicianName();
     if(physicians.empty())
     {
-        physicians = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
+        physicians = core::tools::os::get_env("USERNAME", core::tools::os::get_env("LOGNAME", "Unknown"));
     }
 
     series->setPerformingPhysicianName(physicians);
@@ -156,28 +156,28 @@ void SImageSeriesReader::updating()
             "The object is not a '"
             + data::ImageSeries::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             imageSeries
         );
 
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
+        sight::ui::cursor cursor;
+        cursor.setCursor(ui::cursor_base::BUSY);
 
         try
         {
-            if(SImageReader::loadImage(this->getFile(), imageSeries))
+            if(SImageReader::loadImage(this->get_file(), imageSeries))
             {
                 initSeries(imageSeries);
 
-                auto sig = imageSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                auto sig = imageSeries->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
                 {
-                    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                    sig->asyncEmit();
+                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                    sig->async_emit();
                 }
             }
         }
-        catch(core::tools::Failed& e)
+        catch(core::tools::failed& e)
         {
             cursor.setDefaultCursor();
             SIGHT_THROW_EXCEPTION(e);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "STransformDepthMap2mm.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Image.hpp>
 
@@ -73,18 +73,18 @@ void STransformDepthMap2mm::updating()
     SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_INPUT << "' image", originFrame);
 
     const auto type = originFrame->getType();
-    if(type != core::Type::UINT16)
+    if(type != core::type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
-    const auto size = originFrame->getSize();
+    const auto size = originFrame->size();
 
     auto scaledFrame = m_scaledDepth.lock();
     SIGHT_ASSERT("missing '" << s_SCALED_FRAME_INOUT << "' image", scaledFrame);
 
-    if(size != scaledFrame->getSize())
+    if(size != scaledFrame->size())
     {
         scaledFrame->resize(size, originFrame->getType(), originFrame->getPixelFormat());
 
@@ -108,10 +108,10 @@ void STransformDepthMap2mm::updating()
         *depthBufferOutItr = static_cast<std::uint16_t>((*depthBufferInItr) * scale);
     }
 
-    auto sig = scaledFrame->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    auto sig = scaledFrame->signal<data::Image::ModifiedSignalType>(data::Image::MODIFIED_SIG);
+    sig->async_emit();
 
-    m_sigComputed->asyncEmit();
+    m_sigComputed->async_emit();
 }
 
 //-----------------------------------------------------------------------------

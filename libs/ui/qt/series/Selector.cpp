@@ -101,11 +101,11 @@ Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& _indexList
     for(QModelIndex index : _indexList)
     {
         std::string uid               = index.data(SelectorModel::UID).toString().toStdString();
-        core::tools::Object::sptr obj = core::tools::fwID::getObject(uid);
+        core::tools::object::sptr obj = core::tools::id::get_object(uid);
 
         if(index.data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES)
         {
-            data::Series::sptr series = data::Series::dynamicCast(obj);
+            data::Series::sptr series = std::dynamic_pointer_cast<data::Series>(obj);
             vSeries.push_back(series);
         }
     }
@@ -144,8 +144,8 @@ Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& 
         SIGHT_ASSERT("Child is null", child);
         const std::string uid = child->data(SelectorModel::UID).toString().toStdString();
         SIGHT_ASSERT("UID must not be empty.", !uid.empty());
-        core::tools::Object::sptr obj = core::tools::fwID::getObject(uid);
-        data::Series::sptr series     = data::Series::dynamicCast(obj);
+        core::tools::object::sptr obj = core::tools::id::get_object(uid);
+        data::Series::sptr series     = std::dynamic_pointer_cast<data::Series>(obj);
         vSeries.push_back(series);
     }
 
@@ -215,7 +215,8 @@ void Selector::onRemoveStudyInstanceUID(const std::string& _uid)
                     selection.push_back(seriesItem->index());
 
                     const std::string seriesUID = seriesItem->index().data(SelectorModel::UID).toString().toStdString();
-                    auto series                 = data::Series::dynamicCast(core::tools::fwID::getObject(seriesUID));
+                    auto series                 =
+                        std::dynamic_pointer_cast<data::Series>(core::tools::id::get_object(seriesUID));
 
                     if(series)
                     {
@@ -255,7 +256,7 @@ void Selector::onRemoveSeriesID(const std::string& _id)
                 if(seriesUID == _id)
                 {
                     selection.push_back(seriesItem->index());
-                    auto series = data::Series::dynamicCast(core::tools::fwID::getObject(seriesUID));
+                    auto series = std::dynamic_pointer_cast<data::Series>(core::tools::id::get_object(seriesUID));
 
                     if(series)
                     {

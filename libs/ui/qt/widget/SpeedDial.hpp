@@ -33,7 +33,7 @@ namespace sight::ui::qt::widget
 {
 
 /// SpeedDial is a button which shows other buttons when clicked
-class UI_QT_CLASS_QT_API SpeedDial : public QPushButton
+class UI_QT_CLASS_API_QT SpeedDial : public QPushButton
 {
 Q_OBJECT
 Q_PROPERTY(int spacing MEMBER m_spacing READ spacing WRITE setSpacing)
@@ -52,19 +52,19 @@ public:
     static inline constexpr int s_DEFAULT_SPACING            = 10;
     static inline constexpr int s_DEFAULT_ANIMATION_DURATION = 250;
 
-    UI_QT_QT_API explicit SpeedDial(
+    UI_QT_API_QT explicit SpeedDial(
         Direction direction   = Direction::DOWN,
         int spacing           = s_DEFAULT_SPACING,
         int animationDuration = s_DEFAULT_ANIMATION_DURATION,
         QWidget* parent       = nullptr
     );
-    UI_QT_QT_API ~SpeedDial() override = default;
+    UI_QT_API_QT ~SpeedDial() override = default;
 
-    UI_QT_QT_API void setDirection(Direction direction);
-    [[nodiscard]] UI_QT_QT_API Direction direction() const;
-    UI_QT_QT_API void setSpacing(int spacing);
-    [[nodiscard]] UI_QT_QT_API int spacing() const;
-    UI_QT_QT_API void setAnimationDuration(int duration);
+    UI_QT_API_QT void setDirection(Direction direction);
+    [[nodiscard]] UI_QT_API_QT Direction direction() const;
+    UI_QT_API_QT void setSpacing(int spacing);
+    [[nodiscard]] UI_QT_API_QT int spacing() const;
+    UI_QT_API_QT void setAnimationDuration(int duration);
     //------------------------------------------------------------------------------
 
     template<typename R, typename P>
@@ -73,20 +73,20 @@ public:
         setAnimationDuration(std::chrono::milliseconds(animationDuration).count());
     }
 
-    [[nodiscard]] UI_QT_QT_API int animationDuration() const;
+    [[nodiscard]] UI_QT_API_QT int animationDuration() const;
 
     /// Make the button invisible
-    UI_QT_QT_API void fold();
+    UI_QT_API_QT void fold();
     /// Make the button visible
-    UI_QT_QT_API void unfold();
+    UI_QT_API_QT void unfold();
     /// Make the button invisible if they are visible or visible if they are not
-    UI_QT_QT_API void toggleFold();
-    [[nodiscard]] UI_QT_QT_API bool isFolded() const;
+    UI_QT_API_QT void toggleFold();
+    [[nodiscard]] UI_QT_API_QT bool isFolded() const;
 
     /// Provide a new list of actions to be managed by the speed dial.
-    UI_QT_QT_API void updateActions(std::vector<QWidget*> actions);
+    UI_QT_API_QT void updateActions(std::vector<QWidget*> actions);
     /// Get the list of the actions managed by the speed dial.
-    [[nodiscard]] UI_QT_QT_API const std::vector<QWidget*>& actions() const;
+    [[nodiscard]] UI_QT_API_QT const std::vector<QWidget*>& actions() const;
 
     /// An event filter to listen to size changes of the actions and size changes and position changes of one of the
     /// ancestor of the speed dial. If either of these events happen, the positions of the actions must be updated.

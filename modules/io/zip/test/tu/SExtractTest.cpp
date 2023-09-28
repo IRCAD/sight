@@ -23,28 +23,25 @@
 
 #include "SExtractTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/tools/system.hpp>
 
 #include <io/vtk/VtiImageReader.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 #include <service/op/Add.hpp>
 
-#include <ui/base/dialog/DummyInputDialog.hpp>
-#include <ui/base/dialog/DummyLocationDialog.hpp>
-#include <ui/base/dialog/DummyMessageDialog.hpp>
-#include <ui/base/registry/macros.hpp>
+#include <ui/__/dialog/input_dummy.hpp>
+#include <ui/__/dialog/location_dummy.hpp>
+#include <ui/__/dialog/message_dummy.hpp>
+#include <ui/__/macros.hpp>
 
 #include <utestData/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::zip::ut::SExtractTest);
 
-SIGHT_REGISTER_GUI(
-    sight::ui::base::dialog::DummyLocationDialog,
-    sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY
-);
-SIGHT_REGISTER_GUI(sight::ui::base::dialog::DummyInputDialog, sight::ui::base::dialog::IInputDialog::REGISTRY_KEY);
-SIGHT_REGISTER_GUI(sight::ui::base::dialog::DummyMessageDialog, sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::dialog::location_dummy, sight::ui::dialog::location_base::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::dialog::input_dummy, sight::ui::dialog::input_base::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::dialog::message_dummy, sight::ui::dialog::message_base::REGISTRY_KEY);
 
 namespace sight::module::io::zip::ut
 {
@@ -53,22 +50,22 @@ namespace sight::module::io::zip::ut
 
 void SExtractTest::basicArchiveTest()
 {
-    std::filesystem::path tmpFolder = core::tools::System::getTemporaryFolder("SExtractTest_basicArchiveTest");
+    std::filesystem::path tmpFolder = core::tools::system::get_temporary_folder("SExtractTest_basicArchiveTest");
     std::filesystem::remove_all(tmpFolder);
     std::filesystem::create_directories(tmpFolder);
 
-    service::IService::sptr extract = service::add("sight::module::io::zip::SExtract");
+    service::base::sptr extract = service::add("sight::module::io::zip::SExtract");
     CPPUNIT_ASSERT(extract);
 
     CPPUNIT_ASSERT_NO_THROW(extract->start().get());
 
     // We select the archive we want to open.
-    ui::base::dialog::DummyLocationDialog::pushPaths(
+    ui::dialog::location_dummy::pushPaths(
         {utestData::Data::dir() / "sight/ui/ArchiveExtractor/non-encrypted-archive.sample"
         });
 
     // We choose the output path.
-    ui::base::dialog::DummyLocationDialog::pushPaths({tmpFolder});
+    ui::dialog::location_dummy::pushPaths({tmpFolder});
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
@@ -89,67 +86,67 @@ void SExtractTest::basicArchiveTest()
     CPPUNIT_ASSERT(!vtiPath.empty());
 
     // Try to open the file using VTK to check if it is valid.
-    auto vtiReader = sight::io::vtk::VtiImageReader::New();
-    vtiReader->setFile(vtiPath);
-    auto img = data::Image::New();
+    auto vtiReader = std::make_shared<sight::io::vtk::VtiImageReader>();
+    vtiReader->set_file(vtiPath);
+    auto img = std::make_shared<data::Image>();
     vtiReader->setObject(img);
     CPPUNIT_ASSERT_NO_THROW(vtiReader->read());
 
-    ui::base::dialog::DummyLocationDialog::pushPaths(
+    ui::dialog::location_dummy::pushPaths(
         {utestData::Data::dir() / "sight/ui/ArchiveExtractor/non-encrypted-archive.sample"
         });
-    ui::base::dialog::DummyLocationDialog::pushPaths({tmpFolder});
+    ui::dialog::location_dummy::pushPaths({tmpFolder});
 
     // Oops, we choose the same folder again! We get a warning. Let's try again.
-    ui::base::dialog::DummyMessageDialog::pushAction(ui::base::dialog::IMessageDialog::RETRY);
-    ui::base::dialog::DummyLocationDialog::pushPaths({tmpFolder});
+    ui::dialog::message_dummy::pushAction(ui::dialog::message_dummy::RETRY);
+    ui::dialog::location_dummy::pushPaths({tmpFolder});
 
     // Ah, clumsy us, we chose the exact same folder! Let's try again later.
-    ui::base::dialog::DummyMessageDialog::pushAction(ui::base::dialog::IMessageDialog::CANCEL);
+    ui::dialog::message_dummy::pushAction(ui::dialog::message_dummy::CANCEL);
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
-    ui::base::dialog::DummyLocationDialog::pushPaths(
+    ui::dialog::location_dummy::pushPaths(
         {utestData::Data::dir() / "sight/ui/ArchiveExtractor/non-encrypted-archive.sample"
         });
-    ui::base::dialog::DummyLocationDialog::pushPaths({tmpFolder});
+    ui::dialog::location_dummy::pushPaths({tmpFolder});
 
     // Well, well, the folder still isn't empty. Tough luck. Let's simply overwrite it.
-    ui::base::dialog::DummyMessageDialog::pushAction(ui::base::dialog::IMessageDialog::YES);
+    ui::dialog::message_dummy::pushAction(ui::dialog::message_dummy::YES);
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
-    CPPUNIT_ASSERT(ui::base::dialog::DummyLocationDialog::clear());
-    CPPUNIT_ASSERT(ui::base::dialog::DummyMessageDialog::clear());
+    CPPUNIT_ASSERT(ui::dialog::location_dummy::clear());
+    CPPUNIT_ASSERT(ui::dialog::message_dummy::clear());
 }
 
 //------------------------------------------------------------------------------
 
 void SExtractTest::encryptedArchiveTest()
 {
-    std::filesystem::path tmpFolder = core::tools::System::getTemporaryFolder("SExtractTest_encryptedArchiveTest");
+    std::filesystem::path tmpFolder = core::tools::system::get_temporary_folder("SExtractTest_encryptedArchiveTest");
     std::filesystem::remove_all(tmpFolder);
     std::filesystem::create_directories(tmpFolder);
 
-    service::IService::sptr extract = service::add("sight::module::io::zip::SExtract");
+    service::base::sptr extract = service::add("sight::module::io::zip::SExtract");
     CPPUNIT_ASSERT(extract);
 
     CPPUNIT_ASSERT_NO_THROW(extract->start().get());
 
     // We select the archive we want to open.
-    ui::base::dialog::DummyLocationDialog::pushPaths(
+    ui::dialog::location_dummy::pushPaths(
         {utestData::Data::dir() / "sight/ui/ArchiveExtractor/encrypted-archive.sample"
         });
 
     // We choose the output path.
-    ui::base::dialog::DummyLocationDialog::pushPaths({tmpFolder});
+    ui::dialog::location_dummy::pushPaths({tmpFolder});
 
     // The archive is encrypted, let's input a password.
-    ui::base::dialog::DummyInputDialog::pushInput("tartare");
+    ui::dialog::input_dummy::pushInput("tartare");
 
     // Ah, wrong one. Let's try again.
-    ui::base::dialog::DummyMessageDialog::pushAction(ui::base::dialog::IMessageDialog::RETRY);
-    ui::base::dialog::DummyInputDialog::pushInput("bouboule");
+    ui::dialog::message_dummy::pushAction(ui::dialog::message_dummy::RETRY);
+    ui::dialog::input_dummy::pushInput("bouboule");
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
@@ -170,15 +167,15 @@ void SExtractTest::encryptedArchiveTest()
     CPPUNIT_ASSERT(!vtiPath.empty());
 
     // Try to open the file using VTK to check if it is valid.
-    auto vtiReader = sight::io::vtk::VtiImageReader::New();
-    vtiReader->setFile(vtiPath);
-    auto img = data::Image::New();
+    auto vtiReader = std::make_shared<sight::io::vtk::VtiImageReader>();
+    vtiReader->set_file(vtiPath);
+    auto img = std::make_shared<data::Image>();
     vtiReader->setObject(img);
     CPPUNIT_ASSERT_NO_THROW(vtiReader->read());
 
-    CPPUNIT_ASSERT(ui::base::dialog::DummyLocationDialog::clear());
-    CPPUNIT_ASSERT(ui::base::dialog::DummyInputDialog::clear());
-    CPPUNIT_ASSERT(ui::base::dialog::DummyMessageDialog::clear());
+    CPPUNIT_ASSERT(ui::dialog::location_dummy::clear());
+    CPPUNIT_ASSERT(ui::dialog::input_dummy::clear());
+    CPPUNIT_ASSERT(ui::dialog::message_dummy::clear());
 }
 
 //------------------------------------------------------------------------------

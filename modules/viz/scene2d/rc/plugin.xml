@@ -2,20 +2,20 @@
     <requirement id="sight::module::ui::qt"/>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SAxis</service>
          <object key="viewport">sight::viz::scene2d::data::Viewport</object>
          <desc>Render an axis on the scene2d.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SGrid2D</service>
          <desc>Render grid on the scene2d.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SHistogram</service>
          <object key="viewport">sight::viz::scene2d::data::Viewport</object>
          <object key="image">sight::data::Image</object>
@@ -23,12 +23,12 @@
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SLine</service>
          <desc>Line adaptor. Draw a line on the scene2D</desc>
     </extension>
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::STransferFunction</service>
          <object key="viewport">sight::viz::scene2d::data::Viewport</object>
          <object key="tf">sight::data::TransferFunction</object>
@@ -37,37 +37,37 @@
 
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SNegato</service>
-         <desc>IAdaptor implementation to display one slice of an image.</desc>
+         <desc>adaptor implementation to display one slice of an image.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::base::IRender</type>
+         <type>sight::viz::render</type>
          <service>sight::viz::scene2d::SRender</service>
          <desc></desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SSquare</service>
          <desc>Create a square on the scene2D</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SViewportInteractor</service>
          <desc>Adaptor implementation that manages the camera on the view.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SViewportRangeSelector</service>
          <desc>The viewport range selector adaptor allows to select a delimited range of a viewport.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
+         <type>sight::viz::scene2d::adaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SViewportUpdater</service>
          <desc>Adaptor implementation that manages the camera on the view (by updating the viewport object).</desc>
     </extension>

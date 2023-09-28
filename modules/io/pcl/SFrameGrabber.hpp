@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "modules/io/pcl/config.hpp"
 
 #include <core/mt/types.hpp>
-#include <core/thread/Timer.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/thread/timer.hpp>
+#include <core/tools/failed.hpp>
 
-#include <io/base/service/IGrabber.hpp>
+#include <io/__/service/grabber.hpp>
 
 #include <filesystem>
 
@@ -76,11 +76,11 @@ namespace sight::module::io::pcl
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate (default: 30).
  */
-class MODULE_IO_PCL_CLASS_API SFrameGrabber : public sight::io::base::service::IGrabber
+class MODULE_IO_PCL_CLASS_API SFrameGrabber : public sight::io::service::grabber
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrameGrabber, sight::io::base::service::IGrabber);
+    SIGHT_DECLARE_SERVICE(SFrameGrabber, sight::io::service::grabber);
 
     /// Constructor. Do nothing.
     MODULE_IO_PCL_API SFrameGrabber() noexcept;
@@ -139,16 +139,16 @@ private:
     /// counter used by the image reader
     std::size_t m_imageCount {0};
 
-    core::thread::Timer::sptr m_timer;
+    core::thread::timer::sptr m_timer;
 
     /// Worker for the grabVideo or grabFrame timer
-    core::thread::Worker::sptr m_worker;
+    core::thread::worker::sptr m_worker;
 
     /// list of image paths to read
     ImageFilesType m_imageToRead;
 
     /// Mutex to protect concurrent access for m_imageToRead
-    mutable core::mt::Mutex m_mutex;
+    mutable core::mt::mutex m_mutex;
 
     data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
 };

@@ -23,20 +23,20 @@
 #include "modules/ui/qt/SNotifier.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
-#include <ui/base/GuiRegistry.hpp>
+#include <ui/__/registry.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
 namespace sight::module::ui::qt
 {
 
-static const core::com::Slots::SlotKeyType s_POP_NOTIFICATION_SLOT   = "pop";
-static const core::com::Slots::SlotKeyType s_CLOSE_NOTIFICATION_SLOT = "closeNotification";
-static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
+static const core::com::slots::key_t POP_NOTIFICATION_SLOT   = "pop";
+static const core::com::slots::key_t CLOSE_NOTIFICATION_SLOT = "closeNotification";
+static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
 
 static const std::string s_POSITION_KEY("position");
 static const std::string s_DURATION_KEY("duration");
@@ -46,7 +46,7 @@ static const std::string s_CLOSABLE_KEY("closable");
 
 static const std::string s_INFINITE("infinite");
 
-static const std::map<const std::string, const sight::ui::base::dialog::NotificationDialog::Position> s_POSITION_MAP = {
+static const std::map<const std::string, const sight::ui::dialog::notification::Position> s_POSITION_MAP = {
     {"TOP_RIGHT", service::Notification::Position::TOP_RIGHT},
     {"TOP_LEFT", service::Notification::Position::TOP_LEFT},
     {"CENTERED_TOP", service::Notification::Position::CENTERED_TOP},
@@ -60,9 +60,9 @@ static const std::map<const std::string, const sight::ui::base::dialog::Notifica
 
 SNotifier::SNotifier() noexcept
 {
-    newSlot(s_POP_NOTIFICATION_SLOT, &SNotifier::pop, this);
-    newSlot(s_CLOSE_NOTIFICATION_SLOT, &SNotifier::closeNotification, this);
-    newSlot(s_SET_ENUM_PARAMETER_SLOT, &SNotifier::setEnumParameter, this);
+    new_slot(POP_NOTIFICATION_SLOT, &SNotifier::pop, this);
+    new_slot(CLOSE_NOTIFICATION_SLOT, &SNotifier::closeNotification, this);
+    new_slot(SET_ENUM_PARAMETER_SLOT, &SNotifier::setEnumParameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -191,11 +191,11 @@ void SNotifier::starting()
 {
     if(!m_parentContainerID.empty())
     {
-        auto container = sight::ui::base::GuiRegistry::getSIDContainer(m_parentContainerID);
+        auto container = sight::ui::registry::getSIDContainer(m_parentContainerID);
 
         if(!container)
         {
-            container = sight::ui::base::GuiRegistry::getWIDContainer(m_parentContainerID);
+            container = sight::ui::registry::getWIDContainer(m_parentContainerID);
         }
 
         // If we have an SID/WID set the container.
@@ -371,7 +371,7 @@ void SNotifier::pop(service::Notification notification)
             }
 
             // No channel or the dialog was not found, create a new one
-            auto popup = sight::ui::base::dialog::NotificationDialog::New();
+            auto popup = std::make_shared<sight::ui::dialog::notification>();
             popup->setIndex(static_cast<unsigned int>(target_stack.popups.size()));
             target_stack.popups.emplace_back(popup);
 
@@ -416,7 +416,7 @@ void SNotifier::closeNotification(std::string channel)
 
 //------------------------------------------------------------------------------
 
-void SNotifier::onNotificationClosed(const sight::ui::base::dialog::NotificationDialog::sptr& _notif)
+void SNotifier::onNotificationClosed(const sight::ui::dialog::notification::sptr& _notif)
 {
     // If the notification still exist
     for(auto& [position, stack] : m_stacks)
@@ -430,9 +430,9 @@ void SNotifier::onNotificationClosed(const sight::ui::base::dialog::Notification
 
 //------------------------------------------------------------------------------
 
-std::list<sight::ui::base::dialog::NotificationDialog::sptr>::iterator SNotifier::eraseNotification(
+std::list<sight::ui::dialog::notification::sptr>::iterator SNotifier::eraseNotification(
     const service::Notification::Position& position,
-    const std::list<sight::ui::base::dialog::NotificationDialog::sptr>::iterator& it
+    const std::list<sight::ui::dialog::notification::sptr>::iterator& it
 )
 {
     // Remove the notification from the container

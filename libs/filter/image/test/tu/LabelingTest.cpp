@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,9 +52,9 @@ void LabelingTest::tearDown()
 void LabelingTest::computeCentroids()
 {
     // Initial image creation
-    data::Image::sptr img = data::Image::New();
+    data::Image::sptr img = std::make_shared<data::Image>();
 
-    const core::Type type                 = core::Type::UINT8;
+    const core::type type                 = core::type::UINT8;
     const data::Image::Size imgSize       = {256, 256, 256};
     const data::Image::Spacing imgSpacing = {1., 1., 1.};
     const data::Image::Origin imgOrigin   = {0., 0., 0.};

@@ -7,12 +7,12 @@ set_target_properties(module_io_dimse PROPERTIES AUTOMOC TRUE)
 target_link_libraries(
     module_io_dimse
     PUBLIC core
-           ui_base
+           ui
            ui_qt
            io_dimse
            data
            service
-           io_base
+           io
 )
 
 add_dependencies(module_io_dimse module_ui_qt)

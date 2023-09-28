@@ -12,7 +12,7 @@ configure_file(
     "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/viz_scene3d/resources.cfg" @ONLY
 )
 
-target_link_libraries(viz_scene3d PUBLIC core data geometry_data ui_base viz_base service)
+target_link_libraries(viz_scene3d PUBLIC core data geometry_data ui viz service)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)

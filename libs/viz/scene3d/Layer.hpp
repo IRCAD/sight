@@ -24,18 +24,18 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <core/com/HasSignals.hpp>
-#include <core/com/HasSlots.hpp>
-#include <core/com/helper/SigSlotConnection.hpp>
-#include <core/com/Slot.hpp>
-#include <core/thread/Worker.hpp>
+#include <core/com/has_signals.hpp>
+#include <core/com/has_slots.hpp>
+#include <core/com/helper/sig_slot_connection.hpp>
+#include <core/com/slot.hpp>
+#include <core/thread/worker.hpp>
 
 #include <viz/scene3d/compositor/ChainManager.hpp>
 #include <viz/scene3d/compositor/Core.hpp>
 #include <viz/scene3d/compositor/listener/AutoStereo.hpp>
 #include <viz/scene3d/compositor/types.hpp>
-#include <viz/scene3d/interactor/IInteractor.hpp>
-#include <viz/scene3d/IWindowInteractor.hpp>
+#include <viz/scene3d/interactor/base.hpp>
+#include <viz/scene3d/window_interactor.hpp>
 
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
@@ -58,7 +58,7 @@ namespace sight::viz::scene3d
 {
 
 class SRender;
-class IAdaptor;
+class adaptor;
 class ILight;
 
 } // namespace sight::viz::scene3d
@@ -77,14 +77,14 @@ namespace sight::viz::scene3d
  * @brief Allows to render multiple scenes in the same render window with viewports.
  */
 class VIZ_SCENE3D_CLASS_API Layer :
-    public core::BaseObject,
-    public core::com::HasSignals,
-    public core::com::HasSlots
+    public core::base_object,
+    public core::com::has_signals,
+    public core::com::has_slots
 {
 public:
 
     /// Generates default methods.
-    SIGHT_DECLARE_CLASS(Layer, viz::scene3d::Layer, new Layer);
+    SIGHT_DECLARE_CLASS(Layer, viz::scene3d::Layer);
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
@@ -95,25 +95,25 @@ public:
     using ViewportConfigType = std::tuple<float, float, float, float>;
 
     /// Contains the signal sent when the layer is initialized.
-    VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_INIT_LAYER_SIG;
-    typedef core::com::Signal<void (viz::scene3d::Layer::sptr)> InitLayerSignalType;
+    VIZ_SCENE3D_API static const core::com::signals::key_t INIT_LAYER_SIG;
+    typedef core::com::signal<void (viz::scene3d::Layer::sptr)> InitLayerSignalType;
 
     /// Contains the signal sent when the layer is resized.
-    VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
-    typedef core::com::Signal<void (int, int)> ResizeLayerSignalType;
+    VIZ_SCENE3D_API static const core::com::signals::key_t RESIZE_LAYER_SIG;
+    typedef core::com::signal<void (int, int)> ResizeLayerSignalType;
 
     /// Contains signals sent when the camera is modified.
-    VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_CAMERA_RANGE_UPDATED_SIG;
-    typedef core::com::Signal<void ()> CameraUpdatedSignalType;
+    VIZ_SCENE3D_API static const core::com::signals::key_t CAMERA_RANGE_UPDATED_SIG;
+    typedef core::com::signal<void ()> CameraUpdatedSignalType;
 
-    typedef core::com::Slot<void (viz::scene3d::IWindowInteractor::InteractionInfo)> InteractionSlotType;
-    typedef core::com::Slot<void ()> DestroySlotType;
+    typedef core::com::slot<void (viz::scene3d::window_interactor::InteractionInfo)> InteractionSlotType;
+    typedef core::com::slot<void ()> DestroySlotType;
 
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_INTERACTION_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t INTERACTION_SLOT;
 
     /// Contains the slot name that request the reset of camera.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t RESET_CAMERA_SLOT;
 
     /// Defines the default camera name.
     VIZ_SCENE3D_API static const std::string s_DEFAULT_CAMERA_NAME;
@@ -137,7 +137,7 @@ public:
     VIZ_SCENE3D_API void setRenderTarget(Ogre::RenderTarget* _renderTarget);
 
     /// Set the associated scene manager ID of this viewport
-    VIZ_SCENE3D_API void setID(const std::string& id);
+    VIZ_SCENE3D_API void set_id(const std::string& id);
 
     /// @returns the name of this layer.
     VIZ_SCENE3D_API std::string getName() const;
@@ -174,12 +174,12 @@ public:
 
     /// Appends a new interactor with the given priority. Interactors with higher priorities are executed first.
     VIZ_SCENE3D_API void addInteractor(
-        const viz::scene3d::interactor::IInteractor::sptr& _interactor,
+        const viz::scene3d::interactor::base::sptr& _interactor,
         int _priority = 0
     );
 
     /// Removes the given interactor.
-    VIZ_SCENE3D_API void removeInteractor(const viz::scene3d::interactor::IInteractor::sptr& _interactor);
+    VIZ_SCENE3D_API void removeInteractor(const viz::scene3d::interactor::base::sptr& _interactor);
 
     /// @return the order of the layer.
     VIZ_SCENE3D_API int getOrder() const;
@@ -188,7 +188,7 @@ public:
     VIZ_SCENE3D_API void setOrder(int _order);
 
     /// Sets the worker used by slots.
-    VIZ_SCENE3D_API void setWorker(const core::thread::Worker::sptr& _worker);
+    VIZ_SCENE3D_API void set_worker(const core::thread::worker::sptr& _worker);
 
     /// @returns the render service.
     VIZ_SCENE3D_API SPTR(viz::scene3d::SRender) getRenderService() const;
@@ -245,7 +245,7 @@ public:
     VIZ_SCENE3D_API viz::scene3d::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
     /// @returns the list of adaptors in the chain manager.
-    VIZ_SCENE3D_API service::IHasServices::ServiceVector getRegisteredAdaptors() const;
+    VIZ_SCENE3D_API service::has_services::ServiceVector getRegisteredAdaptors() const;
 
     /// @returns the viewport.
     VIZ_SCENE3D_API Ogre::Viewport* getViewport() const;
@@ -303,7 +303,7 @@ public:
 private:
 
     /// Slot: interacts with the scene.
-    void interaction(viz::scene3d::IWindowInteractor::InteractionInfo /*info*/);
+    void interaction(viz::scene3d::window_interactor::InteractionInfo /*info*/);
 
     /// Compute the scene size, notably in order to determine the zoom scale
     float computeSceneLength(const Ogre::AxisAlignedBox& worldBoundingBox);
@@ -315,7 +315,7 @@ private:
     void restartAdaptors();
 
     /// Calls a function on all interactors and deletes the ones that expired.
-    void forAllInteractors(const std::function<void(const interactor::IInteractor::sptr&)>&& _f);
+    void forAllInteractors(const std::function<void(const interactor::base::sptr&)>&& _f);
 
     /// Contains the Ogre scene manager of this viewport.
     Ogre::SceneManager* m_sceneManager {nullptr};
@@ -364,13 +364,13 @@ private:
     Ogre::Camera* m_camera {nullptr};
 
     /// Stores the list of interactors, sorted by priority.
-    std::multimap<int, viz::scene3d::interactor::IInteractor::wptr, std::greater<> > m_interactors;
+    std::multimap<int, viz::scene3d::interactor::base::wptr, std::greater<> > m_interactors;
 
     /// Handles flag cancelling all further interaction when enabled.
     bool m_cancelFurtherInteraction {false};
 
     /// Handles all connections.
-    core::com::helper::SigSlotConnection m_connections;
+    core::com::helper::sig_slot_connection m_connections;
 
     /// Contains the render service which this layer is attached.
     WPTR(viz::scene3d::SRender) m_renderService;

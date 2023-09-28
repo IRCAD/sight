@@ -28,7 +28,7 @@
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -85,14 +85,14 @@ namespace sight::module::ui::qt::image
  * - \b iconHeight (optional, default="16"): icon height.
  */
 class MODULE_UI_QT_CLASS_API STransferFunction final : public QObject,
-                                                       public sight::ui::base::IEditor
+                                                       public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(module::ui::qt::image::STransferFunction, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(module::ui::qt::image::STransferFunction, sight::ui::editor);
 
     /// Creates the editor.
     MODULE_UI_QT_API STransferFunction();
@@ -116,10 +116,10 @@ private:
 
     /**
      * @brief
-     * Connect Image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
+     * Connect Image::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect Image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
      */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
     /**
      * @brief Checks if the composite contains the specified key.

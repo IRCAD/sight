@@ -22,9 +22,9 @@
 
 #include "ClientQt.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <QList>
 #include <QtNetwork>
@@ -72,7 +72,7 @@ QByteArray ClientQt::get(Request::sptr request)
 
 //-----------------------------------------------------------------------------
 
-std::string ClientQt::getFile(Request::sptr request)
+std::string ClientQt::get_file(Request::sptr request)
 {
     QNetworkAccessManager networkManager;
     const QUrl qtUrl(QString::fromStdString(request->getUrl()));
@@ -92,7 +92,7 @@ std::string ClientQt::getFile(Request::sptr request)
         &ClientQt::processError
     );
 
-    std::filesystem::path filePath = core::os::TempFile::uniquePath();
+    std::filesystem::path filePath = core::os::temp_file::unique_path();
     QFile file(filePath.string().c_str());
 
     if(!file.open(QIODevice::WriteOnly))

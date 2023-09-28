@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,8 +58,8 @@ TrackingStopConverter::~TrackingStopConverter()
 
 data::Object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer /*src*/) const
 {
-    data::Composite::sptr composite = data::Composite::New();
-    data::Boolean::sptr status      = data::Boolean::New();
+    data::Composite::sptr composite = std::make_shared<data::Composite>();
+    data::Boolean::sptr status      = std::make_shared<data::Boolean>();
     (*composite)[s_statusKey] = status;
 
     status->setValue(false);
@@ -69,7 +69,7 @@ data::Object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageB
 
 //-----------------------------------------------------------------------------
 
-IConverter::sptr TrackingStopConverter::New()
+base::sptr TrackingStopConverter::New()
 {
     return std::make_shared<TrackingStopConverter>();
 }

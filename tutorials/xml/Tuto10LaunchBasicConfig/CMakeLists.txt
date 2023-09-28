@@ -4,11 +4,11 @@ add_dependencies(
     Tuto10LaunchBasicConfig
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     data
     module_service
-    module_ui_base
+    module_ui
     module_io_matrix
     module_io_vtk
     module_viz_sample

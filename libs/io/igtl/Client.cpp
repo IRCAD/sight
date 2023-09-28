@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,7 +106,7 @@ void Client::disconnect()
 {
     std::lock_guard lock(s_connectLock);
     // HACK: Use the patched version of closeSocket
-    sight::io::igtl::INetwork::closeSocket(m_socket->m_SocketDescriptor);
+    sight::io::igtl::network::closeSocket(m_socket->m_SocketDescriptor);
     m_socket->m_SocketDescriptor = -1;
     // Uncomment this when patch isn't needed anymore.
     //m_socket->CloseSocket();

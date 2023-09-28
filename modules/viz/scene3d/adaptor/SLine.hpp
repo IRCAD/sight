@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <Ogre.h>
 
@@ -67,13 +67,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SLine final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLine, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SLine, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SLine() noexcept;

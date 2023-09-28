@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "filter/dicom/config.hpp"
-#include "filter/dicom/sorter/ISorter.hpp"
+#include "filter/dicom/sorter/base.hpp"
 
 #include <data/DicomSeries.hpp>
 
@@ -35,14 +35,14 @@ namespace sight::filter::dicom::sorter
 /**
  * @brief Filter that uses a tag to sort the instances.
  */
-class FILTER_DICOM_CLASS_API TagValueSorter : public ISorter
+class FILTER_DICOM_CLASS_API TagValueSorter : public base
 {
 public:
 
-    SIGHT_DECLARE_CLASS(TagValueSorter, ISorter, filter::dicom::factory::New<TagValueSorter>);
+    SIGHT_DECLARE_CLASS(TagValueSorter, base, sight::filter::dicom::factory::make<TagValueSorter>);
 
     /// Constructor
-    FILTER_DICOM_API TagValueSorter(filter::dicom::IFilter::Key key);
+    FILTER_DICOM_API TagValueSorter();
 
     /// Destructor
     FILTER_DICOM_API ~TagValueSorter() override;
@@ -50,7 +50,7 @@ public:
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
         const data::DicomSeries::sptr& series,
-        const core::log::Logger::sptr& logger
+        const core::log::logger::sptr& logger
     ) const override;
 
     /// Return the name of the filter

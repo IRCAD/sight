@@ -23,26 +23,26 @@
 
 #include "modules/io/session/SReader.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/crypto/PasswordKeeper.hpp>
+#include <core/com/signal.hxx>
+#include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/System.hpp>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/system.hpp>
 
 #include <io/session/SessionReader.hpp>
 #include <io/zip/exception/Read.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/InputDialog.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/input.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 namespace sight::module::io::session
 {
 
-using core::crypto::PasswordKeeper;
+using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::Archive;
 
@@ -60,7 +60,7 @@ public:
     /// Constructor
     inline explicit ReaderImpl(SReader* const reader) noexcept :
         m_reader(reader),
-        m_job_created_signal(reader->newSignal<signals::JobCreatedSignal>("jobCreated"))
+        m_job_created_signal(reader->new_signal<signals::JobCreatedSignal>("jobCreated"))
     {
     }
 
@@ -80,10 +80,10 @@ public:
     DialogPolicy m_dialog_policy = {DialogPolicy::NEVER};
 
     /// Password policy to use
-    PasswordKeeper::PasswordPolicy m_password_policy {PasswordKeeper::PasswordPolicy::NEVER};
+    password_keeper::password_policy m_password_policy {password_keeper::password_policy::NEVER};
 
     /// Encryption policy to use
-    PasswordKeeper::EncryptionPolicy m_encryption_policy {PasswordKeeper::EncryptionPolicy::PASSWORD};
+    password_keeper::encryption_policy m_encryption_policy {password_keeper::encryption_policy::PASSWORD};
 
     /// Archive format to use
     Archive::ArchiveFormat m_archive_format {Archive::ArchiveFormat::DEFAULT};
@@ -98,8 +98,8 @@ public:
 SReader::SReader() noexcept :
     m_pimpl(std::make_unique<ReaderImpl>(this))
 {
-    newSignal<signals::SessionPathSignal>(signals::SESSION_LOADED);
-    newSignal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED);
+    new_signal<signals::SessionPathSignal>(signals::SESSION_LOADED);
+    new_signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED);
 }
 
 // Defining the destructor here, allows us to use PImpl with a unique_ptr
@@ -126,7 +126,7 @@ void SReader::stopping()
 
 void SReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 
     const auto& tree = this->getConfiguration();
 
@@ -149,23 +149,23 @@ void SReader::configuring()
     if(password.is_initialized())
     {
         // Password policy
-        m_pimpl->m_password_policy = PasswordKeeper::string_to_password_policy(
+        m_pimpl->m_password_policy = password_keeper::string_to_password_policy(
             password->get<std::string>("policy", "default")
         );
 
         SIGHT_THROW_IF(
             "Cannot read password policy.",
-            m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::INVALID
+            m_pimpl->m_password_policy == password_keeper::password_policy::INVALID
         );
 
         // Encryption policy
-        m_pimpl->m_encryption_policy = PasswordKeeper::string_to_encryption_policy(
+        m_pimpl->m_encryption_policy = password_keeper::string_to_encryption_policy(
             password->get<std::string>("encryption", "default")
         );
 
         SIGHT_THROW_IF(
             "Cannot read encryption policy.",
-            m_pimpl->m_encryption_policy == PasswordKeeper::EncryptionPolicy::INVALID
+            m_pimpl->m_encryption_policy == password_keeper::encryption_policy::INVALID
         );
     }
 
@@ -211,32 +211,32 @@ void SReader::updating()
         return;
     }
 
-    const auto filepath = getFile();
+    const auto filepath = get_file();
     SIGHT_THROW_IF("The file '" << filepath << "' is an existing folder.", std::filesystem::is_directory(filepath));
 
     // Ask password if needed
     const secure_string& password =
         [&]
         {
-            if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::NEVER)
+            if(m_pimpl->m_password_policy == password_keeper::password_policy::NEVER)
             {
                 // No password management
                 return secure_string();
             }
 
-            const secure_string& globalPassword = PasswordKeeper::get_global_password();
+            const secure_string& globalPassword = password_keeper::get_global_password();
 
             if(m_pimpl->m_password_retry > 0
-               || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
-               || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::GLOBAL
+               || (m_pimpl->m_password_policy == password_keeper::password_policy::ALWAYS)
+               || (m_pimpl->m_password_policy == password_keeper::password_policy::GLOBAL
                    && globalPassword.empty()))
             {
                 const auto& [newPassword, ok] =
-                    sight::ui::base::dialog::InputDialog::showInputDialog(
+                    sight::ui::dialog::input::showInputDialog(
                         "Enter Password",
                         "Password:",
                         globalPassword.c_str(), // NOLINT(readability-redundant-string-cstr)
-                        sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
+                        sight::ui::dialog::input::EchoMode::PASSWORD
                     );
 
                 return secure_string(newPassword);
@@ -245,21 +245,21 @@ void SReader::updating()
             return globalPassword;
         }();
 
-    const auto readJob = core::jobs::Job::New(
+    const auto readJob = std::make_shared<core::jobs::job>(
         "Reading " + filepath.string() + " file",
-        [&](core::jobs::Job& runningJob)
+        [&](core::jobs::job& runningJob)
         {
-            runningJob.doneWork(10);
+            runningJob.done_work(10);
 
             // Create the session reader
-            auto reader = sight::io::session::SessionReader::New();
-            reader->setFile(filepath);
+            auto reader = std::make_shared<sight::io::session::SessionReader>();
+            reader->set_file(filepath);
             reader->setPassword(password);
             reader->setEncryptionPolicy(m_pimpl->m_encryption_policy);
             reader->setArchiveFormat(m_pimpl->m_archive_format);
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::base::BusyCursor busyCursor;
+            const sight::ui::BusyCursor busyCursor;
 
             // Read the file
             reader->read();
@@ -269,12 +269,12 @@ void SReader::updating()
             SIGHT_THROW_IF("Invalid session", !newData);
 
             auto data = m_data.lock();
-            data->shallowCopy(newData);
+            data->shallow_copy(newData);
 
-            auto sig = data->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+            auto sig = data->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
             {
-                core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                sig->asyncEmit();
+                core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                sig->async_emit();
             }
 
             runningJob.done();
@@ -282,9 +282,9 @@ void SReader::updating()
         this->worker()
     );
 
-    core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(filepath.string() + " reader");
+    core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(filepath.string() + " reader");
     jobs->add(readJob);
-    jobs->setCancelable(false);
+    jobs->set_cancelable(false);
 
     m_pimpl->m_job_created_signal->emit(jobs);
 
@@ -295,21 +295,21 @@ void SReader::updating()
         m_pimpl->m_password_retry = 0;
 
         // Signal that we successfully read this file
-        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADED)->asyncEmit(filepath);
+        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADED)->async_emit(filepath);
     }
     catch(sight::io::zip::exception::BadPassword&)
     {
         // Ask if the user want to retry.
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Wrong password");
         messageBox.setMessage(
             "The file is password protected and the provided password is wrong.\n\nRetry with a different password ?"
         );
-        messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::RETRY);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
+        messageBox.setIcon(ui::dialog::message::QUESTION);
+        messageBox.addButton(ui::dialog::message::RETRY);
+        messageBox.addButton(ui::dialog::message::CANCEL);
 
-        if(messageBox.show() == sight::ui::base::dialog::IMessageDialog::RETRY)
+        if(messageBox.show() == sight::ui::dialog::message::RETRY)
         {
             m_pimpl->m_password_retry++;
             updating();
@@ -320,32 +320,32 @@ void SReader::updating()
         }
 
         // Signal that we failed to read this file
-        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->asyncEmit(filepath);
+        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
     }
     catch(const std::exception& e)
     {
         // Handle the error.
         SIGHT_ERROR(e.what());
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Session reader failed",
             e.what(),
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
 
         // Signal that we failed to read this file
-        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->asyncEmit(filepath);
+        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
     }
     catch(...)
     {
         // Handle the error.
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Session reader aborted",
             "Reading process aborted",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
 
         // Signal that we failed to read this file
-        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->asyncEmit(filepath);
+        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
     }
 }
 
@@ -353,9 +353,9 @@ void SReader::updating()
 
 void SReader::openLocationDialog()
 {
-    static auto defaultLocation = std::make_shared<core::location::SingleFolder>();
+    static auto defaultLocation = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog locationDialog;
+    sight::ui::dialog::location locationDialog;
 
     // Set window title
     if(!m_windowTitle.empty())
@@ -368,22 +368,22 @@ void SReader::openLocationDialog()
     }
 
     locationDialog.setDefaultLocation(defaultLocation);
-    locationDialog.setOption(ui::base::dialog::ILocationDialog::READ);
-    locationDialog.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
-    locationDialog.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
+    locationDialog.setOption(ui::dialog::location::READ);
+    locationDialog.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    locationDialog.setType(ui::dialog::location::SINGLE_FILE);
     locationDialog.addFilter(m_pimpl->m_extension_description, "*" + m_pimpl->m_extension_name);
 
     // Show the dialog
-    const auto result = std::dynamic_pointer_cast<core::location::SingleFile>(locationDialog.show());
+    const auto result = std::dynamic_pointer_cast<core::location::single_file>(locationDialog.show());
 
     if(result)
     {
-        const auto& filepath = result->getFile();
-        setFile(filepath);
+        const auto& filepath = result->get_file();
+        set_file(filepath);
         m_pimpl->m_extension_name = locationDialog.getSelectedExtensions().front();
 
         // Save default location for later use
-        defaultLocation->setFolder(filepath.parent_path());
+        defaultLocation->set_folder(filepath.parent_path());
         locationDialog.saveDefaultLocation(defaultLocation);
     }
     else

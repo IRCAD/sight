@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <ui/base/IAction.hpp>
+#include <ui/__/action.hpp>
 
 namespace Tuto13MeshGeneratorCpp
 {
@@ -56,12 +56,12 @@ namespace Tuto13MeshGeneratorCpp
  *  - ShakeCellNormals: shakes cell normals.
  *  - MeshDeformation: deforms the mesh.
  */
-class SMeshModifier final : public sight::ui::base::IAction
+class SMeshModifier final : public sight::ui::action
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMeshModifier, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SMeshModifier, sight::ui::action);
 
     /// Creates the action.
     SMeshModifier() noexcept;

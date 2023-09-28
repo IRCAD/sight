@@ -27,7 +27,7 @@ NAMESPACE_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_:]*) Namespace Reference'
 SRV_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(S[A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
 BAD__SRV_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
 OBJ_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Class Reference')
-IFACE_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(I[A-Z0-9][a-zA-Z0-9_]*|IService)) Class Reference')
+IFACE_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*(I[A-Z0-9][a-zA-Z0-9_]*|base)) Class Reference')
 EXCEPT_RE = re.compile('sight: ([a-zA-Z_][a-zA-Z0-9_]*::(?:[a-zA-Z_][a-zA-Z0-9_]*::)*([A-Z0-9][a-zA-Z0-9_]*)) Struct Reference')
 
 # Regexes of the files to skip
@@ -109,7 +109,7 @@ def parse_file(f_):
     try:
         html = open(os.path.join('./html', f_), encoding="utf8").read()
         soup = bs4.BeautifulSoup(html, "html.parser")
-        inherits_iservice = soup.find(class_='inherit_header pub_methods_classfwServices_1_1IService')
+        inherits_base = soup.find(class_='inherit_header pub_methods_classfwServices_1_1base')
         inherits_object = soup.find(class_='inherit_header pub_methods_classfwData_1_1Object')
         inherits_exception = soup.find(class_='inherit_header pub_methods_classfwCore_1_1Exception')
 
@@ -177,8 +177,8 @@ def parse_file(f_):
             if class_triple is None:
                 return new_entries
             class_name = class_triple[0]
-            if inherits_iservice:
-                # The class inherits IService, it can be a service or an interface
+            if inherits_base:
+                # The class inherits base, it can be a service or an interface
                 triple = is_item_type(soup, 'Interface')
                 if triple is not None:
                     new_entries.append(triple)

@@ -24,11 +24,11 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Reconstruction.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -55,13 +55,13 @@ namespace sight::module::ui::qt::reconstruction
  * - \b reconstruction [sight::data::Reconstruction]: reconstruction containing the material to update.
  */
 class MODULE_UI_QT_CLASS_API SOrganMaterialEditor : public QObject,
-                                                    public sight::ui::base::IEditor
+                                                    public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SOrganMaterialEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SOrganMaterialEditor, sight::ui::editor);
 
     /// Creates the service.
     MODULE_UI_QT_API SOrganMaterialEditor() noexcept;
@@ -75,9 +75,9 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Object::s_MODIFIED_SIG of s_RECONSTRUCTION_INOUT to IService::slots::s_UPDATE
+     * Connect data::Object::MODIFIED_SIG of s_RECONSTRUCTION_INOUT to service::slots::UPDATE
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
     /// Configures the service.
     void configuring() final;

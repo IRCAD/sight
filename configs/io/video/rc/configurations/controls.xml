@@ -31,7 +31,7 @@ channels - out (optional):
     cameraStoppedChannelOut:     channel on which a signal is triggered when the camera is stopped.
     loopModeToggleChannelOut:    channel on which a signal is triggered when the camera loop mode is toggled.
 
-    parameterChannelOut(ui::base::parameter_t, std::string): channel on which a signal is triggered when a named grabber parameter is changed.
+    parameterChannelOut(ui::parameter_t, std::string): channel on which a signal is triggered when a named grabber parameter is changed.
 
     videoPositionParameterOut: channel on which a signal is triggered when the position in the video is modified during playing.
     videoDurationParameterOut: channel on which a signal is triggered when the duration of the video is modified.
@@ -42,7 +42,7 @@ channels - out (optional):
 
 channels - in (optional):
 
-    parameterChannelIn(ui::base::parameter_t, std::string) : channel on which a signal is expected to notify the grabber that a named parameter is changed.
+    parameterChannelIn(ui::parameter_t, std::string) : channel on which a signal is expected to notify the grabber that a named parameter is changed.
     addROICenterChannelIn(sight::data::Point):        channel on which a signal is expected to notify the grabber that a new point has been selected.
     removeROICenterChannelIn(sight::data::Point):     channel on which a signal is expected to notify the grabber that a point has been remove.
 
@@ -116,10 +116,10 @@ Usage:
         <object uid="${camera}" type="sight::data::Camera" src="ref" />
         <object uid="${frameTL}" type="sight::data::FrameTL" src="ref" />
 
-        <service uid="containerViewSrv" type="sight::module::ui::base::SView" >
+        <service uid="containerViewSrv" type="sight::module::ui::SView" >
             <gui>
                 <toolBar />
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
                 </layout>
             </gui>
@@ -134,7 +134,7 @@ Usage:
             <videoSupport>${videoSupport}</videoSupport>
         </service>
 
-        <service uid="toolbarViewSrv" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolbarViewSrv" type="sight::module::ui::SToolBar" >
             <gui>
                 <layout>
                     <editor/>
@@ -163,25 +163,25 @@ Usage:
         <!-- ******************************* Actions ****************************** -->
 
         <!-- Start the frame grabber -->
-        <service uid="startVideoAct" type="sight::module::ui::base::SAction" />
+        <service uid="startVideoAct" type="sight::module::ui::SAction" />
 
         <!-- Pause the frame grabber -->
-        <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
+        <service uid="pauseVideoAct" type="sight::module::ui::SAction" >
             <state visible="false" />
         </service>
 
         <!-- Resume the frame grabber -->
-        <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
+        <service uid="resumeVideoAct" type="sight::module::ui::SAction" >
             <state visible="false" />
         </service>
 
         <!-- Stop the frame grabber -->
-        <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
+        <service uid="stopVideoAct" type="sight::module::ui::SAction" >
             <state enabled="false" />
         </service>
 
         <!-- Loop the frame grabber -->
-        <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
+        <service uid="loopVideoAct" type="sight::module::ui::SAction" >
             <state enabled="false" />
         </service>
 

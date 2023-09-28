@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ MeshConverter::~MeshConverter()
 
 ::igtl::MessageBase::Pointer MeshConverter::fromFwDataObject(data::Object::csptr src) const
 {
-    data::Mesh::csptr meshSrc = data::Mesh::dynamicConstCast(src);
+    data::Mesh::csptr meshSrc = std::dynamic_pointer_cast<const data::Mesh>(src);
 
     ::igtl::PolyDataMessage::Pointer dest = ::igtl::PolyDataMessage::New();
     sight::io::igtl::detail::converter::MeshConverter::copyCellsFromFwMesh(meshSrc, dest);
@@ -309,7 +309,7 @@ data::Object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 
     auto* msg                                = dynamic_cast< ::igtl::PolyDataMessage*>(src.GetPointer());
     ::igtl::PolyDataMessage::Pointer meshMsg = ::igtl::PolyDataMessage::Pointer(msg);
-    data::Mesh::sptr mesh                    = data::Mesh::New();
+    data::Mesh::sptr mesh                    = std::make_shared<data::Mesh>();
 
     const int numberOfPoints = meshMsg->GetPoints()->GetNumberOfPoints();
 
@@ -342,6 +342,9 @@ data::Object::sptr MeshConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
             case ::igtl::PolyDataAttribute::CELL_VECTOR:
                 attributes = attributes | data::Mesh::Attributes::CELL_TEX_COORDS;
                 break;
+
+            default:
+                SIGHT_ERROR("This type of cell is not managed: " << static_cast<std::uint8_t>(attr->GetType()));
         }
     }
 
@@ -535,7 +538,7 @@ void MeshConverter::copyAttributeFromPolyData(
 
 //-----------------------------------------------------------------------------
 
-IConverter::sptr MeshConverter::New()
+base::sptr MeshConverter::New()
 {
     return std::make_shared<MeshConverter>();
 }

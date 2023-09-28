@@ -1,7 +1,7 @@
  # sight::module::viz::scene2D
 
 This module contains services to display various 2D elements.
-The services are implementations of the IAdaptor present in libs/viz/scene2D
+The services are implementations of the adaptor present in libs/viz/scene2D
 
 ## Services
 

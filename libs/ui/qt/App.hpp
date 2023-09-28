@@ -32,15 +32,15 @@ namespace sight::ui::qt
 /**
  * @brief   Defines the Qt application.
  */
-class UI_QT_CLASS_QT_API App : public QApplication
+class UI_QT_CLASS_API_QT App : public QApplication
 {
 Q_OBJECT
 
 public:
 
-    UI_QT_QT_API App(int& argc, char** argv, bool guiEnabled);
+    UI_QT_API_QT App(int& argc, char** argv, bool guiEnabled);
 
-    UI_QT_QT_API bool notify(QObject* receiver, QEvent* e) override;
+    UI_QT_API_QT bool notify(QObject* receiver, QEvent* e) override;
 
 public Q_SLOTS:
 

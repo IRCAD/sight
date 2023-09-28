@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "io/dicom/reader/iod/InformationObjectDefinition.hpp"
 
-#include <core/log/Logger.hpp>
+#include <core/log/logger.hpp>
 
 namespace sight::io::dicom::reader
 {
@@ -55,13 +55,13 @@ public:
     IO_DICOM_API data::Series::sptr read(const data::DicomSeries::csptr& dicomSeries);
 
     /// Get Logger
-    [[nodiscard]] const core::log::Logger::sptr& getLogger() const
+    [[nodiscard]] const core::log::logger::sptr& getLogger() const
     {
         return m_logger;
     }
 
     /// Set Logger
-    void setLogger(const core::log::Logger::sptr& logger)
+    void setLogger(const core::log::logger::sptr& logger)
     {
         m_logger = logger;
     }
@@ -106,7 +106,7 @@ protected:
     SeriesContainerMapType m_seriesContainerMap;
 
     /// Logger
-    core::log::Logger::sptr m_logger;
+    core::log::logger::sptr m_logger;
 
     /// Progress callback for jobs
     ProgressCallback m_progressCallback;

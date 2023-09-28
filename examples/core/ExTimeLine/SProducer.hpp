@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 
 #include "MessageTL.hpp"
 
-#include <core/thread/Timer.hpp>
+#include <core/thread/timer.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 
 /**
  * Do not mark `EXTIMELINE` as incorrect.
@@ -59,11 +59,11 @@ namespace ExTimeLine
  * - \b period : time between two messages, in milliseconds.
  * - \b timelineSize (optional): maximum number of messages inside the timeline.
  */
-class EXTIMELINE_CLASS_API SProducer : public sight::service::IService
+class EXTIMELINE_CLASS_API SProducer : public sight::service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SProducer, sight::service::IService);
+    SIGHT_DECLARE_SERVICE(SProducer, sight::service::base);
 
     EXTIMELINE_API SProducer() noexcept           = default;
     EXTIMELINE_API ~SProducer() noexcept override = default;
@@ -85,7 +85,7 @@ protected:
 private:
 
     /// Timer used to send messages periodically
-    SPTR(sight::core::thread::Timer) m_timer;
+    SPTR(sight::core::thread::timer) m_timer;
 
     /// Message to be sent
     std::string m_message;

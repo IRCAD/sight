@@ -25,7 +25,7 @@
 #include "modules/viz/scene3d/adaptor/SCamera.hpp"
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
@@ -61,8 +61,8 @@ void SFrustum::configuring()
 
     this->setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            this->getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            this->get_id() + "_transform"
         )
     );
 
@@ -82,7 +82,7 @@ void SFrustum::starting()
     this->initialize();
 
     // Create camera
-    m_ogreCamera = this->getSceneManager()->createCamera(Ogre::String(this->getID() + std::string(s_CAMERA_INPUT)));
+    m_ogreCamera = this->getSceneManager()->createCamera(Ogre::String(this->get_id() + std::string(s_CAMERA_INPUT)));
     m_ogreCamera->setVisible(m_isVisible);
 
     // Clipping
@@ -109,7 +109,7 @@ void SFrustum::starting()
     transNode->setDirection(Ogre::Vector3(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1)));
 
     // Create material for the frustum
-    m_material = data::Material::New();
+    m_material = std::make_shared<data::Material>();
     m_material->diffuse()->setRGBA(m_color);
 
     module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
@@ -118,8 +118,8 @@ void SFrustum::starting()
         );
     materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->configure(
-        this->getID() + materialAdaptor->getID(),
-        this->getID() + materialAdaptor->getID(),
+        this->get_id() + materialAdaptor->get_id(),
+        this->get_id() + materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID,
         "ambient"
@@ -127,7 +127,7 @@ void SFrustum::starting()
     materialAdaptor->start();
     materialAdaptor->update();
 
-    m_frustum = this->getSceneManager()->createManualObject(this->getID() + "_frustum");
+    m_frustum = this->getSceneManager()->createManualObject(this->get_id() + "_frustum");
     sight::viz::scene3d::helper::ManualObject::createFrustum(
         m_frustum,
         materialAdaptor->getMaterialName(),
@@ -140,11 +140,11 @@ void SFrustum::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
+service::connections_t SFrustum::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_CAMERA_INPUT, data::Camera::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_CAMERA_INPUT, data::Camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE);
 
     return connections;
 }

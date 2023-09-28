@@ -22,7 +22,7 @@
 
 #include "MacroSaver.hpp"
 
-#include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/profile/profile.hpp>
 
 #include <QAction>
 #include <QCheckBox>
@@ -1038,11 +1038,11 @@ void MacroSaver::save()
         {
             const auto& ilwc = static_cast<PostInteractionModelViewSelect&>(*prePostInteractions[i]);
             if(prePostInteractions[i]->howToFindReceiver.back().type == FindStrategyType::ACTIVE_MODAL_WIDGET
-               && prePostInteractions[i]->howToFindReceiver.back().string == "SelectorDialog")
+               && prePostInteractions[i]->howToFindReceiver.back().string == "selector")
             {
                 if(postInteractions.back()->type == HELPER_API
                    && static_cast<InteractionHelperAPI&>(*postInteractions.back()).methodName
-                   == "SelectorDialog::select"
+                   == "selector::select"
                    && postInteractions.back()->receiverId == prePostInteractions[i]->receiverId)
                 {
                     // The user selected an item then selected another one; take only the last choice
@@ -1053,7 +1053,7 @@ void MacroSaver::save()
                     std::make_unique<InteractionHelperAPI>(
                         ilwc.receiverId,
                         QVector<FindStrategy> {},
-                        "SelectorDialog::select",
+                        "selector::select",
                         std::nullopt,
                         QStringList {QString("\"%1\"").arg(ilwc.name)
                         })
@@ -1063,7 +1063,7 @@ void MacroSaver::save()
                    && prePostInteractions[i + 1]->howToFindReceiver[0].string == "Ok"
                    && prePostInteractions[i + 1]->howToFindReceiver[1].type == FindStrategyType::ACTIVE_MODAL_WIDGET)
                 {
-                    // Ignore the eventual "Ok" button click as it is handled by helper::SelectorDialog::select
+                    // Ignore the eventual "Ok" button click as it is handled by helper::selector::select
                     i++;
                 }
 
@@ -1385,7 +1385,7 @@ void MacroSaver::save()
     write(cpp, 4, "const std::filesystem::path cwd = std::filesystem::path(");
     write(cpp, 8, "boost::dll::this_line_location().parent_path().parent_path().string()");
     write(cpp, 4, ");");
-    std::filesystem::path absoluteProfilePath(sight::core::runtime::getCurrentProfile()->getFilePath());
+    std::filesystem::path absoluteProfilePath(sight::core::runtime::get_current_profile()->get_file_path());
     QString profilePath(QString::fromStdString(std::filesystem::relative(absoluteProfilePath).string()));
     write(cpp, 4, QString("return cwd / \"%1\";").arg(profilePath).toLatin1());
     write(cpp, 0, "}");
@@ -1634,13 +1634,13 @@ void MacroSaver::save()
     hpp.open(QIODevice::WriteOnly);
     write(hpp, 0, "#pragma once");
     write(hpp, 0, "");
-    write(hpp, 0, "#include <ui/testCore/ITest.hpp>");
+    write(hpp, 0, "#include <ui/testCore/test.hpp>");
     write(hpp, 0, "");
-    write(hpp, 0, "#include <core/runtime/profile/Profile.hpp>");
+    write(hpp, 0, "#include <core/runtime/profile/profile.hpp>");
     write(hpp, 0, "");
     write(hpp, 0, "#include <cppunit/extensions/HelperMacros.h>");
     write(hpp, 0, "");
-    write(hpp, 0, "class GuiTest : public sight::ui::testCore::ITest");
+    write(hpp, 0, "class GuiTest : public sight::ui::testCore::test");
     write(hpp, 0, "{");
     write(hpp, 0, "CPPUNIT_TEST_SUITE(GuiTest);");
     write(hpp, 0, "CPPUNIT_TEST(test);");

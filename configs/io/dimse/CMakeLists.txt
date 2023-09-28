@@ -8,7 +8,7 @@ add_dependencies(
     module_io_dimse
     module_service
     module_ui_icons
-    module_ui_base
+    module_ui
     module_ui_qt
     module_viz_scene3d
 )

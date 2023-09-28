@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/adaptor/STransform.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/tools/Color.hpp>
 
@@ -39,13 +39,13 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
+static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "updateLength";
 
 //-----------------------------------------------------------------------------
 
 SVector::SVector() noexcept
 {
-    newSlot(s_UPDATE_LENGTH_SLOT, &SVector::updateLength, this);
+    new_slot(UPDATE_LENGTH_SLOT, &SVector::updateLength, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -58,7 +58,7 @@ void SVector::configuring()
 
     const std::string transformId = config.get<std::string>(
         module::viz::scene3d::adaptor::STransform::s_TRANSFORM_CONFIG,
-        this->getID() + "_transform"
+        this->get_id() + "_transform"
     );
 
     this->setTransformId(transformId);
@@ -82,18 +82,18 @@ void SVector::starting()
 
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     Ogre::SceneNode* transformNode = this->getOrCreateTransformNode(rootSceneNode);
-    m_sceneNode = transformNode->createChildSceneNode(this->getID() + "_mainNode");
+    m_sceneNode = transformNode->createChildSceneNode(this->get_id() + "_mainNode");
 
     // set the material
-    m_material = data::Material::New();
+    m_material = std::make_shared<data::Material>();
 
     m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->configure(
-        this->getID() + m_materialAdaptor->getID(),
-        this->getID() + m_materialAdaptor->getID(),
+        this->get_id() + m_materialAdaptor->get_id(),
+        this->get_id() + m_materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID
     );
@@ -134,7 +134,7 @@ void SVector::stopping()
     Ogre::SceneNode* transformNode = this->getTransformNode();
     if(transformNode != nullptr)
     {
-        transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
+        transformNode->removeAndDestroyChild(this->get_id() + "_mainNode");
     }
 
     this->unregisterServices();
@@ -159,8 +159,8 @@ void SVector::createVector()
 
     // Draw
     Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    m_line = sceneMgr->createManualObject(this->getID() + "_line");
-    m_cone = sceneMgr->createManualObject(this->getID() + "_cone");
+    m_line = sceneMgr->createManualObject(this->get_id() + "_line");
+    m_cone = sceneMgr->createManualObject(this->get_id() + "_cone");
 
     // Line
     sight::viz::scene3d::helper::ManualObject::createCylinder(
@@ -171,7 +171,7 @@ void SVector::createVector()
         cylinderLength,
         sample
     );
-    Ogre::SceneNode* lineNode = m_sceneNode->createChildSceneNode(this->getID() + "_lineNode");
+    Ogre::SceneNode* lineNode = m_sceneNode->createChildSceneNode(this->get_id() + "_lineNode");
     lineNode->attachObject(m_line);
     // Rotate around y axis to create the cylinder on z Axis (consistent with SLine adaptor)
     lineNode->yaw(Ogre::Degree(-90));
@@ -185,7 +185,7 @@ void SVector::createVector()
         coneLength,
         sample
     );
-    Ogre::SceneNode* coneNode = m_sceneNode->createChildSceneNode(this->getID() + "_coneNode");
+    Ogre::SceneNode* coneNode = m_sceneNode->createChildSceneNode(this->get_id() + "_coneNode");
 
     coneNode->attachObject(m_cone);
     coneNode->translate(0.F, 0.F, cylinderLength);
@@ -198,8 +198,8 @@ void SVector::deleteVector()
 {
     if(m_sceneNode != nullptr)
     {
-        m_sceneNode->removeAndDestroyChild(this->getID() + "_lineNode");
-        m_sceneNode->removeAndDestroyChild(this->getID() + "_coneNode");
+        m_sceneNode->removeAndDestroyChild(this->get_id() + "_lineNode");
+        m_sceneNode->removeAndDestroyChild(this->get_id() + "_coneNode");
     }
 
     Ogre::SceneManager* sceneMgr = this->getSceneManager();

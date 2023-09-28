@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signals.hpp>
+#include <core/tools/failed.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -45,13 +45,13 @@ namespace sight::module::ui::qt::viz
  * @note You need to connect the 'snapped' signal to one visuVTKAdaptor::Snapshot to save the file.
  */
 class MODULE_UI_QT_CLASS_API SnapshotEditor : public QObject,
-                                              public sight::ui::base::IEditor
+                                              public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SnapshotEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SnapshotEditor, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SnapshotEditor() noexcept;
@@ -104,8 +104,8 @@ private:
      */
 
     /// Type of signal to snap shot
-    typedef core::com::Signal<void (std::string)> SnappedSignalType;
-    static const core::com::Signals::SignalKeyType s_SNAPPED_SIG;
+    typedef core::com::signal<void (std::string)> SnappedSignalType;
+    static const core::com::signals::key_t SNAPPED_SIG;
 
     SnappedSignalType::sptr m_sigSnapped; ///< snap shot signal
     /**

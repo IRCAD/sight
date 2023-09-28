@@ -4,8 +4,8 @@ Contains all needed interfaces, helper classes and resources to render with the 
 
 ## Files
 
-- **IAdaptor**: provides behavior of Qt3D adaptor services.
-- **IWindowInteractor**: defines an abstract class to manage Qt3D RenderWindow in a qt container.
+- **adaptor**: provides behavior of Qt3D adaptor services.
+- **window_interactor**: defines an abstract class to manage Qt3D RenderWindow in a qt container.
 - **SRender**: renders a scene with Qt3D API.
 
 ### _CMake_

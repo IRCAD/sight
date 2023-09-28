@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,70 +25,70 @@
 #include "modules/io/vtk/SImageWriter.hpp"
 
 #include <core/base.hpp>
-#include <core/com/HasSignals.hpp>
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/com/has_signals.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/jobs/base.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 
-#include <io/base/reader/IObjectReader.hpp>
-#include <io/base/service/IWriter.hpp>
+#include <io/__/reader/IObjectReader.hpp>
+#include <io/__/service/writer.hpp>
 #include <io/vtk/ImageWriter.hpp>
 #include <io/vtk/MetaImageWriter.hpp>
 #include <io/vtk/VtiImageWriter.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::vtk
 {
 
-static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SImageSeriesWriter::SImageSeriesWriter() noexcept
 {
-    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SImageSeriesWriter::getIOPathType() const
+sight::io::service::IOPathType SImageSeriesWriter::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::dialog::location::WRITE);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
-        this->setFile(result->getFile());
+        this->set_file(result->get_file());
     }
     else
     {
@@ -112,7 +112,7 @@ void SImageSeriesWriter::stopping()
 
 void SImageSeriesWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -138,13 +138,13 @@ void SImageSeriesWriter::updating()
             "The object is not a '"
             + data::ImageSeries::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             imageSeries
         );
 
-        sight::ui::base::BusyCursor cursor;
-        SImageWriter::saveImage(this->getFile(), imageSeries, m_sigJobCreated);
+        sight::ui::BusyCursor cursor;
+        SImageWriter::saveImage(this->get_file(), imageSeries, m_sigJobCreated);
         m_writeFailed = false;
     }
 }

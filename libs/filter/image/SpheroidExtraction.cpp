@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "filter/image/SpheroidExtraction.hpp"
 
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <io/itk/itk.hpp>
 
@@ -132,7 +132,7 @@ struct SpheroidExtractor
                                          + inputImage->GetOrigin()[i];
                 }
 
-                data::Point::sptr point = data::Point::New(realPointCoords);
+                data::Point::sptr point = std::make_shared<data::Point>(realPointCoords);
                 params.outputPointList->getPoints().push_back(point);
             }
         }
@@ -150,7 +150,7 @@ data::PointList::sptr SpheroidExtraction::extract(
     const double _elongationMax
 )
 {
-    data::PointList::sptr outputPointList = data::PointList::New();
+    data::PointList::sptr outputPointList = std::make_shared<data::PointList>();
 
     SpheroidExtractor::Parameters params;
     params.inputImage      = _image;
@@ -161,7 +161,7 @@ data::PointList::sptr SpheroidExtraction::extract(
     params.elongationMin   = _elongationMin;
     params.elongationMax   = _elongationMax;
 
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, SpheroidExtractor>::invoke(
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, SpheroidExtractor>::invoke(
         _image->getType(),
         params
     );

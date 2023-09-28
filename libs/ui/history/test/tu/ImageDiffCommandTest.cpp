@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,10 +51,10 @@ void ImageDiffCommandTest::undoredoTest()
     const data::Image::Size SIZE          = {{32, 32, 32}};
     const data::Image::Spacing SPACING    = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
-    const core::Type TYPE                 = core::Type::UINT8;
+    const core::type TYPE                 = core::type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
@@ -120,10 +120,10 @@ void ImageDiffCommandTest::getSizeTest()
     const data::Image::Size SIZE          = {{32, 32, 32}};
     const data::Image::Spacing SPACING    = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
-    const core::Type TYPE                 = core::Type::UINT8;
+    const core::type TYPE                 = core::type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
@@ -156,10 +156,10 @@ void ImageDiffCommandTest::getSizeTest()
     ui::history::ImageDiffCommand imageDiffCommand(image, diff);
 
     // Ensure that the real size is at least bigger than the naive sizeof
-    CPPUNIT_ASSERT(imageDiffCommand.getSize() > sizeof(imageDiffCommand));
+    CPPUNIT_ASSERT(imageDiffCommand.size() > sizeof(imageDiffCommand));
 
     // Ensure that the real size is at least bigger than the size of the diff
-    CPPUNIT_ASSERT(imageDiffCommand.getSize() > diff.getSize());
+    CPPUNIT_ASSERT(imageDiffCommand.size() > diff.size());
 }
 
 //------------------------------------------------------------------------------

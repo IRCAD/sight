@@ -22,9 +22,9 @@
 
 #include "SPointCloudFromDepthMap.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
-#include <core/Profiling.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
+#include <core/profiling.hpp>
 
 #include <filter/vision/Projection.hpp>
 
@@ -39,13 +39,13 @@
 namespace sight::module::filter::vision
 {
 
-const core::com::Slots::SlotKeyType SPointCloudFromDepthMap::s_SET_DEPTH_RANGE = "setDepthRange";
+const core::com::slots::key_t SPointCloudFromDepthMap::SET_DEPTH_RANGE = "setDepthRange";
 
 //------------------------------------------------------------------------------
 
 SPointCloudFromDepthMap::SPointCloudFromDepthMap() noexcept
 {
-    newSlot(s_SET_DEPTH_RANGE, &SPointCloudFromDepthMap::setDepthRange, this);
+    new_slot(SET_DEPTH_RANGE, &SPointCloudFromDepthMap::setDepthRange, this);
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ void SPointCloudFromDepthMap::updating()
     // Initialize mesh points memory one time in order to increase performances
     if(pointCloud->numPoints() == 0)
     {
-        const auto size            = depthMap->getSize();
+        const auto size            = depthMap->size();
         const std::size_t width    = size[0];
         const std::size_t height   = size[1];
         const std::size_t nbPoints = width * height;
@@ -129,8 +129,8 @@ void SPointCloudFromDepthMap::updating()
             itr->pt = data::Mesh::cell_t(i);
         }
 
-        auto sig = pointCloud->signal<data::Mesh::ModifiedSignalType>(data::Mesh::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        auto sig = pointCloud->signal<data::Mesh::ModifiedSignalType>(data::Mesh::MODIFIED_SIG);
+        sig->async_emit();
     }
 
     if(rgbMap)
@@ -145,21 +145,21 @@ void SPointCloudFromDepthMap::updating()
         );
 
         auto sig =
-            pointCloud->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
-        sig->asyncEmit();
+            pointCloud->signal<data::Mesh::signal_t>(data::Mesh::VERTEX_MODIFIED_SIG);
+        sig->async_emit();
 
-        auto sig2 = pointCloud->signal<data::Mesh::signal_t>(data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
-        sig2->asyncEmit();
+        auto sig2 = pointCloud->signal<data::Mesh::signal_t>(data::Mesh::POINT_COLORS_MODIFIED_SIG);
+        sig2->async_emit();
     }
     else
     {
         this->depthMapToPointCloud(depthCalibration, depthMap.get_shared(), pointCloud.get_shared());
         auto sig =
-            pointCloud->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
-        sig->asyncEmit();
+            pointCloud->signal<data::Mesh::signal_t>(data::Mesh::VERTEX_MODIFIED_SIG);
+        sig->async_emit();
     }
 
-    m_sigComputed->asyncEmit();
+    m_sigComputed->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ void SPointCloudFromDepthMap::setDepthRange(int _val, std::string _key)
     else
     {
         SIGHT_ERROR(
-            std::string("unknown key '") + _key + "' in slot '" + s_SET_DEPTH_RANGE + "'"
+            std::string("unknown key '") + _key + "' in slot '" + SET_DEPTH_RANGE + "'"
         );
     }
 }
@@ -207,13 +207,13 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
     SIGHT_INFO("Input RGB map was empty, skipping colors");
 
     const auto type = depthMap->getType();
-    if(type != core::Type::UINT16)
+    if(type != core::type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
-    const auto size          = depthMap->getSize();
+    const auto size          = depthMap->size();
     const std::size_t width  = size[0];
     const std::size_t height = size[1];
 
@@ -266,19 +266,19 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
     SIGHT_INFO("Input RGB map was supplied, including colors");
 
     const auto type = depthMap->getType();
-    if(type != core::Type::UINT16)
+    if(type != core::type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
     }
 
     // Make sure RGB and depth maps are the same size
-    const auto size          = depthMap->getSize();
+    const auto size          = depthMap->size();
     const std::size_t width  = size[0];
     const std::size_t height = size[1];
 
     const auto rgbType = colorMap->getType();
-    if(rgbType != core::Type::UINT8)
+    if(rgbType != core::type::UINT8)
     {
         SIGHT_ERROR("Wrong input rgb format: " << rgbType << ", uint8 is expected.");
         return;
@@ -290,7 +290,7 @@ void SPointCloudFromDepthMap::depthMapToPointCloudRGB(
         return;
     }
 
-    const auto rgbSize          = colorMap->getSize();
+    const auto rgbSize          = colorMap->size();
     const std::size_t rgbWidth  = rgbSize[0];
     const std::size_t rgbHeight = rgbSize[1];
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
 
 #include <data/Image.hpp>
 
-#include <viz/scene3d/detail/IResourceManager.hpp>
+#include <viz/scene3d/detail/resource_manager.hpp>
 
 namespace sight::viz::scene3d::detail
 {
@@ -47,6 +47,6 @@ public:
  *
  * Currently, it is only used for grayscale images.
  */
-using TextureManager = IResourceManager<sight::data::Image, Ogre::Texture, TextureLoader>;
+using TextureManager = resource_manager<sight::data::Image, Ogre::Texture, TextureLoader>;
 
 } // namespace sight::viz::scene3d::detail

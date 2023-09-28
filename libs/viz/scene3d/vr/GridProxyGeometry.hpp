@@ -61,7 +61,7 @@ public:
 
     /// Creates an instance of the objetc.
     //As the object must be created through Ogre::...::createMovableObject, the constructor cannot be called directly
-    static VIZ_SCENE3D_API GridProxyGeometry* New(
+    static VIZ_SCENE3D_API GridProxyGeometry* make(
         const std::string& _name,
         Ogre::SceneManager* _sceneManager,
         const viz::scene3d::Texture::sptr& _3DImageTexture,

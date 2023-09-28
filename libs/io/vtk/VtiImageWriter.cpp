@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
@@ -43,8 +43,8 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-VtiImageWriter::VtiImageWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
-    m_job(core::jobs::Observer::New("VTK Image Writer"))
+VtiImageWriter::VtiImageWriter() :
+    m_job(std::make_shared<core::jobs::observer>("VTK Image Writer"))
 {
 }
 
@@ -68,7 +68,7 @@ void VtiImageWriter::write()
     vtkSmartPointer<vtkImageData> vtkImage        = vtkSmartPointer<vtkImageData>::New();
     io::vtk::toVTKImage(pImage, vtkImage);
     writer->SetInputData(vtkImage);
-    writer->SetFileName(this->getFile().string().c_str());
+    writer->SetFileName(this->get_file().string().c_str());
     writer->SetDataModeToAppended();
 
     vtkSmartPointer<vtkZLibDataCompressor> compressor = vtkSmartPointer<vtkZLibDataCompressor>::New();
@@ -76,17 +76,17 @@ void VtiImageWriter::write()
     writer->SetCompressor(compressor);
     writer->EncodeAppendedDataOff();
 
-    vtkSmartPointer<vtkLambdaCommand> progressCallback;
-    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progressCallback->SetCallback(
+    vtkSmartPointer<vtkLambdaCommand> progress_callback;
+    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progress_callback->SetCallback(
         [this](vtkObject* caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkXMLImageDataWriter*>(caller);
-            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
 
-    writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
-    m_job->addSimpleCancelHook(
+    writer->AddObserver(vtkCommand::ProgressEvent, progress_callback);
+    m_job->add_simple_cancel_hook(
         [&]()
         {
             writer->AbortExecuteOn();
@@ -104,7 +104,7 @@ std::string VtiImageWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-core::jobs::IJob::sptr VtiImageWriter::getJob() const
+core::jobs::base::sptr VtiImageWriter::getJob() const
 {
     return m_job;
 }

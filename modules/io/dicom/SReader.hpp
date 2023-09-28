@@ -23,10 +23,10 @@
 
 #include "modules/io/dicom/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/jobs/IJob.hpp>
+#include <core/com/signal.hpp>
+#include <core/jobs/base.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 namespace sight::module::io::dicom
 {
@@ -34,13 +34,13 @@ namespace sight::module::io::dicom
 /**
  * @brief DICOM generic reader.
  *
- * @details Allow reading a DICOM directory. Part of the configuration is managed by IReader class.
+ * @details Allow reading a DICOM directory. Part of the configuration is managed by reader class.
  *          After selecting a folder, it is scanned and if more than one DICOM Series are found, a selection dialog is
  *          shown allowing to select one or more Series to load. The DICOM series can be filtered by sopFilter and
  *          typeFilter configuration parameters.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is read (it should be
+ * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is read (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -68,17 +68,17 @@ namespace sight::module::io::dicom
  *          - \b "always": always show the location dialog
  *
  *
- * @see sight::io::base::service::IReader
+ * @see sight::io::service::reader
  * @see sight::io::dicom::Reader
  */
 
-class MODULE_IO_DICOM_CLASS_API SReader final : public sight::io::base::service::IReader
+class MODULE_IO_DICOM_CLASS_API SReader final : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SReader, sight::io::service::reader);
 
-    using JobCreatedSignal = core::com::Signal<void (core::jobs::IJob::sptr)>;
+    using JobCreatedSignal = core::com::signal<void (core::jobs::base::sptr)>;
 
     MODULE_IO_DICOM_API SReader() noexcept;
 
@@ -102,9 +102,9 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_DICOM_API sight::io::base::service::IOPathType getIOPathType() const override
+    MODULE_IO_DICOM_API sight::io::service::IOPathType getIOPathType() const override
     {
-        return sight::io::base::service::FOLDER;
+        return sight::io::service::FOLDER;
     }
 
 private:

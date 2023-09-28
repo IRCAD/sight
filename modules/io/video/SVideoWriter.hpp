@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 #include <opencv2/videoio.hpp>
 
@@ -50,11 +50,11 @@ namespace sight::module::io::video
  * @subsection Input Input
  * - \b data [sight::data::FrameTL]: timeline containing the frame to save.
  */
-class MODULE_IO_VIDEO_CLASS_API SVideoWriter : public sight::io::base::service::IWriter
+class MODULE_IO_VIDEO_CLASS_API SVideoWriter : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SVideoWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SVideoWriter, sight::io::service::writer);
 
     /// Constructor.
     MODULE_IO_VIDEO_API SVideoWriter() noexcept;
@@ -63,13 +63,13 @@ public:
     MODULE_IO_VIDEO_API ~SVideoWriter() noexcept override;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    MODULE_IO_VIDEO_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_VIDEO_API service::connections_t getAutoConnections() const override;
 
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_VIDEO_API void openLocationDialog() override;
 
-    /// Return file type (io::base::service::FILE)
-    MODULE_IO_VIDEO_API sight::io::base::service::IOPathType getIOPathType() const override;
+    /// Return file type (io::service::FILE)
+    MODULE_IO_VIDEO_API sight::io::service::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -88,7 +88,7 @@ protected:
 private:
 
     /// SLOT: adds the current frame in the video
-    void saveFrame(core::HiResClock::HiResClockType timestamp);
+    void saveFrame(core::hires_clock::type timestamp);
 
     /// saves current buffer with OpenCV video writer (m_writer must be initialized)
     void writeBuffer(int width, int height, CSPTR(data::FrameTL::BufferType) buffer);
@@ -115,7 +115,7 @@ private:
     bool m_isRecording {false};
 
     /// container used to store first video frame timestamps to compute framerate of the video stream
-    std::vector<core::HiResClock::HiResClockType> m_timestamps;
+    std::vector<core::hires_clock::type> m_timestamps;
 
     /// Extension selected in file dialog
     std::string m_selectedExtension;

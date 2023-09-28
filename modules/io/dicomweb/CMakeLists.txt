@@ -11,10 +11,10 @@ add_dependencies(module_io_dicomweb data module_service)
 target_link_libraries(
     module_io_dicomweb
     PUBLIC core
-           ui_base
+           ui
            ui_qt
            io_http
            data
            service
-           io_base
+           io
 )

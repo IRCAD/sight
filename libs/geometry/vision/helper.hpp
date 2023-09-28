@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "geometry/vision/config.hpp"
 
-#include <core/data/Matrix4.hpp>
-#include <core/data/PointList.hpp>
-#include <core/data/Vector.hpp>
+#include <data/Matrix4.hpp>
+#include <data/PointList.hpp>
+#include <data/Vector.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/calib3d.hpp>

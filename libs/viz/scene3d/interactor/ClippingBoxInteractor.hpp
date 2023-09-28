@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "viz/scene3d/interactor/IInteractor.hpp"
+#include "viz/scene3d/interactor/base.hpp"
 #include "viz/scene3d/widget/ClippingBox.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signals.hpp>
 
 #include <OGRE/OgreMovableObject.h>
 
@@ -34,7 +34,7 @@ namespace sight::viz::scene3d::interactor
 {
 
 /// Picks VR widgets and updates clipping cube.
-class VIZ_SCENE3D_CLASS_API ClippingBoxInteractor final : public IInteractor
+class VIZ_SCENE3D_CLASS_API ClippingBoxInteractor final : public base
 {
 public:
 

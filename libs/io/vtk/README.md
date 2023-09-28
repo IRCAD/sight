@@ -4,7 +4,7 @@ Library for writing and reading data (image, mesh, ...) to and from many VTK for
 
 ## Classes
 
-Most of the classes inherit from io::base::reader::GenericObjectReader or io::base::writer::GenericObjectWriter. They all share almost the same API.
+Most of the classes inherit from io::reader::GenericObjectReader or io::writer::GenericObjectWriter. They all share almost the same API.
 
 ### Helper
 
@@ -28,7 +28,7 @@ Most of the classes inherit from io::base::reader::GenericObjectReader or io::ba
 
 ## How to use it
 
-All `readers` and `writers` which implements `io::base::reader::GenericObjectReader` will share the same usage.
+All `readers` and `writers` which implements `io::reader::GenericObjectReader` will share the same usage.
 
 Here is a sample for `.vti` image:
 

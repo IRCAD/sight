@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include <core/tools/System.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/tools/system.hpp>
+#include <core/tools/uuid.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/ImageSeries.hpp>
@@ -46,18 +46,18 @@ namespace sight::io::bitmap::ut
 
 inline static data::Image::sptr getSyntheticImage(
     std::optional<std::uint32_t> seed = std::nullopt,
-    core::Type type                   = core::Type::UINT8,
+    core::type type                   = core::type::UINT8,
     data::Image::PixelFormat format   = data::Image::RGB
 )
 {
-    using key_t = std::tuple<std::optional<std::uint32_t>, core::Type, data::Image::PixelFormat>;
+    using key_t = std::tuple<std::optional<std::uint32_t>, core::type, data::Image::PixelFormat>;
     static std::map<key_t, data::Image::sptr> s_generated;
 
     const key_t key = std::make_tuple(seed, type, format);
 
     if(const auto& it = s_generated.find(key); it == s_generated.end())
     {
-        auto image           = data::Image::New();
+        auto image           = std::make_shared<data::Image>();
         const auto dump_lock = image->dump_lock();
 
         utestData::generator::Image::generateImage(
@@ -103,11 +103,11 @@ inline static cv::Mat imageToMat(const data::Image::sptr& image, bool clone = tr
 {
     // Convert origin to cv::Mat
     const auto dump_lock = image->dump_lock();
-    const auto& sizes    = image->getSize();
+    const auto& sizes    = image->size();
     auto mat             = cv::Mat(
         std::vector<int> {int(sizes[1]), int(sizes[0])},
         io::opencv::Type::toCv(image->getType(), image->numComponents()),
-        image->getBuffer()
+        image->buffer()
     );
 
     if(clone)
@@ -137,7 +137,7 @@ inline static cv::Mat imageToMat(const data::Image::sptr& image, bool clone = tr
 
 inline static data::Image::sptr matToImage(cv::Mat& mat, bool clone = true)
 {
-    auto image           = data::Image::New();
+    auto image           = std::make_shared<data::Image>();
     const auto dump_lock = image->dump_lock();
 
     cv::Mat mat_copy;

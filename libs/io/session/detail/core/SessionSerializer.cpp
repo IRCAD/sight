@@ -33,7 +33,7 @@
 namespace sight::io::session::detail
 {
 
-using core::crypto::PasswordKeeper;
+using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::Archive;
 
@@ -82,7 +82,7 @@ void SessionSerializer::deepSerialize(
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     const secure_string& password,
-    const PasswordKeeper::EncryptionPolicy encryptionPolicy
+    const password_keeper::encryption_policy encryptionPolicy
 ) const
 {
     // Only serialize non-null object
@@ -95,14 +95,14 @@ void SessionSerializer::deepSerialize(
     data::mt::locked_ptr<const data::Object> lock(object);
 
     // First check the cache
-    const auto& uuid       = object->getUUID();
+    const auto& uuid       = object->get_uuid();
     const auto& uuid_it    = cache.find(uuid);
-    const auto& class_name = object->getClassname();
+    const auto& class_name = object->get_classname();
 
     if(uuid_it != cache.cend())
     {
         boost::property_tree::ptree cached_tree;
-        cached_tree.put(ISession::s_uuid, uuid);
+        cached_tree.put(session::s_uuid, uuid);
         tree.add_child(class_name, cached_tree);
     }
     else
@@ -114,8 +114,8 @@ void SessionSerializer::deepSerialize(
         boost::property_tree::ptree object_tree;
 
         // Put basic meta information
-        object_tree.put(ISession::s_uuid, uuid);
-        Helper::writeString(object_tree, ISession::s_description, object->getDescription());
+        object_tree.put(session::s_uuid, uuid);
+        Helper::writeString(object_tree, session::s_description, object->getDescription());
 
         // Find the serializer using the classname
         const auto& serializer = findSerializer(class_name);
@@ -129,7 +129,7 @@ void SessionSerializer::deepSerialize(
             object_tree,
             object,
             children,
-            ISession::pickle(password, secure_string(uuid), encryptionPolicy)
+            session::pickle(password, secure_string(uuid), encryptionPolicy)
         );
 
         // Serialize children, if needed
@@ -149,7 +149,7 @@ void SessionSerializer::deepSerialize(
             }
 
             // Add children tree
-            object_tree.add_child(ISession::s_children, children_tree);
+            object_tree.add_child(session::s_children, children_tree);
         }
 
         // Serialize fields, if needed
@@ -172,7 +172,7 @@ void SessionSerializer::deepSerialize(
             }
 
             // Add fields tree
-            object_tree.add_child(ISession::s_fields, fields_tree);
+            object_tree.add_child(session::s_fields, fields_tree);
         }
 
         // Add the new tree to the root
@@ -239,7 +239,7 @@ void SessionSerializer::serialize(
     data::Object::csptr object,
     const Archive::ArchiveFormat archiveFormat,
     const secure_string& password,
-    const PasswordKeeper::EncryptionPolicy encryptionPolicy
+    const password_keeper::encryption_policy encryptionPolicy
 ) const
 {
     zip::ArchiveWriter::uptr archive;

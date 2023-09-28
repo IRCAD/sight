@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 
 #include "geometry/data/Matrix4.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/tools/random/Generator.hpp>
+#include <core/com/signal.hxx>
+#include <core/tools/random/generator.hpp>
 
 #include <geometry/data/MeshFunctions.hpp>
 
@@ -44,7 +44,7 @@
 namespace sight::geometry::data
 {
 
-using core::tools::random::safeRand;
+using core::tools::random::safe_rand;
 namespace point = sight::data::iterator::point;
 namespace cell  = sight::data::iterator::cell;
 
@@ -54,7 +54,7 @@ struct RandFloat
 
     float operator()()
     {
-        return ((static_cast<float>(safeRand() % 101) - 50.F)) / 500.F;
+        return ((static_cast<float>(safe_rand() % 101) - 50.F)) / 500.F;
     }
 };
 
@@ -477,10 +477,10 @@ void Mesh::colorizeMeshPoints(sight::data::Mesh::sptr mesh)
 
     for(auto& c : mesh->range<point::rgba>())
     {
-        c.r = static_cast<std::uint8_t>(safeRand() % 256);
-        c.g = static_cast<std::uint8_t>(safeRand() % 256);
-        c.b = static_cast<std::uint8_t>(safeRand() % 256);
-        c.a = static_cast<std::uint8_t>(safeRand() % 256);
+        c.r = static_cast<std::uint8_t>(safe_rand() % 256);
+        c.g = static_cast<std::uint8_t>(safe_rand() % 256);
+        c.b = static_cast<std::uint8_t>(safe_rand() % 256);
+        c.a = static_cast<std::uint8_t>(safe_rand() % 256);
     }
 }
 
@@ -502,10 +502,10 @@ void Mesh::colorizeMeshCells(sight::data::Mesh::sptr mesh)
 
     for(auto& c : mesh->range<cell::rgba>())
     {
-        c.r = static_cast<std::uint8_t>(safeRand() % 256);
-        c.g = static_cast<std::uint8_t>(safeRand() % 256);
-        c.b = static_cast<std::uint8_t>(safeRand() % 256);
-        c.a = static_cast<std::uint8_t>(safeRand() % 256);
+        c.r = static_cast<std::uint8_t>(safe_rand() % 256);
+        c.g = static_cast<std::uint8_t>(safe_rand() % 256);
+        c.b = static_cast<std::uint8_t>(safe_rand() % 256);
+        c.a = static_cast<std::uint8_t>(safe_rand() % 256);
     }
 }
 
@@ -616,8 +616,8 @@ void Mesh::colorizeMeshPoints(
         c.a = colorA;
     }
 
-    auto sig = mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
-    sig->asyncEmit();
+    auto sig = mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::POINT_COLORS_MODIFIED_SIG);
+    sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
@@ -664,8 +664,8 @@ void Mesh::colorizeMeshPoints(
         point3->a = _colorA;
     }
 
-    auto sig = _mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
-    sig->asyncEmit();
+    auto sig = _mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::POINT_COLORS_MODIFIED_SIG);
+    sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
@@ -690,8 +690,8 @@ void Mesh::colorizeMeshCells(
         c.a = colorA;
     }
 
-    auto sig = mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::s_CELL_COLORS_MODIFIED_SIG);
-    sig->asyncEmit();
+    auto sig = mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::CELL_COLORS_MODIFIED_SIG);
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -719,8 +719,8 @@ void Mesh::colorizeMeshCells(
         cell->a = colorA;
     }
 
-    auto sig = mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::s_CELL_COLORS_MODIFIED_SIG);
-    sig->asyncEmit();
+    auto sig = mesh->signal<sight::data::Mesh::signal_t>(sight::data::Mesh::CELL_COLORS_MODIFIED_SIG);
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------

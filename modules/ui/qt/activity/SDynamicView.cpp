@@ -22,18 +22,18 @@
 
 #include "SDynamicView.hpp"
 
-#include <activity/IActivityValidator.hpp>
-#include <activity/IValidator.hpp>
+#include <activity/validator/activity.hpp>
+#include <activity/validator/base.hpp>
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
-#include <core/tools/dateAndTime.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
+#include <core/tools/date_and_time.hpp>
 
 #include <service/extension/AppConfig.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/GuiRegistry.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/registry.hpp>
 
 #include <QBoxLayout>
 #include <QTabWidget>
@@ -44,19 +44,19 @@
 namespace sight::module::ui::qt::activity
 {
 
-static const core::com::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
+static const core::com::slots::key_t CREATE_TAB_SLOT = "createTab";
 
-static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
-static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
+static const core::com::signals::key_t ACTIVITY_SELECTED_SLOT = "activitySelected";
+static const core::com::signals::key_t NOTHING_SELECTED_SLOT  = "nothingSelected";
 
 //------------------------------------------------------------------------------
 
 SDynamicView::SDynamicView() noexcept
 {
-    newSlot(s_CREATE_TAB_SLOT, &SDynamicView::createTab, this);
+    new_slot(CREATE_TAB_SLOT, &SDynamicView::createTab, this);
 
-    m_sigActivitySelected = newSignal<ActivitySelectedSignalType>(s_ACTIVITY_SELECTED_SLOT);
-    m_sigNothingSelected  = newSignal<NothingSelectedSignalType>(s_NOTHING_SELECTED_SLOT);
+    m_sigActivitySelected = new_signal<ActivitySelectedSignalType>(ACTIVITY_SELECTED_SLOT);
+    m_sigNothingSelected  = new_signal<NothingSelectedSignalType>(NOTHING_SELECTED_SLOT);
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ SDynamicView::~SDynamicView() noexcept =
 
 void SDynamicView::configuring()
 {
-    this->sight::ui::base::view::IActivityView::configuring();
+    this->sight::ui::view::IActivityView::configuring();
 
     const auto& config = this->getConfiguration();
 
@@ -80,9 +80,9 @@ void SDynamicView::configuring()
 
 void SDynamicView::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto parentContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     m_tabWidget = new QTabWidget();
     m_tabWidget->setTabsClosable(true);
@@ -141,7 +141,7 @@ void SDynamicView::launchActivity(data::Activity::sptr activity)
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::createTab(sight::activity::ActivityMsg info)
+void SDynamicView::createTab(sight::activity::message info)
 {
     SDynamicViewInfo viewInfo;
     viewInfo.title          = info.getTitle();
@@ -161,15 +161,15 @@ void SDynamicView::createTab(sight::activity::ActivityMsg info)
 void SDynamicView::launchTab(SDynamicViewInfo& info)
 {
     static int count = 0;
-    auto iter        = std::find(m_activityIds.begin(), m_activityIds.end(), info.activity->getID());
+    auto iter        = std::find(m_activityIds.begin(), m_activityIds.end(), info.activity->get_id());
 
     if(iter != m_activityIds.end())
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Launch Activity",
             "The current activity is already launched. \n"
             "It cannot be launched twice.",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         return;
     }
@@ -186,15 +186,15 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     QString finalTitle = QString("%1 %2").arg(info.title.c_str(), "(%1)").arg(m_titleToCount[info.title]);
     info.wid = QString("SDynamicView-%1").arg(count++).toStdString();
 
-    auto subContainer = sight::ui::qt::container::QtContainer::New();
+    auto subContainer = sight::ui::qt::container::widget::make();
     auto* widget      = new QWidget(m_tabWidget);
     subContainer->setQtContainer(widget);
-    sight::ui::base::GuiRegistry::registerWIDContainer(info.wid, subContainer);
+    sight::ui::registry::registerWIDContainer(info.wid, subContainer);
 
     info.replacementMap["WID_PARENT"]  = info.wid;
-    info.replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier(info.viewConfigID);
+    info.replacementMap["GENERIC_UID"] = sight::service::extension::AppConfig::getUniqueIdentifier(info.viewConfigID);
 
-    auto helper = service::IAppConfigManager::New();
+    auto helper = sight::service::app_config_manager::make();
 
     try
     {
@@ -210,10 +210,10 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     }
     catch(std::exception& e)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Activity launch failed",
             e.what(),
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
         SIGHT_ERROR(e.what());
         return;
@@ -221,7 +221,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
 
     info.container = subContainer;
     info.helper    = helper;
-    m_activityIds.insert(info.activity->getID());
+    m_activityIds.insert(info.activity->get_id());
 
     m_dynamicInfoMap[widget] = info;
     m_tabIDList.insert(info.tabID);
@@ -284,19 +284,19 @@ void SDynamicView::closeTab(int index, bool forceClose)
         m_currentWidget = nullptr;
         m_tabWidget->removeTab(index);
 
-        sight::ui::base::GuiRegistry::unregisterWIDContainer(info.wid);
+        sight::ui::registry::unregisterWIDContainer(info.wid);
 
         info.container->destroyContainer();
         info.container.reset();
         m_dynamicInfoMap.erase(widget);
-        m_activityIds.erase(info.activity->getID());
+        m_activityIds.erase(info.activity->get_id());
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Close tab",
             "The tab " + info.title + " can not be closed.",
-            sight::ui::base::dialog::IMessageDialog::INFO
+            sight::ui::dialog::message::INFO
         );
     }
 }
@@ -331,11 +331,11 @@ void SDynamicView::changedTab(int index)
     if(index >= 0)
     {
         SDynamicViewInfo info = m_dynamicInfoMap[widget];
-        m_sigActivitySelected->asyncEmit(info.activity);
+        m_sigActivitySelected->async_emit(info.activity);
     }
     else
     {
-        m_sigNothingSelected->asyncEmit();
+        m_sigNothingSelected->async_emit();
     }
 }
 

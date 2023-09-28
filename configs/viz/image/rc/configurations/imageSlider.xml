@@ -32,9 +32,9 @@ Example:
         <object uid="${image}" type="sight::data::Image" src="ref" />
         <object uid="${transferFunction}" type="sight::data::TransferFunction" src="ref" />
 
-        <service uid="view" type="sight::module::ui::base::SView">
+        <service uid="view" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="1" />
@@ -47,10 +47,10 @@ Example:
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SView">
+        <service uid="toolBarView" type="sight::module::ui::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                 </layout>
             </gui>
@@ -59,7 +59,7 @@ Example:
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="sight::module::ui::base::SToolBar">
+        <service uid="topToolbarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="slice" icon="sight::module::ui::flaticons/Layers.svg" style="radio" />
@@ -75,9 +75,9 @@ Example:
             </registry>
         </service>
 
-        <service uid="sliderView" type="sight::module::ui::base::SView">
+        <service uid="sliderView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" visible="false" />
                     <view proportion="0" visible="true" />
@@ -93,15 +93,15 @@ Example:
 
         <!-- ************************************* Actions ************************************ -->
 
-        <service uid="sliceAct" type="sight::module::ui::base::SAction">
+        <service uid="sliceAct" type="sight::module::ui::SAction">
             <state visible="${enableSliceSlider}" />
         </service>
 
-        <service uid="windowingAct" type="sight::module::ui::base::SAction" >
+        <service uid="windowingAct" type="sight::module::ui::SAction" >
             <state checked="true" />
         </service>
 
-        <service uid="opacityAct" type="sight::module::ui::base::SAction" >
+        <service uid="opacityAct" type="sight::module::ui::SAction" >
             <state visible="${enableOpacity}" />
         </service>
 

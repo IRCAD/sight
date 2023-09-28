@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "filter/dicom/config.hpp"
 
-#include <core/FactoryRegistry.hpp>
+#include <core/factory_registry.hpp>
 #include <core/macros.hpp>
 
 #include <string>
@@ -32,14 +32,14 @@
 namespace sight::filter::dicom
 {
 
-class IFilter;
+class filter;
 
 namespace registry
 {
 
 typedef std::string KeyType;
 
-typedef core::FactoryRegistry<SPTR(filter::dicom::IFilter)(), KeyType> Type;
+typedef core::factory_registry<SPTR(sight::filter::dicom::filter)(), KeyType> Type;
 
 FILTER_DICOM_API SPTR(Type) get();
 

@@ -22,8 +22,8 @@
 
 #include "SChessboardReprojection.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -36,7 +36,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/Preferences.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
@@ -44,19 +44,19 @@
 namespace sight::module::geometry::vision
 {
 
-static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+static const core::com::signals::key_t ERROR_COMPUTED_SIG = "errorComputed";
 
-static const core::com::Slots::SlotKeyType s_TOGGLE_DISTORTION_SLOT      = "toggleDistortion";
-static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::slots::key_t TOGGLE_DISTORTION_SLOT      = "toggleDistortion";
+static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
 //-----------------------------------------------------------------------------
 
 SChessboardReprojection::SChessboardReprojection()
 {
-    newSlot(s_TOGGLE_DISTORTION_SLOT, &SChessboardReprojection::toggleDistortion, this);
-    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessboardReprojection::updateChessboardSize, this);
+    new_slot(TOGGLE_DISTORTION_SLOT, &SChessboardReprojection::toggleDistortion, this);
+    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &SChessboardReprojection::updateChessboardSize, this);
 
-    m_errorComputedSig = newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
+    m_errorComputedSig = new_signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +146,7 @@ void SChessboardReprojection::updating()
             distortionCoefficients
         );
 
-        m_errorComputedSig->asyncEmit(rmse);
+        m_errorComputedSig->async_emit(rmse);
     }
 
     const auto videoImage = m_videoImage.lock();
@@ -248,9 +248,9 @@ void SChessboardReprojection::updating()
         if(drawingEnabled)
         {
             auto sig =
-                videoImage->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+                videoImage->signal<data::Image::BufferModifiedSignalType>(data::Image::BUFFER_MODIFIED_SIG);
 
-            sig->asyncEmit();
+            sig->async_emit();
         }
     }
 }
@@ -279,19 +279,19 @@ void SChessboardReprojection::updateChessboardSize()
 
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
         width      = preferences.get(m_widthKey, width);
         height     = preferences.get(m_heightKey, height);
         squareSize = preferences.get(m_squareSizeKey, squareSize);
     }
-    catch(const ui::base::PreferencesDisabled&)
+    catch(const ui::PreferencesDisabled&)
     {
         // Nothing to do..
     }
 
     m_chessboardModel.clear();
 
-    data::PointList::sptr chessboardModelPl = data::PointList::New();
+    data::PointList::sptr chessboardModelPl = std::make_shared<data::PointList>();
 
     for(std::uint64_t i = 0 ; i < height - 1 ; ++i)
     {
@@ -301,7 +301,7 @@ void SChessboardReprojection::updateChessboardSize()
         {
             const double y = double(j) * squareSize;
             m_chessboardModel.push_back(cv::Point3d(x, y, 0.));
-            chessboardModelPl->pushBack(data::Point::New(x, y, 0.));
+            chessboardModelPl->pushBack(std::make_shared<data::Point>(x, y, 0.));
         }
     }
 
@@ -313,13 +313,13 @@ void SChessboardReprojection::updateChessboardSize()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SChessboardReprojection::getAutoConnections() const
+service::connections_t SChessboardReprojection::getAutoConnections() const
 {
     return {
-        {s_TRANSFORM_INPUT, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_DETECTED_CHESSBOARD_INPUT, data::PointList::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, IService::slots::s_UPDATE},
-        {s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, IService::slots::s_UPDATE}
+        {s_TRANSFORM_INPUT, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE},
+        {s_DETECTED_CHESSBOARD_INPUT, data::PointList::MODIFIED_SIG, service::slots::UPDATE},
+        {s_CAMERA_INPUT, data::Camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE},
+        {s_CAMERA_INPUT, data::Camera::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

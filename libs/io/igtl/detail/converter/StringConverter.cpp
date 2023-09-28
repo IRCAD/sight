@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ StringConverter::~StringConverter()
 
 ::igtl::MessageBase::Pointer StringConverter::fromFwDataObject(data::Object::csptr src) const
 {
-    data::String::csptr srcStr = data::String::dynamicConstCast(src);
+    data::String::csptr srcStr = std::dynamic_pointer_cast<const data::String>(src);
 
     ::igtl::StringMessage::Pointer dest = ::igtl::StringMessage::New();
     dest->SetString(srcStr->getValue().c_str());
@@ -59,7 +59,7 @@ StringConverter::~StringConverter()
 
 data::Object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    data::String::sptr dest = data::String::New();
+    data::String::sptr dest = std::make_shared<data::String>();
 
     auto* msg                             = dynamic_cast< ::igtl::StringMessage*>(src.GetPointer());
     ::igtl::StringMessage::Pointer srcStr = ::igtl::StringMessage::Pointer(msg);
@@ -70,7 +70,7 @@ data::Object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::P
 
 //-----------------------------------------------------------------------------
 
-IConverter::sptr StringConverter::New()
+base::sptr StringConverter::New()
 {
     return std::make_shared<StringConverter>();
 }

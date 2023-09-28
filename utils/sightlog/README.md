@@ -22,8 +22,8 @@ password. BTW, this is **less** secure, as the password is still hardcoded, even
 An input dialog asking for a password will be shown when:
 - the log is encrypted and no `SIGHT_DEFAULT_PASSWORD` is set **or** if `sightrun` is launched with `--ask-password`
   argument.
-- for preferences, if the appropriate `password` and `encryption` `policy` is set in module `ui_base` configuration
-  > take a look at `libs/ui/base/Preferences.hpp`.
+- for preferences, if the appropriate `password` and `encryption` `policy` is set in module `ui` configuration
+  > take a look at `libs/ui/__/Preferences.hpp`.
 - for session files, if the appropriate `password` and `encryption` `policy` is set in SReader and SWriter service
   configuration
   > take a look at `modules/io/session/SReader.hpp` and `modules/io/session/SWriter.hpp`.

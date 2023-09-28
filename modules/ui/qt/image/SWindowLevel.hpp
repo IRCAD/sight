@@ -24,13 +24,13 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -82,13 +82,13 @@ namespace sight::module::ui::qt::image
  * TF.
  */
 class MODULE_UI_QT_CLASS_API SWindowLevel final : public QObject,
-                                                  public sight::ui::base::IEditor
+                                                  public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SWindowLevel, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SWindowLevel, sight::ui::editor);
 
     /// Initialize signals and slots.
     MODULE_UI_QT_API SWindowLevel() noexcept;
@@ -114,10 +114,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG to module::ui::qt::image::SWindowLevel::IService::slots::s_UPDATE
-     * Connect Image::s_BUFFER_MODIFIED_SIG to module::ui::qt::image::SWindowLevel::IService::slots::s_UPDATE
+     * Connect data::Image::MODIFIED_SIG to module::ui::qt::image::SWindowLevel::service::slots::UPDATE
+     * Connect Image::BUFFER_MODIFIED_SIG to module::ui::qt::image::SWindowLevel::service::slots::UPDATE
      */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const final;
+    MODULE_UI_QT_API connections_t getAutoConnections() const final;
 
     /**
      * @brief Adds informations about this service into the stream.

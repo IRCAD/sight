@@ -28,9 +28,9 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/Preferences.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/Preferences.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -55,7 +55,7 @@ SQueryEditor::~SQueryEditor() noexcept =
 
 void SQueryEditor::configuring()
 {
-    service::IService::ConfigType configuration = this->getConfiguration();
+    service::config_t configuration = this->getConfiguration();
     //Parse server port and hostname
     if(configuration.count("server") != 0U)
     {
@@ -68,18 +68,18 @@ void SQueryEditor::configuring()
     }
     else
     {
-        throw core::tools::Failed("'server' element not found");
+        throw core::tools::failed("'server' element not found");
     }
 
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SQueryEditor::starting()
 {
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     // Main Widget
     auto* layout = new QGridLayout();
@@ -141,7 +141,7 @@ void SQueryEditor::queryPatientName()
 {
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
         m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
         m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
@@ -210,7 +210,7 @@ void SQueryEditor::queryStudyDate()
 {
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
         m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
         m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
@@ -319,7 +319,7 @@ void SQueryEditor::updateSeriesSet(const data::SeriesSet::container_type& series
     // Push new series in the SeriesSet
     for(const auto& s : series)
     {
-        const auto& dicomSeries = data::DicomSeries::dynamicCast(s);
+        const auto& dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(s);
         series_set->push_back(dicomSeries);
     }
 }
@@ -328,11 +328,11 @@ void SQueryEditor::updateSeriesSet(const data::SeriesSet::container_type& series
 
 void SQueryEditor::displayErrorMessage(const std::string& message)
 {
-    sight::ui::base::dialog::MessageDialog messageBox;
+    sight::ui::dialog::message messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage(message);
-    messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+    messageBox.setIcon(ui::dialog::message::CRITICAL);
+    messageBox.addButton(ui::dialog::message::OK);
     messageBox.show();
 }
 

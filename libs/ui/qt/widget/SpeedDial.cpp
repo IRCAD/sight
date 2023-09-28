@@ -21,7 +21,7 @@
 
 #include "SpeedDial.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <QEvent>
 #include <QLayout>

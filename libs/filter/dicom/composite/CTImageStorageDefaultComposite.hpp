@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/dicom/composite/IComposite.hpp"
+#include "filter/dicom/composite/base.hpp"
 #include "filter/dicom/config.hpp"
 
 #include <data/DicomSeries.hpp>
@@ -33,18 +33,18 @@ namespace sight::filter::dicom::composite
 /**
  * @brief Default filter used to read CTImageStorage SOP class.
  */
-class FILTER_DICOM_CLASS_API CTImageStorageDefaultComposite : public IComposite
+class FILTER_DICOM_CLASS_API CTImageStorageDefaultComposite : public base
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         CTImageStorageDefaultComposite,
-        IComposite,
-        filter::dicom::factory::New<CTImageStorageDefaultComposite>
+        base,
+        sight::filter::dicom::factory::make<CTImageStorageDefaultComposite>
     );
 
     /// Constructor
-    FILTER_DICOM_API CTImageStorageDefaultComposite(filter::dicom::IFilter::Key key);
+    FILTER_DICOM_API CTImageStorageDefaultComposite();
 
     /// Destructor
     FILTER_DICOM_API ~CTImageStorageDefaultComposite() override;

@@ -22,7 +22,7 @@
 
 #include "SLandmarks.hpp"
 
-#include "core/thread/Worker.hpp"
+#include "core/thread/worker.hpp"
 
 #include "data/dicom/Attribute.hpp"
 #include "data/FiducialsSeries.hpp"
@@ -31,16 +31,16 @@
 
 #include "viz/scene3d/IMaterialAdaptor.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/tools/uuid.hpp>
 
-#include <ui/base/Cursor.hpp>
+#include <ui/__/cursor.hpp>
 
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 
-#include <modules/viz/scene3dQt/WindowInteractor.hpp>
+#include <modules/viz/scene3dQt/window_interactor.hpp>
 
 #include <QHBoxLayout>
 
@@ -143,7 +143,7 @@ void setPoint(
         {
             // Generate a frame of reference UID if the image doesn't have one. It is supposed to be mandatory according
             // to the DICOM standard anyway.
-            frameOfReferenceUID = core::tools::UUID::generateUUID();
+            frameOfReferenceUID = core::tools::UUID::generate();
             imageSeries->setStringValue(data::dicom::attribute::Keyword::FrameOfReferenceUID, frameOfReferenceUID);
         }
 
@@ -313,40 +313,40 @@ Ogre::Vector3 SLandmarks::getCamDirection(const Ogre::Camera* const _cam)
 
 SLandmarks::SLandmarks() noexcept
 {
-    newSlot(Slots::REMOVE_ALL, &SLandmarks::removeAll, this);
-    newSlot(Slots::REMOVE_GROUP, &SLandmarks::removeGroup, this);
-    newSlot(Slots::MODIFY_GROUP, &SLandmarks::modifyGroup, this);
-    newSlot(Slots::MODIFY_POINT, &SLandmarks::modifyPoint, this);
-    newSlot(Slots::ADD_POINT, &SLandmarks::addPoint, this);
-    newSlot(Slots::REMOVE_POINT, &SLandmarks::removePoint, this);
-    newSlot(Slots::INSERT_POINT, &SLandmarks::insertPoint, this);
-    newSlot(Slots::SELECT_POINT, &SLandmarks::selectPoint, this);
-    newSlot(Slots::DESELECT_POINT, &SLandmarks::deselectPoint, this);
-    newSlot(Slots::SLICE_TYPE, &SLandmarks::changeSliceType, this);
-    newSlot(Slots::SLICE_INDEX, &SLandmarks::changeSliceIndex, this);
-    newSlot(Slots::RENAME_GROUP, &SLandmarks::renameGroup, this);
-    newSlot(Slots::SET_CURRENT_GROUP, &SLandmarks::setCurrentGroup, this);
-    newSlot(Slots::REMOVE_LANDMARKS, &SLandmarks::removeLandmarks, this);
-    newSlot(Slots::CREATE_LANDMARK, &SLandmarks::createLandmark, this);
-    newSlot(Slots::CONFIGURE_LANDMARKS, &SLandmarks::configureLandmarks, this);
-    newSlot(Slots::ENABLE_EDIT_MODE, &SLandmarks::enableEditMode, this);
-    newSlot(Slots::DISABLE_EDIT_MODE, &SLandmarks::disableEditMode, this);
-    newSlot(
+    new_slot(Slots::REMOVE_ALL, &SLandmarks::removeAll, this);
+    new_slot(Slots::REMOVE_GROUP, &SLandmarks::removeGroup, this);
+    new_slot(Slots::MODIFY_GROUP, &SLandmarks::modifyGroup, this);
+    new_slot(Slots::MODIFY_POINT, &SLandmarks::modifyPoint, this);
+    new_slot(Slots::ADD_POINT, &SLandmarks::addPoint, this);
+    new_slot(Slots::REMOVE_POINT, &SLandmarks::removePoint, this);
+    new_slot(Slots::INSERT_POINT, &SLandmarks::insertPoint, this);
+    new_slot(Slots::SELECT_POINT, &SLandmarks::selectPoint, this);
+    new_slot(Slots::DESELECT_POINT, &SLandmarks::deselectPoint, this);
+    new_slot(Slots::SLICE_TYPE, &SLandmarks::changeSliceType, this);
+    new_slot(Slots::SLICE_INDEX, &SLandmarks::changeSliceIndex, this);
+    new_slot(Slots::RENAME_GROUP, &SLandmarks::renameGroup, this);
+    new_slot(Slots::SET_CURRENT_GROUP, &SLandmarks::setCurrentGroup, this);
+    new_slot(Slots::REMOVE_LANDMARKS, &SLandmarks::removeLandmarks, this);
+    new_slot(Slots::CREATE_LANDMARK, &SLandmarks::createLandmark, this);
+    new_slot(Slots::CONFIGURE_LANDMARKS, &SLandmarks::configureLandmarks, this);
+    new_slot(Slots::ENABLE_EDIT_MODE, &SLandmarks::enableEditMode, this);
+    new_slot(Slots::DISABLE_EDIT_MODE, &SLandmarks::disableEditMode, this);
+    new_slot(
         Slots::TOGGLE_EDIT_MODE,
         [this]
         {
             (m_editMode& EditMode::EDIT) == EditMode::EDIT ? disableEditMode() : enableEditMode();
         });
-    newSlot(Slots::CHANGE_EDIT_MODE, [this](bool editMode){editMode ? enableEditMode() : disableEditMode();});
-    newSlot(Slots::ENABLE_MOVE_MODE, &SLandmarks::enableMoveMode, this);
-    newSlot(Slots::DISABLE_MOVE_MODE, &SLandmarks::disableMoveMode, this);
-    newSlot(
+    new_slot(Slots::CHANGE_EDIT_MODE, [this](bool editMode){editMode ? enableEditMode() : disableEditMode();});
+    new_slot(Slots::ENABLE_MOVE_MODE, &SLandmarks::enableMoveMode, this);
+    new_slot(Slots::DISABLE_MOVE_MODE, &SLandmarks::disableMoveMode, this);
+    new_slot(
         Slots::TOGGLE_MOVE_MODE,
         [this]
         {
             (m_editMode& EditMode::MOVE) == EditMode::MOVE ? disableMoveMode() : enableMoveMode();
         });
-    newSlot(Slots::CHANGE_MOVE_MODE, [this](bool editMode){editMode ? enableMoveMode() : disableMoveMode();});
+    new_slot(Slots::CHANGE_MOVE_MODE, [this](bool editMode){editMode ? enableMoveMode() : disableMoveMode();});
 }
 
 //-----------------------------------------------------------------------------
@@ -359,8 +359,8 @@ void SLandmarks::configuring()
 
     setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            get_id() + "_transform"
         )
     );
 
@@ -445,7 +445,7 @@ void SLandmarks::configuring()
     m_currentGroup = config.get<std::string>(s_INITIAL_GROUP, m_currentGroup);
 
     // Initial color
-    auto color = sight::data::Color::New();
+    auto color = std::make_shared<sight::data::Color>();
     color->setRGBA(config.get<std::string>(s_INITIAL_COLOR, "#FFFF00FF"));
     m_currentColor = {color->red(), color->green(), color->blue(), color->alpha()};
 
@@ -501,8 +501,8 @@ void SLandmarks::starting()
     auto* rootSceneNode = getSceneManager()->getRootSceneNode();
     m_transNode = getOrCreateTransformNode(rootSceneNode);
 
-    m_material = data::Material::New();
-    m_material->setDiffuse(data::Color::New(1.F, 1.F, 1.F, 1.F));
+    m_material = std::make_shared<data::Material>();
+    m_material->setDiffuse(std::make_shared<data::Color>(1.F, 1.F, 1.F, 1.F));
 
     // Register the material adaptor.
     m_materialAdaptor = this->registerService<sight::viz::scene3d::IMaterialAdaptor>(
@@ -510,8 +510,8 @@ void SLandmarks::starting()
     );
     m_materialAdaptor->setInOut(m_material, sight::viz::scene3d::IMaterialAdaptor::s_MATERIAL_INOUT, true);
     m_materialAdaptor->configure(
-        this->getID() + m_materialAdaptor->getID(),
-        this->getID() + m_materialAdaptor->getID(),
+        this->get_id() + m_materialAdaptor->get_id(),
+        this->get_id() + m_materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID
     );
@@ -522,7 +522,7 @@ void SLandmarks::starting()
 
     if(m_interactive)
     {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(getSptr());
+        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(get_sptr());
         getLayer()->addInteractor(interactor, m_priority);
     }
 
@@ -530,19 +530,19 @@ void SLandmarks::starting()
     updating();
 
     auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+    auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
     auto* parentWidget = qtInteractor->getQtWidget();
     m_contextualMenu = new QWidget(parentWidget);
     m_contextualMenu->setStyleSheet(".QWidget {background-color: none;}");
     m_contextualMenu->hide();
     auto* layout = new QHBoxLayout;
     QIcon trashBinIcon(QString::fromStdString(
-                           core::runtime::getModuleResourceFilePath(
+                           core::runtime::get_module_resource_file_path(
                                "sight::module::ui::flaticons/RedTrashBin.svg"
                            ).string()
     ));
     auto* binButton             = new QPushButton(trashBinIcon, "");
-    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+    const std::string serviceID = get_id().substr(get_id().find_last_of('_') + 1);
     binButton->setObjectName(QString::fromStdString(serviceID) + "/binButton");
     binButton->setCursor(Qt::ArrowCursor);
     binButton->adjustSize();
@@ -562,7 +562,7 @@ void SLandmarks::starting()
     if(m_renamingAllowed)
     {
         QIcon penIcon(QString::fromStdString(
-                          core::runtime::getModuleResourceFilePath(
+                          core::runtime::get_module_resource_file_path(
                               "sight::module::ui::flaticons/YellowPen.svg"
                           ).string()
         ));
@@ -597,39 +597,39 @@ void SLandmarks::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+service::connections_t SLandmarks::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
+    service::connections_t connections;
 
-    connections.push(s_TRANSFORM_CONFIG, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_TRANSFORM_CONFIG, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE);
 
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_REMOVED_SIG, Slots::REMOVE_GROUP);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_MODIFIED_SIG, Slots::MODIFY_GROUP);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_RENAMED_SIG, Slots::RENAME_GROUP);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_MODIFIED_SIG, Slots::MODIFY_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_ADDED_SIG, Slots::ADD_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_REMOVED_SIG, Slots::REMOVE_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_INSERTED_SIG, Slots::INSERT_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_SELECTED_SIG, Slots::SELECT_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_DESELECTED_SIG, Slots::DESELECT_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_REMOVED_SIG, Slots::REMOVE_GROUP);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_MODIFIED_SIG, Slots::MODIFY_GROUP);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_RENAMED_SIG, Slots::RENAME_GROUP);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_MODIFIED_SIG, Slots::MODIFY_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_ADDED_SIG, Slots::ADD_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_REMOVED_SIG, Slots::REMOVE_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_INSERTED_SIG, Slots::INSERT_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_SELECTED_SIG, Slots::SELECT_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_DESELECTED_SIG, Slots::DESELECT_POINT);
 
-    connections.push(s_IMAGE_SERIES_INOUT, data::ImageSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_REMOVED, Slots::REMOVE_GROUP);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_MODIFIED, Slots::MODIFY_GROUP);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_RENAMED, Slots::RENAME_GROUP);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_MODIFIED, Slots::MODIFY_POINT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_ADDED, Slots::ADD_POINT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_REMOVED, Slots::REMOVE_POINT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_INSERTED, Slots::INSERT_POINT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_SELECTED, Slots::SELECT_POINT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_DESELECTED, Slots::DESELECT_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::ImageSeries::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_REMOVED, Slots::REMOVE_GROUP);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_MODIFIED, Slots::MODIFY_GROUP);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_RENAMED, Slots::RENAME_GROUP);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_MODIFIED, Slots::MODIFY_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_ADDED, Slots::ADD_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_REMOVED, Slots::REMOVE_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_INSERTED, Slots::INSERT_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_SELECTED, Slots::SELECT_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_DESELECTED, Slots::DESELECT_POINT);
 
-    connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, Slots::SLICE_TYPE);
-    connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, Slots::SLICE_INDEX);
+    connections.push(s_IMAGE_INPUT, data::Image::SLICE_TYPE_MODIFIED_SIG, Slots::SLICE_TYPE);
+    connections.push(s_IMAGE_INPUT, data::Image::SLICE_INDEX_MODIFIED_SIG, Slots::SLICE_INDEX);
 
-    connections.push(s_IMAGE_SERIES_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, Slots::SLICE_TYPE);
-    connections.push(s_IMAGE_SERIES_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, Slots::SLICE_INDEX);
+    connections.push(s_IMAGE_SERIES_INOUT, data::Image::SLICE_TYPE_MODIFIED_SIG, Slots::SLICE_TYPE);
+    connections.push(s_IMAGE_SERIES_INOUT, data::Image::SLICE_INDEX_MODIFIED_SIG, Slots::SLICE_INDEX);
 
     return connections;
 }
@@ -660,7 +660,7 @@ void SLandmarks::stopping()
 {
     if(m_interactive)
     {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(getSptr());
+        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(get_sptr());
         getLayer()->removeInteractor(interactor);
     }
 
@@ -722,8 +722,8 @@ void SLandmarks::removeAll()
         for(const std::string& grp : lfLock.landmarks->getGroupNames())
         {
             lfLock.landmarks->removeGroup(grp);
-            lfLock.landmarks->signal<data::Landmarks::GroupRemovedSignalType>(data::Landmarks::s_GROUP_REMOVED_SIG)->
-            asyncEmit(grp);
+            lfLock.landmarks->signal<data::Landmarks::GroupRemovedSignalType>(data::Landmarks::GROUP_REMOVED_SIG)->
+            async_emit(grp);
         }
     }
     else if(lfLock.imageSeries != nullptr)
@@ -772,9 +772,9 @@ void SLandmarks::removeAll()
         lfLock.imageSeries->getFiducials()->setFiducialSets(fiducialSets);
         for(const std::string& group : deletedGroupNames)
         {
-            lfLock.imageSeries->signal<data::IHasFiducials::signals::GroupRemoved>(
-                data::IHasFiducials::signals::GROUP_REMOVED
-            )->asyncEmit(group);
+            lfLock.imageSeries->signal<data::has_fiducials::signals::GroupRemoved>(
+                data::has_fiducials::signals::GROUP_REMOVED
+            )->async_emit(group);
         }
     }
 }
@@ -1014,7 +1014,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::createManualObject(
         Ogre::ColourValue(_groupData.m_color[0], _groupData.m_color[1], _groupData.m_color[2], _groupData.m_color[3]);
 
     Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    Ogre::ManualObject* object   = sceneMgr->createManualObject(this->getID() + "_" + pointName + "_object");
+    Ogre::ManualObject* object   = sceneMgr->createManualObject(this->get_id() + "_" + pointName + "_object");
     switch(_groupData.m_shape)
     {
         case data::Landmarks::Shape::SPHERE:
@@ -1038,7 +1038,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::createManualObject(
 
     object->setQueryFlags(m_landmarksQueryFlag);
 
-    Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->getID() + "_" + pointName + "_node");
+    Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->get_id() + "_" + pointName + "_node");
 
     // Set the point to the right position.
     node->setPosition(Ogre::Real(_pointPos[0]), Ogre::Real(_pointPos[1]), Ogre::Real(_pointPos[2]));
@@ -1051,7 +1051,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::createManualObject(
     if(m_enableLabels)
     {
         // Create the label.
-        text = sight::viz::scene3d::IText::New(this->getLayer());
+        text = sight::viz::scene3d::IText::make(this->getLayer());
         text->setFontSize(m_fontSize);
         text->setText(pointName);
         text->setTextColor(color);
@@ -1070,7 +1070,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::createManualObject(
     {
         // The landmark should be in a weak ptr, else there is a circular reference (the slot refers to the landmark via
         // newLandmark, and the landmark refers to the slot via m_slots).
-        auto slotTextEdited = core::com::newSlot(
+        auto slotTextEdited = core::com::new_slot(
             [this, weakLandmark = std::weak_ptr(newLandmark)](std::string editedText)
             {
                 auto landmark             = weakLandmark.lock();
@@ -1090,9 +1090,9 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::createManualObject(
                     renameGroup(oldGroupName, newGroupName);
                     auto signal =
                         lock.landmarks->signal<data::Landmarks::GroupRenamedSignalType>(
-                            data::Landmarks::s_GROUP_RENAMED_SIG
+                            data::Landmarks::GROUP_RENAMED_SIG
                         );
-                    signal->asyncEmit(
+                    signal->async_emit(
                         oldGroupName,
                         newGroupName
                     );
@@ -1109,22 +1109,22 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::createManualObject(
 
                     lock.imageSeries->getFiducials()->setGroupName(fiducialSet->second, newGroupName);
                     renameGroup(oldGroupName, newGroupName);
-                    lock.imageSeries->signal<data::IHasFiducials::signals::GroupRenamed>(
-                        data::IHasFiducials::signals::GROUP_RENAMED
-                    )->asyncEmit(oldGroupName, newGroupName);
+                    lock.imageSeries->signal<data::has_fiducials::signals::GroupRenamed>(
+                        data::has_fiducials::signals::GROUP_RENAMED
+                    )->async_emit(oldGroupName, newGroupName);
                 }
             });
-        slotTextEdited->setWorker(core::thread::getDefaultWorker());
-        newLandmark->m_label->signal(sight::viz::scene3d::IText::s_TEXT_EDITED_SIGNAL)->connect(slotTextEdited);
+        slotTextEdited->set_worker(core::thread::get_default_worker());
+        newLandmark->m_label->signal(sight::viz::scene3d::IText::TEXT_EDITED_SIGNAL)->connect(slotTextEdited);
         newLandmark->m_slots.push_back(slotTextEdited);
 
-        auto slotEditingFinish = core::com::newSlot(
+        auto slotEditingFinish = core::com::new_slot(
             [label = std::weak_ptr(newLandmark->m_label)]
             {
                 label.lock()->setEditMode(false);
             });
-        slotEditingFinish->setWorker(core::thread::getDefaultWorker());
-        newLandmark->m_label->signal(sight::viz::scene3d::IText::s_EDITING_FINISHED_SIGNAL)->connect(slotEditingFinish);
+        slotEditingFinish->set_worker(core::thread::get_default_worker());
+        newLandmark->m_label->signal(sight::viz::scene3d::IText::EDITING_FINISHED_SIGNAL)->connect(slotEditingFinish);
         newLandmark->m_slots.push_back(slotEditingFinish);
     }
 
@@ -1210,17 +1210,17 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 
                 // Create thread data.
                 std::shared_ptr<SelectedLandmark> selectedLandmark =
-                    std::make_shared<SelectedLandmark>(this->worker()->createTimer(), m_manualObject);
+                    std::make_shared<SelectedLandmark>(this->worker()->create_timer(), m_manualObject);
                 m_selectedLandmarks.push_back(selectedLandmark);
 
                 // Run a thread that change the selected point.
-                core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(500);
-                selectedLandmark->m_timer->setFunction(
+                core::thread::timer::time_duration_t duration = std::chrono::milliseconds(500);
+                selectedLandmark->m_timer->set_function(
                     [this, selectedLandmark](auto&& ...)
                     {
                         hightlight(selectedLandmark);
                     });
-                selectedLandmark->m_timer->setDuration(duration);
+                selectedLandmark->m_timer->set_duration(duration);
                 selectedLandmark->m_timer->start();
             }
 
@@ -1440,7 +1440,7 @@ void SLandmarks::removeLandmarks()
             object = flLock.imageSeries->getFiducials();
         }
 
-        object->signal<sight::data::Object::ModifiedSignalType>(sight::data::Object::s_MODIFIED_SIG)->asyncEmit();
+        object->signal<sight::data::Object::ModifiedSignalType>(sight::data::Object::MODIFIED_SIG)->async_emit();
     }
 }
 
@@ -1526,13 +1526,13 @@ void SLandmarks::enableEditMode()
     if(m_eventFilter == nullptr)
     {
         auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
         auto* parentWidget = qtInteractor->getQtWidget();
         m_eventFilter = std::make_unique<DeleteContextualMenuWhenFocusOut>(this);
         parentWidget->installEventFilter(m_eventFilter.get());
     }
 
-    m_editModeChanged->asyncEmit(true);
+    m_editModeChanged->async_emit(true);
 }
 
 //------------------------------------------------------------------------------
@@ -1549,7 +1549,7 @@ void SLandmarks::disableEditMode()
     if(m_editMode == EditMode::DISPLAY)
     {
         auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
         auto* parentWidget = qtInteractor->getQtWidget();
         parentWidget->unsetCursor();
     }
@@ -1561,7 +1561,7 @@ void SLandmarks::disableEditMode()
         std::ranges::for_each(m_manualObjects, [](std::shared_ptr<Landmark> l){l->m_label->setEditMode(false);});
     }
 
-    m_editModeChanged->asyncEmit(false);
+    m_editModeChanged->async_emit(false);
 }
 
 //------------------------------------------------------------------------------
@@ -1592,7 +1592,7 @@ void SLandmarks::disableMoveMode()
     if(m_editMode == EditMode::DISPLAY)
     {
         auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
         auto* parentWidget = qtInteractor->getQtWidget();
         parentWidget->unsetCursor();
     }
@@ -1629,10 +1629,10 @@ void SLandmarks::createAndPickLandmark(const sight::data::Landmarks::PointType& 
             {
                 lfLock.landmarks->addGroup(m_currentGroup, m_currentColor, m_currentSize, m_currentShape);
                 const auto& sig = lfLock.landmarks->signal<sight::data::Landmarks::GroupAddedSignalType>(
-                    sight::data::Landmarks::s_GROUP_ADDED_SIG
+                    sight::data::Landmarks::GROUP_ADDED_SIG
                 );
 
-                sig->asyncEmit(m_currentGroup);
+                sig->async_emit(m_currentGroup);
             }
 
             lfLock.landmarks->addPoint(m_currentGroup, point);
@@ -1643,11 +1643,11 @@ void SLandmarks::createAndPickLandmark(const sight::data::Landmarks::PointType& 
 
             // Block the signal to avoid being called back.
             const auto& sig = lfLock.landmarks->signal<sight::data::Landmarks::PointAddedSignalType>(
-                sight::data::Landmarks::s_POINT_ADDED_SIG
+                sight::data::Landmarks::POINT_ADDED_SIG
             );
 
-            sight::core::com::Connection::Blocker blocker(sig->getConnection(slot(Slots::ADD_POINT)));
-            sig->asyncEmit(m_currentGroup);
+            sight::core::com::connection::blocker blocker(sig->get_connection(slot(Slots::ADD_POINT)));
+            sig->async_emit(m_currentGroup);
         }
         else if(lfLock.imageSeries != nullptr)
         {
@@ -1672,9 +1672,9 @@ void SLandmarks::createAndPickLandmark(const sight::data::Landmarks::PointType& 
                 }
 
                 indexOfGroup = lfLock.imageSeries->getFiducials()->getFiducialSets().size();
-                lfLock.imageSeries->signal<data::IHasFiducials::signals::GroupAdded>(
-                    data::IHasFiducials::signals::GROUP_ADDED
-                )->asyncEmit(m_currentGroup);
+                lfLock.imageSeries->signal<data::has_fiducials::signals::GroupAdded>(
+                    data::has_fiducials::signals::GROUP_ADDED
+                )->async_emit(m_currentGroup);
             }
             else
             {
@@ -1687,7 +1687,7 @@ void SLandmarks::createAndPickLandmark(const sight::data::Landmarks::PointType& 
             std::string fiducialName = m_currentGroup + '_' + std::to_string(index);
             fiducial.fiducialDescription = fiducialName; // TODO: Add a more appropriate description?
             fiducial.fiducialIdentifier  = fiducialName;
-            fiducial.fiducialUID         = core::tools::UUID::generateUUID();
+            fiducial.fiducialUID         = core::tools::UUID::generate();
             setPoint(fiducialSet, fiducial, point, lfLock.imageSeries.get_shared());
             fiducialSet.fiducialSequence.push_back(fiducial);
             lfLock.imageSeries->getFiducials()->setFiducialSet(indexOfGroup, fiducialSet);
@@ -1696,12 +1696,12 @@ void SLandmarks::createAndPickLandmark(const sight::data::Landmarks::PointType& 
 
             // Block the signal to avoid being called back.
             const auto& sig =
-                lfLock.imageSeries->signal<data::IHasFiducials::signals::PointAdded>(
-                    data::IHasFiducials::signals::POINT_ADDED
+                lfLock.imageSeries->signal<data::has_fiducials::signals::PointAdded>(
+                    data::has_fiducials::signals::POINT_ADDED
                 );
 
-            sight::core::com::Connection::Blocker blocker(sig->getConnection(slot(Slots::ADD_POINT)));
-            sig->asyncEmit(m_currentGroup);
+            sight::core::com::connection::blocker blocker(sig->get_connection(slot(Slots::ADD_POINT)));
+            sig->async_emit(m_currentGroup);
         }
         else
         {
@@ -2070,9 +2070,9 @@ void SLandmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int
             point[2] = newPos[2];
 
             const auto& sig = lfLock.landmarks->signal<data::Landmarks::PointModifiedSigType>(
-                data::Landmarks::s_POINT_MODIFIED_SIG
+                data::Landmarks::POINT_MODIFIED_SIG
             );
-            sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
+            sig->async_emit(m_pickedData->m_groupName, m_pickedData->m_index);
         }
         else if(lfLock.imageSeries != nullptr)
         {
@@ -2093,9 +2093,9 @@ void SLandmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int
             setPoint(fiducialSet->first, fiducial, {newPos.x, newPos.y, newPos.z}, lfLock.imageSeries.get_shared());
             lfLock.imageSeries->getFiducials()->setFiducialSet(fiducialSet->second, fiducialSet->first);
 
-            lfLock.imageSeries->signal<data::IHasFiducials::signals::PointModified>(
-                data::IHasFiducials::signals::POINT_MODIFIED
-            )->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
+            lfLock.imageSeries->signal<data::has_fiducials::signals::PointModified>(
+                data::has_fiducials::signals::POINT_MODIFIED
+            )->async_emit(m_pickedData->m_groupName, m_pickedData->m_index);
         }
 
         this->requestRender();
@@ -2132,7 +2132,7 @@ void SLandmarks::buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int
             );
             const auto ratio   = m_contextualMenu->devicePixelRatioF();
             auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-            auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+            auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
             auto* parentWidget = qtInteractor->getQtWidget();
             const int x        = std::clamp(
                 int(((screenPos.first.x + screenPos.second.x) / 2) / ratio),
@@ -2149,7 +2149,7 @@ void SLandmarks::buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int
 
             m_contextualMenu->move(x, y);
             m_contextualMenu->raise();
-            const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+            const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
             auto* binButton         = m_contextualMenu->findChild<QPushButton*>(serviceID + "/binButton");
             SIGHT_ASSERT("The contextual menu should have the bin button", binButton);
             binButton->disconnect();
@@ -2164,8 +2164,8 @@ void SLandmarks::buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int
                     {
                         lfLock.landmarks->removePoint(groupName, index);
                         lfLock.landmarks->signal<sight::data::Landmarks::PointRemovedSignalType>(
-                            sight::data::Landmarks::s_POINT_REMOVED_SIG
-                        )->asyncEmit(
+                            sight::data::Landmarks::POINT_REMOVED_SIG
+                        )->async_emit(
                             groupName,
                             index
                         );
@@ -2173,9 +2173,9 @@ void SLandmarks::buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int
                     else if(lfLock.imageSeries != nullptr)
                     {
                         lfLock.imageSeries->getFiducials()->removePoint(groupName, index);
-                        lfLock.imageSeries->signal<data::IHasFiducials::signals::PointRemoved>(
-                            data::IHasFiducials::signals::POINT_REMOVED
-                        )->asyncEmit(groupName, index);
+                        lfLock.imageSeries->signal<data::has_fiducials::signals::PointRemoved>(
+                            data::has_fiducials::signals::POINT_REMOVED
+                        )->async_emit(groupName, index);
                     }
                 });
             if(m_renamingAllowed)
@@ -2242,7 +2242,7 @@ void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mod
             data::Landmarks::PointType point = *maybePoint;
 
             // Send signal with world coordinates of the landmarks
-            m_send_world_coord->asyncEmit(
+            m_send_world_coord->async_emit(
                 point[0],
                 point[1],
                 point[2]
@@ -2345,7 +2345,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::tryPick(int _x, int _y, bool f
 void SLandmarks::setCursor(QCursor cursor)
 {
     auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+    auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
     auto* parentWidget = qtInteractor->getQtWidget();
     parentWidget->setCursor(cursor);
 }

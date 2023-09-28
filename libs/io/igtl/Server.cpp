@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "io/igtl/Exception.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/MessageFactory.hpp>
@@ -56,7 +56,7 @@ Server::~Server()
 
 bool Server::isStarted() const
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
 
     return m_isStarted;
 }
@@ -79,7 +79,7 @@ void Server::runServer()
         newClient = this->waitForConnection();
         if(newClient != nullptr)
         {
-            core::mt::ScopedLock lock(m_mutex);
+            core::mt::scoped_lock lock(m_mutex);
             if(m_receiveTimeout.has_value())
             {
                 newClient->getSocket()->SetReceiveTimeout(static_cast<int>(m_receiveTimeout.value()));
@@ -100,7 +100,7 @@ void Server::broadcast(const data::Object::csptr& obj)
     {
         if(!(*it)->sendObject(obj))
         {
-            core::mt::ScopedLock lock(m_mutex);
+            core::mt::scoped_lock lock(m_mutex);
             (*it)->disconnect();
             it = m_clients.erase(it);
         }
@@ -121,7 +121,7 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
     {
         if(!(*it)->sendMsg(msg))
         {
-            core::mt::ScopedLock lock(m_mutex);
+            core::mt::scoped_lock lock(m_mutex);
             (*it)->disconnect();
             it = m_clients.erase(it);
         }
@@ -136,7 +136,7 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
 
 void Server::start(std::uint16_t port)
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
 
     if(m_isStarted)
     {
@@ -180,7 +180,7 @@ Client::sptr Server::waitForConnection(int msec)
 
 void Server::stop()
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
     if(!m_isStarted)
     {
         throw io::igtl::Exception("Server is already stopped");
@@ -197,10 +197,10 @@ void Server::stop()
     m_clients.clear();
 
     // HACK: patched version of closeSocket
-    sight::io::igtl::INetwork::closeSocket(m_serverSocket->m_SocketDescriptor);
+    sight::io::igtl::network::closeSocket(m_serverSocket->m_SocketDescriptor);
     m_serverSocket->m_SocketDescriptor = -1;
 
-    sight::io::igtl::INetwork::closeSocket(m_socket->m_SocketDescriptor);
+    sight::io::igtl::network::closeSocket(m_socket->m_SocketDescriptor);
     m_socket->m_SocketDescriptor = -1;
 
     // Uncomment this when patch isn't needed anymore.
@@ -213,7 +213,7 @@ std::size_t Server::numClients() const
 {
     if(this->isStarted())
     {
-        core::mt::ScopedLock lock(m_mutex);
+        core::mt::scoped_lock lock(m_mutex);
 
         return m_clients.size();
     }
@@ -227,7 +227,7 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 {
     std::vector< ::igtl::MessageHeader::Pointer> headerMsgs;
 
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
     for(size_t i = 0 ; i < m_clients.size() ; ++i)
     {
         const auto client = m_clients[i];
@@ -306,7 +306,7 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
     msg->SetMessageHeader(headerMsg);
     msg->AllocatePack();
 
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
 
     const int result = (m_clients[client]->getSocket())->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
@@ -384,11 +384,11 @@ int Server::createServer(std::uint16_t port)
     if(m_serverSocket->m_SocketDescriptor != -1)
     {
         SIGHT_WARN("Server Socket already exists. Closing old socket.");
-        sight::io::igtl::INetwork::closeSocket(m_serverSocket->m_SocketDescriptor);
+        sight::io::igtl::network::closeSocket(m_serverSocket->m_SocketDescriptor);
         m_serverSocket->m_SocketDescriptor = -1;
     }
 
-    m_serverSocket->m_SocketDescriptor = sight::io::igtl::INetwork::createSocket();
+    m_serverSocket->m_SocketDescriptor = sight::io::igtl::network::createSocket();
 
     if(m_serverSocket->m_SocketDescriptor < 0)
     {
@@ -396,11 +396,11 @@ int Server::createServer(std::uint16_t port)
         return -1;
     }
 
-    if(sight::io::igtl::INetwork::bindSocket(m_serverSocket->m_SocketDescriptor, port) != 0
-       || sight::io::igtl::INetwork::listenSocket(m_serverSocket->m_SocketDescriptor) != 0)
+    if(sight::io::igtl::network::bindSocket(m_serverSocket->m_SocketDescriptor, port) != 0
+       || sight::io::igtl::network::listenSocket(m_serverSocket->m_SocketDescriptor) != 0)
     {
         // failed to bind or listen.
-        sight::io::igtl::INetwork::closeSocket(m_serverSocket->m_SocketDescriptor);
+        sight::io::igtl::network::closeSocket(m_serverSocket->m_SocketDescriptor);
         m_serverSocket->m_SocketDescriptor = -1;
         return -1;
     }

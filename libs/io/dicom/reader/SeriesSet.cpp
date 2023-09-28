@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,15 +28,15 @@
 #include "io/dicom/helper/SOPClass.hpp"
 #include "io/dicom/reader/Series.hpp"
 
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/job.hpp>
+#include <core/jobs/observer.hpp>
 
 #include <filter/dicom/factory/new.hpp>
+#include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/Filter.hpp>
-#include <filter/dicom/IFilter.hpp>
 
-#include <io/base/reader/registry/macros.hpp>
+#include <io/__/reader/registry/macros.hpp>
 
 #include <gdcmAttribute.h>
 #include <gdcmDirectory.h>
@@ -50,16 +50,16 @@ namespace sight::io::dicom::reader
 
 //------------------------------------------------------------------------------
 
-SeriesSet::SeriesSet(io::base::reader::IObjectReader::Key /*unused*/) :
+SeriesSet::SeriesSet() :
     m_isDicomdirActivated(false),
-    m_logger(core::log::Logger::New()),
-    m_job(core::jobs::Aggregator::New("DICOM reader")),
+    m_logger(std::make_shared<core::log::logger>()),
+    m_job(std::make_shared<core::jobs::aggregator>("DICOM reader")),
     m_enableBufferRotation(true),
-    m_dicomdirFileLookupJob(core::jobs::Observer::New("Extracting information from DICOMDIR")),
-    m_regularFileLookupJob(core::jobs::Observer::New("Looking for DICOM files")),
-    m_readerJob(core::jobs::Observer::New("Reading DICOM files")),
-    m_completeDicomSeriesJob(core::jobs::Observer::New("Completing series")),
-    m_converterJob(core::jobs::Observer::New("DICOM data conversion"))
+    m_dicomdirFileLookupJob(std::make_shared<core::jobs::observer>("Extracting information from DICOMDIR")),
+    m_regularFileLookupJob(std::make_shared<core::jobs::observer>("Looking for DICOM files")),
+    m_readerJob(std::make_shared<core::jobs::observer>("Reading DICOM files")),
+    m_completeDicomSeriesJob(std::make_shared<core::jobs::observer>("Completing series")),
+    m_converterJob(std::make_shared<core::jobs::observer>("DICOM data conversion"))
 {
 }
 
@@ -98,8 +98,8 @@ void SeriesSet::read()
     // Apply Default filters
     if(!m_dicomFilterType.empty())
     {
-        filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(m_dicomFilterType);
-        filter::dicom::helper::Filter::applyFilter(m_dicomSeriesContainer, filter, true, m_logger);
+        sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(m_dicomFilterType);
+        sight::filter::dicom::helper::Filter::applyFilter(m_dicomSeriesContainer, filter, true, m_logger);
     }
 
     if(m_dicomSeriesContainer.empty())
@@ -168,7 +168,7 @@ void SeriesSet::readDicomSeries()
     const auto scoped_emitter = series_set->scoped_emit();
 
     // Push Dicom Series
-    if(!m_job->cancelRequested())
+    if(!m_job->cancel_requested())
     {
         for(const auto& series : m_dicomSeriesContainer)
         {
@@ -201,7 +201,7 @@ void SeriesSet::readDicomSeries()
 void SeriesSet::readDicom()
 {
     // DICOMDIR
-    auto dicomdir = io::dicom::helper::DicomDir::findDicomDir(this->getFolder());
+    auto dicomdir = io::dicom::helper::DicomDir::findDicomDir(this->get_folder());
     if(m_isDicomdirActivated && std::filesystem::exists(dicomdir))
     {
         // Create Dicom Series
@@ -209,8 +209,8 @@ void SeriesSet::readDicom()
             dicomdir,
             m_dicomSeriesContainer,
             m_logger,
-            m_readerJob->progressCallback(),
-            m_readerJob->cancelRequestedCallback()
+            m_readerJob->progress_callback(),
+            m_readerJob->cancel_requested_callback()
         );
 
         // Fill Dicom Series
@@ -224,12 +224,12 @@ void SeriesSet::readDicom()
     // Regular read
     if(!m_isDicomdirActivated || !std::filesystem::exists(dicomdir) || m_dicomSeriesContainer.empty())
     {
-        m_readerJob->doneWork(0);
+        m_readerJob->done_work(0);
 
         // Recursively search for dicom files
         std::vector<std::filesystem::path> filenames;
         io::dicom::helper::DicomSearch::searchRecursively(
-            this->getFolder(),
+            this->get_folder(),
             filenames,
             true,
             m_regularFileLookupJob
@@ -260,7 +260,7 @@ void SeriesSet::readDicom()
 
 void SeriesSet::readFromDicomSeriesSet(
     const data::SeriesSet::csptr& dicom_series_set,
-    const service::IService::sptr& notifier
+    const service::base::sptr& notifier
 )
 {
     // Clear DicomSeries container
@@ -271,7 +271,7 @@ void SeriesSet::readFromDicomSeriesSet(
     // Read series
     for(const auto& series : *dicom_series_set)
     {
-        const auto& dicomSeries = data::DicomSeries::dynamicCast(series);
+        const auto& dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(series);
         SIGHT_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
         m_dicomSeriesContainer.push_back(dicomSeries);
     }
@@ -279,8 +279,8 @@ void SeriesSet::readFromDicomSeriesSet(
     // Apply Default filters
     if(!m_dicomFilterType.empty())
     {
-        filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(m_dicomFilterType);
-        filter::dicom::helper::Filter::applyFilter(m_dicomSeriesContainer, filter, true, m_logger);
+        sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(m_dicomFilterType);
+        sight::filter::dicom::helper::Filter::applyFilter(m_dicomSeriesContainer, filter, true, m_logger);
     }
 
     if(m_dicomSeriesContainer.empty())
@@ -314,13 +314,13 @@ void SeriesSet::readFromDicomSeriesSet(
 
 bool SeriesSet::isDicomDirAvailable()
 {
-    auto dicomdir = io::dicom::helper::DicomDir::findDicomDir(this->getFolder());
+    auto dicomdir = io::dicom::helper::DicomDir::findDicomDir(this->get_folder());
     return std::filesystem::exists(dicomdir);
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesSet::convertDicomSeries(const service::IService::sptr& notifier)
+void SeriesSet::convertDicomSeries(const service::base::sptr& notifier)
 {
     auto series_set = this->getConcreteObject();
 
@@ -332,10 +332,10 @@ void SeriesSet::convertDicomSeries(const service::IService::sptr& notifier)
     seriesReader->setBufferRotationEnabled(m_enableBufferRotation);
     seriesReader->setLogger(m_logger);
 
-    m_converterJob->setTotalWorkUnits(m_dicomSeriesContainer.size());
+    m_converterJob->set_total_work_units(m_dicomSeriesContainer.size());
 
     // Compute total work units
-    // We do not use an Aggregator here as the jobs
+    // We do not use an aggregator here as the jobs
     // are created after updating the main aggregator.
     std::uint64_t totalWorkUnits = 0;
     for(const data::DicomSeries::sptr& dicomSeries : m_dicomSeriesContainer)
@@ -343,13 +343,13 @@ void SeriesSet::convertDicomSeries(const service::IService::sptr& notifier)
         totalWorkUnits += dicomSeries->getDicomContainer().size();
     }
 
-    m_converterJob->setTotalWorkUnits(totalWorkUnits);
+    m_converterJob->set_total_work_units(totalWorkUnits);
 
     std::uint64_t completedProgress = 0;
-    auto progressCallback = [&](std::uint64_t progress)
-                            {
-                                m_converterJob->doneWork(completedProgress + progress);
-                            };
+    auto progress_callback = [&](std::uint64_t progress)
+                             {
+                                 m_converterJob->done_work(completedProgress + progress);
+                             };
 
     // Read series
     for(const data::DicomSeries::csptr dicomSeries : m_dicomSeriesContainer)
@@ -366,8 +366,8 @@ void SeriesSet::convertDicomSeries(const service::IService::sptr& notifier)
 
         if(m_supportedSOPClassContainer.empty() || std::find(bIt, eIt, sopClassUID) != eIt)
         {
-            seriesReader->setProgressCallback(progressCallback);
-            seriesReader->setCancelRequestedCallback(m_converterJob->cancelRequestedCallback());
+            seriesReader->setProgressCallback(progress_callback);
+            seriesReader->setCancelRequestedCallback(m_converterJob->cancel_requested_callback());
             try
             {
                 data::Series::sptr series = seriesReader->read(dicomSeries);
@@ -390,12 +390,12 @@ void SeriesSet::convertDicomSeries(const service::IService::sptr& notifier)
             m_logger->critical("DICOM SOP Class \"" + sopClassName + "\" is not supported by the selected reader.");
         }
 
-        if(m_job->cancelRequested())
+        if(m_job->cancel_requested())
         {
             break;
         }
 
-        completedProgress = m_converterJob->getDoneWorkUnits();
+        completedProgress = m_converterJob->get_done_work_units();
     }
 
     m_converterJob->done();
@@ -445,7 +445,7 @@ SeriesSet::DicomSeriesContainerType& SeriesSet::getDicomSeries()
 
 //------------------------------------------------------------------------------
 
-SPTR(core::jobs::IJob) SeriesSet::getJob() const
+SPTR(core::jobs::base) SeriesSet::getJob() const
 {
     return m_job;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #include "SSeriesPusher.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 
 #include <data/DicomSeries.hpp>
 #include <data/Series.hpp>
@@ -35,7 +35,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <dcmtk/dcmdata/dcistrmb.h>
 
@@ -44,11 +44,11 @@ namespace sight::module::io::dimse
 
 //------------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SSeriesPusher::s_DISPLAY_SLOT = "displayMessage";
+const core::com::slots::key_t SSeriesPusher::DISPLAY_SLOT = "displayMessage";
 
-const core::com::Signals::SignalKeyType SSeriesPusher::s_PROGRESSED_SIG       = "progressed";
-const core::com::Signals::SignalKeyType SSeriesPusher::s_STARTED_PROGRESS_SIG = "startedProgress";
-const core::com::Signals::SignalKeyType SSeriesPusher::s_STOPPED_PROGRESS_SIG = "stoppedProgress";
+const core::com::signals::key_t SSeriesPusher::PROGRESSED_SIG       = "progressed";
+const core::com::signals::key_t SSeriesPusher::STARTED_PROGRESS_SIG = "startedProgress";
+const core::com::signals::key_t SSeriesPusher::STOPPED_PROGRESS_SIG = "stoppedProgress";
 
 //------------------------------------------------------------------------------
 
@@ -56,17 +56,17 @@ SSeriesPusher::SSeriesPusher() noexcept :
     m_progressbarId("pushDicomProgressBar")
 {
     // Internal slots
-    m_slotDisplayMessage   = newSlot(s_DISPLAY_SLOT, &SSeriesPusher::displayMessage);
-    m_slotProgressCallback = newSlot(
-        sight::io::dimse::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT,
-        &SSeriesPusher::progressCallback,
+    m_slotDisplayMessage   = new_slot(DISPLAY_SLOT, &SSeriesPusher::displayMessage);
+    m_slotProgressCallback = new_slot(
+        sight::io::dimse::SeriesEnquirer::PROGRESS_CALLBACK_SLOT,
+        &SSeriesPusher::progress_callback,
         this
     );
 
     // Public signals
-    m_sigProgressed      = newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
-    m_sigStartedProgress = newSignal<StartedProgressSignalType>(s_STARTED_PROGRESS_SIG);
-    m_sigStoppedProgress = newSignal<StoppedProgressSignalType>(s_STOPPED_PROGRESS_SIG);
+    m_sigProgressed      = new_signal<ProgressedSignalType>(PROGRESSED_SIG);
+    m_sigStartedProgress = new_signal<StartedProgressSignalType>(STARTED_PROGRESS_SIG);
+    m_sigStoppedProgress = new_signal<StoppedProgressSignalType>(STOPPED_PROGRESS_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -92,10 +92,10 @@ void SSeriesPusher::configuring()
 void SSeriesPusher::starting()
 {
     // Create enquirer
-    m_seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
+    m_seriesEnquirer = std::make_shared<sight::io::dimse::SeriesEnquirer>();
 
     // Worker
-    m_pushSeriesWorker = core::thread::Worker::New();
+    m_pushSeriesWorker = core::thread::worker::make();
 }
 
 //------------------------------------------------------------------------------
@@ -115,24 +115,24 @@ void SSeriesPusher::updating()
     if(m_isPushing)
     {
         // Display a message to inform the user that the service is already pushing data.
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage(
             "The service is already pushing data. Please wait until the pushing is done "
             "before sending a new push request."
         );
-        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::dialog::message::INFO);
+        messageBox.addButton(ui::dialog::message::OK);
         messageBox.show();
     }
     else if(selectedSeries->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage("Unable to push series, there is no series selected.");
-        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::dialog::message::INFO);
+        messageBox.addButton(ui::dialog::message::OK);
         messageBox.show();
     }
     else
@@ -181,7 +181,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
 
         for(const auto& object : *seriesVector)
         {
-            auto series = data::Series::dynamicCast(object);
+            auto series = std::dynamic_pointer_cast<data::Series>(object);
             SIGHT_ASSERT("The SeriesSet should contain only Series.", series);
 
             // Try to find series on PACS
@@ -217,15 +217,15 @@ bool SSeriesPusher::checkSeriesOnPACS()
             ss << std::endl << "Would you like to perform the operation anyway ?" << std::endl
             << "(This will result in a merge operation)";
 
-            sight::ui::base::dialog::MessageDialog messageBox;
+            sight::ui::dialog::message messageBox;
             messageBox.setTitle("Duplicate series");
             messageBox.setMessage(ss.str());
-            messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-            messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
-            messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
-            sight::ui::base::dialog::IMessageDialog::Buttons answer = messageBox.show();
+            messageBox.setIcon(ui::dialog::message::INFO);
+            messageBox.addButton(ui::dialog::message::OK);
+            messageBox.addButton(ui::dialog::message::CANCEL);
+            sight::ui::dialog::message::Buttons answer = messageBox.show();
 
-            result = (answer == sight::ui::base::dialog::IMessageDialog::OK);
+            result = (answer == sight::ui::dialog::message::OK);
         }
     }
     catch(sight::io::dimse::exceptions::Base& exception)
@@ -237,7 +237,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
         << "Pacs host name: " << pacsConfiguration->getPacsHostName() << "\n"
         << "Pacs application title: " << pacsConfiguration->getPacsApplicationTitle() << "\n"
         << "Pacs port: " << pacsConfiguration->getPacsApplicationPort() << "\n";
-        m_slotDisplayMessage->asyncRun(ss.str(), true);
+        m_slotDisplayMessage->async_run(ss.str(), true);
         SIGHT_WARN(exception.what());
         result = false;
 
@@ -263,16 +263,16 @@ void SSeriesPusher::pushSeries()
         // Connect to PACS
         for(const auto& series : *seriesVector)
         {
-            data::DicomSeries::csptr dicomSeries = data::DicomSeries::dynamicCast(series);
+            data::DicomSeries::csptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(series);
             SIGHT_ASSERT("The SeriesSet should contain only DicomSeries.", dicomSeries);
 
             for(const auto& item : dicomSeries->getDicomContainer())
             {
                 DcmFileFormat fileFormat;
-                core::memory::BufferObject::sptr bufferObj = item.second;
-                const std::size_t buffSize                 = bufferObj->getSize();
-                core::memory::BufferObject::Lock lock(bufferObj);
-                char* buffer = static_cast<char*>(lock.getBuffer());
+                core::memory::buffer_object::sptr bufferObj = item.second;
+                const std::size_t buffSize                  = bufferObj->size();
+                core::memory::buffer_object::lock_t lock(bufferObj);
+                char* buffer = static_cast<char*>(lock.buffer());
 
                 DcmInputBufferStream is;
                 is.setBuffer(buffer, offile_off_t(buffSize));
@@ -281,7 +281,7 @@ void SSeriesPusher::pushSeries()
                 fileFormat.transferInit();
                 if(!fileFormat.read(is).good())
                 {
-                    SIGHT_THROW("Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "'");
+                    SIGHT_THROW("Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "'");
                 }
 
                 fileFormat.loadAllDataIntoMemory();
@@ -298,7 +298,7 @@ void SSeriesPusher::pushSeries()
 
         // Connect from PACS
         m_seriesEnquirer->connect();
-        m_sigStartedProgress->asyncEmit(m_progressbarId);
+        m_sigStartedProgress->async_emit(m_progressbarId);
 
         // Push series
         m_seriesEnquirer->pushSeries(dicomContainer);
@@ -315,7 +315,7 @@ void SSeriesPusher::pushSeries()
         << "Pacs host name: " << pacsConfiguration->getPacsHostName() << "\n"
         << "Pacs application title: " << pacsConfiguration->getPacsApplicationTitle() << "\n"
         << "Pacs port: " << pacsConfiguration->getPacsApplicationPort() << "\n";
-        m_slotDisplayMessage->asyncRun(ss.str(), true);
+        m_slotDisplayMessage->async_run(ss.str(), true);
         SIGHT_WARN(exception.what());
     }
 
@@ -325,7 +325,7 @@ void SSeriesPusher::pushSeries()
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::progressCallback(
+void SSeriesPusher::progress_callback(
     const std::string& /*seriesInstanceUID*/,
     unsigned int instanceNumber,
     const std::string& /*filePath*/
@@ -334,11 +334,11 @@ void SSeriesPusher::progressCallback(
     if(instanceNumber < (m_instanceCount - 1))
     {
         float percentage = static_cast<float>(instanceNumber) / static_cast<float>(m_instanceCount);
-        m_sigProgressed->asyncEmit(m_progressbarId, percentage, "Pushing series...");
+        m_sigProgressed->async_emit(m_progressbarId, percentage, "Pushing series...");
     }
     else
     {
-        m_sigStoppedProgress->asyncEmit(m_progressbarId);
+        m_sigStoppedProgress->async_emit(m_progressbarId);
     }
 }
 
@@ -347,11 +347,11 @@ void SSeriesPusher::progressCallback(
 void SSeriesPusher::displayMessage(const std::string& message, bool error)
 {
     SIGHT_WARN_IF("Error: " + message, error);
-    sight::ui::base::dialog::MessageDialog messageBox;
+    sight::ui::dialog::message messageBox;
     messageBox.setTitle((error ? "Error" : "Information"));
     messageBox.setMessage(message);
-    messageBox.setIcon(error ? (ui::base::dialog::IMessageDialog::CRITICAL) : (ui::base::dialog::IMessageDialog::INFO));
-    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+    messageBox.setIcon(error ? (ui::dialog::message::CRITICAL) : (ui::dialog::message::INFO));
+    messageBox.addButton(ui::dialog::message::OK);
     messageBox.show();
 }
 

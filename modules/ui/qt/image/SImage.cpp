@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QIcon>
 #include <QLabel>
@@ -51,7 +51,7 @@ void SImage::starting()
 {
     this->create();
 
-    const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    const auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* const layout = new QVBoxLayout();
     auto* const label  = new QLabel("");
@@ -102,7 +102,7 @@ void SImage::configuring()
     const ConfigType cfg = this->getConfiguration();
     auto pathCfg         = cfg.get<std::string>("path");
 
-    m_path = core::runtime::getModuleResourceFilePath(pathCfg);
+    m_path = core::runtime::get_module_resource_file_path(pathCfg);
 
     m_width  = cfg.get<int>("width", m_width);
     m_height = cfg.get<int>("height", m_height);

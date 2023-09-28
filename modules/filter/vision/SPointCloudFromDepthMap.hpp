@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -68,11 +68,11 @@ namespace sight::module::filter::vision
  *
  * @subsection Configuration Configuration
  */
-class MODULE_FILTER_VISION_CLASS_API SPointCloudFromDepthMap : public service::IFilter
+class MODULE_FILTER_VISION_CLASS_API SPointCloudFromDepthMap : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SPointCloudFromDepthMap, service::IFilter);
+    SIGHT_DECLARE_SERVICE(SPointCloudFromDepthMap, service::filter);
 
     /**
      * @brief SPointCloudFromDepthMap constructor.
@@ -89,28 +89,28 @@ protected:
     /**
      * @brief Starts the service
      *
-     * @throw core::tools::Failed
+     * @throw core::tools::failed
      */
     MODULE_FILTER_VISION_API void starting() override;
 
     /**
      * @brief Stops the service
      *
-     * @throw core::tools::Failed
+     * @throw core::tools::failed
      */
     MODULE_FILTER_VISION_API void stopping() override;
 
     /**
      * @brief Configures the service
      *
-     * @throw core::tools::Failed
+     * @throw core::tools::failed
      */
     MODULE_FILTER_VISION_API void configuring() override;
 
     /**
      * @brief Does nothing
      *
-     * @throw core::tools::Failed
+     * @throw core::tools::failed
      */
     MODULE_FILTER_VISION_API void updating() override;
 
@@ -120,7 +120,7 @@ private:
      * @name Slots API
      * @{
      */
-    MODULE_FILTER_VISION_API static const core::com::Slots::SlotKeyType s_SET_DEPTH_RANGE;
+    MODULE_FILTER_VISION_API static const core::com::slots::key_t SET_DEPTH_RANGE;
     /** @} */
 
     /// SLOT: update the depth range

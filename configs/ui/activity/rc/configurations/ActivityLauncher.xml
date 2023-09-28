@@ -82,9 +82,9 @@
 
         <!-- ************************************* Begin layouts declaration *************************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="1" />
@@ -99,9 +99,9 @@
             </registry>
         </service>
 
-        <service uid="stepperView" type="sight::module::ui::base::SView">
+        <service uid="stepperView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="1" />

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -51,14 +51,14 @@ inline static void write(
     std::size_t index = 0;
     for(const auto& image : calibrationInfo->getImageContainer())
     {
-        children[image->getClassname() + std::to_string(index++)] = image;
+        children[image->get_classname() + std::to_string(index++)] = image;
     }
 
     // PointLists
     index = 0;
     for(const auto& pointList : calibrationInfo->getPointListContainer())
     {
-        children[pointList->getClassname() + std::to_string(index++)] = pointList;
+        children[pointList->get_classname() + std::to_string(index++)] = pointList;
     }
 }
 

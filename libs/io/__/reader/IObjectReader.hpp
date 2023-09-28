@@ -1,0 +1,127 @@
+/************************************************************************
+ *
+ * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#pragma once
+
+#include "io/__/config.hpp"
+#include "io/__/reader/factory/new.hpp"
+#include "io/__/reader/registry/detail.hpp"
+
+#include <core/base.hpp>
+#include <core/jobs/base.hpp>
+#include <core/tools/object.hpp>
+
+#include <cstdint>
+#include <filesystem>
+#include <functional>
+
+namespace sight::io::reader
+{
+
+/**
+ * @brief   Base class for all object readers.
+ *
+ * This class defines the API to use basic object readers. This reader is not a
+ * service. Their equivalent exist as services. See io::service::reader. To read an
+ * object with this class, use setLocation and setOject method before executing
+ * the method read. Reading modifies the object given in parameter with the
+ * method setObject.
+ */
+class IO_CLASS_API IObjectReader : public core::base_object
+{
+public:
+
+    SIGHT_DECLARE_CLASS(IObjectReader, core::base_object);
+
+    typedef std::function<void (std::uint64_t /*progress*/)> ProgressCallback;
+    typedef std::function<void ()> CancelCallback;
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template<typename T>
+    class Registry
+    {
+    public:
+
+        Registry()
+        {
+            sight::io::reader::registry::get()->add_factory(T::classname(), &sight::io::reader::factory::make<T>);
+        }
+    };
+
+    /**
+     * @brief Defines an reader interface.
+     *
+     * This method (re)inits the object given in parameter of setObject method.
+     */
+    IO_API virtual void read() = 0;
+
+    /**
+     * @brief m_object setter.
+     * @param[out] _pObject replaces weakptr m_object of the instance reader
+     * @note m_object is saved in class with a weakptr
+     * @note This object can be get with the method getObject()
+     */
+    IO_API virtual void setObject(core::tools::object::sptr _pObject);
+
+    /**
+     * @brief m_object getter.
+     *
+     * @return m_object
+     * @note m_object is saved in reader with a weakptr
+     */
+    IO_API virtual core::tools::object::sptr getObject() const;
+
+    IO_API virtual std::string extension() const = 0;
+
+    /**
+     * @brief Requests reader abortion.
+     */
+    IO_API void cancel() const;
+
+    /// Returns the internal job
+    IO_API virtual SPTR(core::jobs::base) getJob() const
+    {
+        return nullptr;
+    }
+
+protected:
+
+    /// Constructor. Does nothing.
+    IO_API IObjectReader();
+
+    /// Destructor. Does nothing.
+    IO_API ~IObjectReader() override;
+
+    /**
+     * @brief Object result of reading process.
+     *
+     * This object is given in parameter of setObject method but it is conserved with a weakptr.
+     */
+    core::tools::object::wptr m_object;
+};
+
+} // namespace sight::io::reader

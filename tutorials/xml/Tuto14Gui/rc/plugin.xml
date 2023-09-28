@@ -1,6 +1,6 @@
 <plugin id="Tuto14Gui" >
 
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
@@ -13,10 +13,10 @@
         </parameters>
         <config>
 
-            <service uid="view" type="sight::module::ui::base::SView" >
+            <service uid="view" type="sight::module::ui::SView" >
                 <gui>
                     <toolBar />
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
                     </layout>
                 </gui>
@@ -26,7 +26,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+            <service uid="toolBarView" type="sight::module::ui::SToolBar" >
                 <gui>
                     <layout style="ToolButtonTextUnderIcon" >
                         <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui/icons/monkey.png" />
@@ -37,7 +37,7 @@
                 </registry>
             </service>
 
-            <service uid="view5VisibilityAct" type="sight::module::ui::base::SAction" >
+            <service uid="view5VisibilityAct" type="sight::module::ui::SAction" >
                 <state checked="true" inverse="true" />
             </service>
 
@@ -66,7 +66,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+        <service uid="mainFrame" type="sight::module::ui::SFrame" >
             <gui>
                 <menuBar />
                 <toolBar />
@@ -83,7 +83,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+        <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
             <gui>
                 <layout>
                     <menu name="My Menu" />
@@ -97,7 +97,7 @@
             </registry>
         </service>
 
-        <service uid="menu1View" type="sight::module::ui::base::SMenu" >
+        <service uid="menu1View" type="sight::module::ui::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" shortcut="1" style="check" />
@@ -121,7 +121,7 @@
             </registry>
         </service>
 
-        <service uid="menu2View" type="sight::module::ui::base::SMenu" >
+        <service uid="menu2View" type="sight::module::ui::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" style="check" />
@@ -137,7 +137,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::SToolBar" >
             <gui>
                 <layout style="ToolButtonTextUnderIcon" >
                     <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
@@ -179,11 +179,11 @@
             </registry>
         </service>
 
-        <service uid="hideShowToolbar" type="sight::module::ui::base::com::SSignal" >
+        <service uid="hideShowToolbar" type="sight::module::ui::com::SSignal" >
             <state checked="true" />
         </service>
 
-        <service uid="testHideShowView" type="sight::module::ui::base::SMenu" >
+        <service uid="testHideShowView" type="sight::module::ui::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
@@ -198,9 +198,9 @@
             </registry>
         </service>
 
-        <service uid="backgroundView" type="sight::module::ui::base::SView" >
+        <service uid="backgroundView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#2E2F30" />
                 </layout>
@@ -210,9 +210,9 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="sight::module::ui::base::SView" >
+        <service uid="containerView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
                     <view proportion="2" />
                     <view proportion="1" />
@@ -224,9 +224,9 @@
             </registry>
         </service>
 
-        <service uid="sub1View" type="sight::module::ui::base::SView" >
+        <service uid="sub1View" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
                     <view proportion="1" toolTip="View with tabs inside" backgroundColor="#36393E" />
                     <view proportion="1" toolTip="Empty view" backgroundColor="#36393E" />
@@ -241,9 +241,9 @@
             </registry>
         </service>
 
-        <service uid="sub2View" type="sight::module::ui::base::SView" >
+        <service uid="sub2View" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager" >
+                <layout type="sight::ui::layout::cardinal" >
                     <view align="center" backgroundColor="#36393E" />
                     <view caption="CardinalView2" align="right" minWidth="400" />
                     <view caption="CardinalView3" align="right" minWidth="400" />
@@ -254,9 +254,9 @@
             </registry>
         </service>
 
-        <service uid="sub3View" type="sight::module::ui::base::SView" >
+        <service uid="sub3View" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::TabLayoutManager" >
+                <layout type="sight::ui::layout::tab" >
                     <view caption="TabView1"  />
                     <view caption="TabView2" selected="true" />
                     <view caption="TabView3" />
@@ -265,9 +265,9 @@
             <registry/>
         </service>
 
-        <service uid="sub4View" type="sight::module::ui::base::SView" >
+        <service uid="sub4View" type="sight::module::ui::SView" >
         <gui>
-            <layout type="sight::ui::base::LineLayoutManager" >
+            <layout type="sight::ui::layout::line" >
                 <orientation value="horizontal" />
                 <spacer/>
                 <view proportion="0" />
@@ -279,9 +279,9 @@
         </registry>
         </service>
 
-        <service uid="sub5View" type="sight::module::ui::base::SView" >
+        <service uid="sub5View" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
                     <spacer/>
                     <view proportion="0" />
@@ -293,9 +293,9 @@
             </registry>
         </service>
 
-        <service uid="view12" type="sight::module::ui::base::SView" >
+        <service uid="view12" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
                     <view toolTip="This is a nice tooltip"  />
                     <view toolTip="You can put some useful information here"  />
@@ -311,7 +311,7 @@
             </registry>
         </service>
 
-        <service uid="toolbar2View" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolbar2View" type="sight::module::ui::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Item 2" style="radio" icon="sight::module::ui::flaticons/BlueParameters.svg" />
@@ -331,41 +331,41 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="item1Act" type="sight::module::ui::base::SAction" >
+        <service uid="item1Act" type="sight::module::ui::SAction" >
             <state checked="true" />
         </service>
 
-        <service uid="item2Act" type="sight::module::ui::base::SAction" >
+        <service uid="item2Act" type="sight::module::ui::SAction" >
             <state checked="true" />
         </service>
 
-        <service uid="item3Act" type="sight::module::ui::base::SAction" />
+        <service uid="item3Act" type="sight::module::ui::SAction" />
 
-        <service uid="item4Act" type="sight::module::ui::base::SAction" >
+        <service uid="item4Act" type="sight::module::ui::SAction" >
             <state checked="false" />
         </service>
 
-        <service uid="item5Act" type="sight::module::ui::base::SAction" >
+        <service uid="item5Act" type="sight::module::ui::SAction" >
             <state checked="true" />
         </service>
 
-        <service uid="startAct" type="sight::module::ui::base::SAction" >
+        <service uid="startAct" type="sight::module::ui::SAction" >
             <confirmation value="true" message="Are you sure you want to Start ?"/>
         </service>
 
-        <service uid="stopAct" type="sight::module::ui::base::SAction" >
+        <service uid="stopAct" type="sight::module::ui::SAction" >
             <state enabled="false" />
         </service>
 
-        <service uid="pauseAct" type="sight::module::ui::base::SAction" >
+        <service uid="pauseAct" type="sight::module::ui::SAction" >
             <state checked="true" visible="false" />
         </service>
 
-        <service uid="item16Act" type="sight::module::ui::base::SAction" >
+        <service uid="item16Act" type="sight::module::ui::SAction" >
             <state checked="true" />
         </service>
 
-        <service uid="item17Act" type="sight::module::ui::base::SAction" />
+        <service uid="item17Act" type="sight::module::ui::SAction" />
 
         <!-- ******************************* Services ***************************************** -->
 
@@ -401,7 +401,7 @@
              <color>#6997BB</color>
          </service>
 
-        <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+        <service uid="quitAct" type="sight::module::ui::SQuit" />
 
         <service uid="subToolBarConfig" type="sight::service::SConfigController">
             <appConfig id="SubToolBarCfg" />

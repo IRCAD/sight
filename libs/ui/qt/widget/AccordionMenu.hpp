@@ -31,23 +31,23 @@
 namespace sight::ui::qt::widget
 {
 
-class UI_QT_CLASS_QT_API AccordionMenu : public QWidget
+class UI_QT_CLASS_API_QT AccordionMenu : public QWidget
 {
 public:
 
-    UI_QT_QT_API AccordionMenu(QWidget* parent, Qt::Orientation orientation);
-    UI_QT_QT_API explicit AccordionMenu(QToolBar* toolBar);
-    UI_QT_QT_API ~AccordionMenu() override = default;
+    UI_QT_API_QT AccordionMenu(QWidget* parent, Qt::Orientation orientation);
+    UI_QT_API_QT explicit AccordionMenu(QToolBar* toolBar);
+    UI_QT_API_QT ~AccordionMenu() override = default;
 
-    UI_QT_QT_API void fold();
-    UI_QT_QT_API void unfold();
-    UI_QT_QT_API void setFolded(bool folded);
-    UI_QT_QT_API void setUnfolded(bool unfolded);
-    UI_QT_QT_API void toggleFold();
-    [[nodiscard]] UI_QT_QT_API bool isFolded() const;
+    UI_QT_API_QT void fold();
+    UI_QT_API_QT void unfold();
+    UI_QT_API_QT void setFolded(bool folded);
+    UI_QT_API_QT void setUnfolded(bool unfolded);
+    UI_QT_API_QT void toggleFold();
+    [[nodiscard]] UI_QT_API_QT bool isFolded() const;
 
-    UI_QT_QT_API void addWidget(QWidget* w);
-    UI_QT_QT_API void update();
+    UI_QT_API_QT void addWidget(QWidget* w);
+    UI_QT_API_QT void update();
 
     bool eventFilter(QObject* o, QEvent* e) override;
 

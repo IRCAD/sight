@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "Matrix4Test.hpp"
 
 #define FW_PROFILING_DISABLED
-#include <core/Profiling.hpp>
+#include <core/profiling.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 
@@ -60,8 +60,8 @@ void Matrix4Test::identityMatrixTest()
     sight::data::Matrix4 tm3;
     sight::data::Matrix4 tm4;
 
-    auto p1 = sight::data::Point::New(1.0F, 2.3F, 5.1F);
-    auto p2 = sight::data::Point::New();
+    auto p1 = std::make_shared<sight::data::Point>(1.0F, 2.3F, 5.1F);
+    auto p2 = std::make_shared<sight::data::Point>();
 
     bool shouldBeTrue = geometry::data::isIdentity(tm1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, shouldBeTrue);
@@ -227,8 +227,8 @@ void Matrix4Test::matrixTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.0124903619956978, tm4(3, 3), 0.0001);
 
     // Test matrix-vector multiplication
-    auto p1 = sight::data::Point::New(1.0F, 2.3F, 5.1F);
-    auto p2 = sight::data::Point::New();
+    auto p1 = std::make_shared<sight::data::Point>(1.0F, 2.3F, 5.1F);
+    auto p2 = std::make_shared<sight::data::Point>();
 
     geometry::data::multiply(tm1, *p1, *p2);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(24.9, p2->getCoord()[0], 0.00001);

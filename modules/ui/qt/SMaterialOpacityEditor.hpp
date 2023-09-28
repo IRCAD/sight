@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
 
 #include <data/Material.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -56,13 +56,13 @@ namespace sight::module::ui::qt
  */
 
 class MODULE_UI_QT_CLASS_API SMaterialOpacityEditor : public QObject,
-                                                      public sight::ui::base::IEditor
+                                                      public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SMaterialOpacityEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SMaterialOpacityEditor, sight::ui::editor);
 
     /// Destroys the service.
     MODULE_UI_QT_API ~SMaterialOpacityEditor() noexcept override = default;

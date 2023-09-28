@@ -22,12 +22,12 @@
 
 #include "SSignalButton.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QVariant>
 #include <QVBoxLayout>
@@ -35,35 +35,35 @@
 namespace sight::module::ui::qt::com
 {
 
-static const core::com::Signals::SignalKeyType s_CLICKED_SIG = "clicked";
-static const core::com::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
+static const core::com::signals::key_t CLICKED_SIG = "clicked";
+static const core::com::signals::key_t TOGGLED_SIG = "toggled";
 
-static const core::com::Slots::SlotKeyType s_SET_CHECKED_SLOT = "setChecked";
-static const core::com::Slots::SlotKeyType s_CHECK_SLOT       = "check";
-static const core::com::Slots::SlotKeyType s_UNCHECK_SLOT     = "uncheck";
+static const core::com::slots::key_t SET_CHECKED_SLOT = "setChecked";
+static const core::com::slots::key_t CHECK_SLOT       = "check";
+static const core::com::slots::key_t UNCHECK_SLOT     = "uncheck";
 
-static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT = "setEnabled";
-static const core::com::Slots::SlotKeyType s_ENABLE_SLOT      = "enable";
-static const core::com::Slots::SlotKeyType s_DISABLE_SLOT     = "disable";
-static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT = "setVisible";
-static const core::com::Slots::SlotKeyType s_SHOW_SLOT        = "show";
-static const core::com::Slots::SlotKeyType s_HIDE_SLOT        = "hide";
+static const core::com::slots::key_t SET_ENABLED_SLOT = "setEnabled";
+static const core::com::slots::key_t ENABLE_SLOT      = "enable";
+static const core::com::slots::key_t DISABLE_SLOT     = "disable";
+static const core::com::slots::key_t SET_VISIBLE_SLOT = "setVisible";
+static const core::com::slots::key_t SHOW_SLOT        = "show";
+static const core::com::slots::key_t HIDE_SLOT        = "hide";
 
 //-----------------------------------------------------------------------------
 
 SSignalButton::SSignalButton() noexcept :
-    m_sigClicked(newSignal<ClickedSignalType>(s_CLICKED_SIG)),
-    m_sigToggled(newSignal<ToggledSignalType>(s_TOGGLED_SIG))
+    m_sigClicked(new_signal<ClickedSignalType>(CLICKED_SIG)),
+    m_sigToggled(new_signal<ToggledSignalType>(TOGGLED_SIG))
 {
-    newSlot(s_SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
-    newSlot(s_CHECK_SLOT, &SSignalButton::check, this);
-    newSlot(s_UNCHECK_SLOT, &SSignalButton::uncheck, this);
-    newSlot(s_SET_ENABLED_SLOT, &SSignalButton::setEnabled, this);
-    newSlot(s_ENABLE_SLOT, &SSignalButton::enable, this);
-    newSlot(s_DISABLE_SLOT, &SSignalButton::disable, this);
-    newSlot(s_SET_VISIBLE_SLOT, &SSignalButton::setVisible, this);
-    newSlot(s_SHOW_SLOT, &SSignalButton::show, this);
-    newSlot(s_HIDE_SLOT, &SSignalButton::hide, this);
+    new_slot(SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
+    new_slot(CHECK_SLOT, &SSignalButton::check, this);
+    new_slot(UNCHECK_SLOT, &SSignalButton::uncheck, this);
+    new_slot(SET_ENABLED_SLOT, &SSignalButton::setEnabled, this);
+    new_slot(ENABLE_SLOT, &SSignalButton::enable, this);
+    new_slot(DISABLE_SLOT, &SSignalButton::disable, this);
+    new_slot(SET_VISIBLE_SLOT, &SSignalButton::setVisible, this);
+    new_slot(SHOW_SLOT, &SSignalButton::show, this);
+    new_slot(HIDE_SLOT, &SSignalButton::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,12 +93,12 @@ void SSignalButton::configuring()
 
         if(const auto icon = config->get_optional<std::string>("icon"); icon.has_value())
         {
-            m_icon = core::runtime::getModuleResourceFilePath(icon.value());
+            m_icon = core::runtime::get_module_resource_file_path(icon.value());
         }
 
         if(const auto icon = config->get_optional<std::string>("icon2"); icon.has_value())
         {
-            m_icon2 = core::runtime::getModuleResourceFilePath(icon.value());
+            m_icon2 = core::runtime::get_module_resource_file_path(icon.value());
         }
 
         m_iconWidth  = config->get<unsigned int>("iconWidth", m_iconWidth);
@@ -112,7 +112,7 @@ void SSignalButton::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
@@ -176,7 +176,7 @@ void SSignalButton::stopping()
 
 void SSignalButton::onClicked()
 {
-    m_sigClicked->asyncEmit();
+    m_sigClicked->async_emit();
 }
 
 //-----------------------------------------------------------------------------
@@ -184,7 +184,7 @@ void SSignalButton::onClicked()
 void SSignalButton::onToggled(bool toggled)
 {
     this->setChecked(toggled);
-    m_sigToggled->asyncEmit(toggled);
+    m_sigToggled->async_emit(toggled);
 }
 
 //-----------------------------------------------------------------------------
@@ -240,7 +240,7 @@ void SSignalButton::uncheck()
 
 void SSignalButton::setEnabled(bool _isEnabled)
 {
-    IEditor::setEnabled(_isEnabled);
+    editor::setEnabled(_isEnabled);
     // Keep this in case of SSignalButton is used outside a view container
     m_button->setEnabled(_isEnabled);
 }
@@ -263,7 +263,7 @@ void SSignalButton::disable()
 
 void SSignalButton::setVisible(bool _isVisible)
 {
-    IEditor::setVisible(_isVisible);
+    editor::setVisible(_isVisible);
     // Keep this in case of SSignalButton is used outside a view container
     m_button->setVisible(_isVisible);
 }

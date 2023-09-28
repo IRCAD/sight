@@ -24,8 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <ui/base/IEditor.hpp>
-#include <ui/base/parameter.hpp>
+#include <ui/__/editor.hpp>
+#include <ui/__/parameter.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -49,7 +49,7 @@ namespace sight::module::ui::qt
  * @note This service doesn't need any data.
  *
  * @section Signals Signals
- * - \b parameterChanged(ui::base::parameter_t, std::string): Emitted when any parameter changes.
+ * - \b parameterChanged(ui::parameter_t, std::string): Emitted when any parameter changes.
  * - \b boolChanged(bool, std::string): Emitted when a boolean parameter changes.
  * - \b colorChanged(std::array<std::uint8_t, 4>, std::string): Emitted when a color parameter changes.
  * - \b doubleChanged(double, std::string): Emitted when a real parameter changes.
@@ -64,7 +64,7 @@ namespace sight::module::ui::qt
  * selected item.
  *
  * @section Slots Slots
- * - \b setParameter(ui::base::parameter_t, std::string): set a parameter.
+ * - \b setParameter(ui::parameter_t, std::string): set a parameter.
  * - \b setBoolParameter(bool, std::string): set a boolean parameter.
  * - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): set a color parameter.
  * - \b setDoubleParameter(double, std::string): set a double parameter.
@@ -138,40 +138,40 @@ namespace sight::module::ui::qt
  * send value when value changed otherwise.
  */
 class MODULE_UI_QT_CLASS_API SParameters : public QObject,
-                                           public sight::ui::base::IEditor
+                                           public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SParameters, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SParameters, sight::ui::editor);
 
     /// @brief  Struct to handle all signals.
     struct signals
     {
-        using signal_t = core::com::Signals::SignalKeyType;
+        using signal_t = core::com::signals::key_t;
         /// Generic changed signal type
-        typedef core::com::Signal<void (sight::ui::base::parameter_t, std::string)> ChangedSignalType;
+        typedef core::com::signal<void (sight::ui::parameter_t, std::string)> ChangedSignalType;
 
         /// Boolean changed signal type
-        typedef core::com::Signal<void (bool, std::string)> BooleanChangedSignalType;
+        typedef core::com::signal<void (bool, std::string)> BooleanChangedSignalType;
 
         /// Color changed signal type
-        typedef core::com::Signal<void (std::array<std::uint8_t, 4>, std::string)> ColorChangedSignalType;
+        typedef core::com::signal<void (std::array<std::uint8_t, 4>, std::string)> ColorChangedSignalType;
 
         /// Double changed signal type
-        typedef core::com::Signal<void (double, std::string)> DoubleChangedSignalType;
-        typedef core::com::Signal<void (double, double, std::string)> Double2ChangedSignalType;
-        typedef core::com::Signal<void (double, double, double, std::string)> Double3ChangedSignalType;
+        typedef core::com::signal<void (double, std::string)> DoubleChangedSignalType;
+        typedef core::com::signal<void (double, double, std::string)> Double2ChangedSignalType;
+        typedef core::com::signal<void (double, double, double, std::string)> Double3ChangedSignalType;
 
         /// Integer changed signal type
-        typedef core::com::Signal<void (int, std::string)> IntegerChangedSignalType;
-        typedef core::com::Signal<void (int, int, std::string)> Integer2ChangedSignalType;
-        typedef core::com::Signal<void (int, int, int, std::string)> Integer3ChangedSignalType;
+        typedef core::com::signal<void (int, std::string)> IntegerChangedSignalType;
+        typedef core::com::signal<void (int, int, std::string)> Integer2ChangedSignalType;
+        typedef core::com::signal<void (int, int, int, std::string)> Integer3ChangedSignalType;
 
         /// Enum changed signal type
-        typedef core::com::Signal<void (std::string, std::string)> EnumChangedSignalType;
-        typedef core::com::Signal<void (int, std::string)> EnumChangedIndexSignalType;
+        typedef core::com::signal<void (std::string, std::string)> EnumChangedSignalType;
+        typedef core::com::signal<void (int, std::string)> EnumChangedIndexSignalType;
 
         inline static const signal_t PARAMETER_CHANGED_SIG  = "parameterChanged";
         inline static const signal_t BOOLEAN_CHANGED_SIG    = "boolChanged";
@@ -189,24 +189,24 @@ public:
     /// @brief  Struct to handle all slots
     struct slots
     {
-        using slots_t = core::com::Slots::SlotKeyType;
+        using slots_t = core::com::slots::key_t;
 
-        inline static const slots_t s_SET_PARAMETER_SLOT               = "setParameter";
-        inline static const slots_t s_SET_BOOL_PARAMETER_SLOT          = "setBoolParameter";
-        inline static const slots_t s_SET_COLOR_PARAMETER_SLOT         = "setColorParameter";
-        inline static const slots_t s_SET_DOUBLE_PARAMETER_SLOT        = "setDoubleParameter";
-        inline static const slots_t s_SET_DOUBLE2_PARAMETER_SLOT       = "setDouble2Parameter";
-        inline static const slots_t s_SET_DOUBLE3_PARAMETER_SLOT       = "setDouble3Parameter";
-        inline static const slots_t s_SET_INT_PARAMETER_SLOT           = "setIntParameter";
-        inline static const slots_t s_SET_INT2_PARAMETER_SLOT          = "setInt2Parameter";
-        inline static const slots_t s_SET_INT3_PARAMETER_SLOT          = "setInt3Parameter";
-        inline static const slots_t s_SET_ENUM_PARAMETER_SLOT          = "setEnumParameter";
-        inline static const slots_t s_SET_ENUM_INDEX_PARAMETER_SLOT    = "setEnumIndexParameter";
-        inline static const slots_t s_UPDATE_ENUM_RANGE_SLOT           = "updateEnumRange";
-        inline static const slots_t s_UPDATE_INT_MIN_PARAMETER_SLOT    = "updateIntMinParameter";
-        inline static const slots_t s_UPDATE_INT_MAX_PARAMETER_SLOT    = "updateIntMaxParameter";
-        inline static const slots_t s_UPDATE_DOUBLE_MIN_PARAMETER_SLOT = "updateDoubleMinParameter";
-        inline static const slots_t s_UPDATE_DOUBLE_MAX_PARAMETER_SLOT = "updateDoubleMaxParameter";
+        inline static const slots_t SET_PARAMETER_SLOT               = "setParameter";
+        inline static const slots_t SET_BOOL_PARAMETER_SLOT          = "setBoolParameter";
+        inline static const slots_t SET_COLOR_PARAMETER_SLOT         = "setColorParameter";
+        inline static const slots_t SET_DOUBLE_PARAMETER_SLOT        = "setDoubleParameter";
+        inline static const slots_t SET_DOUBLE2_PARAMETER_SLOT       = "setDouble2Parameter";
+        inline static const slots_t SET_DOUBLE3_PARAMETER_SLOT       = "setDouble3Parameter";
+        inline static const slots_t SET_INT_PARAMETER_SLOT           = "setIntParameter";
+        inline static const slots_t SET_INT2_PARAMETER_SLOT          = "setInt2Parameter";
+        inline static const slots_t SET_INT3_PARAMETER_SLOT          = "setInt3Parameter";
+        inline static const slots_t SET_ENUM_PARAMETER_SLOT          = "setEnumParameter";
+        inline static const slots_t SET_ENUM_INDEX_PARAMETER_SLOT    = "setEnumIndexParameter";
+        inline static const slots_t UPDATE_ENUM_RANGE_SLOT           = "updateEnumRange";
+        inline static const slots_t UPDATE_INT_MIN_PARAMETER_SLOT    = "updateIntMinParameter";
+        inline static const slots_t UPDATE_INT_MAX_PARAMETER_SLOT    = "updateIntMaxParameter";
+        inline static const slots_t UPDATE_DOUBLE_MIN_PARAMETER_SLOT = "updateDoubleMinParameter";
+        inline static const slots_t UPDATE_DOUBLE_MAX_PARAMETER_SLOT = "updateDoubleMaxParameter";
     };
 
     struct enumButtonParam
@@ -227,7 +227,7 @@ public:
     /// Initializes Qt input widgets for parameters according to xml configuration
     MODULE_UI_QT_API void starting() override;
 
-    /// This method launches the IEditor::stopping method
+    /// This method launches the editor::stopping method
     MODULE_UI_QT_API void stopping() override;
 
     /// This method is used to update services. Does nothing
@@ -437,7 +437,7 @@ private:
      */
 
     /// Slot: This method is used to set any parameter.
-    void setParameter(sight::ui::base::parameter_t val, std::string key);
+    void setParameter(sight::ui::parameter_t val, std::string key);
 
     /// Slot: This method is used to set a boolean parameter.
     void setBoolParameter(bool val, std::string key);

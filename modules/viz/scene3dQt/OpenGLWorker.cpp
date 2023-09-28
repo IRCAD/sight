@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3dQt/OpenGLContext.hpp"
 
-#include <core/Profiling.hpp>
+#include <core/profiling.hpp>
 
 #include <QApplication>
 #include <QRunnable>

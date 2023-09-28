@@ -32,7 +32,7 @@
 namespace sight::ui::qt::widget
 {
 
-class UI_QT_CLASS_QT_API QRangeSlider : public QWidget
+class UI_QT_CLASS_API_QT QRangeSlider : public QWidget
 {
 Q_OBJECT
 
@@ -65,8 +65,8 @@ public:
         QPointer<QWidget> m_widget;
     };
 
-    UI_QT_QT_API QRangeSlider(QWidget* parent = nullptr);
-    UI_QT_QT_API ~QRangeSlider() override;
+    UI_QT_API_QT QRangeSlider(QWidget* parent = nullptr);
+    UI_QT_API_QT ~QRangeSlider() override;
 
     //------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ public:
 
 public Q_SLOTS:
 
-    UI_QT_QT_API void setPos(double _min, double _max);
+    UI_QT_API_QT void setPos(double _min, double _max);
 
 Q_SIGNALS:
 

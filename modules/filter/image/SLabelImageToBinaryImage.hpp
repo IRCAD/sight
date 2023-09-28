@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 #include <boost/optional.hpp>
 
@@ -66,12 +66,12 @@ namespace sight::module::filter::image
  * - \b config (optional):
  *     - \b labelsField (optional): name of the field holding the list of labels to add to the mask.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage final : public service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage final : public service::filter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLabelImageToBinaryImage, service::IFilter);
+    SIGHT_DECLARE_SERVICE(SLabelImageToBinaryImage, service::filter);
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_CLASS_API SLabelImageToBinaryImage();
@@ -97,10 +97,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to IService::slots::s_UPDATE
-     * Connect data::Image::s_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to IService::slots::s_UPDATE
+     * Connect data::Image::BUFFER_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
+     * Connect data::Image::MODIFIED_SIG of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
      */
-    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API connections_t getAutoConnections() const override;
 
 private:
 

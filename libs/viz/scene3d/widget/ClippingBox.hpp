@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "viz/scene3d/registry/macros.hpp"
-#include "viz/scene3d/vr/IVolumeRenderer.hpp"
+#include "viz/scene3d/vr/volume_renderer.hpp"
 
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreCamera.h>
@@ -135,10 +135,10 @@ private:
     } m_selectionMode {NONE};
 
     /// Get the face's image positions.
-    [[nodiscard]] std::array<Ogre::Vector3, 4> getFacePositions(vr::IVolumeRenderer::CubeFace _faceName) const;
+    [[nodiscard]] std::array<Ogre::Vector3, 4> getFacePositions(vr::volume_renderer::CubeFace _faceName) const;
 
     /// Get the center of a clipping box face.
-    [[nodiscard]] Ogre::Vector3 getFaceCenter(vr::IVolumeRenderer::CubeFace _faceName) const;
+    [[nodiscard]] Ogre::Vector3 getFaceCenter(vr::volume_renderer::CubeFace _faceName) const;
 
     /// Returns the clipping box's image space positions.
     [[nodiscard]] std::array<Ogre::Vector3, 8> getClippingBoxPositions() const;
@@ -150,7 +150,7 @@ private:
     void updateWidgets();
 
     /// Highlight a clipping box face.
-    void selectFace(vr::IVolumeRenderer::CubeFace _faceName);
+    void selectFace(vr::volume_renderer::CubeFace _faceName);
 
     /// Unhighlight face.
     void deselectFace();
@@ -175,7 +175,7 @@ private:
 
     /// Maps widget objects to their scene node and to a cube face.
     std::map<const Ogre::MovableObject*,
-             std::pair<vr::IVolumeRenderer::CubeFace, Ogre::SceneNode*> > m_widgets;
+             std::pair<vr::volume_renderer::CubeFace, Ogre::SceneNode*> > m_widgets;
 
     /// Axis aligned clipping cube.
     std::array<Ogre::Vector3, 2> m_clippingCube {{Ogre::Vector3::ZERO, Ogre::Vector3::UNIT_SCALE}};

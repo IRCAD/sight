@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,10 @@
 #include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 #include <io/http/ClientQt.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 #include <filesystem>
 
@@ -71,11 +71,11 @@ namespace sight::module::io::dicomweb
  * @note : hostname and port of this service are from the preference settings.
  */
 
-class MODULE_IO_DICOMWEB_CLASS_API SSeriesPuller : public service::IController
+class MODULE_IO_DICOMWEB_CLASS_API SSeriesPuller : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesPuller, sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SSeriesPuller, sight::service::controller);
 
     typedef data::SeriesSet::container_type DicomSeriesContainerType;
     typedef std::vector<std::string> InstanceUIDContainerType;
@@ -127,7 +127,7 @@ private:
     sight::io::http::ClientQt m_clientQt;
 
     /// Reader
-    sight::io::base::service::IReader::sptr m_dicomReader;
+    sight::io::service::reader::sptr m_dicomReader;
 
     /// Reader Config
     std::string m_dicomReaderSrvConfig;

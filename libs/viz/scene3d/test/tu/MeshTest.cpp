@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "MeshTest.hpp"
 
-#include <core/tools/random/Generator.hpp>
+#include <core/tools/random/generator.hpp>
 
 #include <viz/scene3d/helper/Mesh.hpp>
 
@@ -34,7 +34,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::helper::ut::MeshTest);
 namespace sight::viz::scene3d::helper::ut
 {
 
-using core::tools::random::safeRand;
+using core::tools::random::safe_rand;
 
 //------------------------------------------------------------------------------
 
@@ -64,9 +64,9 @@ void MeshTest::copyColors()
 
         for(std::size_t i = 0 ; i < numPoints ; ++i)
         {
-            pSrc[0] = static_cast<std::uint8_t>(safeRand() % 255);
-            pSrc[1] = static_cast<std::uint8_t>(safeRand() % 255);
-            pSrc[2] = static_cast<std::uint8_t>(safeRand() % 255);
+            pSrc[0] = static_cast<std::uint8_t>(safe_rand() % 255);
+            pSrc[1] = static_cast<std::uint8_t>(safe_rand() % 255);
+            pSrc[2] = static_cast<std::uint8_t>(safe_rand() % 255);
             pSrc   += numComponents;
         }
 
@@ -99,10 +99,10 @@ void MeshTest::copyColors()
 
         for(std::size_t i = 0 ; i < numPoints ; ++i)
         {
-            pSrc[0] = static_cast<std::uint8_t>(safeRand() % 255);
-            pSrc[1] = static_cast<std::uint8_t>(safeRand() % 255);
-            pSrc[2] = static_cast<std::uint8_t>(safeRand() % 255);
-            pSrc[3] = static_cast<std::uint8_t>(safeRand() % 255);
+            pSrc[0] = static_cast<std::uint8_t>(safe_rand() % 255);
+            pSrc[1] = static_cast<std::uint8_t>(safe_rand() % 255);
+            pSrc[2] = static_cast<std::uint8_t>(safe_rand() % 255);
+            pSrc[3] = static_cast<std::uint8_t>(safe_rand() % 255);
             pSrc   += numComponents;
         }
 

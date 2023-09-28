@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "modules/io/matrix/config.hpp"
 
-#include <core/thread/Timer.hpp>
+#include <core/thread/timer.hpp>
 
 #include <data/MatrixTL.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <array>
 
@@ -79,18 +79,18 @@ namespace sight::module::io::matrix
  * - \b fps (optional): frequency at which matrices are pushed in the timeline (default 30),
  *  only used if oneShot is off.
  * - \b createTimestamp(optional): create a new timestamp instead of using csv file (default: false).
- * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IReader
+ * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::reader
  * - \b useTimelapse: if set to true, ignore the fps value and use the matrix
  *     timestamps to figure out at which speed to read the matrices. (default: false)
  * - \b step (optional): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
  * - \b loop (optional): specifies if the reader loops over the file or not (default: false)
  */
 
-class MODULE_IO_MATRIX_CLASS_API SMatricesReader : public sight::io::base::service::IReader
+class MODULE_IO_MATRIX_CLASS_API SMatricesReader : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMatricesReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SMatricesReader, sight::io::service::reader);
 
     /// Constructor.
     MODULE_IO_MATRIX_API SMatricesReader() noexcept;
@@ -101,8 +101,8 @@ public:
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_MATRIX_API void openLocationDialog() override;
 
-    /// Return file type (io::base::service::FILE)
-    MODULE_IO_MATRIX_API sight::io::base::service::IOPathType getIOPathType() const override;
+    /// Return file type (io::service::FILE)
+    MODULE_IO_MATRIX_API sight::io::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief The TimeStampedMatrices structure handle a list of matrices and the associated timestamp.
@@ -110,7 +110,7 @@ public:
     struct TimeStampedMatrices
     {
         ///timestamp
-        core::HiResClock::HiResClockType timestamp {};
+        core::hires_clock::type timestamp {};
         ///vector of matrices (std::array<float, 16>).
         std::vector<std::array<float, 16> > matrices;
     };
@@ -160,9 +160,9 @@ private:
 
     std::vector<TimeStampedMatrices> m_tsMatrices; ///< vector of TimeStampedMatrices read from csv file.
 
-    core::thread::Timer::sptr m_timer; ///< Timer to call readMatrices at constant framerate
+    core::thread::timer::sptr m_timer; ///< Timer to call readMatrices at constant framerate
 
-    core::thread::Worker::sptr m_worker; ///< Worker for the readMatrices timer
+    core::thread::worker::sptr m_worker; ///< Worker for the readMatrices timer
 
     std::size_t m_tsMatricesCount {0}; ///< counter used by matrices reader
 

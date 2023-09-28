@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "io/dicom/writer/iod/SurfaceSegmentationIOD.hpp"
 
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/job.hpp>
+#include <core/jobs/observer.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
@@ -36,7 +36,7 @@
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::SurfaceSegmentation);
 
@@ -45,9 +45,9 @@ namespace sight::io::dicom::writer
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentation::SurfaceSegmentation(io::base::writer::IObjectWriter::Key /*key*/) :
-    m_logger(core::log::Logger::New()),
-    m_writerJob(core::jobs::Observer::New("Writing DICOM file"))
+SurfaceSegmentation::SurfaceSegmentation() :
+    m_logger(std::make_shared<core::log::logger>()),
+    m_writerJob(std::make_shared<core::jobs::observer>("Writing DICOM file"))
 {
 }
 
@@ -107,8 +107,8 @@ void SurfaceSegmentation::write()
     }
 
     // Complete Model Series with information from associated Image Series
-    const data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
-    modelSeries->shallowCopy(srcModelSeries);
+    const data::ModelSeries::sptr modelSeries = std::make_shared<data::ModelSeries>();
+    modelSeries->shallow_copy(srcModelSeries);
 
     // Copy Study and Patient
     /// @todo verify this is required since we already have the same patient ID and same study uid, which means we
@@ -123,15 +123,15 @@ void SurfaceSegmentation::write()
     SPTR(io::dicom::container::DicomInstance) modelInstance =
         std::make_shared<io::dicom::container::DicomInstance>(modelSeries, m_logger, false);
 
-    m_writerJob->doneWork(0);
-    m_writerJob->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
+    m_writerJob->done_work(0);
+    m_writerJob->set_total_work_units(modelSeries->getReconstructionDB().size());
 
     io::dicom::writer::iod::SurfaceSegmentationIOD iod(modelInstance,
                                                        associatedDicomInstance,
-                                                       this->getFile(),
+                                                       this->get_file(),
                                                        m_logger,
-                                                       m_writerJob->progressCallback(),
-                                                       m_writerJob->cancelRequestedCallback());
+                                                       m_writerJob->progress_callback(),
+                                                       m_writerJob->cancel_requested_callback());
     try
     {
         iod.write(modelSeries);
@@ -154,14 +154,14 @@ std::string SurfaceSegmentation::extension() const
 
 //------------------------------------------------------------------------------
 
-SPTR(core::jobs::IJob) SurfaceSegmentation::getJob() const
+SPTR(core::jobs::base) SurfaceSegmentation::getJob() const
 {
     return m_writerJob;
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(core::log::Logger) SurfaceSegmentation::getLogger() const
+SPTR(core::log::logger) SurfaceSegmentation::getLogger() const
 {
     return m_logger;
 }

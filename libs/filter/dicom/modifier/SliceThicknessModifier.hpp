@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "filter/dicom/config.hpp"
-#include "filter/dicom/modifier/IModifier.hpp"
+#include "filter/dicom/modifier/base.hpp"
 
 #include <data/DicomSeries.hpp>
 
@@ -34,22 +34,19 @@ namespace sight::filter::dicom::modifier
  * @brief Filter that uses the ImagepositionPatient tag to sort the instances.
  * The position increases along the direction given by cross product of the ImageOrientationPatient vectors.
  */
-class FILTER_DICOM_CLASS_API SliceThicknessModifier : public IModifier
+class FILTER_DICOM_CLASS_API SliceThicknessModifier : public base
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SliceThicknessModifier, IModifier, filter::dicom::factory::New<SliceThicknessModifier>);
-
-    /// Constructor
-    FILTER_DICOM_API SliceThicknessModifier(filter::dicom::IFilter::Key key);
+    SIGHT_DECLARE_CLASS(SliceThicknessModifier, base, sight::filter::dicom::factory::make<SliceThicknessModifier>);
 
     /// Destructor
-    FILTER_DICOM_API ~SliceThicknessModifier() override;
+    FILTER_DICOM_API ~SliceThicknessModifier() override = default;
 
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
         const data::DicomSeries::sptr& series,
-        const core::log::Logger::sptr& logger
+        const core::log::logger::sptr& logger
     ) const override;
 
     /// Return the name of the filter
@@ -65,13 +62,13 @@ protected:
      *  tags.
      *  @param[in] bufferObj BufferObject containing the slice
      */
-    FILTER_DICOM_API virtual double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj) const;
+    FILTER_DICOM_API virtual double getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj) const;
 
     /**
      * @brief Get the SliceThickness value from an instance.
      *  @param[in] bufferObj BufferObject containing the slice
      */
-    FILTER_DICOM_API virtual double getSliceThickness(const core::memory::BufferObject::sptr& bufferObj) const;
+    FILTER_DICOM_API virtual double getSliceThickness(const core::memory::buffer_object::sptr& bufferObj) const;
 
     /// Filter name
     static const std::string s_FILTER_NAME;

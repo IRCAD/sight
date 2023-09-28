@@ -22,7 +22,7 @@
 
 #include "modules/ui/qt/calibration/SCameraConfigLauncher.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/CalibrationInfo.hpp>
@@ -30,15 +30,15 @@
 #include <data/Composite.hpp>
 #include <data/Vector.hpp>
 
-#include <io/base/service/ioTypes.hpp>
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/ioTypes.hpp>
+#include <io/__/service/reader.hpp>
 
-#include <service/base.hpp>
+#include <service/op.hpp>
 
-#include <ui/base/dialog/InputDialog.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/input.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -62,20 +62,20 @@ SCameraConfigLauncher::~SCameraConfigLauncher() noexcept =
 void SCameraConfigLauncher::configuring()
 {
     this->initialize();
-    service::IService::ConfigType configuration = this->getConfiguration();
+    service::config_t configuration = this->getConfiguration();
 
     SIGHT_ASSERT(
         "There must be one (and only one) <config/> element.",
         configuration.count("config") == 1
     );
-    const service::IService::ConfigType& srvconfig = configuration;
-    const service::IService::ConfigType& config    = srvconfig.get_child("config");
+    const service::config_t& srvconfig = configuration;
+    const service::config_t& config    = srvconfig.get_child("config");
 
-    const service::IService::ConfigType& intrinsic = config.get_child("intrinsic");
-    const service::IService::ConfigType& extrinsic = config.get_child("extrinsic");
+    const service::config_t& intrinsic = config.get_child("intrinsic");
+    const service::config_t& extrinsic = config.get_child("extrinsic");
 
-    m_intrinsicLauncher.parseConfig(intrinsic, this->getSptr());
-    m_extrinsicLauncher.parseConfig(extrinsic, this->getSptr());
+    m_intrinsicLauncher.parseConfig(intrinsic, this->get_sptr());
+    m_extrinsicLauncher.parseConfig(extrinsic, this->get_sptr());
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ void SCameraConfigLauncher::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* layout = new QHBoxLayout();
 
@@ -92,7 +92,7 @@ void SCameraConfigLauncher::starting()
     layout->addWidget(m_cameraComboBox);
 
     QIcon addIcon(QString::fromStdString(
-                      core::runtime::getModuleResourceFilePath(
+                      core::runtime::get_module_resource_file_path(
                           "sight::module::ui::icons",
                           "Import.svg"
                       )
@@ -103,7 +103,7 @@ void SCameraConfigLauncher::starting()
     layout->addWidget(m_addButton);
 
     QIcon importIcon(QString::fromStdString(
-                         core::runtime::getModuleResourceFilePath(
+                         core::runtime::get_module_resource_file_path(
                              "sight::module::ui::icons",
                              "CameraSeries.svg"
                          )
@@ -114,7 +114,7 @@ void SCameraConfigLauncher::starting()
     layout->addWidget(m_importButton);
 
     QIcon removeIcon(QString::fromStdString(
-                         core::runtime::getModuleResourceFilePath(
+                         core::runtime::get_module_resource_file_path(
                              "sight::module::ui::icons",
                              "remove.svg"
                          )
@@ -227,13 +227,13 @@ void SCameraConfigLauncher::onAddClicked()
 
 void SCameraConfigLauncher::onImportClicked()
 {
-    auto vector = data::Vector::New();
-    auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
-    reader->setInOut(vector, io::base::service::s_DATA_KEY);
+    auto vector = std::make_shared<data::Vector>();
+    auto reader = sight::service::add<io::service::reader>("sight::module::io::session::SReader");
+    reader->setInOut(vector, io::service::s_DATA_KEY);
 
     try
     {
-        service::IService::ConfigType config;
+        service::config_t config;
         config.add("dialog.<xmlattr>.extension", ".cam");
         config.add("dialog.<xmlattr>.description", "Cameras");
         reader->configure(config);
@@ -245,17 +245,17 @@ void SCameraConfigLauncher::onImportClicked()
     }
     catch(std::exception const& e)
     {
-        sight::ui::base::dialog::MessageDialog dlg;
+        sight::ui::dialog::message dlg;
         const auto msg = "Cannot read file: " + std::string(e.what());
         dlg.setTitle("Read error");
         dlg.setMessage(msg);
-        dlg.setIcon(sight::ui::base::dialog::IMessageDialog::Icons::CRITICAL);
+        dlg.setIcon(sight::ui::dialog::message::Icons::CRITICAL);
         SIGHT_ERROR(msg);
 
         throw;
     }
 
-    service::remove(reader);
+    sight::service::remove(reader);
 
     QStringList cameras;
     std::map<std::string, data::Camera::csptr> camera_map;
@@ -263,7 +263,7 @@ void SCameraConfigLauncher::onImportClicked()
 
     for(const auto& object : *vector)
     {
-        const auto& camera_set = data::CameraSet::dynamicCast(object);
+        const auto& camera_set = std::dynamic_pointer_cast<data::CameraSet>(object);
 
         if(camera_set)
         {
@@ -283,23 +283,23 @@ void SCameraConfigLauncher::onImportClicked()
 
     if(n_set == 0)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "No CameraSet in file",
             "There are no CameraSet present in the loaded file.",
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
     }
     else if(cameras.empty())
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "No Cameras in file",
             "There are CameraSet present in the loaded CameraSet, but no Cameras were found",
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
     }
     else
     {
-        auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+        auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
         bool ok          = false;
         auto selected    = QInputDialog::getItem(
             qtContainer->getQtContainer(),
@@ -318,11 +318,11 @@ void SCameraConfigLauncher::onImportClicked()
             const auto camIdx         = m_cameraComboBox->currentIndex();
             const auto camera_set     = m_camera_set.lock();
             auto camera               = camera_set->get_camera(std::size_t(camIdx));
-            camera->deepCopy(selectedCamera);
+            camera->deep_copy(selectedCamera);
             camera->signal<data::Camera::IntrinsicCalibratedSignalType>(
-                data::Camera::s_INTRINSIC_CALIBRATED_SIG
+                data::Camera::INTRINSIC_CALIBRATED_SIG
             )
-            ->asyncEmit();
+            ->async_emit();
         }
     }
 }
@@ -343,9 +343,9 @@ void SCameraConfigLauncher::onRemoveClicked()
             camera_set->remove_camera(camera);
 
             auto sig = camera_set->signal<data::CameraSet::removed_camera_signal_t>(
-                data::CameraSet::s_REMOVED_CAMERA_SIG
+                data::CameraSet::REMOVED_CAMERA_SIG
             );
-            sig->asyncEmit(camera);
+            sig->async_emit(camera);
 
             // Remove calibrationInfo
             std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
@@ -374,7 +374,7 @@ void SCameraConfigLauncher::onRemoveClicked()
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog::show("Warning", "The first camera can not be deleted");
+        sight::ui::dialog::message::show("Warning", "The first camera can not be deleted");
     }
 }
 
@@ -402,7 +402,7 @@ void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 
 void SCameraConfigLauncher::startIntrinsicConfig(std::size_t index)
 {
-    service::FieldAdaptorType replaceMap;
+    sight::service::FieldAdaptorType replaceMap;
     {
         const auto camera_set     = m_camera_set.lock();
         data::Camera::sptr camera = camera_set->get_camera(index);
@@ -410,22 +410,22 @@ void SCameraConfigLauncher::startIntrinsicConfig(std::size_t index)
         std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
 
         const auto activity = m_activity.lock();
-        auto calibInfo      = data::CalibrationInfo::dynamicCast((*activity)[calibrationInfoKey]);
+        auto calibInfo      = std::dynamic_pointer_cast<data::CalibrationInfo>((*activity)[calibrationInfoKey]);
 
-        replaceMap["camera"]          = camera->getID();
-        replaceMap["calibrationInfo"] = calibInfo->getID();
+        replaceMap["camera"]          = camera->get_id();
+        replaceMap["calibrationInfo"] = calibInfo->get_id();
     }
 
     m_extrinsicLauncher.stopConfig();
     m_intrinsicLauncher.stopConfig();
-    m_intrinsicLauncher.startConfig(this->getSptr(), replaceMap);
+    m_intrinsicLauncher.startConfig(this->get_sptr(), replaceMap);
 }
 
 //------------------------------------------------------------------------------
 
 void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
 {
-    service::FieldAdaptorType replaceMap;
+    sight::service::FieldAdaptorType replaceMap;
     {
         const std::size_t cameraIdx = std::max(index, std::size_t(1));
 
@@ -437,7 +437,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
         // Check if the two cameras are calibrated
         if(!camera1->getIsCalibrated() || !camera2->getIsCalibrated())
         {
-            sight::ui::base::dialog::MessageDialog::show("Calibration", "Cameras must be intrinsically calibrated.");
+            sight::ui::dialog::message::show("Calibration", "Cameras must be intrinsically calibrated.");
             m_extrinsicButton->setChecked(false);
             return;
         }
@@ -453,28 +453,28 @@ void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
         if(activity->find(calibrationInfo1Key) == activity->end()
            || activity->find(calibrationInfo2Key) == activity->end())
         {
-            calibInfo1 = data::CalibrationInfo::New();
-            calibInfo2 = data::CalibrationInfo::New();
+            calibInfo1 = std::make_shared<data::CalibrationInfo>();
+            calibInfo2 = std::make_shared<data::CalibrationInfo>();
 
             (*activity)[calibrationInfo1Key] = calibInfo1;
             (*activity)[calibrationInfo2Key] = calibInfo2;
         }
         else
         {
-            calibInfo1 = data::CalibrationInfo::dynamicCast((*activity)[calibrationInfo1Key]);
-            calibInfo2 = data::CalibrationInfo::dynamicCast((*activity)[calibrationInfo2Key]);
+            calibInfo1 = std::dynamic_pointer_cast<data::CalibrationInfo>((*activity)[calibrationInfo1Key]);
+            calibInfo2 = std::dynamic_pointer_cast<data::CalibrationInfo>((*activity)[calibrationInfo2Key]);
         }
 
-        replaceMap["camera1"]          = camera1->getID();
-        replaceMap["camera2"]          = camera2->getID();
-        replaceMap["calibrationInfo1"] = calibInfo1->getID();
-        replaceMap["calibrationInfo2"] = calibInfo2->getID();
+        replaceMap["camera1"]          = camera1->get_id();
+        replaceMap["camera2"]          = camera2->get_id();
+        replaceMap["calibrationInfo1"] = calibInfo1->get_id();
+        replaceMap["calibrationInfo2"] = calibInfo2->get_id();
         replaceMap["camIndex"]         = std::to_string(index);
     }
 
     m_extrinsicLauncher.stopConfig();
     m_intrinsicLauncher.stopConfig();
-    m_extrinsicLauncher.startConfig(this->getSptr(), replaceMap);
+    m_extrinsicLauncher.startConfig(this->get_sptr(), replaceMap);
 }
 
 //------------------------------------------------------------------------------
@@ -486,11 +486,11 @@ void SCameraConfigLauncher::addCamera()
         const auto camera_set = m_camera_set.lock();
         nbCam = camera_set->size();
 
-        data::Camera::sptr camera = data::Camera::New();
+        data::Camera::sptr camera = std::make_shared<data::Camera>();
 
         // Add the CalibrationInfo in activity to be saved in activity
         std::string calibrationInfoKey        = "calibrationInfo_" + std::to_string(nbCam);
-        data::CalibrationInfo::sptr calibInfo = data::CalibrationInfo::New();
+        data::CalibrationInfo::sptr calibInfo = std::make_shared<data::CalibrationInfo>();
 
         const auto activity = m_activity.lock();
         (*activity)[calibrationInfoKey] = calibInfo;
@@ -498,9 +498,9 @@ void SCameraConfigLauncher::addCamera()
         // Add the camera
         camera_set->add_camera(camera);
         auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(
-            data::CameraSet::s_ADDED_CAMERA_SIG
+            data::CameraSet::ADDED_CAMERA_SIG
         );
-        sig->asyncEmit(camera);
+        sig->async_emit(camera);
     }
 
     m_cameraComboBox->blockSignals(true);

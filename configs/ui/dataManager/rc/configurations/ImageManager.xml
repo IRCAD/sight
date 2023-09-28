@@ -27,9 +27,9 @@ Example:
         <object uid="${image}" type="sight::data::Image" src="ref" />
         <object uid="${transferFunction}" type="sight::data::TransferFunction" src="ref" />
 
-        <service uid="imageManagerView" type="sight::module::ui::base::SView">
+        <service uid="imageManagerView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -43,9 +43,9 @@ Example:
             </registry>
         </service>
 
-        <service uid="sliderView" type="sight::module::ui::base::SView">
+        <service uid="sliderView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="1" />
                 </layout>

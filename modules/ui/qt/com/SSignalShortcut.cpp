@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,15 +23,15 @@
 #include "SSignalShortcut.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
-#include <ui/base/container/fwContainer.hpp>
-#include <ui/base/GuiRegistry.hpp>
-#include <ui/base/IGuiContainer.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/container/widget.hpp>
+#include <ui/__/registry.hpp>
+#include <ui/__/service.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QKeySequence>
 #include <QWidget>
@@ -41,13 +41,13 @@
 namespace sight::module::ui::qt::com
 {
 
-static const core::com::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
+static const core::com::signals::key_t ACTIVATED_SIG = "activated";
 
 //-----------------------------------------------------------------------------
 
 SSignalShortcut::SSignalShortcut() noexcept
 {
-    newSignal<ActivatedShortcutSignalType>(s_ACTIVATED_SIG);
+    new_signal<ActivatedShortcutSignalType>(ACTIVATED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -76,17 +76,17 @@ void SSignalShortcut::configuring()
 
 void SSignalShortcut::starting()
 {
-    sight::ui::base::container::fwContainer::sptr fwc = nullptr;
+    sight::ui::container::widget::sptr fwc = nullptr;
 
     // Either get the container via a service id
     if(!m_sid.empty())
     {
-        bool sidExists = core::tools::fwID::exist(m_sid);
+        bool sidExists = core::tools::id::exist(m_sid);
 
         if(sidExists)
         {
-            service::IService::sptr service = service::get(m_sid);
-            auto containerSrv               = sight::ui::base::IGuiContainer::dynamicCast(service);
+            service::base::sptr service = service::get(m_sid);
+            auto containerSrv           = std::dynamic_pointer_cast<sight::ui::service>(service);
             fwc = containerSrv->getContainer();
         }
         else
@@ -97,7 +97,7 @@ void SSignalShortcut::starting()
     // or a window id
     else if(!m_wid.empty())
     {
-        fwc = sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
+        fwc = sight::ui::registry::getWIDContainer(m_wid);
         if(!fwc)
         {
             SIGHT_ERROR("Invalid window id " << m_wid);
@@ -106,7 +106,7 @@ void SSignalShortcut::starting()
 
     if(fwc != nullptr)
     {
-        auto qtc = std::dynamic_pointer_cast<sight::ui::qt::container::QtContainer>(fwc);
+        auto qtc = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(fwc);
         if(qtc != nullptr)
         {
             if(m_shortcutObject == nullptr)
@@ -151,7 +151,7 @@ void SSignalShortcut::updating()
 
 void SSignalShortcut::onActivation()
 {
-    this->signal<ActivatedShortcutSignalType>(s_ACTIVATED_SIG)->asyncEmit();
+    this->signal<ActivatedShortcutSignalType>(ACTIVATED_SIG)->async_emit();
 }
 
 } // namespace sight::module::ui::qt::com

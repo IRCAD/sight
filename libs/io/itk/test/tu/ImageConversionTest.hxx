@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,13 +36,13 @@ void ImageConversionTest::stressTestForAType()
 {
     for(unsigned char k = 0 ; k < 5 ; k++)
     {
-        data::Image::sptr image = data::Image::New();
-        utestData::generator::Image::generateRandomImage(image, core::Type::get<TYPE>());
+        data::Image::sptr image = std::make_shared<data::Image>();
+        utestData::generator::Image::generateRandomImage(image, core::type::get<TYPE>());
 
         typedef ::itk::Image<TYPE, 3> ImageType;
         typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
-        data::Image::sptr image2 = data::Image::New();
+        data::Image::sptr image2 = std::make_shared<data::Image>();
         io::itk::moveFromItk<ImageType>(itkImage, image2, false);
 
         image2->setWindowCenter(image->getWindowCenter());

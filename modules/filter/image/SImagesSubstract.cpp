@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include <io/itk/itk.hpp>
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 // Services tools
 #include <service/macros.hpp>
@@ -60,7 +60,7 @@ void SImagesSubstract::stopping()
 
 void SImagesSubstract::updating()
 {
-    core::Type REQUESTED_TYPE = core::Type::INT16;
+    core::type REQUESTED_TYPE = core::type::INT16;
 
     const auto image1 = m_image1.lock();
     const auto image2 = m_image2.lock();
@@ -72,7 +72,7 @@ void SImagesSubstract::updating()
     if(isSameType)
     {
         // test if the both images have the same size.
-        const bool isSameSize = (image1->getSize() == image2->getSize());
+        const bool isSameSize = (image1->size() == image2->size());
         if(isSameSize)
         {
             using ImageType = itk::Image<std::int16_t, 3>;
@@ -98,24 +98,24 @@ void SImagesSubstract::updating()
             assert(output->GetSource());
             io::itk::moveFromItk<ImageType>(output, imageResult.get_shared(), true);
 
-            auto sig = imageResult->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-            sig->asyncEmit();
+            auto sig = imageResult->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+            sig->async_emit();
         }
         else
         {
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Warning",
                 "Both images must have the same size.",
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             "Both Images must have signed short as type.",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
 }

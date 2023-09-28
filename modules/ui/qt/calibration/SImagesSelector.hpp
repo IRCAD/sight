@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/HiResClock.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
+#include <core/hires_clock.hpp>
 
 #include <data/FrameTL.hpp>
 #include <data/Vector.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QLabel>
 #include <QListWidget>
@@ -45,7 +45,7 @@ namespace sight::module::ui::qt::calibration
  * @brief   This editor allows to add images to a data::Vector from a data::FrameTL.
  *
  * @section Slots Slots
- * - \b add(core::HiResClock::HiResClockType): .
+ * - \b add(core::hires_clock::type): .
  * - \b remove(): .
  * - \b reset(): .
 
@@ -63,13 +63,13 @@ namespace sight::module::ui::qt::calibration
  * - \b key2 [sight::data::Vector]: vector containing extracted images.
  */
 class MODULE_UI_QT_CLASS_API SImagesSelector : public QObject,
-                                               public sight::ui::base::IEditor
+                                               public sight::ui::editor
 {
 Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SImagesSelector, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SImagesSelector, sight::ui::editor);
 
     /// Constructor.
     MODULE_UI_QT_API SImagesSelector() noexcept;
@@ -81,14 +81,14 @@ public:
      * @name Slots API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_ADD_SLOT;
-    typedef core::com::Slot<void (core::HiResClock::HiResClockType)> AddSlotType;
+    MODULE_UI_QT_API static const core::com::slots::key_t ADD_SLOT;
+    typedef core::com::slot<void (core::hires_clock::type)> AddSlotType;
 
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_REMOVE_SLOT;
-    typedef core::com::Slot<void ()> RemoveSlotType;
+    MODULE_UI_QT_API static const core::com::slots::key_t REMOVE_SLOT;
+    typedef core::com::slot<void ()> RemoveSlotType;
 
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_RESET_SLOT;
-    typedef core::com::Slot<void ()> ResetSlotType;
+    MODULE_UI_QT_API static const core::com::slots::key_t RESET_SLOT;
+    typedef core::com::slot<void ()> ResetSlotType;
     ///@}
 
 protected:
@@ -114,7 +114,7 @@ protected:
     MODULE_UI_QT_API void reset();
 
     /// Slot: to add an image in the vector.
-    MODULE_UI_QT_API void add(core::HiResClock::HiResClockType timestamp);
+    MODULE_UI_QT_API void add(core::hires_clock::type timestamp);
 
 private:
 

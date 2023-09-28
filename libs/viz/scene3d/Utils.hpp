@@ -81,7 +81,7 @@ public:
      * @brief Utils::addRessourcesPath
      *        Add a path to load Ogre ressources from a specific module.
      *        You must edit the ressource.cfg file for each module containing specific resources
-     *        In this case, you can call this method in the Plugin.cpp file of this module
+     *        In this case, you can call this method in the plugin.cpp file of this module
      * @param path Relative path to the ressource.cfg file from a specific module
      */
     VIZ_SCENE3D_API static void addResourcesPath(const std::string& moduleName);
@@ -118,7 +118,7 @@ public:
      * @param _image The Sight Image
      * @param _format Pixel format of Ogre
      */
-    VIZ_SCENE3D_API static std::pair<core::Type, data::Image::PixelFormat> getPixelFormatFromOgre(
+    VIZ_SCENE3D_API static std::pair<core::type, data::Image::PixelFormat> getPixelFormatFromOgre(
         Ogre::PixelFormat _format
     );
     /**
@@ -126,7 +126,7 @@ public:
      * @param _format Pixel format
      * @return The window that should be used to scale pixel values
      */
-    VIZ_SCENE3D_API static Ogre::Vector2 getTextureWindow(core::Type _format);
+    VIZ_SCENE3D_API static Ogre::Vector2 getTextureWindow(core::type _format);
 
     /**
      * @brief allocateTexture

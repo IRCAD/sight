@@ -4,13 +4,13 @@ add_dependencies(
     SightViewer
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_viz_scene3dQt
     module_service
     data
     viz_scene2d
-    module_ui_base
+    module_ui
     module_ui_viz
     module_ui_flaticons
     module_io_itk

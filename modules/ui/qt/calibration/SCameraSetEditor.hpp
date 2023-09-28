@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QComboBox>
 #include <QLabel>
@@ -58,16 +58,16 @@ namespace sight::module::ui::qt::calibration
  * -\b updateInformations(): Updates the informations of the intrinsic calibration.
  */
 class MODULE_UI_QT_CLASS_API SCameraSetEditor : public QObject,
-                                                public sight::ui::base::IEditor
+                                                public sight::ui::editor
 {
 Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SCameraSetEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SCameraSetEditor, sight::ui::editor);
 
-    static const core::com::Slots::SlotKeyType s_UPDATE_INFOS_SLOT;
-    typedef core::com::Slot<void ()> UpdateInfosSlotType;
+    static const core::com::slots::key_t UPDATE_INFOS_SLOT;
+    typedef core::com::slot<void ()> UpdateInfosSlotType;
 
     /**
      * @brief Constructor.
@@ -109,7 +109,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      */
-    service::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::connections_t getAutoConnections() const override;
 
     /**
      * @brief Slot: Updates the informations of the intrinsic calibration.

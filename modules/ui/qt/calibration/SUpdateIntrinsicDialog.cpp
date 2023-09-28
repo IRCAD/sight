@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "modules/ui/qt/calibration/SUpdateIntrinsicDialog.hpp"
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -157,12 +157,13 @@ void SUpdateIntrinsicDialog::onPushCompute()
     //new resolution don't respect the original ratio
     if(std::abs(m_ratio - ratio) > 0.0001)
     {
-        sight::ui::base::dialog::MessageDialog::sptr warningMess = sight::ui::base::dialog::MessageDialog::New();
+        sight::ui::dialog::message::sptr warningMess =
+            std::make_shared<sight::ui::dialog::message>();
         warningMess->show(
             "Warning",
             "The new resolution don't respect the original resolution ratio !"
             ,
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         return;
     }

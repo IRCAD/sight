@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <ui/base/IAction.hpp>
+#include <ui/__/action.hpp>
 
 #include <filesystem>
 
@@ -34,11 +34,11 @@ namespace sight::module::ui::qt
 /**
  * @brief   This action show the help contents.
  */
-class MODULE_UI_QT_CLASS_API SShowHelp : public sight::ui::base::IAction
+class MODULE_UI_QT_CLASS_API SShowHelp : public sight::ui::action
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SShowHelp, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SShowHelp, sight::ui::action);
 
     MODULE_UI_QT_API SShowHelp() noexcept           = default;
     MODULE_UI_QT_API ~SShowHelp() noexcept override = default;
@@ -50,7 +50,7 @@ protected:
      *
      * XML configuration sample:
      * @code{.xml}
-       <service impl="sight::module::ui::qt::SShowHelp" type="ui::base::IAction">
+       <service impl="sight::module::ui::qt::SShowHelp" type="ui::action">
         <filename id=".../doc.qhc"/>
        </service>
        @endcode

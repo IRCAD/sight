@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "filter/dicom/custom/DefaultDicomFilter.hpp"
 
+#include "filter/dicom/composite/base.hpp"
 #include "filter/dicom/composite/CTImageStorageDefaultComposite.hpp"
-#include "filter/dicom/composite/IComposite.hpp"
 #include "filter/dicom/exceptions/FilterFailure.hpp"
 #include "filter/dicom/registry/macros.hpp"
 #include "filter/dicom/splitter/SOPClassUIDSplitter.hpp"
@@ -44,17 +44,6 @@ const std::string DefaultDicomFilter::s_FILTER_DESCRIPTION = "Default DICOM filt
 
 //-----------------------------------------------------------------------------
 
-DefaultDicomFilter::DefaultDicomFilter(filter::dicom::IFilter::Key /*unused*/)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-DefaultDicomFilter::~DefaultDicomFilter()
-= default;
-
-//-----------------------------------------------------------------------------
-
 std::string DefaultDicomFilter::getName() const
 {
     return DefaultDicomFilter::s_FILTER_NAME;
@@ -71,15 +60,14 @@ std::string DefaultDicomFilter::getDescription() const
 
 DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 const
 {
     DicomSeriesContainerType result;
 
     //Split series depending on SOPClassUIDs
-    filter::dicom::splitter::SOPClassUIDSplitter::sptr sopFilter =
-        filter::dicom::splitter::SOPClassUIDSplitter::New();
+    auto sopFilter                           = std::make_shared<sight::filter::dicom::splitter::SOPClassUIDSplitter>();
     DicomSeriesContainerType seriesContainer = sopFilter->apply(series, logger);
 
     // Apply default filters depending on SOPClassUIDs
@@ -99,13 +87,13 @@ const
             sopClassUID = dcmFindNameOfUID(sopClassUID.c_str());
         }
 
-        filter::dicom::composite::IComposite::sptr filter;
+        sight::filter::dicom::composite::base::sptr filter;
 
         // CT Image Storage
         if(sopClassUID == "CTImageStorage" || sopClassUID == "MRImageStorage"
            || sopClassUID == "SecondaryCaptureImageStorage")
         {
-            filter = filter::dicom::composite::CTImageStorageDefaultComposite::New();
+            filter = std::make_shared<sight::filter::dicom::composite::CTImageStorageDefaultComposite>();
         }
 
         //Apply filter

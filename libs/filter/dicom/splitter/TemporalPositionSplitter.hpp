@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,14 +31,18 @@ namespace sight::filter::dicom::splitter
 /**
  * @brief Filter that uses the TemporalPositionIdentifier tag to split the instances.
  */
-class FILTER_DICOM_CLASS_API TemporalPositionSplitter : public filter::dicom::splitter::TagValueSplitter
+class FILTER_DICOM_CLASS_API TemporalPositionSplitter : public sight::filter::dicom::splitter::TagValueSplitter
 {
 public:
 
-    SIGHT_DECLARE_CLASS(TemporalPositionSplitter, ISplitter, filter::dicom::factory::New<TemporalPositionSplitter>);
+    SIGHT_DECLARE_CLASS(
+        TemporalPositionSplitter,
+        base,
+        sight::filter::dicom::factory::make<TemporalPositionSplitter>
+    );
 
     /// Constructor
-    FILTER_DICOM_API TemporalPositionSplitter(filter::dicom::IFilter::Key key);
+    FILTER_DICOM_API TemporalPositionSplitter();
 
     /// Destructor
     FILTER_DICOM_API ~TemporalPositionSplitter() override;

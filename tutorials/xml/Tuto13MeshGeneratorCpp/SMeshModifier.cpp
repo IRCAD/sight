@@ -22,11 +22,11 @@
 
 #include "SMeshModifier.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <geometry/data/Mesh.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 namespace Tuto13MeshGeneratorCpp
 {
@@ -90,24 +90,24 @@ void SMeshModifier::updating()
             geometry::data::Mesh::shakePoint(mesh.get_shared());
 
             data::Mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
-            sig->asyncEmit();
+            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::VERTEX_MODIFIED_SIG);
+            sig->async_emit();
         }
         else if(m_functor == "ColorizeMeshCells")
         {
             geometry::data::Mesh::colorizeMeshCells(mesh.get_shared());
 
             data::Mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::s_CELL_COLORS_MODIFIED_SIG);
-            sig->asyncEmit();
+            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::CELL_COLORS_MODIFIED_SIG);
+            sig->async_emit();
         }
         else if(m_functor == "ColorizeMeshPoints")
         {
             geometry::data::Mesh::colorizeMeshPoints(mesh.get_shared());
 
             data::Mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
-            sig->asyncEmit();
+            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::POINT_COLORS_MODIFIED_SIG);
+            sig->async_emit();
         }
         else if(m_functor == "ComputeCellNormals")
         {
@@ -115,9 +115,9 @@ void SMeshModifier::updating()
 
             data::Mesh::signal_t::sptr sig;
             sig = mesh->signal<data::Mesh::signal_t>(
-                data::Mesh::s_CELL_NORMALS_MODIFIED_SIG
+                data::Mesh::CELL_NORMALS_MODIFIED_SIG
             );
-            sig->asyncEmit();
+            sig->async_emit();
         }
         else if(m_functor == "ComputePointNormals")
         {
@@ -125,17 +125,17 @@ void SMeshModifier::updating()
 
             data::Mesh::signal_t::sptr sig;
             sig = mesh->signal<data::Mesh::signal_t>(
-                data::Mesh::s_POINT_NORMALS_MODIFIED_SIG
+                data::Mesh::POINT_NORMALS_MODIFIED_SIG
             );
-            sig->asyncEmit();
+            sig->async_emit();
         }
         else if(m_functor == "ShakeCellNormals")
         {
             geometry::data::Mesh::shakeCellNormals(mesh.get_shared());
 
             data::Mesh::signal_t::sptr sig;
-            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::s_CELL_NORMALS_MODIFIED_SIG);
-            sig->asyncEmit();
+            sig = mesh->signal<data::Mesh::signal_t>(data::Mesh::CELL_NORMALS_MODIFIED_SIG);
+            sig->async_emit();
         }
         else if(m_functor == "ShakePointNormals")
         {
@@ -143,17 +143,17 @@ void SMeshModifier::updating()
 
             data::Mesh::signal_t::sptr sig;
             sig = mesh->signal<data::Mesh::signal_t>(
-                data::Mesh::s_POINT_NORMALS_MODIFIED_SIG
+                data::Mesh::POINT_NORMALS_MODIFIED_SIG
             );
-            sig->asyncEmit();
+            sig->async_emit();
         }
         else if(m_functor == "MeshDeformation")
         {
             m_animator.computeDeformation(mesh.get_shared(), 100, 50);
-            const auto sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+            const auto sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
             {
-                sight::core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                sig->asyncEmit();
+                sight::core::com::connection::blocker block(sig->get_connection(slot(sight::service::slots::UPDATE)));
+                sig->async_emit();
             }
         }
     }
@@ -162,10 +162,10 @@ void SMeshModifier::updating()
         std::stringstream ss;
         ss << "Warning during generating : " << _e.what();
 
-        ui::base::dialog::MessageDialog::show(
+        ui::dialog::message::show(
             "Warning",
             ss.str(),
-            ui::base::dialog::IMessageDialog::WARNING
+            ui::dialog::message::WARNING
         );
     }
 }

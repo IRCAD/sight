@@ -29,7 +29,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -60,13 +60,13 @@ namespace sight::module::ui::qt::model
  * - \b composite [sight::data::Composite]: composite.
  */
 class MODULE_UI_QT_CLASS_API SOrganTransformation : public QObject,
-                                                    public sight::ui::base::IEditor
+                                                    public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SOrganTransformation, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SOrganTransformation, sight::ui::editor);
 
     /// constructor
     MODULE_UI_QT_API SOrganTransformation() noexcept;
@@ -85,15 +85,15 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect ModelSeries::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::IService::slots::s_UPDATE
-     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::IService::slots::s_UPDATE
-     * Connect Composite::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect Composite::s_ADDED_OBJECTS_SIG to this::IService::slots::s_UPDATE
-     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::IService::slots::s_UPDATE
-     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::IService::slots::s_UPDATE
+     * Connect ModelSeries::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect ModelSeries::RECONSTRUCTIONS_ADDED_SIG to this::service::slots::UPDATE
+     * Connect ModelSeries::RECONSTRUCTIONS_REMOVED_SIG to this::service::slots::UPDATE
+     * Connect Composite::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect Composite::ADDED_OBJECTS_SIG to this::service::slots::UPDATE
+     * Connect Composite::REMOVED_OBJECTS_SIG to this::service::slots::UPDATE
+     * Connect Composite::CHANGED_OBJECTS_SIG to this::service::slots::UPDATE
      */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
 private Q_SLOTS:
 

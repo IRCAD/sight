@@ -23,18 +23,18 @@
 #include "modules/io/vtk/SImageReader.hpp"
 
 #include <core/base.hpp>
-#include <core/com/HasSignals.hpp>
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/has_signals.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/reader/IObjectReader.hpp>
-#include <io/base/service/IReader.hpp>
+#include <io/__/reader/IObjectReader.hpp>
+#include <io/__/service/reader.hpp>
 #include <io/vtk/BitmapImageReader.hpp>
 #include <io/vtk/ImageReader.hpp>
 #include <io/vtk/MetaImageReader.hpp>
@@ -42,9 +42,9 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -60,20 +60,20 @@ namespace sight::module::io::vtk
 
 // Register a new reader of data::Image
 
-static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SImageReader::getIOPathType() const
+sight::io::service::IOPathType SImageReader::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SImageReader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
     /* Initialize the available extensions for BitmapImageReader */
     std::vector<std::string> ext;
@@ -89,21 +89,21 @@ void SImageReader::openLocationDialog()
         }
     }
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
     dialogFile.addFilter("Bitmap image", availableExtensions);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(ui::dialog::location::READ);
+    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        this->setFile(result->getFile());
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        this->set_file(result->get_file());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -116,7 +116,7 @@ void SImageReader::openLocationDialog()
 
 SImageReader::SImageReader() noexcept
 {
-    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -135,7 +135,7 @@ void SImageReader::stopping()
 
 void SImageReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -160,7 +160,7 @@ void SImageReader::updating()
             "The object is not a '"
             + data::Image::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             image
         );
@@ -168,23 +168,23 @@ void SImageReader::updating()
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image
         // has been modified.
 
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
+        sight::ui::cursor cursor;
+        cursor.setCursor(ui::cursor_base::BUSY);
         try
         {
             // Notify other image services that a new image has been loaded.
-            if(SImageReader::loadImage(this->getFile(), image, m_sigJobCreated))
+            if(SImageReader::loadImage(this->get_file(), image, m_sigJobCreated))
             {
                 m_readFailed = false;
 
-                auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
                 {
-                    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                    sig->asyncEmit();
+                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                    sig->async_emit();
                 }
             }
         }
-        catch(core::tools::Failed& e)
+        catch(core::tools::failed& e)
         {
             cursor.setDefaultCursor();
             SIGHT_THROW_EXCEPTION(e);
@@ -199,8 +199,8 @@ void SImageReader::updating()
 template<typename READER>
 typename READER::sptr configureReader(const std::filesystem::path& imgFile)
 {
-    typename READER::sptr reader = READER::New();
-    reader->setFile(imgFile);
+    typename READER::sptr reader = std::make_shared<READER>();
+    reader->set_file(imgFile);
     return reader;
 }
 
@@ -217,7 +217,7 @@ bool SImageReader::loadImage(
     std::string ext = imgFile.extension().string();
     boost::algorithm::to_lower(ext);
 
-    sight::io::base::reader::IObjectReader::sptr imageReader;
+    sight::io::reader::IObjectReader::sptr imageReader;
     if(ext == ".vtk")
     {
         imageReader = configureReader<sight::io::vtk::ImageReader>(imgFile);
@@ -258,7 +258,7 @@ bool SImageReader::loadImage(
             }
 
             SIGHT_THROW_EXCEPTION(
-                core::tools::Failed(
+                core::tools::failed(
                     "Only " + bitmapExtensions
                     + ".vtk, .vti and .mhd are supported."
                 )
@@ -275,15 +275,15 @@ bool SImageReader::loadImage(
     {
         imageReader->read();
     }
-    catch(core::tools::Failed& e)
+    catch(core::tools::failed& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         ok = false;
 
@@ -295,19 +295,19 @@ bool SImageReader::loadImage(
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         ok = false;
     }
     catch(...)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             "Warning during loading.",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         ok = false;
     }

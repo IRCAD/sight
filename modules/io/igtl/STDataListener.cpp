@@ -22,16 +22,16 @@
 
 #include "STDataListener.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
 
 #include <data/Composite.hpp>
 #include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/Preferences.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <boost/lexical_cast.hpp>
 #include <boost/range/iterator_range_core.hpp>
@@ -79,12 +79,12 @@ void STDataListener::configuring()
 
 void STDataListener::runClient()
 {
-    data::Composite::sptr composite = data::Composite::New();
+    data::Composite::sptr composite = std::make_shared<data::Composite>();
 
     // 1. Connection
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
         const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
         const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
 
@@ -99,17 +99,17 @@ void STDataListener::runClient()
         }
 
         m_client.connect(hostname, port);
-        m_sigConnected->asyncEmit();
+        m_sigConnected->async_emit();
     }
-    catch(core::Exception& ex)
+    catch(core::exception& ex)
     {
         // Only open a dialog if the service is started.
         // connect may throw if we request the service to stop,
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
-            this->slot(IService::slots::s_STOP)->asyncRun();
+            sight::ui::dialog::message::show("Connection error", ex.what());
+            this->slot(service::slots::STOP)->async_run();
         }
         else
         {
@@ -130,20 +130,20 @@ void STDataListener::runClient()
             data::Object::sptr receiveObject = m_client.receiveObject(deviceName, timestamp);
             if(receiveObject)
             {
-                composite->shallowCopy(receiveObject);
+                composite->shallow_copy(receiveObject);
                 this->manageTimeline(composite, timestamp);
             }
         }
     }
-    catch(core::Exception& ex)
+    catch(core::exception& ex)
     {
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            sight::ui::base::dialog::MessageDialog::show("Error", ex.what());
-            this->slot(IService::slots::s_STOP)->asyncRun();
+            sight::ui::dialog::message::show("Error", ex.what());
+            this->slot(service::slots::STOP)->async_run();
         }
         else
         {
@@ -170,7 +170,7 @@ void STDataListener::stopping()
 {
     m_client.disconnect();
     m_clientFuture.wait();
-    m_sigDisconnected->asyncEmit();
+    m_sigDisconnected->async_emit();
 }
 
 //-----------------------------------------------------------------------------
@@ -183,7 +183,7 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
 
     for(const auto& elt : *obj)
     {
-        data::Matrix4::csptr transfoMatrix = data::Matrix4::dynamicConstCast(elt.second);
+        data::Matrix4::csptr transfoMatrix = std::dynamic_pointer_cast<const data::Matrix4>(elt.second);
 
         auto it = m_matrixNameIndex.find(elt.first);
 
@@ -211,8 +211,8 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
     matTL->pushObject(matrixBuf);
 
     data::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
-    sig->asyncEmit(timestamp);
+    sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::OBJECT_PUSHED_SIG);
+    sig->async_emit(timestamp);
 }
 
 //-----------------------------------------------------------------------------

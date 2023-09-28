@@ -68,10 +68,10 @@ public:
         const auto& type = image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << type,
-            type != core::Type::UINT8
-            && type != core::Type::UINT16
-            && type != core::Type::UINT64
-            && type != core::Type::UINT64
+            type != core::type::UINT8
+            && type != core::type::UINT16
+            && type != core::type::UINT64
+            && type != core::type::UINT64
         );
 
         // png_create_write_struct() must be called for each png_write_png() calls
@@ -124,7 +124,7 @@ public:
                 }
             }();
 
-        const auto& sizes        = image.getSize();
+        const auto& sizes        = image.size();
         const auto& image_width  = sizes[0];
         const auto& image_height = sizes[1];
 

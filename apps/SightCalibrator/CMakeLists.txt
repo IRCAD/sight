@@ -4,12 +4,12 @@ add_dependencies(
     SightCalibrator
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_service
     module_sync
     data
-    module_ui_base
+    module_ui
     module_ui_flaticons
     module_ui_icons
     module_io_vision
@@ -22,7 +22,7 @@ add_dependencies(
     module_data
     module_memory
     module_geometry_vision
-    module_geometry_base
+    module_geometry
     module_navigation_calibration
 )
 

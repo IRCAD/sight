@@ -30,43 +30,43 @@ namespace sight::io::dicom::codec
 
 //------------------------------------------------------------------------------
 
-static inline core::Type gdcmToSightPf(const gdcm::PixelFormat& pf)
+static inline core::type gdcmToSightPf(const gdcm::PixelFormat& pf)
 {
     switch(pf.GetScalarType())
     {
         case gdcm::PixelFormat::SINGLEBIT:
         case gdcm::PixelFormat::UINT8:
-            return core::Type::UINT8;
+            return core::type::UINT8;
 
         case gdcm::PixelFormat::INT8:
-            return core::Type::INT8;
+            return core::type::INT8;
 
         case gdcm::PixelFormat::UINT16:
-            return core::Type::UINT16;
+            return core::type::UINT16;
 
         case gdcm::PixelFormat::INT16:
-            return core::Type::INT16;
+            return core::type::INT16;
 
         case gdcm::PixelFormat::UINT32:
-            return core::Type::UINT32;
+            return core::type::UINT32;
 
         case gdcm::PixelFormat::INT32:
-            return core::Type::INT32;
+            return core::type::INT32;
 
         case gdcm::PixelFormat::UINT64:
-            return core::Type::UINT64;
+            return core::type::UINT64;
 
         case gdcm::PixelFormat::INT64:
-            return core::Type::INT64;
+            return core::type::INT64;
 
         case gdcm::PixelFormat::FLOAT32:
-            return core::Type::FLOAT;
+            return core::type::FLOAT;
 
         case gdcm::PixelFormat::FLOAT64:
-            return core::Type::DOUBLE;
+            return core::type::DOUBLE;
 
         default:
-            return core::Type::NONE;
+            return core::type::NONE;
     }
 }
 
@@ -121,11 +121,11 @@ bool NvJpeg2K::Code(gdcm::DataElement const& in, gdcm::DataElement& out)
     const auto frame_size     = in_length / dims[2];
 
     // Create the image used as input buffer
-    auto image           = data::Image::New();
+    auto image           = std::make_shared<data::Image>();
     const auto dump_lock = image->dump_lock();
 
     // Create the writer
-    auto writer = bitmap::Writer::New();
+    auto writer = std::make_shared<bitmap::Writer>();
     writer->setObject(image);
 
     // The output buffer is resized by the writer if not big enough
@@ -148,7 +148,7 @@ bool NvJpeg2K::Code(gdcm::DataElement const& in, gdcm::DataElement& out)
             sight_type,
             sight_size,
             sight_format,
-            core::memory::BufferNoAllocPolicy::New()
+            std::make_shared<core::memory::buffer_no_alloc_policy>()
         );
 
         // Encode the frame

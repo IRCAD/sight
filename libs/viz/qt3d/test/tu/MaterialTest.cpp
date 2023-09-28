@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ void MaterialTest::initializeMaterial()
 {
     TestApplication app;
 
-    auto sightMaterial = data::Material::New();
+    auto sightMaterial = std::make_shared<data::Material>();
     auto* qt3dMaterial = new viz::qt3d::data::Material();
 
     // Initializes qt3dMaterial according to sightMaterial.

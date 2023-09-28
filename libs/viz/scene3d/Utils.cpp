@@ -31,10 +31,10 @@
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/GridProxyGeometry.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 #include <core/runtime/path.hpp>
-#include <core/spyLog.hpp>
-#include <core/tools/Os.hpp>
+#include <core/spy_log.hpp>
+#include <core/tools/os.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -93,21 +93,21 @@ void Utils::loadResources()
         s_moduleWithResourcesNames.end(),
         std::back_inserter(moduleWithResourcesNames)
     );
-    moduleWithResourcesNames.push_front("sight::viz::scene3d");
+    moduleWithResourcesNames.emplace_front("sight::viz::scene3d");
 
     for(const auto& moduleName : moduleWithResourcesNames)
     {
         try
         {
             // Check file existence
-            const auto path = core::runtime::getResourceFilePath(moduleName + "/resources.cfg");
+            const auto path = core::runtime::get_resource_file_path(moduleName + "/resources.cfg");
 
             if(!std::filesystem::exists(path))
             {
                 SIGHT_FATAL("File '" + path.string() + "' doesn't exist. Ogre needs it to load resources");
             }
 
-            core::os::TempFile tmpFile;
+            core::os::temp_file tmpFile;
             std::ofstream newResourceFile(tmpFile);
 
             if(!std::filesystem::exists(tmpFile))
@@ -172,7 +172,7 @@ Ogre::Root* Utils::getOgreRoot()
 
     if(root == nullptr)
     {
-        const auto& confPath = core::runtime::getLibraryResourceFilePath("viz_scene3d/"s + PLUGIN_PATH);
+        const auto& confPath = core::runtime::get_library_resource_file_path("viz_scene3d/"s + PLUGIN_PATH);
 
         // Check file existence
         if(!std::filesystem::exists(confPath))
@@ -180,7 +180,7 @@ Ogre::Root* Utils::getOgreRoot()
             SIGHT_FATAL("File '" + confPath.string() + "' doesn't exist. Ogre needs it to be configured");
         }
 
-        core::os::TempFile tmpPluginCfg;
+        core::os::temp_file tmpPluginCfg;
 
         // Set the actual plugin path in the plugin config file and add application plugins.
         {
@@ -214,7 +214,7 @@ Ogre::Root* Utils::getOgreRoot()
                     constexpr std::string_view pluginToken       = "Plugin=";
 
                     const std::string module =
-                        core::tools::os::getSharedLibraryPath(libName).remove_filename().string();
+                        core::tools::os::get_shared_library_path(libName).remove_filename().string();
 
                     // First parse config and looks for required plugin and plugin folder
                     {
@@ -286,7 +286,7 @@ Ogre::Root* Utils::getOgreRoot()
          */
         Ogre::StringVector renderOrder;
 
-        renderOrder.push_back("OpenGL");
+        renderOrder.emplace_back("OpenGL");
 
         for(auto& iter : renderOrder)
         {
@@ -392,7 +392,7 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
     {
         const auto dumpLock = _image->dump_lock();
 
-        auto* __restrict dstBuffer = reinterpret_cast<std::uint8_t*>(_image->getBuffer());
+        auto* __restrict dstBuffer = reinterpret_cast<std::uint8_t*>(_image->buffer());
 
         pixelBuffer->lock(Ogre::HardwareBuffer::HBL_READ_ONLY);
         const Ogre::PixelBox& pixelBox           = pixelBuffer->getCurrentLock();
@@ -430,48 +430,48 @@ void Utils::convertFromOgreTexture(Ogre::TexturePtr _texture, const data::Image:
 
 Ogre::PixelFormat Utils::getPixelFormatOgre(const data::Image& _image)
 {
-    const core::Type pixelType          = _image.getType();
+    const core::type pixelType          = _image.getType();
     const std::size_t numberOfComponent = _image.numComponents();
 
     if(numberOfComponent == 1)
     {
-        if(pixelType == core::Type::INT8)
+        if(pixelType == core::type::INT8)
         {
             // int8
             return Ogre::PF_L8;
         }
 
-        if(pixelType == core::Type::UINT8)
+        if(pixelType == core::type::UINT8)
         {
             // uint8
             return Ogre::PF_L8;
         }
 
-        if(pixelType == core::Type::INT16)
+        if(pixelType == core::type::INT16)
         {
             // int16
             return Ogre::PF_L16;
         }
 
-        if(pixelType == core::Type::UINT16)
+        if(pixelType == core::type::UINT16)
         {
             // uint16
             return Ogre::PF_L16;
         }
 
-        if(pixelType == core::Type::FLOAT)
+        if(pixelType == core::type::FLOAT)
         {
             // float
             return Ogre::PF_FLOAT32_R;
         }
 
-        if(pixelType == core::Type::INT32)
+        if(pixelType == core::type::INT32)
         {
             // 32 bits are not well handled in our TF approach. However, most 32bits images fits in 16 bits.
             return Ogre::PF_L16;
         }
 
-        if(pixelType == core::Type::UINT32)
+        if(pixelType == core::type::UINT32)
         {
             // 32 bits are not well handled in our TF approach. However, most 32bits images fits in 16 bits.
             return Ogre::PF_L16;
@@ -482,19 +482,19 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(const data::Image& _image)
 
     if(numberOfComponent == 2)
     {
-        if(pixelType == core::Type::UINT8)
+        if(pixelType == core::type::UINT8)
         {
             // uint8
             return Ogre::PF_RG8;
         }
 
-        if(pixelType == core::Type::INT8)
+        if(pixelType == core::type::INT8)
         {
             // int16
             return Ogre::PF_R8G8_SNORM;
         }
 
-        if(pixelType == core::Type::FLOAT)
+        if(pixelType == core::type::FLOAT)
         {
             // float
             return Ogre::PF_FLOAT32_GR;
@@ -504,48 +504,48 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(const data::Image& _image)
     }
 
     // PixelFormat in little endian
-    if(pixelType == core::Type::UINT8)
+    if(pixelType == core::type::UINT8)
     {
         // uint8
         return numberOfComponent == 3 ? Ogre::PF_BYTE_RGB : Ogre::PF_BYTE_RGBA;
     }
 
-    if(pixelType == core::Type::UINT16)
+    if(pixelType == core::type::UINT16)
     {
         // uint16
         return numberOfComponent == 3 ? Ogre::PF_R16G16B16_UINT : Ogre::PF_R16G16B16A16_UINT;
     }
 
-    if(pixelType == core::Type::UINT32)
+    if(pixelType == core::type::UINT32)
     {
         // uint32
         return numberOfComponent == 3 ? Ogre::PF_R32G32B32_UINT : Ogre::PF_R32G32B32A32_UINT;
     }
 
-    if(pixelType == core::Type::INT8)
+    if(pixelType == core::type::INT8)
     {
         // int8
         return numberOfComponent == 3 ? Ogre::PF_R8G8B8_SINT : Ogre::PF_R8G8B8A8_SINT;
     }
 
-    if(pixelType == core::Type::INT16)
+    if(pixelType == core::type::INT16)
     {
         // int16
         return numberOfComponent == 3 ? Ogre::PF_R16G16B16_SINT : Ogre::PF_R16G16B16A16_SINT;
     }
 
-    if(pixelType == core::Type::INT32)
+    if(pixelType == core::type::INT32)
     {
         // int32
         return numberOfComponent == 3 ? Ogre::PF_R32G32B32_SINT : Ogre::PF_R32G32B32A32_SINT;
     }
 
-    if(pixelType == core::Type::FLOAT)
+    if(pixelType == core::type::FLOAT)
     {
         return numberOfComponent == 3 ? Ogre::PF_FLOAT32_RGB : Ogre::PF_FLOAT32_RGBA;
     }
 
-    if(pixelType == core::Type::DOUBLE)
+    if(pixelType == core::type::DOUBLE)
     {
         SIGHT_FATAL("Pixel format not handled.");
     }
@@ -556,21 +556,21 @@ Ogre::PixelFormat Utils::getPixelFormatOgre(const data::Image& _image)
 
 //------------------------------------------------------------------------------
 
-Ogre::Vector2 Utils::getTextureWindow(core::Type _format)
+Ogre::Vector2 Utils::getTextureWindow(core::type _format)
 {
-    static const std::map<core::Type, Ogre::Vector2> textureWindow = {
-        {core::Type::INT8, {std::numeric_limits<std::int8_t>::min(), std::numeric_limits<std::uint8_t>::max()}},
-        {core::Type::UINT8, {std::numeric_limits<std::uint8_t>::min(), std::numeric_limits<std::uint8_t>::max()}},
-        {core::Type::INT16, {std::numeric_limits<std::int16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
-        {core::Type::UINT16, {std::numeric_limits<std::uint16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
+    static const std::map<core::type, Ogre::Vector2> textureWindow = {
+        {core::type::INT8, {std::numeric_limits<std::int8_t>::min(), std::numeric_limits<std::uint8_t>::max()}},
+        {core::type::UINT8, {std::numeric_limits<std::uint8_t>::min(), std::numeric_limits<std::uint8_t>::max()}},
+        {core::type::INT16, {std::numeric_limits<std::int16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
+        {core::type::UINT16, {std::numeric_limits<std::uint16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
         // 32 bits are not well handled in our TF approach. However, most 32bits images fits in 16 bits.
-        {core::Type::INT32, {std::numeric_limits<std::int16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
-        {core::Type::UINT32, {std::numeric_limits<std::uint16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
+        {core::type::INT32, {std::numeric_limits<std::int16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
+        {core::type::UINT32, {std::numeric_limits<std::uint16_t>::min(), std::numeric_limits<std::uint16_t>::max()}},
     };
 
     SIGHT_ERROR_IF(
         "Texture windowing not supported for 64 bits integers formats",
-        _format == core::Type::INT64 || _format == core::Type::UINT64
+        _format == core::type::INT64 || _format == core::type::UINT64
     );
 
     auto it = textureWindow.find(_format);
@@ -584,7 +584,7 @@ Ogre::Vector2 Utils::getTextureWindow(core::Type _format)
 
 //------------------------------------------------------------------------------
 
-std::pair<core::Type, data::Image::PixelFormat> Utils::getPixelFormatFromOgre(Ogre::PixelFormat _format)
+std::pair<core::type, data::Image::PixelFormat> Utils::getPixelFormatFromOgre(Ogre::PixelFormat _format)
 {
     data::Image::PixelFormat pixelFormat = data::Image::PixelFormat::UNDEFINED;
 
@@ -635,7 +635,7 @@ std::pair<core::Type, data::Image::PixelFormat> Utils::getPixelFormatFromOgre(Og
             SIGHT_FATAL("Pixel format " << _format << " not found.");
     }
 
-    core::Type pixelType;
+    core::type pixelType;
     switch(_format)
     {
         case Ogre::PF_L8:
@@ -648,49 +648,49 @@ std::pair<core::Type, data::Image::PixelFormat> Utils::getPixelFormatFromOgre(Og
         case Ogre::PF_X8B8G8R8:
         case Ogre::PF_BYTE_RGB:
         case Ogre::PF_BYTE_RGBA:
-            pixelType = core::Type::UINT8;
+            pixelType = core::type::UINT8;
             break;
 
         case Ogre::PF_R8G8_SNORM:
         case Ogre::PF_R8G8B8_SINT:
         case Ogre::PF_R8G8B8A8_SINT:
-            pixelType = core::Type::INT8;
+            pixelType = core::type::INT8;
             break;
 
         case Ogre::PF_L16:
         case Ogre::PF_R16G16B16_UINT:
         case Ogre::PF_R16_UINT:
         case Ogre::PF_R16G16B16A16_UINT:
-            pixelType = core::Type::UINT16;
+            pixelType = core::type::UINT16;
             break;
 
         case Ogre::PF_SHORT_RGB:
         case Ogre::PF_SHORT_RGBA:
         case Ogre::PF_R16G16B16_SINT:
         case Ogre::PF_R16G16B16A16_SINT:
-            pixelType = core::Type::INT16;
+            pixelType = core::type::INT16;
             break;
 
         case Ogre::PF_R32G32B32_UINT:
         case Ogre::PF_R32G32B32A32_UINT:
-            pixelType = core::Type::UINT32;
+            pixelType = core::type::UINT32;
             break;
 
         case Ogre::PF_R32G32B32_SINT:
         case Ogre::PF_R32_SINT:
         case Ogre::PF_R32G32B32A32_SINT:
-            pixelType = core::Type::INT32;
+            pixelType = core::type::INT32;
             break;
 
         case Ogre::PF_FLOAT32_R:
         case Ogre::PF_FLOAT32_RGB:
         case Ogre::PF_FLOAT32_RGBA:
-            pixelType = core::Type::FLOAT;
+            pixelType = core::type::FLOAT;
             break;
 
         default:
             SIGHT_ERROR("Pixel format " << _format << " not found, defaults to s_UINT8.");
-            pixelType = core::Type::UINT8;
+            pixelType = core::type::UINT8;
     }
 
     return std::make_pair(pixelType, pixelFormat);
@@ -728,7 +728,7 @@ void Utils::allocateTexture(
 
 data::Color::sptr Utils::convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor)
 {
-    data::Color::sptr fwColor = data::Color::New();
+    data::Color::sptr fwColor = std::make_shared<data::Color>();
     fwColor->setRGBA(_ogreColor.r, _ogreColor.g, _ogreColor.b, _ogreColor.a);
 
     return fwColor;
@@ -790,7 +790,7 @@ Ogre::Vector3i Utils::worldToSlices(const data::Image& _image, const Ogre::Vecto
     // avoid 0 division
 
     SIGHT_THROW_EXCEPTION_IF(
-        core::Exception("Image spacing cannot be '0'"),
+        core::exception("Image spacing cannot be '0'"),
         spacing[0] == 0.F || spacing[1] == 0.F || spacing[2] == 0.F
     );
 
@@ -800,9 +800,9 @@ Ogre::Vector3i Utils::worldToSlices(const data::Image& _image, const Ogre::Vecto
 
     // Ensure that the point is within bounds of the image, do nothing otherwise.
     std::array<std::pair<int, int>, 3> boundaries = {{
-        {0, static_cast<int>(_image.getSize()[1])},
-        {0, static_cast<int>(_image.getSize()[0])},
-        {0, static_cast<int>(_image.getSize()[2])}
+        {0, static_cast<int>(_image.size()[1])},
+        {0, static_cast<int>(_image.size()[0])},
+        {0, static_cast<int>(_image.size()[2])}
     }
     };
 
@@ -811,7 +811,7 @@ Ogre::Vector3i Utils::worldToSlices(const data::Image& _image, const Ogre::Vecto
     {
         if(slices_idx[i] < min || slices_idx[i] > max)
         {
-            SIGHT_THROW_EXCEPTION(core::Exception("Point is outside image boundaries"));
+            SIGHT_THROW_EXCEPTION(core::exception("Point is outside image boundaries"));
         }
 
         ++i;
@@ -859,7 +859,7 @@ std::string Utils::pickImage(
 )
 {
     const auto pickedPosImageSpace = (_position - _origin) / _spacing;
-    const auto& imgSize            = _image.getSize();
+    const auto& imgSize            = _image.size();
     data::Image::Size pickedVoxel;
     for(size_t i = 0 ; i < pickedVoxel.size() ; ++i)
     {

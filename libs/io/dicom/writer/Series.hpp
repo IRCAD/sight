@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,12 @@
 #include "io/dicom/container/DicomInstance.hpp"
 #include "io/dicom/exception/Failed.hpp"
 
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/progress_adviser.hpp>
 
 #include <data/ImageSeries.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 namespace sight::io::dicom::writer
 {
@@ -41,16 +41,16 @@ namespace sight::io::dicom::writer
  * It defines needs of data storage and delegates writing to appropriate tools.
  * It manages all related data of one patient.
  */
-class IO_DICOM_CLASS_API Series : public io::base::writer::GenericObjectWriter<data::Series>,
-                                  public core::location::SingleFolder,
-                                  public core::tools::ProgressAdviser
+class IO_DICOM_CLASS_API Series : public io::writer::GenericObjectWriter<data::Series>,
+                                  public core::location::single_folder,
+                                  public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         Series,
-        io::base::writer::GenericObjectWriter<data::Series>,
-        io::base::writer::factory::New<Series>
+        io::writer::GenericObjectWriter<data::Series>,
+        io::writer::factory::make<Series>
     );
 
     //cspell: ignore ComprehensiveSRIOD Comprehensive3DSRIOD
@@ -63,11 +63,8 @@ public:
 
     typedef std::map<std::string, SPTR(io::dicom::container::DicomInstance)> DicomInstanceMapType;
 
-    /// Constructor
-    IO_DICOM_API Series(io::base::writer::IObjectWriter::Key key);
-
     /// Destructor
-    IO_DICOM_API ~Series() override;
+    IO_DICOM_API ~Series() override = default;
 
     /**
      * @brief Load and start appropriate writing tools.

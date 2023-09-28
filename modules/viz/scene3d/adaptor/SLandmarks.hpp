@@ -26,14 +26,14 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <core/macros.hpp>
-#include <core/thread/Timer.hpp>
+#include <core/thread/timer.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Landmarks.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/IText.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -105,14 +105,14 @@ namespace sight::module::viz::scene3d::adaptor
  *
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SLandmarks final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable,
-    public sight::viz::scene3d::interactor::IInteractor
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable,
+    public sight::viz::scene3d::interactor::base
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLandmarks, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SLandmarks, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SLandmarks() noexcept;
@@ -122,7 +122,7 @@ public:
 
     struct MODULE_VIZ_SCENE3D_CLASS_API Slots final
     {
-        using key_t = sight::core::com::Slots::SlotKeyType;
+        using key_t = sight::core::com::slots::key_t;
 
         inline static const key_t REMOVE_ALL              = "removeAll";
         inline static const key_t REMOVE_GROUP            = "removeGroup";
@@ -238,12 +238,12 @@ public:
 
     struct MODULE_VIZ_SCENE3D_CLASS_API Signals final
     {
-        using key_t = sight::core::com::Signals::SignalKeyType;
+        using key_t = sight::core::com::signals::key_t;
 
         /// Signal send when double clicked on a landmark, send its world coordinates;
         inline static const key_t SEND_WORLD_COORD = "sendWorldCoord";
 
-        using world_coordinates_signal_t = core::com::Signal<void (double, double, double)>;
+        using world_coordinates_signal_t = core::com::signal<void (double, double, double)>;
     };
 
 protected:
@@ -258,18 +258,18 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Landmarks::s_MODIFIED_SIG of s_LANDMARKS_INOUT to s_UPDATE_SLOT_SLOT
-     * Connect data::Landmarks::s_GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to s_REMOVE_GROUP_SLOT
-     * Connect data::Landmarks::s_GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to s_MODIFY_GROUP_SLOT
-     * Connect data::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INOUT to s_ADD_POINT_SLOT
-     * Connect data::Landmarks::s_POINT_REMOVED_SIG of s_LANDMARKS_INOUT to s_REMOVE_GROUP_SLOT
-     * Connect data::Landmarks::s_POINT_INSERTED_SIG of s_LANDMARKS_INOUT to s_INSERT_POINT_SLOT
-     * Connect data::Landmarks::s_POINT_SELECTED_SIG of s_LANDMARKS_INOUT to s_SELECT_POINT_SLOT
-     * Connect data::Landmarks::s_POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to s_DESELECT_POINT_SLOT
-     * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICE_TYPE_SLOT
-     * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICE_INDEX_SLOT
+     * Connect data::Landmarks::MODIFIED_SIG of s_LANDMARKS_INOUT to UPDATE_SLOT_SLOT
+     * Connect data::Landmarks::GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to REMOVE_GROUP_SLOT
+     * Connect data::Landmarks::GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to MODIFY_GROUP_SLOT
+     * Connect data::Landmarks::POINT_ADDED_SIG of s_LANDMARKS_INOUT to ADD_POINT_SLOT
+     * Connect data::Landmarks::POINT_REMOVED_SIG of s_LANDMARKS_INOUT to REMOVE_GROUP_SLOT
+     * Connect data::Landmarks::POINT_INSERTED_SIG of s_LANDMARKS_INOUT to INSERT_POINT_SLOT
+     * Connect data::Landmarks::POINT_SELECTED_SIG of s_LANDMARKS_INOUT to SELECT_POINT_SLOT
+     * Connect data::Landmarks::POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to DESELECT_POINT_SLOT
+     * Connect data::Image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to SLICE_TYPE_SLOT
+     * Connect data::Image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to SLICE_INDEX_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Deletes landmarks and re-create them.
     MODULE_VIZ_SCENE3D_API void updating() final;
@@ -358,13 +358,13 @@ private:
     /// Stores data used to hightlight the selected landmark.
     struct SelectedLandmark final
     {
-        SelectedLandmark(core::thread::Timer::sptr _timer, std::shared_ptr<Landmark> _landmark) :
+        SelectedLandmark(core::thread::timer::sptr _timer, std::shared_ptr<Landmark> _landmark) :
             m_timer(_timer),
             m_landmark(_landmark)
         {
         }
 
-        core::thread::Timer::sptr m_timer;
+        core::thread::timer::sptr m_timer;
         std::shared_ptr<Landmark> m_landmark;
         bool m_show {false};
     };
@@ -388,7 +388,7 @@ private:
 
     /// Signal send when double clicked on a landmark, send its world coordinates;
     const Signals::world_coordinates_signal_t::sptr m_send_world_coord {
-        newSignal<Signals::world_coordinates_signal_t>(Signals::SEND_WORLD_COORD)
+        new_signal<Signals::world_coordinates_signal_t>(Signals::SEND_WORLD_COORD)
     };
 
     /**

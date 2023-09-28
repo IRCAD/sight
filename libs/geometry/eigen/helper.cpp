@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::geometry::eigen::helper
 
 data::Matrix4::sptr toF4s(const Eigen::Matrix4f& _mat)
 {
-    data::Matrix4::sptr trf = data::Matrix4::New();
+    data::Matrix4::sptr trf = std::make_shared<data::Matrix4>();
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {
@@ -48,7 +48,7 @@ data::Matrix4::sptr toF4s(const Eigen::Matrix4f& _mat)
 
 data::Matrix4::sptr toF4s(const Eigen::Matrix4d& _mat)
 {
-    data::Matrix4::sptr trf = data::Matrix4::New();
+    data::Matrix4::sptr trf = std::make_shared<data::Matrix4>();
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {

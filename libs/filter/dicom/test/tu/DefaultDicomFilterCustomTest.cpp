@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,8 @@
 #include "DefaultDicomFilterCustomTest.hpp"
 
 #include <filter/dicom/factory/new.hpp>
+#include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/Filter.hpp>
-#include <filter/dicom/IFilter.hpp>
 
 #include <io/dicom/reader/SeriesSet.hpp>
 
@@ -61,7 +61,7 @@ void DefaultDicomFilterCustomTest::tearDown()
 
 void DefaultDicomFilterCustomTest::simpleApplication()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "71-CT-DICOM_SEG";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -72,23 +72,23 @@ void DefaultDicomFilterCustomTest::simpleApplication()
     );
 
     // Read DicomSeries
-    auto reader = io::dicom::reader::SeriesSet::New();
+    auto reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
+    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
-    filter::dicom::IFilter::sptr filter =
-        filter::dicom::factory::New("sight::filter::dicom::custom::DefaultDicomFilter");
+    sight::filter::dicom::filter::sptr filter =
+        sight::filter::dicom::factory::make("sight::filter::dicom::custom::DefaultDicomFilter");
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicomSeriesContainer.size());
     data::DicomSeries::sptr dicomSeriesA = dicomSeriesContainer[0];
     data::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];

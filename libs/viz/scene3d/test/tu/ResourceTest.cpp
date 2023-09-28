@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "ResourceTest.hpp"
 
-#include <core/data/Image.hpp>
-#include <core/data/TransferFunction.hpp>
+#include <data/Image.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -61,17 +61,17 @@ void ResourceTest::tearDown()
 
 void ResourceTest::textureTest()
 {
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(
         image,
         {40, 40, 40},
         {1., 1., 1.},
         {0., 0., 0.},
-        core::Type::UINT8,
+        core::type::UINT8,
         data::Image::PixelFormat::GRAY_SCALE
     );
-    image->setID("image1");
+    image->set_id("image1");
 
     {
         auto texture1_instance1 = std::make_shared<sight::viz::scene3d::Texture>(image);
@@ -104,7 +104,7 @@ void ResourceTest::textureTest()
 void ResourceTest::tfTest()
 {
     data::TransferFunction::sptr tf = data::TransferFunction::createDefaultTF();
-    tf->setID("default");
+    tf->set_id("default");
 
     {
         auto tf_instance1 = std::make_shared<sight::viz::scene3d::TransferFunction>(tf);

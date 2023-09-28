@@ -15,9 +15,9 @@
         <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
         <object uid="snapshot" type="sight::data::Image" />
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::OverlayLayoutManager">
+                <layout type="sight::ui::layout::overlay">
                     <view />
                     <view x="0" y="0" height="55" width="100" />
                     <view x="0" y="-1" height="35" width="100%" />
@@ -31,10 +31,10 @@
             </registry>
         </service>
 
-        <service uid="negato_top_slider_view" type="sight::module::ui::base::SView">
+        <service uid="negato_top_slider_view" type="sight::module::ui::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                 </layout>
             </gui>
@@ -43,7 +43,7 @@
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="sight::module::ui::base::SToolBar">
+        <service uid="topToolbarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Snapshot" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="CTRL+S" />
@@ -55,9 +55,9 @@
             </registry>
         </service>
 
-        <service uid="negato_bottom_slider_view" type="sight::module::ui::base::SView">
+        <service uid="negato_bottom_slider_view" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" backgroundColor="#00000000" />
@@ -68,9 +68,9 @@
             </registry>
         </service>
 
-        <service uid="multiView_negato_bottom" type="sight::module::ui::base::SView">
+        <service uid="multiView_negato_bottom" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                 </layout>
@@ -81,7 +81,7 @@
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="sight::module::ui::base::SAction" />
+        <service uid="snapshotAct" type="sight::module::ui::SAction" />
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->

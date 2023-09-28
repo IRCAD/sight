@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,21 +34,18 @@ namespace sight::ui::dicom::sorter
 /**
  * @brief Filter that uses a tag to sort the instances.
  */
-class UI_DICOM_CLASS_API TagValueConfigurableSorter : public filter::dicom::sorter::TagValueSorter
+class UI_DICOM_CLASS_API TagValueConfigurableSorter : public sight::filter::dicom::sorter::TagValueSorter
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         TagValueConfigurableSorter,
-        filter::dicom::sorter::TagValueSorter,
-        filter::dicom::factory::New<TagValueConfigurableSorter>
+        sight::filter::dicom::sorter::TagValueSorter,
+        sight::filter::dicom::factory::make<TagValueConfigurableSorter>
     );
 
-    /// Constructor
-    UI_DICOM_API TagValueConfigurableSorter(filter::dicom::IFilter::Key key);
-
     /// Destructor
-    UI_DICOM_API ~TagValueConfigurableSorter() override;
+    UI_DICOM_API ~TagValueConfigurableSorter() override = default;
 
     /// Return the name of the filter
     UI_DICOM_API std::string getName() const override;

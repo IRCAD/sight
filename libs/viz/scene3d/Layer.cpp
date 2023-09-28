@@ -24,15 +24,15 @@
 
 #include "helper/Scene.hpp"
 
+#include "viz/scene3d/adaptor.hpp"
 #include "viz/scene3d/compositor/Core.hpp"
 #include "viz/scene3d/helper/Camera.hpp"
-#include "viz/scene3d/IAdaptor.hpp"
 #include "viz/scene3d/ILight.hpp"
 #include "viz/scene3d/ogre.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
-#include <core/thread/Worker.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
+#include <core/thread/worker.hpp>
 
 #include <data/tools/Color.hpp>
 
@@ -65,12 +65,12 @@ namespace sight::viz::scene3d
 
 //-----------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG           = "layerInitialized";
-const core::com::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG         = "layerResized";
-const core::com::Signals::SignalKeyType Layer::s_CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
+const core::com::signals::key_t Layer::INIT_LAYER_SIG           = "layerInitialized";
+const core::com::signals::key_t Layer::RESIZE_LAYER_SIG         = "layerResized";
+const core::com::signals::key_t Layer::CAMERA_RANGE_UPDATED_SIG = "CameraRangeUpdated";
 
-const core::com::Slots::SlotKeyType Layer::s_INTERACTION_SLOT  = "interaction";
-const core::com::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT = "resetCamera";
+const core::com::slots::key_t Layer::INTERACTION_SLOT  = "interaction";
+const core::com::slots::key_t Layer::RESET_CAMERA_SLOT = "resetCamera";
 
 //-----------------------------------------------------------------------------
 
@@ -143,12 +143,12 @@ struct Layer::LayerCameraListener : public Ogre::Camera::Listener
 
 Layer::Layer()
 {
-    newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
-    newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
-    newSignal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG);
+    new_signal<InitLayerSignalType>(INIT_LAYER_SIG);
+    new_signal<ResizeLayerSignalType>(RESIZE_LAYER_SIG);
+    new_signal<CameraUpdatedSignalType>(CAMERA_RANGE_UPDATED_SIG);
 
-    newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
-    newSlot(s_RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
+    new_slot(INTERACTION_SLOT, &Layer::interaction, this);
+    new_slot(RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -167,10 +167,10 @@ void Layer::setRenderTarget(Ogre::RenderTarget* _renderTarget)
 
 //-----------------------------------------------------------------------------
 
-void Layer::setID(const std::string& id)
+void Layer::set_id(const std::string& id)
 {
     auto renderService = m_renderService.lock();
-    SIGHT_ASSERT("Render service must be set before calling setID().", renderService);
+    SIGHT_ASSERT("Render service must be set before calling set_id().", renderService);
     m_id = id;
 }
 
@@ -208,7 +208,7 @@ void Layer::createScene()
     {
         auto renderService = m_renderService.lock();
         auto* root         = viz::scene3d::Utils::getOgreRoot();
-        m_sceneManager = root->createSceneManager("DefaultSceneManager", renderService->getID() + "_" + m_id);
+        m_sceneManager = root->createSceneManager("DefaultSceneManager", renderService->get_id() + "_" + m_id);
     }
 
     SIGHT_ASSERT("Scene manager must be initialized", m_sceneManager);
@@ -224,7 +224,7 @@ void Layer::createScene()
     auto* viewport = m_renderTarget->addViewport(m_camera, m_order, left, top, width, height);
     SIGHT_ASSERT("Could not create a viewport", viewport);
 
-    m_compositorChainManager = std::make_unique<fwc::ChainManager>(this->getSptr());
+    m_compositorChainManager = std::make_unique<fwc::ChainManager>(this->get_sptr());
 
     if(m_order != 0)
     {
@@ -306,8 +306,8 @@ void Layer::createScene()
     auto renderService = m_renderService.lock();
     if(m_hasDefaultLight)
     {
-        m_defaultLightDiffuseColor  = data::Color::New();
-        m_defaultLightSpecularColor = data::Color::New();
+        m_defaultLightDiffuseColor  = std::make_shared<data::Color>();
+        m_defaultLightSpecularColor = std::make_shared<data::Color>();
 
         m_lightAdaptor = viz::scene3d::ILight::createLightAdaptor(
             m_defaultLightDiffuseColor,
@@ -352,7 +352,7 @@ void Layer::createScene()
 
     m_sceneCreated = true;
 
-    this->signal<InitLayerSignalType>(s_INIT_LAYER_SIG)->asyncEmit(this->getSptr());
+    this->signal<InitLayerSignalType>(INIT_LAYER_SIG)->async_emit(this->get_sptr());
 }
 
 // ----------------------------------------------------------------------------
@@ -419,14 +419,14 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 
 // ----------------------------------------------------------------------------
 
-void Layer::forAllInteractors(const std::function<void(const interactor::IInteractor::sptr&)>&& _f)
+void Layer::forAllInteractors(const std::function<void(const interactor::base::sptr&)>&& _f)
 {
     const auto interactorsBegin = m_interactors.begin();
     const auto interactorsEnd   = m_interactors.end();
 
     for(auto it = interactorsBegin ; it != interactorsEnd && !m_cancelFurtherInteraction ; ++it)
     {
-        const interactor::IInteractor::sptr interactor = it->second.lock();
+        const interactor::base::sptr interactor = it->second.lock();
         if(interactor)
         {
             _f(interactor);
@@ -440,124 +440,124 @@ void Layer::forAllInteractors(const std::function<void(const interactor::IIntera
 
 // ----------------------------------------------------------------------------
 
-void Layer::interaction(viz::scene3d::IWindowInteractor::InteractionInfo info)
+void Layer::interaction(viz::scene3d::window_interactor::InteractionInfo info)
 {
     this->getRenderService()->makeCurrent();
 
     switch(info.interactionType)
     {
-        case viz::scene3d::IWindowInteractor::InteractionInfo::MOUSEMOVE:
+        case viz::scene3d::window_interactor::InteractionInfo::MOUSEMOVE:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->mouseMoveEvent(info.button, info.modifiers, info.x, info.y, info.dx, info.dy);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::WHEELMOVE:
+        case viz::scene3d::window_interactor::InteractionInfo::WHEELMOVE:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->wheelEvent(info.modifiers, info.delta, info.x, info.y);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE:
+        case viz::scene3d::window_interactor::InteractionInfo::RESIZE:
         {
-            auto sig = this->signal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
-            sig->asyncEmit(info.x, info.y);
+            auto sig = this->signal<ResizeLayerSignalType>(RESIZE_LAYER_SIG);
+            sig->async_emit(info.x, info.y);
 
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
                 {
                     _i->resizeEvent(info.x, info.y);
                 });
             break;
         }
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::KEYPRESS:
+        case viz::scene3d::window_interactor::InteractionInfo::KEYPRESS:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->keyPressEvent(info.key, info.modifiers, info.x, info.y);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::KEYRELEASE:
+        case viz::scene3d::window_interactor::InteractionInfo::KEYRELEASE:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->keyReleaseEvent(info.key, info.modifiers, info.x, info.y);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::BUTTONRELEASE:
+        case viz::scene3d::window_interactor::InteractionInfo::BUTTONRELEASE:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->buttonReleaseEvent(info.button, info.modifiers, info.x, info.y);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::BUTTONPRESS:
+        case viz::scene3d::window_interactor::InteractionInfo::BUTTONPRESS:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->buttonPressEvent(info.button, info.modifiers, info.x, info.y);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::BUTTONDOUBLEPRESS:
+        case viz::scene3d::window_interactor::InteractionInfo::BUTTONDOUBLEPRESS:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->buttonDoublePressEvent(info.button, info.modifiers, info.x, info.y);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::PINCH_GESTURE:
+        case viz::scene3d::window_interactor::InteractionInfo::PINCH_GESTURE:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->pinchGestureEvent(info.delta, info.x, info.y);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_MOVE:
+        case viz::scene3d::window_interactor::InteractionInfo::PAN_GESTURE_MOVE:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->panGestureMoveEvent(info.x, info.y, info.dx, info.dy);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_RELEASE:
+        case viz::scene3d::window_interactor::InteractionInfo::PAN_GESTURE_RELEASE:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->panGestureReleaseEvent(info.x, info.y, info.dx, info.dy);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::LONG_TAP_GESTURE:
+        case viz::scene3d::window_interactor::InteractionInfo::LONG_TAP_GESTURE:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [&info](const interactor::base::sptr& _i)
             {
                 _i->longTapGestureEvent(info.x, info.y);
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::LEAVE:
+        case viz::scene3d::window_interactor::InteractionInfo::LEAVE:
             this->forAllInteractors(
-                [](const interactor::IInteractor::sptr& _i)
+                [](const interactor::base::sptr& _i)
             {
                 _i->leaveEvent();
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::ENTER:
+        case viz::scene3d::window_interactor::InteractionInfo::ENTER:
             this->forAllInteractors(
-                [](const interactor::IInteractor::sptr& _i)
+                [](const interactor::base::sptr& _i)
             {
                 _i->enterEvent();
             });
@@ -583,9 +583,9 @@ void Layer::setOrder(int _order)
 
 // ----------------------------------------------------------------------------
 
-void Layer::setWorker(const core::thread::Worker::sptr& _worker)
+void Layer::set_worker(const core::thread::worker::sptr& _worker)
 {
-    core::com::HasSlots::m_slots.setWorker(_worker);
+    core::com::has_slots::m_slots.set_worker(_worker);
 }
 
 // ----------------------------------------------------------------------------
@@ -606,7 +606,7 @@ void Layer::setRenderService(const viz::scene3d::SRender::sptr& _service)
 
 // ----------------------------------------------------------------------------
 
-void Layer::addInteractor(const viz::scene3d::interactor::IInteractor::sptr& _interactor, int _priority)
+void Layer::addInteractor(const viz::scene3d::interactor::base::sptr& _interactor, int _priority)
 {
     using PairType = typename decltype(m_interactors)::value_type;
     const PairType pair = std::make_pair(_priority, _interactor);
@@ -625,7 +625,7 @@ void Layer::addInteractor(const viz::scene3d::interactor::IInteractor::sptr& _in
 
 // ----------------------------------------------------------------------------
 
-void Layer::removeInteractor(const viz::scene3d::interactor::IInteractor::sptr& _interactor)
+void Layer::removeInteractor(const viz::scene3d::interactor::base::sptr& _interactor)
 {
     const auto interactorEqual = [&_interactor](typename decltype(m_interactors)::value_type _i)
                                  {
@@ -745,7 +745,7 @@ float Layer::computeSceneLength(const Ogre::AxisAlignedBox& worldBoundingBox)
 
     // Update interactor's mouse scale
     this->forAllInteractors(
-        [boundingBoxLength](const interactor::IInteractor::sptr& _i)
+        [boundingBoxLength](const interactor::base::sptr& _i)
         {
             _i->setSceneLength(boundingBoxLength);
         });
@@ -904,7 +904,7 @@ void Layer::resetCameraClippingRange() const
 
         if(far != prevFar)
         {
-            this->signal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG)->asyncEmit();
+            this->signal<CameraUpdatedSignalType>(CAMERA_RANGE_UPDATED_SIG)->async_emit();
         }
     }
 }
@@ -1077,9 +1077,9 @@ void Layer::setupCore()
 
 void Layer::restartAdaptors()
 {
-    auto adaptors = this->getRenderService()->getAdaptors<IAdaptor>();
+    auto adaptors = this->getRenderService()->getAdaptors<adaptor>();
 
-    auto notInLayer = [this](const IAdaptor::sptr& _adapt)
+    auto notInLayer = [this](const adaptor::sptr& _adapt)
                       {
                           return _adapt->getLayerID() != this->m_id || _adapt == nullptr;
                       };
@@ -1088,10 +1088,10 @@ void Layer::restartAdaptors()
     std::erase_if(adaptors, notInLayer);
 
     // Search for all adaptors created as subservices by other adaptors.
-    std::vector<service::IService::wptr> subAdaptors;
+    std::vector<service::base::wptr> subAdaptors;
     for(auto& adapt : adaptors)
     {
-        SPTR(service::IHasServices) hasServices = std::dynamic_pointer_cast<service::IHasServices>(adapt);
+        SPTR(service::has_services) hasServices = std::dynamic_pointer_cast<service::has_services>(adapt);
         if(hasServices != nullptr)
         {
             const auto& subServices = hasServices->getRegisteredServices();
@@ -1130,7 +1130,7 @@ viz::scene3d::compositor::ChainManager::CompositorChainType Layer::getCompositor
 
 //-------------------------------------------------------------------------------------
 
-service::IHasServices::ServiceVector Layer::getRegisteredAdaptors() const
+service::has_services::ServiceVector Layer::getRegisteredAdaptors() const
 {
     if(m_compositorChainManager)
     {

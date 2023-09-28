@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #include "SFrameGrabber.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/preferences/preferences.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/preferences/preferences.hpp>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/pcd_io.h>
@@ -42,14 +42,14 @@
 namespace sight::module::io::pcl
 {
 
-using sight::io::base::service::IGrabber;
+using sight::io::service::grabber;
 
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() noexcept :
-    m_worker(core::thread::Worker::New())
+    m_worker(core::thread::worker::make())
 {
 }
 
@@ -70,7 +70,7 @@ void SFrameGrabber::stopping()
 
 void SFrameGrabber::configuring()
 {
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     m_fps = config.get<unsigned int>("fps", 30);
 
@@ -98,7 +98,7 @@ void SFrameGrabber::startCamera()
     if(camera->getCameraSource() == data::Camera::FILE)
     {
         std::filesystem::path file = camera->getVideoFile();
-        const std::filesystem::path videoDir(ui::base::preferences::getVideoDir());
+        const std::filesystem::path videoDir(ui::preferences::getVideoDir());
 
         // For compatibility with old calibration with absolute path
         if(!file.is_absolute())
@@ -121,7 +121,7 @@ void SFrameGrabber::startCamera()
     else
     {
         this->setStartState(false);
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Grabber",
             "This video source is not managed by this grabber."
         );
@@ -134,7 +134,7 @@ void SFrameGrabber::pauseCamera()
 {
     if(m_timer)
     {
-        m_timer->isRunning() ? m_timer->stop() : m_timer->start();
+        m_timer->is_running() ? m_timer->stop() : m_timer->start();
     }
 }
 
@@ -142,11 +142,11 @@ void SFrameGrabber::pauseCamera()
 
 void SFrameGrabber::stopCamera()
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
 
     if(m_timer)
     {
-        if(m_timer->isRunning())
+        if(m_timer->is_running())
         {
             m_timer->stop();
         }
@@ -160,17 +160,17 @@ void SFrameGrabber::stopCamera()
     if(m_isInitialized)
     {
         // Clear the timeline: send a black frame
-        auto sigPosition = this->signal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
-        sigPosition->asyncEmit(static_cast<std::int64_t>(-1));
+        auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
+        sigPosition->async_emit(static_cast<std::int64_t>(-1));
 
-        auto sigDuration = this->signal<DurationModifiedSignalType>(s_DURATION_MODIFIED_SIG);
-        sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
+        auto sigDuration = this->signal<DurationModifiedSignalType>(DURATION_MODIFIED_SIG);
+        sigDuration->async_emit(static_cast<std::int64_t>(-1));
 
         const auto frameTL = m_frame.lock();
         this->clearTimeline(*frameTL);
 
-        auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
-        sig->asyncEmit();
+        auto sig = this->signal<grabber::CameraStoppedSignalType>(grabber::CAMERA_STOPPED_SIG);
+        sig->async_emit();
 
         this->setStartState(false);
     }
@@ -182,7 +182,7 @@ void SFrameGrabber::stopCamera()
 
 void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::string& extension)
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
 
     std::filesystem::directory_iterator currentEntry(folder);
     std::filesystem::directory_iterator endEntry;
@@ -214,7 +214,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
         if(width != 0 && height != 0)
         {
             const auto frameTL = m_frame.lock();
-            frameTL->initPoolSize(width, height, core::Type::FLOAT, data::FrameTL::PixelFormat::RGB);
+            frameTL->initPoolSize(width, height, core::type::FLOAT, data::FrameTL::PixelFormat::RGB);
         }
         else
         {
@@ -225,18 +225,18 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
         m_isInitialized = true;
 
-        auto sigDuration = this->signal<DurationModifiedSignalType>(s_DURATION_MODIFIED_SIG);
-        sigDuration->asyncEmit(static_cast<std::int64_t>(m_imageToRead.size() * m_fps));
+        auto sigDuration = this->signal<DurationModifiedSignalType>(DURATION_MODIFIED_SIG);
+        sigDuration->async_emit(static_cast<std::int64_t>(m_imageToRead.size() * m_fps));
 
-        auto sigPosition = this->signal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
-        sigPosition->asyncEmit(0);
+        auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
+        sigPosition->async_emit(0);
 
-        m_timer = m_worker->createTimer();
+        m_timer = m_worker->create_timer();
 
-        core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / m_fps);
+        core::thread::timer::time_duration_t duration = std::chrono::milliseconds(1000 / m_fps);
 
-        m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
-        m_timer->setDuration(duration);
+        m_timer->set_function(std::bind(&SFrameGrabber::grabImage, this));
+        m_timer->set_duration(duration);
         m_timer->start();
 
         this->setStartState(true);
@@ -247,7 +247,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
 
 void SFrameGrabber::grabImage()
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
 
     if(m_imageCount < m_imageToRead.size())
     {
@@ -271,7 +271,7 @@ void SFrameGrabber::grabImage()
             return;
         }
 
-        const core::HiResClock::HiResClockType timestamp = std::stod(timestampStr);
+        const core::hires_clock::type timestamp = std::stod(timestampStr);
 
         const std::size_t width  = static_cast<std::size_t>(inputCloud.width);
         const std::size_t height = static_cast<std::size_t>(inputCloud.height);
@@ -279,8 +279,8 @@ void SFrameGrabber::grabImage()
         const auto frameTL = m_frame.lock();
         if(width == frameTL->getWidth() && height == frameTL->getHeight())
         {
-            auto sigPosition = this->signal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
-            sigPosition->asyncEmit(static_cast<std::int64_t>(m_imageCount) * m_fps);
+            auto sigPosition = this->signal<PositionModifiedSignalType>(POSITION_MODIFIED_SIG);
+            sigPosition->async_emit(static_cast<std::int64_t>(m_imageCount) * m_fps);
 
             // Get the buffer of the timeline to fill
             SPTR(data::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
@@ -296,8 +296,8 @@ void SFrameGrabber::grabImage()
 
             frameTL->pushObject(bufferOut);
 
-            auto sig = frameTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
-            sig->asyncEmit(timestamp);
+            auto sig = frameTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::OBJECT_PUSHED_SIG);
+            sig->async_emit(timestamp);
 
             m_imageCount++;
         }
@@ -323,7 +323,7 @@ void SFrameGrabber::toggleLoopMode()
 
 void SFrameGrabber::setPosition(int64_t position)
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
 
     if(!m_imageToRead.empty())
     {

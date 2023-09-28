@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,13 +70,13 @@ void SShowAbout::info(std::ostream& _sstream)
 
 void SShowAbout::configuring()
 {
-    this->sight::ui::base::IAction::initialize();
+    this->sight::ui::action::initialize();
 
     const auto& config = this->getConfiguration();
 
     const auto filename = config.get<std::string>("filename.<xmlattr>.id");
     // Convert the path from a module location
-    m_fsAboutPath = core::runtime::getModuleResourceFilePath(filename);
+    m_fsAboutPath = core::runtime::get_module_resource_file_path(filename);
 
     m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);
     SIGHT_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
@@ -138,14 +138,14 @@ void SShowAbout::updating()
 
 void SShowAbout::starting()
 {
-    this->sight::ui::base::IAction::actionServiceStarting();
+    this->sight::ui::action::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SShowAbout::stopping()
 {
-    this->sight::ui::base::IAction::actionServiceStopping();
+    this->sight::ui::action::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

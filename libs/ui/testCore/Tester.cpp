@@ -22,9 +22,9 @@
 
 #include "Tester.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
-#include <ui/base/Preferences.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -490,7 +490,7 @@ void Tester::init()
             s_imageOutputPath = image_output_path;
         }
 
-        sight::ui::base::Preferences::ignoreFilesystem(true);
+        sight::ui::Preferences::ignoreFilesystem(true);
 
         s_alreadyLoaded = true;
 

@@ -22,7 +22,7 @@
 
 #include "ModelSeriesWriterTest.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <data/ActivitySet.hpp>
 #include <data/Array.hpp>
@@ -31,7 +31,7 @@
 #include <data/Reconstruction.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <service/base.hpp>
+#include <service/op.hpp>
 
 #include <utestData/generator/SeriesSet.hpp>
 
@@ -73,11 +73,11 @@ void runModelSeriesSrv(
     const SPTR(data::Object)& obj
 )
 {
-    service::IService::sptr srv = service::add(impl);
+    service::base::sptr srv = service::add(impl);
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + impl, srv);
 
-    if(srv->isA("sight::io::base::service::IReader"))
+    if(srv->is_a("sight::io::service::reader"))
     {
         srv->setInOut(obj, "data");
     }
@@ -98,7 +98,7 @@ void runModelSeriesSrv(
 
 boost::property_tree::ptree getIOCfgFromFolder(const fs::path& file)
 {
-    service::IService::ConfigType srvCfg;
+    service::config_t srvCfg;
     srvCfg.add("folder", file.string());
 
     return srvCfg;
@@ -108,7 +108,7 @@ boost::property_tree::ptree getIOCfgFromFolder(const fs::path& file)
 
 boost::property_tree::ptree getIOCfgFromFiles(const FileContainerType& files)
 {
-    service::IService::ConfigType srvCfg;
+    service::config_t srvCfg;
     for(const auto& file : files)
     {
         srvCfg.add("file", file);
@@ -125,7 +125,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
     const std::vector<std::string> allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     for(const auto& ext : allExtensions)
     {
@@ -159,7 +159,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
             files.size()
         );
 
-        auto series_set = data::SeriesSet::New();
+        auto series_set = std::make_shared<data::SeriesSet>();
 
         runModelSeriesSrv(
             "sight::module::io::vtk::SSeriesSetReader",
@@ -169,7 +169,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
         CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesSet Size", (std::size_t) 1, series_set->size());
 
-        data::ModelSeries::sptr readSeries = data::ModelSeries::dynamicCast(series_set->at(0));
+        data::ModelSeries::sptr readSeries = std::dynamic_pointer_cast<data::ModelSeries>(series_set->at(0));
         CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
 
         using RecVecType = data::ModelSeries::ReconstructionVectorType;
@@ -257,7 +257,7 @@ void ModelSeriesWriterTest::testWriteReconstructions()
 {
     data::ModelSeries::sptr modelSeries = utestData::generator::SeriesSet::createModelSeries(5);
 
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     runModelSeriesSrv(
         "sight::module::io::vtk::SModelSeriesObjWriter",

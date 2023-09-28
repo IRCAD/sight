@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,7 @@
 
 #include "io/session/config.hpp"
 
-#include <core/crypto/Base64.hpp>
+#include <core/crypto/base64.hpp>
 
 #include <io/zip/ArchiveReader.hpp>
 #include <io/zip/ArchiveWriter.hpp>
@@ -120,7 +120,7 @@ inline static typename T::sptr safe_cast(sight::data::Object::sptr object)
 
     SIGHT_THROW_IF(
         "Object '"
-        << (object ? object->getClassname() : sight::data::Object::classname())
+        << (object ? object->get_classname() : sight::data::Object::classname())
         << "' is not a '"
         << T::classname()
         << "'",
@@ -141,7 +141,7 @@ inline static typename T::sptr cast_or_create(sight::data::Object::sptr object)
         return safe_cast<T>(object);
     }
 
-    return T::New();
+    return std::make_shared<T>();
 }
 
 /// Convenience function to cast and check an object
@@ -154,7 +154,7 @@ inline static typename T::csptr safe_cast(sight::data::Object::csptr object)
 
     SIGHT_THROW_IF(
         "Object '"
-        << (object ? object->getClassname() : sight::data::Object::classname())
+        << (object ? object->get_classname() : sight::data::Object::classname())
         << "' is not a '"
         << T::classname()
         << "'",

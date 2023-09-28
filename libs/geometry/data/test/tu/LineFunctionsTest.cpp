@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "LineFunctionsTest.hpp"
 
 #define FW_PROFILING_DISABLED
-#include <core/Profiling.hpp>
+#include <core/profiling.hpp>
 
 #include <geometry/data/LineFunctions.hpp>
 #include <geometry/data/VectorFunctions.hpp>

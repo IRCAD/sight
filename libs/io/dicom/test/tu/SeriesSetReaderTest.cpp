@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "SeriesSetReaderTest.hpp"
 
-#include <core/log/Logger.hpp>
-#include <core/memory/BufferManager.hpp>
+#include <core/log/logger.hpp>
+#include <core/memory/buffer_manager.hpp>
 
 #include <data/Color.hpp>
 #include <data/DicomSeries.hpp>
@@ -105,7 +105,7 @@ void verifyTagValues(const std::string& filename, const data::SeriesSet::sptr& s
 
     for(const auto& object : *series_set)
     {
-        auto series = data::ImageSeries::dynamicCast(object);
+        auto series = std::dynamic_pointer_cast<data::ImageSeries>(object);
 
         // Parse META File
         const std::string metaName           = filename + "/" + series->getSeriesInstanceUID() + ".json";
@@ -234,7 +234,7 @@ void SeriesSetReaderTest::readJMSSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readJMSSeries();
 }
 
@@ -247,7 +247,7 @@ void SeriesSetReaderTest::readCTSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readCTSeries();
 }
 
@@ -260,7 +260,7 @@ void SeriesSetReaderTest::readMRSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readMRSeries();
 }
 
@@ -273,7 +273,7 @@ void SeriesSetReaderTest::readOTSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readOTSeries();
 }
 
@@ -286,7 +286,7 @@ void SeriesSetReaderTest::readSEGSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readSEGSeries();
 }
 
@@ -299,7 +299,7 @@ void SeriesSetReaderTest::readSFSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readSFSeries();
 }
 
@@ -312,7 +312,7 @@ void SeriesSetReaderTest::readSRSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readSRSeries();
 }
 
@@ -325,7 +325,7 @@ void SeriesSetReaderTest::read3DSRSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::read3DSRSeries();
 }
 
@@ -338,7 +338,7 @@ void SeriesSetReaderTest::readDisabledSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readDisabledSeries();
 }
 
@@ -351,7 +351,7 @@ void SeriesSetReaderTest::readMRSeriesWithDicomDirDBTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readMRSeriesWithDicomDir();
 }
 
@@ -364,7 +364,7 @@ void SeriesSetReaderTest::readMultipleRescaleSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readMultipleRescaleSeries();
 }
 
@@ -377,7 +377,7 @@ void SeriesSetReaderTest::readCTWithSurviewSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readCTWithSurviewSeries();
 }
 
@@ -390,7 +390,7 @@ void SeriesSetReaderTest::readMRWithTemporalPositionSeriesSetTest()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readMRWithTemporalPositionSeries();
 }
 
@@ -403,7 +403,7 @@ void SeriesSetReaderTest::readCTSeriesSetIssue01Test()
         return;
     }
 
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
     SeriesSetReaderTest::readCTSeriesSetIssue01();
 }
 
@@ -411,7 +411,7 @@ void SeriesSetReaderTest::readCTSeriesSetIssue01Test()
 
 void SeriesSetReaderTest::readJMSSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
     // cspell: ignore Genou
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
@@ -420,15 +420,15 @@ void SeriesSetReaderTest::readJMSSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
-    data::ImageSeries::sptr series = data::ImageSeries::dynamicCast(series_set->front());
+    data::ImageSeries::sptr series = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
 
     // Check trimmed values
     CPPUNIT_ASSERT(utestData::DicomReaderTest::checkSeriesJMSGenouTrimmed(series));
@@ -441,7 +441,7 @@ void SeriesSetReaderTest::readJMSSeries()
 
 void SeriesSetReaderTest::readCTSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "01-CT-DICOM_LIVER";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -451,9 +451,9 @@ void SeriesSetReaderTest::readCTSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -465,14 +465,14 @@ void SeriesSetReaderTest::readCTSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Read image buffer
-    auto series         = data::ImageSeries::dynamicCast(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), series->numDimensions());
 
     // Check size
-    const data::Image::Size size = series->getSize();
+    const data::Image::Size size = series->size();
     CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[0]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[1]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(129), size[2]);
@@ -496,7 +496,7 @@ void SeriesSetReaderTest::readCTSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, series->getWindowWidth().front(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::Type::INT16, series->getType());
+    CPPUNIT_ASSERT_EQUAL(core::type::INT16, series->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, series_set);
@@ -506,7 +506,7 @@ void SeriesSetReaderTest::readCTSeries()
 
 void SeriesSetReaderTest::readMRSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -516,9 +516,9 @@ void SeriesSetReaderTest::readMRSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -530,7 +530,7 @@ void SeriesSetReaderTest::readMRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Read image buffer
-    auto series         = data::ImageSeries::dynamicCast(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
@@ -538,7 +538,7 @@ void SeriesSetReaderTest::readMRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), series->numDimensions());
 
     // Check size
-    const data::Image::Size size = series->getSize();
+    const data::Image::Size size = series->size();
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[0]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1024), size[1]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1024), size[2]);
@@ -563,7 +563,7 @@ void SeriesSetReaderTest::readMRSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2000), series->getWindowWidth().front(), delta);
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::Type::DOUBLE, series->getType());
+    CPPUNIT_ASSERT_EQUAL(core::type::DOUBLE, series->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, series_set);
@@ -573,7 +573,7 @@ void SeriesSetReaderTest::readMRSeries()
 
 void SeriesSetReaderTest::readOTSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "42-OT-BARRE-MONO2-8-colon";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -583,9 +583,9 @@ void SeriesSetReaderTest::readOTSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -597,7 +597,7 @@ void SeriesSetReaderTest::readOTSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Read image buffer
-    auto series         = data::ImageSeries::dynamicCast(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
@@ -605,7 +605,7 @@ void SeriesSetReaderTest::readOTSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), series->numDimensions());
 
     // Check size
-    data::Image::Size size = series->getSize();
+    data::Image::Size size = series->size();
     CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[0]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[1]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
@@ -629,7 +629,7 @@ void SeriesSetReaderTest::readOTSeries()
     CPPUNIT_ASSERT(series->getWindowWidth().empty());
 
     // Check image type
-    CPPUNIT_ASSERT_EQUAL(core::Type::UINT8, series->getType());
+    CPPUNIT_ASSERT_EQUAL(core::type::UINT8, series->getType());
 
     // Verify tag values according to json file
     verifyTagValues(filename, series_set);
@@ -639,7 +639,7 @@ void SeriesSetReaderTest::readOTSeries()
 
 void SeriesSetReaderTest::readSEGSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "71-CT-DICOM_SEG";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -649,9 +649,9 @@ void SeriesSetReaderTest::readSEGSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -662,7 +662,7 @@ void SeriesSetReaderTest::readSEGSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
     //Retrieve ImageSeries
-    data::ModelSeries::sptr series = data::ModelSeries::dynamicCast((*series_set)[1]);
+    data::ModelSeries::sptr series = std::dynamic_pointer_cast<data::ModelSeries>((*series_set)[1]);
     CPPUNIT_ASSERT(series);
 
     data::ModelSeries::ReconstructionVectorType reconstructionDB = series->getReconstructionDB();
@@ -690,7 +690,7 @@ void SeriesSetReaderTest::readSEGSeries()
 
 void SeriesSetReaderTest::readSFSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "71-CT-DICOM_SF";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -700,9 +700,9 @@ void SeriesSetReaderTest::readSFSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -713,7 +713,7 @@ void SeriesSetReaderTest::readSFSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve ImageSeries
-    auto series         = data::ImageSeries::dynamicCast(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Retrieve landmarks
@@ -740,7 +740,7 @@ void SeriesSetReaderTest::readSFSeries()
 
 void SeriesSetReaderTest::readSRSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "71-CT-DICOM_SR";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -750,9 +750,9 @@ void SeriesSetReaderTest::readSRSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -763,7 +763,7 @@ void SeriesSetReaderTest::readSRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve ImageSeries
-    auto series = data::ImageSeries::dynamicCast(series_set->front());
+    auto series = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
     CPPUNIT_ASSERT(series);
     const auto dumpLock = series->dump_lock();
 
@@ -790,7 +790,7 @@ void SeriesSetReaderTest::readSRSeries()
     data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*series);
 
     // Verify first distance
-    auto distancePointList          = data::PointList::dynamicCast((*distanceVector)[0]);
+    auto distancePointList          = std::dynamic_pointer_cast<data::PointList>((*distanceVector)[0]);
     const data::Point::sptr& pointC = distancePointList->getPoints()[0];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(38.34), pointC->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(116.67), pointC->getCoord()[1], delta);
@@ -805,7 +805,7 @@ void SeriesSetReaderTest::readSRSeries()
 
 void SeriesSetReaderTest::read3DSRSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "71-CT-DICOM_3DSR";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -815,9 +815,9 @@ void SeriesSetReaderTest::read3DSRSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -828,7 +828,7 @@ void SeriesSetReaderTest::read3DSRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve ImageSeries
-    auto series         = data::ImageSeries::dynamicCast(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Retrieve landmarks
@@ -853,7 +853,7 @@ void SeriesSetReaderTest::read3DSRSeries()
     data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*series);
 
     // Verify first distance
-    auto distancePointList          = data::PointList::dynamicCast((*distanceVector)[0]);
+    auto distancePointList          = std::dynamic_pointer_cast<data::PointList>((*distanceVector)[0]);
     const data::Point::sptr& pointC = distancePointList->getPoints()[0];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointC->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(99.30), pointC->getCoord()[1], delta);
@@ -868,7 +868,7 @@ void SeriesSetReaderTest::read3DSRSeries()
 
 void SeriesSetReaderTest::readDisabledSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -881,9 +881,9 @@ void SeriesSetReaderTest::readDisabledSeries()
     std::vector<std::string> supportedSOPClassContainer;
     supportedSOPClassContainer.emplace_back("1.2.840.10008.5.1.4.1.1.2"); // CT Image Storage
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
     reader->setSupportedSOPClassContainer(supportedSOPClassContainer);
 
@@ -892,14 +892,14 @@ void SeriesSetReaderTest::readDisabledSeries()
 
     // Verify that the reading has failed
     CPPUNIT_ASSERT_EQUAL(std::size_t(0), series_set->size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), std::size_t(reader->getLogger()->count(core::log::log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
 
 void SeriesSetReaderTest::readMRSeriesWithDicomDir()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "82-MR-SAGITTAL-KNEE-DICOMDIR";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -909,9 +909,9 @@ void SeriesSetReaderTest::readMRSeriesWithDicomDir()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
     reader->setDicomdirActivated(true);
 
@@ -920,14 +920,14 @@ void SeriesSetReaderTest::readMRSeriesWithDicomDir()
 
     // Verify that the reading has succeed
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
 
 void SeriesSetReaderTest::readMultipleRescaleSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "83-CT-MultipleRescale";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -937,9 +937,9 @@ void SeriesSetReaderTest::readMultipleRescaleSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -947,11 +947,11 @@ void SeriesSetReaderTest::readMultipleRescaleSeries()
 
     // Retrieve ImageSeries
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
-    auto series         = data::ImageSeries::dynamicCast(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Get internal buffer
-    auto* buffer = series->getBuffer();
+    auto* buffer = series->buffer();
     CPPUNIT_ASSERT(buffer);
 
     // Compute sha1 digest
@@ -972,7 +972,7 @@ void SeriesSetReaderTest::readMultipleRescaleSeries()
 
 void SeriesSetReaderTest::readCTWithSurviewSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "84-CT-Surview";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -982,9 +982,9 @@ void SeriesSetReaderTest::readCTWithSurviewSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -992,14 +992,14 @@ void SeriesSetReaderTest::readCTWithSurviewSeries()
 
     // Verify that the reading has failed
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), series_set->size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
 
 void SeriesSetReaderTest::readMRWithTemporalPositionSeries()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "85-MR-TemporalPosition";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -1009,9 +1009,9 @@ void SeriesSetReaderTest::readMRWithTemporalPositionSeries()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -1019,14 +1019,14 @@ void SeriesSetReaderTest::readMRWithTemporalPositionSeries()
 
     // Verify that the reading has failed
     CPPUNIT_ASSERT_EQUAL(std::size_t(4), series_set->size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::log::CRITICAL)));
 }
 
 //------------------------------------------------------------------------------
 
 void SeriesSetReaderTest::readCTSeriesSetIssue01()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "86-CT-Skull";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -1036,9 +1036,9 @@ void SeriesSetReaderTest::readCTSeriesSetIssue01()
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     // Read DICOM
@@ -1046,7 +1046,7 @@ void SeriesSetReaderTest::readCTSeriesSetIssue01()
 
     // Verify that the reading has failed
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::Log::CRITICAL)));
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), std::size_t(reader->getLogger()->count(core::log::log::CRITICAL)));
 }
 
 } // namespace sight::io::dicom::ut

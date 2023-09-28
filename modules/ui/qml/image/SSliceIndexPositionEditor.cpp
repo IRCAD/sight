@@ -23,9 +23,9 @@
 #include "SSliceIndexPositionEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -38,15 +38,15 @@ namespace sight::module::ui::qml::image
 
 namespace imHelper = data::helper::MedicalImage;
 
-static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+static const core::com::slots::key_t UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
 //------------------------------------------------------------------------------
 
 SSliceIndexPositionEditor::SSliceIndexPositionEditor() noexcept
 {
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SSliceIndexPositionEditor::updateSliceIndex, this);
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SSliceIndexPositionEditor::updateSliceType, this);
+    new_slot(UPDATE_SLICE_INDEX_SLOT, &SSliceIndexPositionEditor::updateSliceIndex, this);
+    new_slot(UPDATE_SLICE_TYPE_SLOT, &SSliceIndexPositionEditor::updateSliceType, this);
 }
 
 //------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ void SSliceIndexPositionEditor::updateSliceIndexFromImg()
         int max = 0;
         if(image->numDimensions() > m_orientation)
         {
-            max = static_cast<int>(image->getSize()[m_orientation] - 1);
+            max = static_cast<int>(image->size()[m_orientation] - 1);
         }
 
         this->setSliceRange(0, max);
@@ -194,10 +194,10 @@ void SSliceIndexPositionEditor::onSliceIndex(int index)
     imHelper::setSliceIndex(*image, m_orientation, index);
 
     auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>(
-        data::Image::s_SLICE_INDEX_MODIFIED_SIG
+        data::Image::SLICE_INDEX_MODIFIED_SIG
     );
-    core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
-    sig->asyncEmit(
+    core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_SLICE_INDEX_SLOT)));
+    sig->async_emit(
         static_cast<int>(m_axialIndex),
         static_cast<int>(m_frontalIndex),
         static_cast<int>(m_sagittalIndex)
@@ -223,25 +223,25 @@ void SSliceIndexPositionEditor::onSliceType(int _type)
     // Fire the signal
     auto image = m_image.lock();
     auto sig   = image->signal<data::Image::SliceTypeModifiedSignalType>(
-        data::Image::s_SLICE_TYPE_MODIFIED_SIG
+        data::Image::SLICE_TYPE_MODIFIED_SIG
     );
     {
-        core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
-        sig->asyncEmit(oldType, _type);
+        core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_SLICE_TYPE_SLOT)));
+        sig->async_emit(oldType, _type);
     }
     this->updateSliceIndexFromImg();
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SSliceIndexPositionEditor::getAutoConnections() const
+service::connections_t SSliceIndexPositionEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE_INOUT, data::Image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE_INOUT, data::Image::SLICE_INDEX_MODIFIED_SIG, UPDATE_SLICE_INDEX_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }

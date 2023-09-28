@@ -22,8 +22,8 @@
 
 #include "SDepthImageMasking.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <io/opencv/Image.hpp>
 
@@ -32,15 +32,15 @@
 namespace sight::module::filter::vision
 {
 
-static const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT = "setBackground";
-static const core::com::Slots::SlotKeyType s_SET_THRESHOLD_SLOT  = "setThreshold";
+static const core::com::slots::key_t SET_BACKGROUND_SLOT = "setBackground";
+static const core::com::slots::key_t SET_THRESHOLD_SLOT  = "setThreshold";
 
 // ------------------------------------------------------------------------------
 
 SDepthImageMasking::SDepthImageMasking() noexcept
 {
-    newSlot(s_SET_BACKGROUND_SLOT, &SDepthImageMasking::setBackground, this);
-    newSlot(s_SET_THRESHOLD_SLOT, &SDepthImageMasking::setThreshold, this);
+    new_slot(SET_BACKGROUND_SLOT, &SDepthImageMasking::setBackground, this);
+    new_slot(SET_THRESHOLD_SLOT, &SDepthImageMasking::setThreshold, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -68,11 +68,11 @@ void SDepthImageMasking::stopping()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SDepthImageMasking::getAutoConnections() const
+service::connections_t SDepthImageMasking::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_DEPTH_IMAGE_KEY, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_DEPTH_IMAGE_KEY, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -109,11 +109,11 @@ void SDepthImageMasking::updating()
         io::opencv::Image::copyFromCv(*foregroundImage, cvMaskedVideo);
 
         const auto sig = foregroundImage->signal<data::Image::BufferModifiedSignalType>(
-            data::Image::s_BUFFER_MODIFIED_SIG
+            data::Image::BUFFER_MODIFIED_SIG
         );
-        sig->asyncEmit();
+        sig->async_emit();
 
-        m_sigComputed->asyncEmit();
+        m_sigComputed->async_emit();
     }
 }
 
@@ -126,8 +126,8 @@ void SDepthImageMasking::setBackground()
     const auto depthImage = m_depthImage.lock();
     SIGHT_ASSERT("No '" << s_DEPTH_IMAGE_KEY << "' found.", depthImage);
 
-    if(maskImage && depthImage && (maskImage->getType() != core::Type::NONE)
-       && (depthImage->getType() != core::Type::NONE))
+    if(maskImage && depthImage && (maskImage->getType() != core::type::NONE)
+       && (depthImage->getType() != core::type::NONE))
     {
         const cv::Mat cvDepthImage = io::opencv::Image::moveToCv(depthImage.get_shared());
         m_cvMaskImage = io::opencv::Image::moveToCv(maskImage.get_shared());

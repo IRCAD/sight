@@ -25,7 +25,7 @@
 #include "modules/ui/qml/config.hpp"
 #include "modules/ui/qml/model/OrganListModel.hpp"
 
-#include <ui/qml/IQmlEditor.hpp>
+#include <ui/qml/editor.hpp>
 
 #include <QObject>
 
@@ -67,14 +67,14 @@ namespace sight::module::ui::qml::model
  * @subsection In-Out In-Out
  * - \b modelSeries [sight::data::ModelSeries]: model series containing the organs to list
  */
-class MODULE_UI_QML_CLASS_API SModelSeriesList : public sight::ui::qml::IQmlEditor
+class MODULE_UI_QML_CLASS_API SModelSeriesList : public sight::ui::qml::editor
 {
 Q_OBJECT
 Q_PROPERTY(OrganListModel * listModel MEMBER m_listModel)
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SModelSeriesList, sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SModelSeriesList, sight::ui::qml::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SModelSeriesList() noexcept;
@@ -84,10 +84,10 @@ public:
 
 protected:
 
-    /// Call the IQmlEditor::starting method.
+    /// Call the editor::starting method.
     void starting() override;
 
-    /// Call the IQmlEditor::stopping method.
+    /// Call the editor::stopping method.
     void stopping() override;
 
     /// Update the list model with the modelSeries items
@@ -100,17 +100,17 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect ModelSeries::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::IService::slots::s_UPDATE
-     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::IService::slots::s_UPDATE
+     * Connect ModelSeries::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect ModelSeries::RECONSTRUCTIONS_ADDED_SIG to this::service::slots::UPDATE
+     * Connect ModelSeries::RECONSTRUCTIONS_REMOVED_SIG to this::service::slots::UPDATE
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
-    static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
-    typedef core::com::Signal<void (data::Object::sptr)> ReconstructionSelectedSignalType;
+    static const core::com::signals::key_t RECONSTRUCTION_SELECTED_SIG;
+    typedef core::com::signal<void (data::Object::sptr)> ReconstructionSelectedSignalType;
 
-    static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG;
-    typedef core::com::Signal<void ()> EmptiedSelectionSignalType;
+    static const core::com::signals::key_t EMPTIED_SELECTION_SIG;
+    typedef core::com::signal<void ()> EmptiedSelectionSignalType;
 
 protected Q_SLOTS:
 

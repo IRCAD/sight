@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,17 +35,6 @@ const std::string NoFilter::s_FILTER_DESCRIPTION = "No filter.";
 
 //-----------------------------------------------------------------------------
 
-NoFilter::NoFilter(filter::dicom::IFilter::Key /*unused*/)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-NoFilter::~NoFilter()
-= default;
-
-//-----------------------------------------------------------------------------
-
 std::string NoFilter::getName() const
 {
     return NoFilter::s_FILTER_NAME;
@@ -62,7 +51,7 @@ std::string NoFilter::getDescription() const
 
 NoFilter::DicomSeriesContainerType NoFilter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr&
+    const core::log::logger::sptr&
     /*logger*/
 )
 const

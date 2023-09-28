@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,9 @@
 #pragma once
 
 #include "io/igtl/config.hpp"
-#include "io/igtl/detail/converter/IConverter.hpp"
+#include "io/igtl/detail/converter/base.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
 namespace sight::io::igtl::detail
 {
@@ -57,7 +57,7 @@ public:
     IO_IGTL_API static DataConverter::sptr getInstance();
 
     ///Static method called by the registry class to register a new converter
-    IO_IGTL_API static void registerConverter(converter::IConverter::sptr c);
+    IO_IGTL_API static void registerConverter(converter::base::sptr c);
 
     ///Class Registry used by the macro to register new converter in the m_converters
     template<typename T>
@@ -106,8 +106,8 @@ public:
 
 private:
 
-    /// a vector of IConverter smart pointer
-    std::vector<converter::IConverter::sptr> m_converters;
+    /// a vector of base smart pointer
+    std::vector<converter::base::sptr> m_converters;
 };
 
 } //namespace sight::io::igtl::detail

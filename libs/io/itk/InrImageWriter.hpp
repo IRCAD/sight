@@ -24,32 +24,26 @@
 
 #include "io/itk/config.hpp"
 
-#include <core/location/SingleFile.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/location/single_file.hpp>
+#include <core/tools/progress_adviser.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API InrImageWriter : public base::writer::GenericObjectWriter<data::Image>,
-                                        public core::location::SingleFile,
-                                        public core::tools::ProgressAdviser
+class IO_ITK_CLASS_API InrImageWriter : public writer::GenericObjectWriter<data::Image>,
+                                        public core::location::single_file,
+                                        public core::tools::progress_adviser
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        InrImageWriter,
-        io::base::writer::GenericObjectWriter<data::Image>,
-        io::base::writer::factory::New<InrImageWriter>
-    );
+    SIGHT_DECLARE_CLASS(InrImageWriter, io::writer::GenericObjectWriter<data::Image>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_ITK_API InrImageWriter(io::base::writer::IObjectWriter::Key key);
-
-    IO_ITK_API ~InrImageWriter() override;
+    IO_ITK_API ~InrImageWriter() override = default;
 
     IO_ITK_API void write() override;
 

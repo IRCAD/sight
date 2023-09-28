@@ -26,13 +26,13 @@
 
 #include <activity/extension/Activity.hpp>
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Activity.hpp>
 
-#include <service/IAppConfigManager.hpp>
+#include <service/app_config_manager.hpp>
 
-#include <ui/base/view/IActivityView.hpp>
+#include <ui/__/view/IActivityView.hpp>
 
 namespace sight::module::ui::qt::activity
 {
@@ -70,11 +70,11 @@ namespace sight::module::ui::qt::activity
  * @subsection Configuration Configuration
  * - \b border (optional, default="-1"): contents margins of the layout.
  */
-class MODULE_UI_QT_CLASS_API SView : public sight::ui::base::view::IActivityView
+class MODULE_UI_QT_CLASS_API SView : public sight::ui::view::IActivityView
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SView, sight::ui::base::view::IActivityView);
+    SIGHT_DECLARE_SERVICE(SView, sight::ui::view::IActivityView);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SView();
@@ -87,7 +87,7 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal<void (data::Activity::sptr)> ActivityLaunchedSignalType;
+    typedef core::com::signal<void (data::Activity::sptr)> ActivityLaunchedSignalType;
 /**
  * @}
  */
@@ -114,7 +114,7 @@ private:
     void launchActivity(data::Activity::sptr activity) override;
 
     /// Helper to launch activity configuration
-    service::IAppConfigManager::sptr m_configManager;
+    sight::service::app_config_manager::sptr m_configManager;
 
     /// WID used to register the activity container
     std::string m_wid;

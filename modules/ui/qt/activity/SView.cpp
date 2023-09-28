@@ -22,16 +22,16 @@
 
 #include "SView.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
 
 #include <service/extension/AppConfig.hpp>
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/GuiRegistry.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/registry.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QVBoxLayout>
 #include <QWidget>
@@ -39,14 +39,14 @@
 namespace sight::module::ui::qt::activity
 {
 
-const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
 static const std::string s_BORDER_CONFIG = "border";
 
 //------------------------------------------------------------------------------
 
 SView::SView() :
-    m_sigActivityLaunched(newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG))
+    m_sigActivityLaunched(new_signal<ActivityLaunchedSignalType>(ACTIVITY_LAUNCHED_SIG))
 {
 }
 
@@ -59,7 +59,7 @@ SView::~SView()
 
 void SView::configuring()
 {
-    this->sight::ui::base::view::IActivityView::configuring();
+    this->sight::ui::view::IActivityView::configuring();
 
     const ConfigType configType = this->getConfiguration();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
@@ -74,11 +74,11 @@ void SView::configuring()
 
 void SView::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto parentContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     parentContainer->getQtContainer()->setObjectName(serviceID);
 
     auto* layout = new QVBoxLayout();
@@ -91,15 +91,15 @@ void SView::starting()
     layout->addWidget(widget);
     widget->setObjectName(serviceID + "/container");
 
-    auto subContainer = sight::ui::qt::container::QtContainer::New();
+    auto subContainer = sight::ui::qt::container::widget::make();
 
     subContainer->setQtContainer(widget);
-    m_wid = this->getID() + "_container";
-    sight::ui::base::GuiRegistry::registerWIDContainer(m_wid, subContainer);
+    m_wid = this->get_id() + "_container";
+    sight::ui::registry::registerWIDContainer(m_wid, subContainer);
 
     parentContainer->setLayout(layout);
 
-    m_configManager = service::IAppConfigManager::New();
+    m_configManager = sight::service::app_config_manager::make();
 
     if(!m_mainActivityId.empty())
     {
@@ -120,8 +120,8 @@ void SView::stopping()
         m_configManager->stopAndDestroy();
     }
 
-    auto subContainer = sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
-    sight::ui::base::GuiRegistry::unregisterWIDContainer(m_wid);
+    auto subContainer = sight::ui::registry::getWIDContainer(m_wid);
+    sight::ui::registry::unregisterWIDContainer(m_wid);
 
     subContainer->destroyContainer();
 
@@ -151,21 +151,21 @@ void SView::launchActivity(data::Activity::sptr activity)
         );
 
         replacementMap["WID_PARENT"]  = m_wid;
-        replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier(info.appConfig.id);
+        replacementMap["GENERIC_UID"] = sight::service::extension::AppConfig::getUniqueIdentifier(info.appConfig.id);
 
         try
         {
             m_configManager->setConfig(info.appConfig.id, replacementMap);
             m_configManager->launch();
 
-            m_sigActivityLaunched->asyncEmit(activity);
+            m_sigActivityLaunched->async_emit(activity);
         }
         catch(std::exception& e)
         {
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Activity launch failed",
                 e.what(),
-                sight::ui::base::dialog::IMessageDialog::CRITICAL
+                sight::ui::dialog::message::CRITICAL
             );
             SIGHT_ERROR(e.what());
         }

@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/registry/macros.hpp>
@@ -39,11 +39,11 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_SET_X_OFFSET_SLOT = "setXOffset";
-static const core::com::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
+static const core::com::slots::key_t SET_X_OFFSET_SLOT = "setXOffset";
+static const core::com::slots::key_t SET_Y_OFFSET_SLOT = "setYOffset";
 
-static const service::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
-static const service::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
+static const service::base::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
+static const service::base::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
 
 SIGHT_REGISTER_SCENE3D_LIGHT(
     sight::module::viz::scene3d::adaptor::SLight,
@@ -54,16 +54,8 @@ SIGHT_REGISTER_SCENE3D_LIGHT(
 
 SLight::SLight() noexcept
 {
-    newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
-    newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
-}
-
-//------------------------------------------------------------------------------
-
-SLight::SLight(sight::viz::scene3d::ILight::Key /*key*/)
-{
-    newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
-    newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
+    new_slot(SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
+    new_slot(SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
 }
 
 //------------------------------------------------------------------------------
@@ -76,8 +68,8 @@ void SLight::configuring()
 
     this->setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            this->getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            this->get_id() + "_transform"
         )
     );
 
@@ -101,7 +93,7 @@ void SLight::starting()
     this->getRenderService()->makeCurrent();
 
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
-    m_light = sceneMgr->createLight(this->getID() + "_" + m_lightName);
+    m_light = sceneMgr->createLight(this->get_id() + "_" + m_lightName);
 
     // Sets the default light direction to the camera's view direction,
     m_light->setType(m_lightType);
@@ -109,7 +101,7 @@ void SLight::starting()
 
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
-    m_lightNode = transNode->createChildSceneNode(this->getID() + "_light");
+    m_lightNode = transNode->createChildSceneNode(this->get_id() + "_light");
     m_lightNode->attachObject(m_light);
 
     if(m_thetaOffset != 0.F || m_phiOffset != 0.F)
@@ -122,7 +114,7 @@ void SLight::starting()
     {
         // Creates the visual feedback
         // Creates the material
-        m_material = data::Material::New();
+        m_material = std::make_shared<data::Material>();
 
         const module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
             this->registerService<module::viz::scene3d::adaptor::SMaterial>(
@@ -130,8 +122,8 @@ void SLight::starting()
             );
         materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
         materialAdaptor->configure(
-            this->getID() + materialAdaptor->getID(),
-            this->getID() + materialAdaptor->getID(),
+            this->get_id() + materialAdaptor->get_id(),
+            this->get_id() + materialAdaptor->get_id(),
             this->getRenderService(),
             m_layerID
         );
@@ -149,7 +141,7 @@ void SLight::starting()
         const unsigned sample      = 64;
 
         // Creates the commun sphere position
-        m_lightPosition = sceneMgr->createManualObject(this->getID() + "_origin");
+        m_lightPosition = sceneMgr->createManualObject(this->get_id() + "_origin");
         sight::viz::scene3d::helper::ManualObject::createSphere(
             m_lightPosition,
             materialAdaptor->getMaterialName(),
@@ -161,8 +153,8 @@ void SLight::starting()
         m_lightNode->attachObject(m_lightPosition);
 
         // Create the directional light feedback
-        m_directionalFeedback.first  = sceneMgr->createManualObject(this->getID() + "_line");
-        m_directionalFeedback.second = sceneMgr->createManualObject(this->getID() + "_cone");
+        m_directionalFeedback.first  = sceneMgr->createManualObject(this->get_id() + "_line");
+        m_directionalFeedback.second = sceneMgr->createManualObject(this->get_id() + "_cone");
 
         sight::viz::scene3d::helper::ManualObject::createCylinder(
             m_directionalFeedback.first,
@@ -172,7 +164,7 @@ void SLight::starting()
             cylinderLength,
             sample
         );
-        Ogre::SceneNode* lineNode = m_lightNode->createChildSceneNode(this->getID() + "_lineNode");
+        Ogre::SceneNode* lineNode = m_lightNode->createChildSceneNode(this->get_id() + "_lineNode");
         lineNode->attachObject(m_directionalFeedback.first);
         lineNode->yaw(Ogre::Degree(-90));
 
@@ -184,7 +176,7 @@ void SLight::starting()
             coneLength,
             sample
         );
-        Ogre::SceneNode* coneNode = m_lightNode->createChildSceneNode(this->getID() + "_coneNode");
+        Ogre::SceneNode* coneNode = m_lightNode->createChildSceneNode(this->get_id() + "_coneNode");
 
         coneNode->attachObject(m_directionalFeedback.second);
         coneNode->translate(0.F, 0.F, cylinderLength);
@@ -199,11 +191,11 @@ void SLight::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SLight::getAutoConnections() const
+service::connections_t SLight::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_SPECULAR_COLOR_INOUT, data::Color::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -245,8 +237,8 @@ void SLight::stopping()
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
     if(m_lightName != sight::viz::scene3d::Layer::s_DEFAULT_LIGHT_NAME)
     {
-        m_lightNode->removeAndDestroyChild(this->getID() + "_lineNode");
-        m_lightNode->removeAndDestroyChild(this->getID() + "_coneNode");
+        m_lightNode->removeAndDestroyChild(this->get_id() + "_lineNode");
+        m_lightNode->removeAndDestroyChild(this->get_id() + "_coneNode");
 
         sceneMgr->destroyManualObject(m_lightPosition);
         sceneMgr->destroyManualObject(m_directionalFeedback.first);

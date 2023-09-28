@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 
@@ -50,13 +50,13 @@ namespace sight::module::ui::qt::image
  * - \b height (optional): height of the image in pixels.
  */
 class MODULE_UI_QT_CLASS_API SImage : public QObject,
-                                      public sight::ui::base::IEditor
+                                      public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SImage, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SImage, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SImage() noexcept;
@@ -66,16 +66,16 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from service::IService )
+    /** @name Service methods ( override from service::base )
      * @{
      */
     /**
-     * @brief This method launches the IEditor::starting method.
+     * @brief This method launches the editor::starting method.
      */
     MODULE_UI_QT_API void starting() override;
 
     /**
-     * @brief This method launches the IEditor::stopping method.
+     * @brief This method launches the editor::stopping method.
      */
     MODULE_UI_QT_API void stopping() override;
 

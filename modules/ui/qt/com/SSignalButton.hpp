@@ -24,9 +24,9 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QPointer>
 #include <QPushButton>
@@ -84,14 +84,14 @@ namespace sight::module::ui::qt::com
  * - \b iconHeight (optional, unsigned, default=0): icon height.
  */
 class MODULE_UI_QT_CLASS_API SSignalButton : public QObject,
-                                             public sight::ui::base::IEditor
+                                             public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SSignalButton, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSignalButton, sight::ui::editor);
 
     /// Creates signals and slots.
     MODULE_UI_QT_API SSignalButton() noexcept;
@@ -104,13 +104,13 @@ protected:
     /// Configures the class parameters.
     MODULE_UI_QT_API void configuring() override;
 
-    /// Launches the IEditor::starting method.
+    /// Launches the editor::starting method.
     MODULE_UI_QT_API void starting() override;
 
     ///Does nothing.
     MODULE_UI_QT_API void updating() override;
 
-    /// Launches the IEditor::stopping method.
+    /// Launches the editor::stopping method.
     MODULE_UI_QT_API void stopping() override;
 
 private Q_SLOTS:
@@ -148,11 +148,11 @@ private:
     /// SLOT: hides he button.
     void hide() override;
 
-    typedef core::com::Signal<void ()> ClickedSignalType;
+    typedef core::com::signal<void ()> ClickedSignalType;
     /// Contains the signal emitted when button is clicked.
     ClickedSignalType::sptr m_sigClicked {nullptr};
 
-    typedef core::com::Signal<void (bool)> ToggledSignalType;
+    typedef core::com::signal<void (bool)> ToggledSignalType;
     /// Contains the signal emitted when button is checked/unchecked
     ToggledSignalType::sptr m_sigToggled {nullptr};
 

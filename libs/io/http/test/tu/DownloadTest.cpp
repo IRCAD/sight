@@ -23,8 +23,8 @@
 
 #include "io/http/Download.hpp"
 
-#include <core/Exception.hpp>
-#include <core/os/TempPath.hpp>
+#include <core/exception.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <filesystem>
 
@@ -51,7 +51,7 @@ void DownloadTest::tearDown()
 
 void DownloadTest::downloadTestSuccess()
 {
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     const auto& sample_bin_path = tmpDir / "sample.bin";
     const auto& sample_txt_path = tmpDir / "sample.txt";
@@ -81,7 +81,7 @@ void DownloadTest::downloadTestSuccess()
 
 void DownloadTest::downloadTestFailure()
 {
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto& test_bin_path = tmpDir / "test.bin";
 
     CPPUNIT_ASSERT_THROW(
@@ -89,7 +89,7 @@ void DownloadTest::downloadTestFailure()
             "https://whateverTheCloud.com/fileDoesNotExists.txt/download",
             test_bin_path
         ),
-        sight::core::Exception
+        sight::core::exception
     );
 
     CPPUNIT_ASSERT(!fs::exists(test_bin_path));
@@ -99,14 +99,14 @@ void DownloadTest::downloadTestFailure()
 
 void DownloadTest::downloadTestWrongInputs()
 {
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto& test2_bin_path = tmpDir / "test2.bin";
 
-    CPPUNIT_ASSERT_THROW(io::http::downloadFile("", test2_bin_path), sight::core::Exception);
+    CPPUNIT_ASSERT_THROW(io::http::downloadFile("", test2_bin_path), sight::core::exception);
 
     CPPUNIT_ASSERT_THROW(
         io::http::downloadFile("https://whateverTheCloud.com/fileDoesNotExists.txt/download", ""),
-        sight::core::Exception
+        sight::core::exception
     );
 }
 
@@ -114,7 +114,7 @@ void DownloadTest::downloadTestWrongInputs()
 
 void DownloadTest::downloadTestOverwritesFile()
 {
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto& sample_bin_path = tmpDir / "sample.bin";
 
     CPPUNIT_ASSERT_NO_THROW(
@@ -131,7 +131,7 @@ void DownloadTest::downloadTestOverwritesFile()
             "https://cloud.ircad.fr/s/tqYHyjZ2cgHT4mG/download",
             sample_bin_path
         ),
-        sight::core::Exception
+        sight::core::exception
     );
 }
 

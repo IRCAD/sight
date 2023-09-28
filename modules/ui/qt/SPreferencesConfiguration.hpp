@@ -24,13 +24,13 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Signals.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/com/signals.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/String.hpp>
 
-#include <ui/base/IAction.hpp>
-#include <ui/base/parameter.hpp>
+#include <ui/__/action.hpp>
+#include <ui/__/parameter.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -125,14 +125,14 @@ namespace sight::module::ui::qt
  * - \b separator (optional, list, default=','): the separator for the list type
  */
 class MODULE_UI_QT_CLASS_API SPreferencesConfiguration final : public QObject,
-                                                               public sight::ui::base::IAction
+                                                               public sight::ui::action
 {
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPreferencesConfiguration, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SPreferencesConfiguration, sight::ui::action);
 
     /// Initializes the signal.
     MODULE_UI_QT_API SPreferencesConfiguration() noexcept;
@@ -157,12 +157,12 @@ protected:
 private:
 
     /// Type of signal when parameters are updated.
-    typedef core::com::Signal<void ()> ParametersModifiedSignalType;
-    static const core::com::Signals::SignalKeyType s_PARAMETERS_MODIFIED_SIG;
+    typedef core::com::signal<void ()> ParametersModifiedSignalType;
+    static const core::com::signals::key_t PARAMETERS_MODIFIED_SIG;
 
     /// Generic changed signal type
-    typedef core::com::Signal<void (sight::ui::base::parameter_t, std::string)> ChangedSignalType;
-    static const core::com::Signals::SignalKeyType s_PREFERENCE_CHANGED_SIG;
+    typedef core::com::signal<void (sight::ui::parameter_t, std::string)> ChangedSignalType;
+    static const core::com::signals::key_t PREFERENCE_CHANGED_SIG;
 
     enum class PreferenceType : std::int8_t
     {
@@ -194,7 +194,7 @@ private:
     /// @brief Converts string value from PreferenceElt.m_preferenceValue to real type regarding PreferenceElt.m_type.
     /// @param _elt The preference element
     /// @return std::variant as defined by parameter_t.
-    static sight::ui::base::parameter_t convertValue(const PreferenceElt& _elt);
+    static sight::ui::parameter_t convertValue(const PreferenceElt& _elt);
 
     static void onSelectDir(QPointer<QLineEdit> _lineEdit);
 

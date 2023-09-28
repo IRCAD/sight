@@ -27,7 +27,7 @@
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 #include <string>
 
@@ -56,11 +56,11 @@ namespace sight::module::filter::mesh
  * - \b threshold : This value is used for threshold of the image means that Pixels below threshold value are converted
  *      to black (bit value of zero), and pixels above the threshold value are converted to white (a bit value of one).
  */
-class MODULE_FILTER_MESH_CLASS_API SVTKMesher : public service::IFilter
+class MODULE_FILTER_MESH_CLASS_API SVTKMesher : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SVTKMesher, sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SVTKMesher, sight::service::filter);
 
     MODULE_FILTER_MESH_API SVTKMesher() noexcept;
     MODULE_FILTER_MESH_API ~SVTKMesher() noexcept override = default;

@@ -44,9 +44,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" spacing="2" />
                     <view proportion="0" spacing="2" />
@@ -60,9 +60,9 @@
         </service>
 
 
-        <service uid="topScenesView" type="sight::module::ui::base::SView">
+        <service uid="topScenesView" type="sight::module::ui::SView">
             <gui>
-              <layout type="sight::ui::base::LineLayoutManager" >
+              <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
                     <view proportion="1" minWidth="0" />
                     <view proportion="1" minWidth="0" visible="false" spacing="2" />
@@ -74,9 +74,9 @@
            </registry>
         </service>
 
-        <service uid="bottomScenesView" type="sight::module::ui::base::SView">
+        <service uid="bottomScenesView" type="sight::module::ui::SView">
             <gui>
-              <layout type="sight::ui::base::LineLayoutManager" >
+              <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
                     <view proportion="1" minWidth="0" visible="false" />
                     <view proportion="1" minWidth="0" visible="false" spacing="2" />
@@ -183,7 +183,7 @@
 
         <!-- ************************************* Actions ************************************ -->
 
-        <service uid="mainSceneVisibilityAct" type="sight::module::ui::base::SModifyLayout" >
+        <service uid="mainSceneVisibilityAct" type="sight::module::ui::SModifyLayout" >
             <status checked="false"/>
             <config>
                 <toggle wid="axialSceneView" />
@@ -192,7 +192,7 @@
             </config>
         </service>
 
-        <service uid="axialNegatoVisibilityAct" type="sight::module::ui::base::SModifyLayout" >
+        <service uid="axialNegatoVisibilityAct" type="sight::module::ui::SModifyLayout" >
             <config>
                 <toggle wid="mainSceneView" />
                 <toggle wid="sagittalSceneView" />
@@ -200,7 +200,7 @@
             </config>
         </service>
 
-        <service uid="sagittalNegatoVisibilityAct" type="sight::module::ui::base::SModifyLayout" >
+        <service uid="sagittalNegatoVisibilityAct" type="sight::module::ui::SModifyLayout" >
             <config>
                 <toggle wid="mainSceneView" />
                 <toggle wid="axialSceneView" />
@@ -208,7 +208,7 @@
             </config>
         </service>
 
-        <service uid="frontalNegatoVisibilityAct" type="sight::module::ui::base::SModifyLayout" >
+        <service uid="frontalNegatoVisibilityAct" type="sight::module::ui::SModifyLayout" >
             <config>
                 <toggle wid="mainSceneView" />
                 <toggle wid="axialSceneView" />
@@ -216,7 +216,7 @@
             </config>
         </service>
 
-        <service uid="negatoVisibilityAct" type="sight::module::ui::base::SModifyLayout" >
+        <service uid="negatoVisibilityAct" type="sight::module::ui::SModifyLayout" >
             <config>
                 <show wid="mainSceneView" />
                 <show wid="axialSceneView" />
@@ -225,7 +225,7 @@
             </config>
         </service>
 
-        <service uid="volumeVisibilityAct" type="sight::module::ui::base::SModifyLayout" >
+        <service uid="volumeVisibilityAct" type="sight::module::ui::SModifyLayout" >
             <config>
                 <show wid="mainSceneView" />
                 <hide wid="axialSceneView" />

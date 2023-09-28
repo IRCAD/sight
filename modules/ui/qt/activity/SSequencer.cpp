@@ -22,13 +22,13 @@
 
 #include "SSequencer.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
-#include <core/tools/Os.hpp>
+#include <core/tools/os.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QApplication>
 #include <QDir>
@@ -57,21 +57,21 @@ static const std::string s_FONT_SIZE               = "fontSize";
 
 SSequencer::SSequencer() noexcept
 {
-    newSlot(Slots::GO_TO, &SSequencer::goTo, this);
-    newSlot(Slots::CHECK_NEXT, &SSequencer::checkNext, this);
-    newSlot(Slots::VALIDATE_NEXT, &SSequencer::validateNext, this);
-    newSlot(Slots::NEXT, &SSequencer::next, this);
-    newSlot(Slots::PREVIOUS, &SSequencer::previous, this);
-    newSlot(Slots::SEND_INFO, &SSequencer::sendInfo, this);
+    new_slot(Slots::GO_TO, &SSequencer::goTo, this);
+    new_slot(Slots::CHECK_NEXT, &SSequencer::checkNext, this);
+    new_slot(Slots::VALIDATE_NEXT, &SSequencer::validateNext, this);
+    new_slot(Slots::NEXT, &SSequencer::next, this);
+    new_slot(Slots::PREVIOUS, &SSequencer::previous, this);
+    new_slot(Slots::SEND_INFO, &SSequencer::sendInfo, this);
 }
 
 //------------------------------------------------------------------------------
 
 void SSequencer::configuring()
 {
-    this->sight::ui::base::IGuiContainer::initialize();
+    this->sight::ui::service::initialize();
 
-    const service::IService::ConfigType config = this->getConfiguration();
+    const service::config_t config = this->getConfiguration();
 
     auto pair = config.equal_range("activity");
     auto it   = pair.first;
@@ -98,9 +98,9 @@ void SSequencer::configuring()
 
 void SSequencer::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
@@ -109,7 +109,7 @@ void SSequencer::starting()
     mainLayout->addWidget(m_widget);
 
     const auto path =
-        core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "ActivitySequencer.qml");
+        core::runtime::get_module_resource_file_path("sight::module::ui::qt", "ActivitySequencer.qml");
     QWidget* parent = qtContainer->getQtContainer();
     auto* engine    = m_widget->engine();
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);
@@ -152,7 +152,8 @@ void SSequencer::starting()
     // you are executing the application in the build tree or in the install tree
     // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
     // This work in all cases when we use VCPkg.
-    std::filesystem::path qt5LibDir              = core::tools::os::getSharedLibraryPath("Qt5Core").remove_filename();
+    std::filesystem::path qt5LibDir =
+        core::tools::os::get_shared_library_path("Qt5Core").remove_filename();
     const std::filesystem::path qt5QmlPluginsDir = (qt5LibDir.parent_path().parent_path()) / "qml";
 
     QDir pluginDir(QString::fromStdString(qt5QmlPluginsDir.string()));
@@ -271,15 +272,15 @@ void SSequencer::goTo(int index)
     // Clear activities if go backward.
     if(m_clearActivities && m_currentActivity > index)
     {
-        auto dialog = sight::ui::base::dialog::MessageDialog(
+        auto dialog = sight::ui::dialog::message(
             "Sequencer",
             "The data will be deleted! \nDo you want to continue?",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
-        dialog.addButton(sight::ui::base::dialog::IMessageDialog::YES_NO);
+        dialog.addButton(sight::ui::dialog::message::YES_NO);
         const auto button = dialog.show();
 
-        if((button == sight::ui::base::dialog::IMessageDialog::NO))
+        if((button == sight::ui::dialog::message::NO))
         {
             return;
         }
@@ -301,7 +302,7 @@ void SSequencer::goTo(int index)
 
     const auto newIdx = static_cast<std::size_t>(index);
 
-    data::Activity::sptr activity = this->getActivity(*activity_set, newIdx, slot(IService::slots::s_UPDATE));
+    data::Activity::sptr activity = this->getActivity(*activity_set, newIdx, slot(service::slots::UPDATE));
 
     bool ok = true;
     std::string errorMsg;
@@ -309,7 +310,7 @@ void SSequencer::goTo(int index)
     std::tie(ok, errorMsg) = sight::module::ui::qt::activity::SSequencer::validateActivity(activity);
     if(ok)
     {
-        m_activity_created->asyncEmit(activity);
+        m_activity_created->async_emit(activity);
 
         m_currentActivity = index;
         QObject* object = m_widget->rootObject();
@@ -318,8 +319,8 @@ void SSequencer::goTo(int index)
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog::show("Activity not valid", errorMsg);
-        m_data_required->asyncEmit(activity);
+        sight::ui::dialog::message::show("Activity not valid", errorMsg);
+        m_data_required->async_emit(activity);
     }
 }
 
@@ -342,7 +343,7 @@ void SSequencer::checkNext()
     const auto next_index = std::size_t(m_currentActivity + 1);
     if(next_index < m_activityIds.size())
     {
-        const auto& next_activity = this->getActivity(*activity_set, next_index, slot(IService::slots::s_UPDATE));
+        const auto& next_activity = this->getActivity(*activity_set, next_index, slot(service::slots::UPDATE));
         const auto& [ok, error] = SSequencer::validateActivity(next_activity);
 
         if(ok)
@@ -355,7 +356,7 @@ void SSequencer::checkNext()
             SIGHT_DEBUG(error);
         }
 
-        m_next_enabled->asyncEmit(ok);
+        m_next_enabled->async_emit(ok);
 
         // Refresh next activities validity
         std::size_t last_valid = next_index;
@@ -409,22 +410,22 @@ void SSequencer::validateNext()
     const auto next_index = std::size_t(m_currentActivity + 1);
     if(next_index < m_activityIds.size())
     {
-        const auto& next_activity = this->getActivity(*activity_set, next_index, slot(IService::slots::s_UPDATE));
+        const auto& next_activity = this->getActivity(*activity_set, next_index, slot(service::slots::UPDATE));
         const auto& [ok, error] = sight::module::ui::qt::activity::SSequencer::validateActivity(next_activity);
 
         if(ok)
         {
-            m_next_valid->asyncEmit();
+            m_next_valid->async_emit();
         }
         else
         {
             disableActivity(int(next_index));
             SIGHT_DEBUG(error);
 
-            m_next_invalid->asyncEmit();
+            m_next_invalid->async_emit();
         }
 
-        m_next_validated->asyncEmit(ok);
+        m_next_validated->async_emit(ok);
 
         // Refresh next activities validity
         std::size_t last_valid = next_index;
@@ -479,10 +480,10 @@ void SSequencer::previous()
 void SSequencer::sendInfo() const
 {
     const bool previousEnabled = (m_currentActivity > 0);
-    m_has_previous->asyncEmit(previousEnabled);
+    m_has_previous->async_emit(previousEnabled);
 
     const bool nextEnabled = (m_currentActivity < static_cast<int>(m_activityIds.size()) - 1);
-    m_has_next->asyncEmit(nextEnabled);
+    m_has_next->async_emit(nextEnabled);
 }
 
 //------------------------------------------------------------------------------
@@ -503,11 +504,11 @@ void SSequencer::disableActivity(int index)
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
+service::connections_t SSequencer::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
-    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::ADDED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

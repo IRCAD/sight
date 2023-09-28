@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include "ITest.hpp"
+#include "test.hpp"
 
 namespace sight::sightviewer::test::ui
 {
 
-class LoadItk : public ITest
+class LoadItk : public test
 {
 CPPUNIT_TEST_SUITE(LoadItk);
 CPPUNIT_TEST(test);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/igtl/detail/converter/IConverter.hpp"
+#include "io/igtl/detail/converter/base.hpp"
 #include "io/igtl/detail/exception/Conversion.hpp"
 
 #include <data/Mesh.hpp>
@@ -37,7 +37,7 @@ namespace sight::io::igtl::detail::converter
  * @brief class to manage conversion between data::Mesh and igtl::PolyDataMessage
  */
 class IO_IGTL_CLASS_API MeshConverter :
-    public IConverter
+    public base
 {
 public:
 
@@ -66,7 +66,7 @@ public:
      *
      * @return a smart pointer to an ImageConverter
      */
-    IO_IGTL_API static IConverter::sptr New();
+    IO_IGTL_API static base::sptr New();
 
     /**
      * @brief get the igtlType supported for conversion

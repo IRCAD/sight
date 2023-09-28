@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,8 @@
 #include "ImagePositionPatientSorterTest.hpp"
 
 #include <filter/dicom/factory/new.hpp>
+#include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/Filter.hpp>
-#include <filter/dicom/IFilter.hpp>
 
 #include <geometry/data/VectorFunctions.hpp>
 
@@ -61,10 +61,10 @@ void ImagePositionPatientSorterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
+double getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj)
 {
     gdcm::ImageReader reader;
-    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
     reader.SetStream(*streamInfo.stream);
 
     if(!reader.Read())
@@ -115,7 +115,7 @@ double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
 
 void ImagePositionPatientSorterTest::simpleApplication()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "01-CT-DICOM_LIVER";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -126,24 +126,24 @@ void ImagePositionPatientSorterTest::simpleApplication()
     );
 
     // Read DicomSeries
-    auto reader = io::dicom::reader::SeriesSet::New();
+    auto reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
+    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
-    filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
+    sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::sorter::ImagePositionPatientSorter"
     );
     CPPUNIT_ASSERT(filter);
-    CPPUNIT_ASSERT_NO_THROW(filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true));
+    CPPUNIT_ASSERT_NO_THROW(sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true));
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
     dicomSeries = dicomSeriesContainer[0];
@@ -165,7 +165,7 @@ void ImagePositionPatientSorterTest::simpleApplication()
 
 void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -176,26 +176,26 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
     );
 
     // Read DicomSeries
-    auto reader = io::dicom::reader::SeriesSet::New();
+    auto reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
+    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
-    filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
+    sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::sorter::ImagePositionPatientSorter"
     );
     CPPUNIT_ASSERT(filter);
     CPPUNIT_ASSERT_THROW(
-        filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false),
-        filter::dicom::exceptions::FilterFailure
+        sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false),
+        sight::filter::dicom::exceptions::FilterFailure
     );
 }
 

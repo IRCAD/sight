@@ -4,13 +4,13 @@ add_dependencies(
     ExRGBDManualAR
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_viz_scene3d
     module_ui_qt
     module_viz_scene3dQt
     data
     module_service
-    module_ui_base
+    module_ui
     module_ui_flaticons
     module_io_matrix
     module_io_vtk
@@ -18,7 +18,7 @@ add_dependencies(
     module_io_video
     module_sync
     module_data
-    module_geometry_base
+    module_geometry
     module_filter_vision
     config_ui_datamanager
 )

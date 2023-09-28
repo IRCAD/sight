@@ -28,7 +28,7 @@
 #include <service/macros.hpp>
 #include <service/registry.hpp>
 
-#include <ui/base/Preferences.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <utility>
 
@@ -109,7 +109,7 @@ void SPacsConfigurationInitializer::starting()
     {
         try
         {
-            ui::base::Preferences preferences;
+            ui::Preferences preferences;
 
             m_SCUAppEntityTitle  = preferences.get(getKey(s_LocalApplicationTitle), m_SCUAppEntityTitle);
             m_SCPHostName        = preferences.get(getKey(s_PacsHostName), m_SCPHostName);
@@ -121,7 +121,7 @@ void SPacsConfigurationInitializer::starting()
                 preferences.get(getKey(s_RetrieveMethod), static_cast<int>(m_retrieveMethod))
             );
         }
-        catch(const ui::base::PreferencesDisabled& /*e*/)
+        catch(const ui::PreferencesDisabled& /*e*/)
         {
             // Nothing to do..
         }
@@ -138,14 +138,14 @@ void SPacsConfigurationInitializer::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SPacsConfigurationInitializer::getAutoConnections() const
+service::connections_t SPacsConfigurationInitializer::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
+    service::connections_t connections;
 
     connections.push(
         s_CONFIG_INOUT,
-        sight::io::dimse::data::PacsConfiguration::s_MODIFIED_SIG,
-        IService::slots::s_UPDATE
+        sight::io::dimse::data::PacsConfiguration::MODIFIED_SIG,
+        service::slots::UPDATE
     );
 
     return connections;
@@ -181,7 +181,7 @@ void SPacsConfigurationInitializer::updating()
     {
         try
         {
-            ui::base::Preferences preferences;
+            ui::Preferences preferences;
 
             preferences.put(getKey(s_LocalApplicationTitle), m_SCUAppEntityTitle);
             preferences.put(getKey(s_PacsHostName), m_SCPHostName);
@@ -191,7 +191,7 @@ void SPacsConfigurationInitializer::updating()
             preferences.put(getKey(s_MoveApplicationPort), m_movePort);
             preferences.put(getKey(s_RetrieveMethod), static_cast<int>(m_retrieveMethod));
         }
-        catch(const ui::base::PreferencesDisabled& /*e*/)
+        catch(const ui::PreferencesDisabled& /*e*/)
         {
             // Nothing to do..
         }

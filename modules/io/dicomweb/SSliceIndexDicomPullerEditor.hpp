@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <io/http/ClientQt.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QLineEdit>
 #include <QSlider>
@@ -45,12 +45,12 @@ class Timer;
 
 } // namespace core::thread
 
-namespace io::base::service
+namespace io::service
 {
 
-class IReader;
+class reader;
 
-} // namespace io::base::service
+} // namespace io::service
 
 namespace data
 {
@@ -66,13 +66,13 @@ namespace sight::module::io::dicomweb
 {
 
 class MODULE_IO_DICOMWEB_CLASS_API SSliceIndexDicomPullerEditor : public QObject,
-                                                                  public sight::ui::base::IEditor
+                                                                  public sight::ui::editor
 {
 Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSliceIndexDicomPullerEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSliceIndexDicomPullerEditor, sight::ui::editor);
 
     /**
      * @brief Constructor
@@ -138,7 +138,7 @@ private:
     std::string m_dicomReaderType;
 
     /// Reader
-    WPTR(sight::io::base::service::IReader) m_dicomReader;
+    WPTR(sight::io::service::reader) m_dicomReader;
 
     /// Image Key
     std::string m_imageKey;
@@ -157,13 +157,13 @@ private:
     sight::io::http::ClientQt m_clientQt;
 
     /// Timer used to generate the new slice selection delay
-    SPTR(core::thread::Timer) m_delayTimer;
+    SPTR(core::thread::timer) m_delayTimer;
 
     /// Delay
     unsigned int m_delay {500};
 
     /// Optional configuration to set to reader implementation
-    IService::ConfigType m_readerConfig;
+    service::config_t m_readerConfig;
 
     /// Server hostname preference key
     std::string m_serverHostnameKey;

@@ -4,14 +4,14 @@ add_dependencies(
     ExDicomSegmentation
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_viz_scene3d
     module_ui_qt
     module_viz_scene3dQt
     module_activity
     data
     module_service
-    module_ui_base
+    module_ui
     module_ui_flaticons
     module_io_activity
     module_io_matrix

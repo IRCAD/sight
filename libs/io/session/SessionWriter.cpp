@@ -23,16 +23,16 @@
 
 #include "io/session/detail/core/SessionSerializer.hpp"
 
-#include <core/crypto/PasswordKeeper.hpp>
+#include <core/crypto/password_keeper.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 SIGHT_REGISTER_IO_WRITER(sight::io::session::SessionWriter);
 
 namespace sight::io::session
 {
 
-using core::crypto::PasswordKeeper;
+using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::Archive;
 class SessionWriter::SessionWriterImpl
@@ -49,8 +49,8 @@ public:
     /// Constructor
     inline explicit SessionWriterImpl(SessionWriter* const sessionWriter) :
         m_sessionWriter(sessionWriter),
-        m_password(std::make_unique<PasswordKeeper>()),
-        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::PASSWORD),
+        m_password(std::make_unique<password_keeper>()),
+        m_encryptionPolicy(password_keeper::encryption_policy::PASSWORD),
         m_archiveFormat(Archive::ArchiveFormat::DEFAULT)
     {
     }
@@ -67,7 +67,7 @@ public:
 
         // Serialize the root object
         m_sessionSerializer.serialize(
-            m_sessionWriter->getFile(),
+            m_sessionWriter->get_file(),
             root_object,
             m_archiveFormat,
             m_password->get_password(),
@@ -82,16 +82,16 @@ public:
     SessionWriter* const m_sessionWriter;
 
     /// Keep the password in a vault
-    const std::unique_ptr<PasswordKeeper> m_password;
+    const std::unique_ptr<password_keeper> m_password;
 
     /// The encryption policy
-    PasswordKeeper::EncryptionPolicy m_encryptionPolicy;
+    password_keeper::encryption_policy m_encryptionPolicy;
 
     /// Archive format to use
     Archive::ArchiveFormat m_archiveFormat;
 };
 
-SessionWriter::SessionWriter(base::writer::IObjectWriter::Key /*unused*/) :
+SessionWriter::SessionWriter() :
     m_pimpl(std::make_unique<SessionWriterImpl>(this))
 {
 }
@@ -122,7 +122,7 @@ void SessionWriter::setPassword(const secure_string& password)
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
+void SessionWriter::setEncryptionPolicy(const password_keeper::encryption_policy policy)
 {
     m_pimpl->m_encryptionPolicy = policy;
 }

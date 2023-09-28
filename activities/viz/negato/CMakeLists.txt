@@ -4,7 +4,7 @@ add_dependencies(
     activity_viz_negato
     data
     module_activity
-    module_ui_base
+    module_ui
     module_ui_qt
     module_data
     module_memory

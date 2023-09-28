@@ -22,11 +22,11 @@
 
 #include "SSeriesPusher.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
-#include <core/tools/Failed.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
+#include <core/tools/failed.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Series.hpp>
@@ -38,8 +38,8 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/Preferences.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/Preferences.hpp>
 
 namespace sight::module::io::dicomweb
 {
@@ -58,7 +58,7 @@ SSeriesPusher::~SSeriesPusher() noexcept =
 
 void SSeriesPusher::configuring()
 {
-    service::IService::ConfigType configuration = this->getConfiguration();
+    service::config_t configuration = this->getConfiguration();
     //Parse server port and hostname
     if(configuration.count("server") != 0U)
     {
@@ -71,7 +71,7 @@ void SSeriesPusher::configuring()
     }
     else
     {
-        throw core::tools::Failed("'server' element not found");
+        throw core::tools::failed("'server' element not found");
     }
 }
 
@@ -91,7 +91,7 @@ void SSeriesPusher::stopping()
 
 void SSeriesPusher::updating()
 {
-    ui::base::Preferences preferences;
+    ui::Preferences preferences;
 
     try
     {
@@ -116,24 +116,24 @@ void SSeriesPusher::updating()
     if(m_isPushing)
     {
         // Display a message to inform the user that the service is already pushing data.
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage(
             "The service is already pushing data. Please wait until the pushing is done "
             "before sending a new push request."
         );
-        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::dialog::message::INFO);
+        messageBox.addButton(ui::dialog::message::OK);
         messageBox.show();
     }
     else if(selectedSeries->empty())
     {
         // Display a message to inform the user that there is no series selected.
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Pushing Series");
         messageBox.setMessage("Unable to push series, there is no series selected.");
-        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::dialog::message::INFO);
+        messageBox.addButton(ui::dialog::message::OK);
         messageBox.show();
     }
     else
@@ -155,7 +155,7 @@ void SSeriesPusher::pushSeries()
     std::size_t nbSeriesSuccess = 0;
     for(const auto& series : *seriesVector)
     {
-        const auto& dicomSeries = data::DicomSeries::dynamicCast(series);
+        const auto& dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(series);
 
         if(!dicomSeries)
         {
@@ -172,10 +172,10 @@ void SSeriesPusher::pushSeries()
             std::size_t nbInstanceSuccess = 0;
             for(const auto& item : dicomContainer)
             {
-                const core::memory::BufferObject::sptr bufferObj = item.second;
-                const core::memory::BufferObject::Lock lockerDest(bufferObj);
-                const char* buffer     = static_cast<char*>(lockerDest.getBuffer());
-                const std::size_t size = bufferObj->getSize();
+                const core::memory::buffer_object::sptr bufferObj = item.second;
+                const core::memory::buffer_object::lock_t lockerDest(bufferObj);
+                const char* buffer     = static_cast<char*>(lockerDest.buffer());
+                const std::size_t size = bufferObj->size();
 
                 const QByteArray fileBuffer = QByteArray::fromRawData(buffer, int(size));
 
@@ -224,11 +224,11 @@ void SSeriesPusher::pushSeries()
 void SSeriesPusher::displayMessage(const std::string& message, bool error)
 {
     SIGHT_WARN_IF("Error: " + message, error);
-    sight::ui::base::dialog::MessageDialog messageBox;
+    sight::ui::dialog::message messageBox;
     messageBox.setTitle((error ? "Error" : "Information"));
     messageBox.setMessage(message);
-    messageBox.setIcon(error ? (ui::base::dialog::IMessageDialog::CRITICAL) : (ui::base::dialog::IMessageDialog::INFO));
-    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+    messageBox.setIcon(error ? (ui::dialog::message::CRITICAL) : (ui::dialog::message::INFO));
+    messageBox.addButton(ui::dialog::message::OK);
     messageBox.show();
 }
 

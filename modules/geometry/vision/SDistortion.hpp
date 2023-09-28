@@ -27,7 +27,7 @@
 #include <data/Camera.hpp>
 #include <data/Image.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 #ifdef OPENCV_CUDA_SUPPORT
 #include <opencv2/cudawarping.hpp>
@@ -75,18 +75,18 @@ namespace sight::module::geometry::vision
  * @subsection Configuration Configuration:
  * - \b mode(optional) : "distort" or "undistort" the output image (default: "distort").
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SDistortion : public service::IFilter
+class MODULE_GEOMETRY_VISION_CLASS_API SDistortion : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDistortion, sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SDistortion, sight::service::filter);
 
     /**
      * @name Slots API
      * @{
      */
-    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_CHANGE_STATE_SLOT;
-    typedef core::com::Slot<void ()> ChangeStateSlotType;
+    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t CHANGE_STATE_SLOT;
+    typedef core::com::slot<void ()> ChangeStateSlotType;
     ///@}
 
     /// Constructor.
@@ -96,10 +96,10 @@ public:
     MODULE_GEOMETRY_VISION_API ~SDistortion() noexcept override;
 
     /**
-     * @brief Connect data::Image::s_MODIFIED_SIG to IService::slots::s_UPDATE
-     * and data::Image::s_BUFFER_MODIFIED_SIG to IService::slots::s_UPDATE
+     * @brief Connect data::Image::MODIFIED_SIG to service::slots::UPDATE
+     * and data::Image::BUFFER_MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_GEOMETRY_VISION_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_VISION_API service::connections_t getAutoConnections() const override;
 
 protected:
 

@@ -14,7 +14,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SFrame" >
+        <service uid="mainView" type="sight::module::ui::SFrame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -28,9 +28,9 @@
             </registry>
         </service>
 
-        <service uid="pacsSelectorView" type="sight::module::ui::base::SView" >
+        <service uid="pacsSelectorView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
                     <view proportion="0" />
                 </layout>

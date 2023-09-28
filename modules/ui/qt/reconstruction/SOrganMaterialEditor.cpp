@@ -30,7 +30,7 @@
 
 #include <service/op/Get.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QColor>
 #include <QColorDialog>
@@ -55,10 +55,10 @@ SOrganMaterialEditor::~SOrganMaterialEditor() noexcept =
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
+service::connections_t SOrganMaterialEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_RECONSTRUCTION, data::Object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -75,9 +75,9 @@ void SOrganMaterialEditor::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     qtContainer->getQtContainer()->setObjectName(serviceID);
 
     m_diffuseColourButton = new QPushButton(tr("Diffuse"));
@@ -166,7 +166,8 @@ void SOrganMaterialEditor::onDiffuseColorButton()
         int blue  = static_cast<int>(material->diffuse()->blue() * 255);
 
         // Create Color choice dialog.
-        auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+        auto qtContainer =
+            std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
         QWidget* const container = qtContainer->getQtContainer();
         SIGHT_ASSERT("container not instanced", container);
 
@@ -209,7 +210,8 @@ void SOrganMaterialEditor::onAmbientColorButton()
         const int blue  = static_cast<int>(material->ambient()->blue() * 255.F);
 
         // Create Color choice dialog.
-        auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+        auto qtContainer =
+            std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
         QWidget* const container = qtContainer->getQtContainer();
         SIGHT_ASSERT("container not instanced", container);
 
@@ -257,7 +259,7 @@ void SOrganMaterialEditor::onOpacitySlider(int _value)
 
 void SOrganMaterialEditor::refreshMaterial()
 {
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     QWidget* const container = qtContainer->getQtContainer();
@@ -322,9 +324,9 @@ void SOrganMaterialEditor::materialNotification()
 
     data::Object::ModifiedSignalType::sptr sig =
         reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(
-            data::Object::s_MODIFIED_SIG
+            data::Object::MODIFIED_SIG
         );
-    sig->asyncEmit();
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------

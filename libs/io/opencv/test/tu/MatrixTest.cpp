@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ void MatrixTest::tearDown()
 void MatrixTest::copyFromCvFloat()
 {
     cv::Matx44f cvMat         = cv::Matx44f::eye();
-    data::Matrix4::sptr fwMat = data::Matrix4::New();
+    data::Matrix4::sptr fwMat = std::make_shared<data::Matrix4>();
 
     //identity test
     io::opencv::Matrix::copyFromCv(cvMat, fwMat);
@@ -109,7 +109,7 @@ void MatrixTest::copyFromCvFloat()
 
 void MatrixTest::copyToCvFloat()
 {
-    data::Matrix4::sptr fwMat = data::Matrix4::New();
+    data::Matrix4::sptr fwMat = std::make_shared<data::Matrix4>();
     cv::Matx44f cvMat         = cv::Matx44f::eye();
 
     //identity test
@@ -157,7 +157,7 @@ void MatrixTest::copyToCvFloat()
 void MatrixTest::copyFromCvDouble()
 {
     cv::Matx44d cvMat         = cv::Matx44d::eye();
-    data::Matrix4::sptr fwMat = data::Matrix4::New();
+    data::Matrix4::sptr fwMat = std::make_shared<data::Matrix4>();
 
     //identity test
     io::opencv::Matrix::copyFromCv(cvMat, fwMat);
@@ -214,7 +214,7 @@ void MatrixTest::copyFromCvDouble()
 
 void MatrixTest::copyToCvDouble()
 {
-    data::Matrix4::sptr fwMat = data::Matrix4::New();
+    data::Matrix4::sptr fwMat = std::make_shared<data::Matrix4>();
     cv::Matx44d cvMat         = cv::Matx44d::eye();
 
     //identity test
@@ -261,7 +261,7 @@ void MatrixTest::copyToCvDouble()
 void MatrixTest::copyFromCvMat()
 {
     // identity test
-    data::Matrix4::sptr fwMat = data::Matrix4::New();
+    data::Matrix4::sptr fwMat = std::make_shared<data::Matrix4>();
     cv::Mat cvMat             = cv::Mat::eye(4, 4, CV_64F);
 
     CPPUNIT_ASSERT_NO_THROW(io::opencv::Matrix::copyFromCv(cvMat, fwMat));
@@ -305,7 +305,7 @@ void MatrixTest::copyFromCvMat()
 
 void MatrixTest::copyToCvMat()
 {
-    data::Matrix4::sptr fwMat = data::Matrix4::New();
+    data::Matrix4::sptr fwMat = std::make_shared<data::Matrix4>();
     cv::Mat cvMat             = cv::Mat::eye(4, 4, CV_64F);
 
     //identity test
@@ -357,7 +357,7 @@ void MatrixTest::copyFromRvecTvec()
     cv::Mat tvec = cvMat(cv::Rect(3, 0, 1, 3));
     cv::Mat rvec;
     cv::Rodrigues(cvMat(cv::Rect(0, 0, 3, 3)), rvec);
-    data::Matrix4::sptr fwMat = data::Matrix4::New();
+    data::Matrix4::sptr fwMat = std::make_shared<data::Matrix4>();
 
     CPPUNIT_ASSERT_NO_THROW(io::opencv::Matrix::copyFromCv(rvec, tvec, fwMat));
 
@@ -424,7 +424,7 @@ void MatrixTest::copyFromRvecTvec()
 
 void MatrixTest::copyToRvecTvec()
 {
-    data::Matrix4::sptr fwMat = data::Matrix4::New();
+    data::Matrix4::sptr fwMat = std::make_shared<data::Matrix4>();
     cv::Mat expectedRvec      = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
     cv::Mat expectedTvec      = (cv::Mat_<double>(3, 1) << 0., 0., 0.);
     cv::Mat rvec;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Image.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -59,13 +59,13 @@ namespace sight::module::ui::qt::metrics
  * -\b image [data::Image]: Image in which we calculate the distance.
  */
 class MODULE_UI_QT_CLASS_API Distance : public QObject,
-                                        public sight::ui::base::IEditor
+                                        public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(Distance, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(Distance, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API Distance() noexcept;
@@ -77,8 +77,8 @@ public:
      * @name Signal
      * @{
      */
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_DISTANCE_REQUESTED_SIG;
-    typedef core::com::Signal<void ()> DistanceRequestedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t DISTANCE_REQUESTED_SIG;
+    typedef core::com::signal<void ()> DistanceRequestedSignalType;
 /**
  * @}
  */
@@ -88,14 +88,14 @@ protected:
     /**
      * @brief Install the layout.
      *
-     * This method launches the IEditor::starting method.
+     * This method launches the editor::starting method.
      */
     void starting() override;
 
     /**
      * @brief Destroy the layout.
      *
-     * This method launches the IEditor::stopping method.
+     * This method launches the editor::stopping method.
      */
     void stopping() override;
 

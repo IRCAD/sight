@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,18 +43,6 @@ namespace sight::ui::dicom::splitter
 const std::string TagValueConfigurableSplitter::s_FILTER_NAME        = "Tag value configurable splitter";
 const std::string TagValueConfigurableSplitter::s_FILTER_DESCRIPTION =
     "Split instances using a tag value.";
-
-//-----------------------------------------------------------------------------
-
-TagValueConfigurableSplitter::TagValueConfigurableSplitter(filter::dicom::IFilter::Key key) :
-    filter::dicom::splitter::TagValueSplitter(key)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-TagValueConfigurableSplitter::~TagValueConfigurableSplitter()
-= default;
 
 //-----------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 
 #include <QShortcut>
 
@@ -48,16 +48,16 @@ namespace sight::module::ui::qt::com
  * - \b activated(): This signal is emitted when the shortcut is received.
  */
 class MODULE_UI_QT_CLASS_API SSignalShortcut : public QObject,
-                                               public service::IService
+                                               public service::base
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSignalShortcut, service::IService);
+    SIGHT_DECLARE_SERVICE(SSignalShortcut, service::base);
 
     /// Signal emitted when the shortcut is received.
-    typedef core::com::Signal<void ()> ActivatedShortcutSignalType;
+    typedef core::com::signal<void ()> ActivatedShortcutSignalType;
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SSignalShortcut() noexcept;
@@ -67,7 +67,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from service::IService )
+    /** @name Service methods ( override from service::base )
      * @{
      */
 
@@ -98,11 +98,11 @@ private:
     /// string containing the shortcut to trigger
     std::string m_shortcut;
 
-    /// Service id used to get the QtContainer of the activity to set up a shortcut in
+    /// Service id used to get the widget of the activity to set up a shortcut in
     /// Either this member or m_wid has to be specified
     std::string m_sid;
 
-    /// Window id used to get the QtContainer of the activity to set up a shortcut in
+    /// Window id used to get the widget of the activity to set up a shortcut in
     /// Either this member or m_sid has to be specified
     std::string m_wid;
 

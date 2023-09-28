@@ -23,10 +23,10 @@
 #include "modules/ui/qt/calibration/SIntrinsicEdition.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
-#include <core/thread/Worker.hpp>
-#include <core/tools/Object.hpp>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
+#include <core/thread/worker.hpp>
+#include <core/tools/object.hpp>
 
 #include <data/Camera.hpp>
 
@@ -40,7 +40,7 @@ namespace sight::module::ui::qt::calibration
 SIntrinsicEdition::SIntrinsicEdition() :
     m_dialog(new SUpdateIntrinsicDialog())
 {
-    core::com::HasSlots::m_slots.setWorker(this->worker());
+    core::com::has_slots::m_slots.set_worker(this->worker());
 
     QObject::connect(
         m_dialog,
@@ -98,10 +98,10 @@ void SIntrinsicEdition::updateCalibration()
 
     data::Camera::IntrinsicCalibratedSignalType::sptr sig;
     sig = camera->signal<data::Camera::IntrinsicCalibratedSignalType>(
-        data::Camera::s_INTRINSIC_CALIBRATED_SIG
+        data::Camera::INTRINSIC_CALIBRATED_SIG
     );
 
-    sig->asyncEmit();
+    sig->async_emit();
 }
 
 // -------------------------------------------------------------------------

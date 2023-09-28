@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/helper/MedicalImage.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -39,7 +39,7 @@ namespace sight::module::viz::scene3d::adaptor
  * a picking on all scene meshes. This one picks only on an image and computes exactly the intersection between the
  * picking coordinates, and image slices.
  *
- * In 3D mode, it's useless to connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICETYPE_SLOT.
+ * In 3D mode, it's useless to connect data::Image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to SLICETYPE_SLOT.
  * (auto connection to true), it's only used in 2D mode.
  *
  * @section Signals Signals
@@ -69,13 +69,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b moveOnPick (optional, bool, default=false): move image slices indexes on the picked position.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SVoxelPicker final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::interactor::IInteractor
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::interactor::base
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SVoxelPicker, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SVoxelPicker, sight::viz::scene3d::adaptor);
 
     /// Initializes the adaptor.
     MODULE_VIZ_SCENE3D_API SVoxelPicker() noexcept;
@@ -101,9 +101,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICETYPE_SLOT
+     * Connect data::Image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to SLICETYPE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Does nothing.
     MODULE_VIZ_SCENE3D_API void updating() noexcept final;
@@ -160,7 +160,7 @@ private:
     bool m_moveOnPick {false};
 
     /// Defines the signal sent on picking events.
-    core::com::Signal<void(data::tools::PickingInfo)>::sptr m_pickedSig;
+    core::com::signal<void(data::tools::PickingInfo)>::sptr m_pickedSig;
 
     static constexpr std::string_view s_IMAGE_INPUT = "image";
     sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};

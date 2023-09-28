@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ Series::Series(
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Series::sptr& series,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -131,7 +131,7 @@ void Series::readGeneralSeriesModule()
         io::dicom::helper::DicomDataReader::getTagValue<0x0040, 0x0280>(dataset);
     m_object->setCommentsOnThePerformedProcedureStep(performedProcedureComments);
 
-    const data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(m_object);
+    const data::ImageSeries::sptr imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(m_object);
     if(imageSeries)
     {
         const std::string& imageContrastBolusAgent =

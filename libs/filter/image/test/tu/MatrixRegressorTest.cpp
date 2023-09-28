@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,9 +54,9 @@ void MatrixRegressorTest::tearDown()
 
 void MatrixRegressorTest::identityTest()
 {
-    auto id = data::Matrix4::New();
+    auto id = std::make_shared<data::Matrix4>();
 
-    auto matList = data::Vector::New();
+    auto matList = std::make_shared<data::Vector>();
 
     for(int i = 0 ; i < 5 ; ++i)
     {
@@ -93,8 +93,8 @@ void MatrixRegressorTest::identityTest()
 void MatrixRegressorTest::avgTranslationTest()
 {
     data::Matrix4 id;
-    auto trans1 = data::Matrix4::New();
-    auto trans2 = data::Matrix4::New();
+    auto trans1 = std::make_shared<data::Matrix4>();
+    auto trans2 = std::make_shared<data::Matrix4>();
 
     glm::dmat4 t1 = glm::translate(glm::dmat4(1.), glm::dvec3(3, 3, 3));
     glm::dmat4 t2 = glm::translate(glm::dmat4(1.), glm::dvec3(5, 5, 5));
@@ -102,7 +102,7 @@ void MatrixRegressorTest::avgTranslationTest()
     geometry::data::setTF3DFromMatrix(*trans1, t1);
     geometry::data::setTF3DFromMatrix(*trans2, t2);
 
-    auto matList = data::Vector::New();
+    auto matList = std::make_shared<data::Vector>();
 
     matList->push_back(trans1);
     matList->push_back(trans2);
@@ -141,14 +141,14 @@ void MatrixRegressorTest::avgTranslationTest()
 
 void MatrixRegressorTest::avgRotationTest()
 {
-    data::Matrix4::sptr id  = data::Matrix4::New();
-    data::Matrix4::sptr rot = data::Matrix4::New();
+    data::Matrix4::sptr id  = std::make_shared<data::Matrix4>();
+    data::Matrix4::sptr rot = std::make_shared<data::Matrix4>();
 
     glm::dmat4 r1 = glm::rotate(glm::dmat4(1.), glm::pi<double>() / 2., glm::dvec3(0., 0., 1.));
 
     geometry::data::setTF3DFromMatrix(*rot, r1);
 
-    auto matList = data::Vector::New();
+    auto matList = std::make_shared<data::Vector>();
 
     matList->push_back(id);
     matList->push_back(rot);

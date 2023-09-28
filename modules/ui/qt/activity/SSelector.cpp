@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include "SSelector.hpp"
 
-#include <activity/IBuilder.hpp>
-#include <activity/IValidator.hpp>
+#include <activity/builder/base.hpp>
+#include <activity/validator/base.hpp>
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/Activity.hpp>
@@ -41,9 +41,9 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/SelectorDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/selector.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -62,15 +62,15 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType SSelector::s_ACTIVITY_ID_SELECTED_SIG = "activityIDSelected";
-const core::com::Signals::SignalKeyType SSelector::s_LOAD_REQUESTED_SIG       = "loadRequested";
+const core::com::signals::key_t SSelector::ACTIVITY_ID_SELECTED_SIG = "activityIDSelected";
+const core::com::signals::key_t SSelector::LOAD_REQUESTED_SIG       = "loadRequested";
 
 //------------------------------------------------------------------------------
 
 SSelector::SSelector() noexcept
 {
-    newSignal<ActivityIDSelectedSignalType>(s_ACTIVITY_ID_SELECTED_SIG);
-    newSignal<LoadRequestedSignalType>(s_LOAD_REQUESTED_SIG);
+    new_signal<ActivityIDSelectedSignalType>(ACTIVITY_ID_SELECTED_SIG);
+    new_signal<LoadRequestedSignalType>(LOAD_REQUESTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -82,13 +82,13 @@ SSelector::~SSelector() noexcept =
 
 void SSelector::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 
     const auto cfg = this->getConfiguration();
 
     if(cfg.count("filter") == 1)
     {
-        const service::IService::ConfigType& configFilter = cfg.get_child("filter");
+        const service::config_t& configFilter = cfg.get_child("filter");
         SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
         const auto mode = configFilter.get<std::string>("mode");
@@ -112,9 +112,9 @@ void SSelector::configuring()
 
 void SSelector::starting()
 {
-    sight::ui::base::IGuiContainer::create();
+    sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* groupBox = new QGroupBox(tr("Activity"));
 
@@ -134,7 +134,7 @@ void SSelector::starting()
     sight::activity::extension::ActivityInfo infoLoad;
     infoLoad.title = "Load activity";
     infoLoad.icon  =
-        core::runtime::getModuleResourceFilePath("sight::module::ui::icons", "LoadActivity.svg").string();
+        core::runtime::get_module_resource_file_path("sight::module::ui::icons", "LoadActivity.svg").string();
     infoLoad.description = "Load a previously saved activity.";
 
     m_activitiesInfo.insert(m_activitiesInfo.begin(), infoLoad);
@@ -145,7 +145,7 @@ void SSelector::starting()
     const int numRows       = static_cast<int>(std::floor(rows));
     numCols = 2 * numCols + 1;
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     QWidget* const container = qtContainer->getQtContainer();
     container->setObjectName(serviceID);
@@ -233,13 +233,13 @@ void SSelector::onClicked(int id)
 {
     if(id == 0)
     {
-        auto sig = this->signal<LoadRequestedSignalType>(s_LOAD_REQUESTED_SIG);
-        sig->asyncEmit();
+        auto sig = this->signal<LoadRequestedSignalType>(LOAD_REQUESTED_SIG);
+        sig->async_emit();
     }
     else
     {
-        auto sig = this->signal<ActivityIDSelectedSignalType>(s_ACTIVITY_ID_SELECTED_SIG);
-        sig->asyncEmit(m_activitiesInfo[static_cast<std::size_t>(id)].id);
+        auto sig = this->signal<ActivityIDSelectedSignalType>(ACTIVITY_ID_SELECTED_SIG);
+        sig->async_emit(m_activitiesInfo[static_cast<std::size_t>(id)].id);
     }
 }
 

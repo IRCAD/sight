@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
-#include <viz/scene2d/IAdaptor.hpp>
+#include <viz/scene2d/adaptor.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -57,11 +57,11 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b opacity (optional, default=1.0): adaptor opacity (float)
  *    - \b color (optional, default black): color of the axis
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SAxis : public sight::viz::scene2d::IAdaptor
+class MODULE_VIZ_SCENE2D_CLASS_API SAxis : public sight::viz::scene2d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SAxis, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SAxis, sight::viz::scene2d::adaptor);
 
     MODULE_VIZ_SCENE2D_API SAxis() noexcept;
     MODULE_VIZ_SCENE2D_API ~SAxis() noexcept override;
@@ -76,7 +76,7 @@ protected:
     /// Manage the given events
     MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
-    MODULE_VIZ_SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE2D_API connections_t getAutoConnections() const override;
 
 private:
 

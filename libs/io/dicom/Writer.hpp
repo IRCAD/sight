@@ -23,54 +23,53 @@
 
 #include "io/dicom/config.hpp"
 
-#include <core/jobs/Job.hpp>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/progress_adviser.hpp>
 
 #include <data/SeriesSet.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 namespace sight::io::dicom
 {
 
-class IO_DICOM_CLASS_API Writer final : public base::writer::GenericObjectWriter<data::SeriesSet>,
-                                        public core::location::SingleFolder,
-                                        public core::location::SingleFile,
-                                        public core::tools::ProgressAdviser
+class IO_DICOM_CLASS_API Writer final : public io::writer::GenericObjectWriter<data::SeriesSet>,
+                                        public core::location::single_folder,
+                                        public core::location::single_file,
+                                        public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         Writer,
-        base::writer::GenericObjectWriter<data::SeriesSet>,
-        base::writer::factory::New<Writer>
+        io::writer::GenericObjectWriter<data::SeriesSet>,
+        io::writer::factory::make<Writer>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Delete default constructors and assignment operators
-    Writer()                         = delete;
     Writer(const Writer&)            = delete;
     Writer(Writer&&)                 = delete;
     Writer& operator=(const Writer&) = delete;
     Writer& operator=(Writer&&)      = delete;
 
     /// Constructor/Destructor
-    IO_DICOM_API Writer(io::base::writer::IObjectWriter::Key key);
+    IO_DICOM_API Writer();
     IO_DICOM_API ~Writer() noexcept override;
 
     /// Main writing method from GenericObjectWriter
     IO_DICOM_API void write() override;
 
-    /// Return the extension to use, by default, or the one from file set by SingleFile::setFile(), if valid
+    /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid
     /// @return an extension as string
     [[nodiscard]] IO_DICOM_API std::string extension() const override;
 
     /// Set/get the current job
-    IO_DICOM_API core::jobs::IJob::sptr getJob() const override;
-    IO_DICOM_API void setJob(core::jobs::Job::sptr job);
+    IO_DICOM_API core::jobs::base::sptr getJob() const override;
+    IO_DICOM_API void setJob(core::jobs::job::sptr job);
 
     /// Allow to force the use of a cpu backend, even if SIGHT_ENABLE_NVJPEG2K is set.
     /// This can be useful in case of an unit test executed on a machine without GPU.

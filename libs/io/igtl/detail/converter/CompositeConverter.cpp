@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,11 +51,11 @@ CompositeConverter::~CompositeConverter()
 {
     ::igtl::TrackingDataMessage::Pointer trackingMsg = ::igtl::TrackingDataMessage::New();
 
-    data::Composite::csptr composite = data::Composite::dynamicConstCast(src);
+    data::Composite::csptr composite = std::dynamic_pointer_cast<const data::Composite>(src);
     for(const auto& elt : *composite)
     {
         data::Matrix4::csptr transfoMatrix =
-            data::Matrix4::dynamicConstCast(elt.second);
+            std::dynamic_pointer_cast<const data::Matrix4>(elt.second);
         if(transfoMatrix)
         {
             ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
@@ -90,14 +90,14 @@ data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase
 
     SIGHT_THROW_EXCEPTION_IF(io::igtl::detail::exception::Conversion("TrackingDataElements"), nbTrackingElement < 0);
 
-    data::Composite::sptr composite = data::Composite::New();
+    data::Composite::sptr composite = std::make_shared<data::Composite>();
     for(int i = 0 ; i < nbTrackingElement ; ++i)
     {
         ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
         trackingMsg->GetTrackingDataElement(i, trackElement);
         const std::string name = trackElement->GetName();
 
-        data::Matrix4::sptr transfoMatrix = data::Matrix4::New();
+        data::Matrix4::sptr transfoMatrix = std::make_shared<data::Matrix4>();
         (*composite)[name] = transfoMatrix;
 
         ::igtl::Matrix4x4 matrix;
@@ -116,7 +116,7 @@ data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase
 
 //-----------------------------------------------------------------------------
 
-IConverter::sptr CompositeConverter::New()
+base::sptr CompositeConverter::New()
 {
     return std::make_shared<CompositeConverter>();
 }

@@ -25,9 +25,9 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include "ui/base/IGuiContainer.hpp"
+#include "ui/__/service.hpp"
 
-#include <ui/base/IToolBar.hpp>
+#include <ui/__/toolbar.hpp>
 #include <ui/qt/widget/SpeedDial.hpp>
 
 #include <QShortcut>
@@ -62,13 +62,13 @@ namespace sight::module::ui::qt
  *    - animationDuration (int, default=250): The duration, in milliseconds, of the animation when folding/unfolding.
  *  - \<actions\>
  *    - \<action\>
- *      - sid (string, mandatory): The sid of the related IAction.
+ *      - sid (string, mandatory): The sid of the related action.
  *      - name (string, default=""): The name of the button (shown in the tooltip).
  *      - icon (string, mandatory): The icon of the button.
- *      - shortcut (string, default=""): The shortcut associated to the IAction. If unspecified, no shortcuts are
+ *      - shortcut (string, default=""): The shortcut associated to the action. If unspecified, no shortcuts are
  *                                       created.
  */
-class MODULE_UI_QT_CLASS_API SIconSpeedDial : public sight::ui::base::IGuiContainer
+class MODULE_UI_QT_CLASS_API SIconSpeedDial : public sight::ui::service
 {
 public:
 
@@ -82,13 +82,13 @@ public:
         std::string shortcut;
     };
 
-    SIGHT_DECLARE_SERVICE(SIconSpeedDial, sight::ui::base::IGuiContainer);
+    SIGHT_DECLARE_SERVICE(SIconSpeedDial, sight::ui::service);
 
     struct slots
     {
-        static inline const core::com::Slots::key_t s_FOLD           = "fold";
-        static inline const core::com::Slots::key_t s_UNFOLD         = "unfold";
-        static inline const core::com::Slots::key_t s_UPDATE_ACTIONS = "updateActions";
+        static inline const core::com::slots::key_t FOLD           = "fold";
+        static inline const core::com::slots::key_t UNFOLD         = "unfold";
+        static inline const core::com::slots::key_t UPDATE_ACTIONS = "updateActions";
     };
 
     void configuring() override;

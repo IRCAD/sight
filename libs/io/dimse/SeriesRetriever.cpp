@@ -24,9 +24,9 @@
 
 #include "io/dimse/exceptions/RequestFailure.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 #include <core/runtime/path.hpp>
-#include <core/thread/Worker.hpp>
+#include <core/thread/worker.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
@@ -36,7 +36,7 @@
 namespace sight::io::dimse
 {
 
-const core::com::Slots::SlotKeyType SeriesRetriever::s_PROGRESS_CALLBACK_SLOT = "CMoveProgressCallback";
+const core::com::slots::key_t SeriesRetriever::PROGRESS_CALLBACK_SLOT = "CMoveProgressCallback";
 
 // ----------------------------------------------------------------------------
 
@@ -56,14 +56,14 @@ void SeriesRetriever::initialize(
     const std::string& applicationTitle,
     std::uint16_t applicationport,
     int timeout,
-    ProgressCallbackSlotType::sptr progressCallback
+    ProgressCallbackSlotType::sptr progress_callback
 )
 {
     //Callback
-    m_progressCallback = progressCallback;
+    m_progressCallback = progress_callback;
 
     //Creating folder
-    m_path = core::os::TempDir::sharedDirectory() / "dicom/";
+    m_path = core::os::temp_dir::shared_directory() / "dicom/";
     if(!std::filesystem::exists(m_path))
     {
         std::filesystem::create_directories(m_path);
@@ -74,7 +74,7 @@ void SeriesRetriever::initialize(
     this->setPort(applicationport);
 
     // Load configuration
-    std::filesystem::path cfgPath = core::runtime::getLibraryResourceFilePath("io_dimse/storescp.cfg");
+    std::filesystem::path cfgPath = core::runtime::get_library_resource_file_path("io_dimse/storescp.cfg");
     SIGHT_ASSERT("storescp.cfg not found !", std::filesystem::exists(cfgPath));
     this->loadAssociationCfgFile(cfgPath.string().c_str());
     this->setAndCheckAssociationProfile("Default");
@@ -175,7 +175,7 @@ OFCondition SeriesRetriever::handleSTORERequest(
             // Notify callback
             if(m_progressCallback)
             {
-                m_progressCallback->asyncRun(seriesID.c_str(), ++m_instanceIndex, filePath);
+                m_progressCallback->async_run(seriesID.c_str(), ++m_instanceIndex, filePath);
             }
         }
     }

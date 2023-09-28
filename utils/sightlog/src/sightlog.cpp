@@ -25,11 +25,11 @@
 #include <windows.h>
 #endif
 
-#include <core/crypto/Base64.hpp>
+#include <core/crypto/base64.hpp>
 #include <core/crypto/obfuscated_string.hpp>
-#include <core/crypto/PasswordKeeper.hpp>
-#include <core/spyLog.hpp>
-#include <core/tools/System.hpp>
+#include <core/crypto/password_keeper.hpp>
+#include <core/spy_log.hpp>
+#include <core/tools/system.hpp>
 
 #include <io/zip/ArchiveReader.hpp>
 #include <io/zip/ArchiveWriter.hpp>
@@ -101,7 +101,7 @@ inline static void signalHandler([[maybe_unused]] int signal)
 
 inline static void sendPassword(const sight::core::crypto::secure_string& password)
 {
-    const int pid = sight::core::tools::System::getPID();
+    const int pid = sight::core::tools::system::get_pid();
     std::cout.write(reinterpret_cast<const char*>(&pid), sizeof(pid));
 
     const auto password_size = static_cast<std::streamsize>(password.size());
@@ -184,10 +184,10 @@ inline static sight::core::crypto::secure_string getPassword(
     // Try the compiled password
     if(password.empty())
     {
-        if constexpr(sight::core::crypto::PasswordKeeper::has_default_password())
+        if constexpr(sight::core::crypto::password_keeper::has_default_password())
         {
             // Use compiled password
-            password = sight::core::crypto::PasswordKeeper::get_default_password();
+            password = sight::core::crypto::password_keeper::get_default_password();
         }
     }
 
@@ -330,11 +330,11 @@ inline static int extract(
     }
     catch(const sight::io::zip::exception::BadPassword&)
     {
-        if constexpr(sight::core::crypto::PasswordKeeper::has_default_password())
+        if constexpr(sight::core::crypto::password_keeper::has_default_password())
         {
             archive_istream = archive_reader->openFile(
                 sight::core::log::LOG_FILE,
-                sight::core::crypto::PasswordKeeper::get_global_password()
+                sight::core::crypto::password_keeper::get_global_password()
             );
         }
         else
@@ -437,9 +437,9 @@ inline static int merge(
                 }
                 catch(const sight::io::zip::exception::BadPassword&)
                 {
-                    if constexpr(sight::core::crypto::PasswordKeeper::has_default_password())
+                    if constexpr(sight::core::crypto::password_keeper::has_default_password())
                     {
-                        return decrypt(input_path, sight::core::crypto::PasswordKeeper::get_default_password());
+                        return decrypt(input_path, sight::core::crypto::password_keeper::get_default_password());
                     }
 
                     throw;
@@ -519,7 +519,7 @@ int main(int argc, char* argv[])
 
     // Setup own boost::log logger to print stuff on stderr by default
     boost::log::core::get()->remove_all_sinks();
-    sight::core::log::SpyLogger::add_console_log(std::clog, sight::core::log::SpyLogger::SL_WARN);
+    sight::core::log::spy_logger::add_console_log(std::clog, sight::core::log::spy_logger::SL_WARN);
 
     // Register program options
     // Common options

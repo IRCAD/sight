@@ -24,16 +24,16 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signals.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -93,14 +93,14 @@ namespace sight::module::ui::qt::model
  */
 class MODULE_UI_QT_CLASS_API SModelSeriesList final :
     public QObject,
-    public sight::ui::base::IEditor
+    public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SModelSeriesList, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SModelSeriesList, sight::ui::editor);
 
     /// Initializes the slot and signals.
     MODULE_UI_QT_API SModelSeriesList() noexcept;
@@ -120,11 +120,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::ModelSeries::s_MODIFIED_SIG of s_MODEL_SERIES_INOUT to IService::slots::s_UPDATE.
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to IService::slots::s_UPDATE.
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to IService::slots::s_UPDATE.
+     * Connect data::ModelSeries::MODIFIED_SIG of s_MODEL_SERIES_INOUT to service::slots::UPDATE.
+     * Connect data::ModelSeries::RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to service::slots::UPDATE.
+     * Connect data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to service::slots::UPDATE.
      */
-    KeyConnectionsMap getAutoConnections() const final;
+    connections_t getAutoConnections() const final;
 
     /**
      * @brief Refreshes the editor.
@@ -211,15 +211,15 @@ private:
     QStringList m_headers;
 
     /// Contains the signal emitted when a reconstruction is selected.
-    typedef core::com::Signal<void (data::Object::sptr)> ReconstructionSelectedSignalType;
+    typedef core::com::signal<void (data::Object::sptr)> ReconstructionSelectedSignalType;
     ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
 
     /// Contains the signal emitted when we clean the list.
-    typedef core::com::Signal<void ()> EmptiedSelectionSignalType;
+    typedef core::com::signal<void ()> EmptiedSelectionSignalType;
     EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
 
     /// Contains the slot to show (or hide) reconstructions.
-    typedef core::com::Slot<void (bool)> ShowReconstructionsSlotType;
+    typedef core::com::slot<void (bool)> ShowReconstructionsSlotType;
     ShowReconstructionsSlotType::sptr m_slotShowReconstructions;
 
     static constexpr std::string_view s_MODEL_SERIES = "modelSeries";

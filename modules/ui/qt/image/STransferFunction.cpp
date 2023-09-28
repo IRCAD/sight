@@ -22,20 +22,20 @@
 
 #include "modules/ui/qt/image/STransferFunction.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/Composite.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <io/base/service/IReader.hpp>
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/reader.hpp>
+#include <io/__/service/writer.hpp>
 
-#include <service/base.hpp>
+#include <service/op.hpp>
 
-#include <ui/base/dialog/InputDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/input.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QBoxLayout>
 
@@ -54,17 +54,21 @@ static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 
-const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_PRESET_SLOT = "updateDefaultPreset";
-const core::com::Slots::SlotKeyType s_UPDATE_PRESETS_SLOT        = "updatePresets";
+const core::com::slots::key_t UPDATE_DEFAULT_PRESET_SLOT = "updateDefaultPreset";
+const core::com::slots::key_t UPDATE_PRESETS_SLOT        = "updatePresets";
 
 //------------------------------------------------------------------------------
 
 STransferFunction::STransferFunction()
 {
-    newSlot(s_UPDATE_DEFAULT_PRESET_SLOT, &STransferFunction::updateDefaultPreset, this);
-    newSlot(s_UPDATE_PRESETS_SLOT, [this](){STransferFunction::initializePresets();});
+    new_slot(UPDATE_DEFAULT_PRESET_SLOT, &STransferFunction::updateDefaultPreset, this);
+    new_slot(UPDATE_PRESETS_SLOT, [this](){STransferFunction::initializePresets();});
 
-    const std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("sight::module::ui::qt"));
+    const std::filesystem::path modulePath = core::runtime::get_module_resource_path(
+        std::string(
+            "sight::module::ui::qt"
+        )
+    );
 
     m_deleteIcon       = modulePath / "delete.png";
     m_newIcon          = modulePath / "new.png";
@@ -93,7 +97,7 @@ void STransferFunction::configuring()
             const auto additionalTfPath = itCfg->second.get_value<std::string>();
             if(!additionalTfPath.empty())
             {
-                const auto path = core::runtime::getModuleResourceFilePath(additionalTfPath);
+                const auto path = core::runtime::get_module_resource_file_path(additionalTfPath);
                 m_paths.push_back(path);
             }
         }
@@ -107,43 +111,43 @@ void STransferFunction::configuring()
             const auto deleteIconCfg = configAttr->get_optional<std::string>(s_DELETE_ICON_CONFIG);
             if(deleteIconCfg)
             {
-                m_deleteIcon = core::runtime::getModuleResourceFilePath(deleteIconCfg.value());
+                m_deleteIcon = core::runtime::get_module_resource_file_path(deleteIconCfg.value());
             }
 
             const auto newIconCfg = configAttr->get_optional<std::string>(s_NEW_ICON_CONFIG);
             if(newIconCfg)
             {
-                m_newIcon = core::runtime::getModuleResourceFilePath(newIconCfg.value());
+                m_newIcon = core::runtime::get_module_resource_file_path(newIconCfg.value());
             }
 
             const auto copyIconCfg = configAttr->get_optional<std::string>(s_COPY_ICON_CONFIG);
             if(copyIconCfg)
             {
-                m_copyIcon = core::runtime::getModuleResourceFilePath(copyIconCfg.value());
+                m_copyIcon = core::runtime::get_module_resource_file_path(copyIconCfg.value());
             }
 
             const auto reinitializeIconCfg = configAttr->get_optional<std::string>(s_REINITIALIZE_ICON_CONFIG);
             if(reinitializeIconCfg)
             {
-                m_reinitializeIcon = core::runtime::getModuleResourceFilePath(reinitializeIconCfg.value());
+                m_reinitializeIcon = core::runtime::get_module_resource_file_path(reinitializeIconCfg.value());
             }
 
             const auto renameIconCfg = configAttr->get_optional<std::string>(s_RENAME_ICON_CONFIG);
             if(renameIconCfg)
             {
-                m_renameIcon = core::runtime::getModuleResourceFilePath(renameIconCfg.value());
+                m_renameIcon = core::runtime::get_module_resource_file_path(renameIconCfg.value());
             }
 
             const auto importIconCfg = configAttr->get_optional<std::string>(s_IMPORT_ICON_CONFIG);
             if(importIconCfg)
             {
-                m_importIcon = core::runtime::getModuleResourceFilePath(importIconCfg.value());
+                m_importIcon = core::runtime::get_module_resource_file_path(importIconCfg.value());
             }
 
             const auto exportIconCfg = configAttr->get_optional<std::string>(s_EXPORT_ICON_CONFIG);
             if(exportIconCfg)
             {
-                m_exportIcon = core::runtime::getModuleResourceFilePath(exportIconCfg.value());
+                m_exportIcon = core::runtime::get_module_resource_file_path(exportIconCfg.value());
             }
 
             m_iconWidth  = configAttr->get<unsigned int>(s_ICON_WIDTH_CONFIG, m_iconWidth);
@@ -153,7 +157,7 @@ void STransferFunction::configuring()
 
     if(useDefaultPath)
     {
-        const auto pathRoot = core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "tf");
+        const auto pathRoot = core::runtime::get_module_resource_file_path("sight::module::ui::qt", "tf");
         m_paths.push_back(pathRoot);
     }
 }
@@ -165,7 +169,7 @@ void STransferFunction::starting()
     this->create();
 
     // Get the Qt container
-    const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    const auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     // Buttons creation
     m_presetComboBox = new QComboBox();
@@ -263,9 +267,9 @@ void STransferFunction::updating()
     {
         auto tfLock          = data::mt::locked_ptr(newSelectedTF);
         const auto currentTf = m_currentTF.lock();
-        newSelectedTF->deepCopy(currentTf.get_shared());
-        auto sig = newSelectedTF->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        newSelectedTF->deep_copy(currentTf.get_shared());
+        auto sig = newSelectedTF->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+        sig->async_emit();
     }
 }
 
@@ -278,19 +282,19 @@ void STransferFunction::stopping()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
+service::connections_t STransferFunction::getAutoConnections() const
 {
     return {
-        {s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_DEFAULT_PRESET_SLOT},
-        {s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_CURRENT_INPUT, data::TransferFunction::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_CURRENT_INPUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_CURRENT_INPUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_PRESETS_INOUT, data::Composite::s_MODIFIED_SIG, s_UPDATE_PRESETS_SLOT},
-        {s_PRESETS_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_PRESETS_SLOT},
-        {s_PRESETS_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_PRESETS_SLOT},
-        {s_PRESETS_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_PRESETS_SLOT}
+        {s_IMAGE_INPUT, data::Image::MODIFIED_SIG, UPDATE_DEFAULT_PRESET_SLOT},
+        {s_IMAGE_INPUT, data::Image::MODIFIED_SIG, service::slots::UPDATE},
+        {s_IMAGE_INPUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {s_CURRENT_INPUT, data::TransferFunction::MODIFIED_SIG, service::slots::UPDATE},
+        {s_CURRENT_INPUT, data::TransferFunction::POINTS_MODIFIED_SIG, service::slots::UPDATE},
+        {s_CURRENT_INPUT, data::TransferFunction::WINDOWING_MODIFIED_SIG, service::slots::UPDATE},
+        {s_PRESETS_INOUT, data::Composite::MODIFIED_SIG, UPDATE_PRESETS_SLOT},
+        {s_PRESETS_INOUT, data::Composite::ADDED_OBJECTS_SIG, UPDATE_PRESETS_SLOT},
+        {s_PRESETS_INOUT, data::Composite::CHANGED_OBJECTS_SIG, UPDATE_PRESETS_SLOT},
+        {s_PRESETS_INOUT, data::Composite::REMOVED_OBJECTS_SIG, UPDATE_PRESETS_SLOT}
     };
 }
 
@@ -327,7 +331,7 @@ std::string STransferFunction::createPresetName(
 
 void STransferFunction::initializePresets(const std::string& _currentPresetName)
 {
-    m_tfPresets = sight::data::Composite::New();
+    m_tfPresets = std::make_shared<sight::data::Composite>();
     std::string currentPresetName = _currentPresetName;
 
     {
@@ -336,7 +340,7 @@ void STransferFunction::initializePresets(const std::string& _currentPresetName)
         if(optPresets != nullptr)
         {
             // If we specify the presets, use the internal map to save initial state
-            m_tfPresets->deepCopy(optPresets.get_shared());
+            m_tfPresets->deep_copy(optPresets.get_shared());
 
             if(presets.find(currentPresetName) == presets.end())
             {
@@ -357,7 +361,7 @@ void STransferFunction::initializePresets(const std::string& _currentPresetName)
                         data::TransferFunction::createDefaultTF(image->getType());
 
                     const auto scoped_emitter = presets.scoped_emit();
-                    scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
+                    scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
                     presets[defaultTFName] = defaultTf;
                 }
             }
@@ -366,9 +370,11 @@ void STransferFunction::initializePresets(const std::string& _currentPresetName)
             if(presets.size() <= 1)
             {
                 // Creates the TF reader.
-                const auto tf       = data::TransferFunction::New();
-                const auto tfReader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
-                tfReader->setInOut(tf, io::base::service::s_DATA_KEY);
+                const auto tf       = std::make_shared<data::TransferFunction>();
+                const auto tfReader = sight::service::add<io::service::reader>(
+                    "sight::module::io::session::SReader"
+                );
+                tfReader->setInOut(tf, io::service::s_DATA_KEY);
 
                 // Parse all paths contained in m_path and read basic TF.
                 for(const std::filesystem::path& dirPath : m_paths)
@@ -383,7 +389,7 @@ void STransferFunction::initializePresets(const std::string& _currentPresetName)
                             const std::filesystem::path file = *it;
 
                             // Add a new composite for each TF path.
-                            service::IService::ConfigType config;
+                            service::config_t config;
                             config.put("file", file.string());
                             config.put("archive.<xmlattr>.format", "filesystem");
 
@@ -409,7 +415,7 @@ void STransferFunction::initializePresets(const std::string& _currentPresetName)
                 }
 
                 // Delete the reader.
-                service::remove(tfReader);
+                sight::service::remove(tfReader);
             }
         }
 
@@ -431,7 +437,8 @@ void STransferFunction::initializePresets(const std::string& _currentPresetName)
             {
                 for(const auto& elt : presets)
                 {
-                    if(sight::data::TransferFunction::dynamicCast(elt.second)->name() == currentTfPreset->name())
+                    if(std::dynamic_pointer_cast<sight::data::TransferFunction>(elt.second)->name()
+                       == currentTfPreset->name())
                     {
                         currentPresetName = elt.first;
                         break;
@@ -480,10 +487,10 @@ void STransferFunction::setCurrentPreset()
     const auto currentTf = m_currentTF.lock();
     if(newSelectedTF && newSelectedTF->name() != currentTf->name())
     {
-        currentTf->deepCopy(newSelectedTF);
-        auto sig = currentTf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        currentTf->deep_copy(newSelectedTF);
+        auto sig = currentTf->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 
@@ -501,9 +508,9 @@ void STransferFunction::updateDefaultPreset()
         (*m_tfPresets)[defaultTFName] = defaultTf;
 
         const auto currentTf = m_currentTF.lock();
-        currentTf->deepCopy(defaultTf);
-        auto sig = currentTf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        currentTf->deep_copy(defaultTf);
+        auto sig = currentTf->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+        sig->async_emit();
     }
 }
 
@@ -513,24 +520,24 @@ void STransferFunction::deletePreset()
 {
     if(m_presetComboBox->count() < 2)
     {
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Delete error");
         messageBox.setMessage("Transfer function cannot be deleted, at least one transfer function is required.");
-        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(sight::ui::dialog::message::WARNING);
+        messageBox.addButton(sight::ui::dialog::message::OK);
         messageBox.show();
         return;
     }
 
-    sight::ui::base::dialog::MessageDialog messageBox;
+    sight::ui::dialog::message messageBox;
     messageBox.setTitle("Delete confirmation");
     messageBox.setMessage("Are you sure you want to delete this TF preset ?");
-    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::QUESTION);
-    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
-    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
-    sight::ui::base::dialog::IMessageDialog::Buttons answerCopy = messageBox.show();
+    messageBox.setIcon(sight::ui::dialog::message::QUESTION);
+    messageBox.addButton(sight::ui::dialog::message::OK);
+    messageBox.addButton(sight::ui::dialog::message::CANCEL);
+    sight::ui::dialog::message::Buttons answerCopy = messageBox.show();
 
-    if(answerCopy != sight::ui::base::dialog::IMessageDialog::CANCEL)
+    if(answerCopy != sight::ui::dialog::message::CANCEL)
     {
         const int index = std::max(m_presetComboBox->currentIndex() - 1, 0);
         {
@@ -540,7 +547,7 @@ void STransferFunction::deletePreset()
             sight::data::Composite& presets       = (optPresets != nullptr) ? *optPresets : *m_tfPresets;
 
             const auto scoped_emitter = presets.scoped_emit();
-            scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
+            scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
 
             presets.erase(selectedTFPresetKey);
 
@@ -557,11 +564,11 @@ void STransferFunction::deletePreset()
 void STransferFunction::createPreset()
 {
     const auto& oldName = m_presetComboBox->currentText().toStdString();
-    sight::ui::base::dialog::InputDialog inputDialog;
-    inputDialog.setTitle("Create new transfer function");
-    inputDialog.setMessage("Enter transfer function name :");
-    inputDialog.setInput(oldName);
-    const auto& [newName, ok] = inputDialog.getInput();
+    sight::ui::dialog::input input;
+    input.setTitle("Create new transfer function");
+    input.setMessage("Enter transfer function name :");
+    input.setInput(oldName);
+    const auto& [newName, ok] = input.getInput();
 
     if(!ok)
     {
@@ -586,7 +593,7 @@ void STransferFunction::createPreset()
                 defaultTf->setName(newName);
 
                 const auto scoped_emitter = presets.scoped_emit();
-                scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
+                scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
                 presets[newName] = defaultTf;
 
                 // Recreates presets.
@@ -598,11 +605,11 @@ void STransferFunction::createPreset()
             }
             else
             {
-                sight::ui::base::dialog::MessageDialog messageBox;
+                sight::ui::dialog::message messageBox;
                 messageBox.setTitle("Warning");
                 messageBox.setMessage("This TF preset name already exists so you can not overwrite it.");
-                messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
-                messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+                messageBox.setIcon(sight::ui::dialog::message::WARNING);
+                messageBox.addButton(sight::ui::dialog::message::OK);
                 messageBox.show();
                 return;
             }
@@ -619,11 +626,11 @@ void STransferFunction::copyPreset()
 {
     const auto& oldName = m_presetComboBox->currentText().toStdString();
 
-    sight::ui::base::dialog::InputDialog inputDialog;
-    inputDialog.setTitle("Copy transfer function");
-    inputDialog.setMessage("Enter new transfer function name:");
-    inputDialog.setInput(oldName);
-    const auto& [newName, ok] = inputDialog.getInput();
+    sight::ui::dialog::input input;
+    input.setTitle("Copy transfer function");
+    input.setMessage("Enter new transfer function name:");
+    input.setInput(oldName);
+    const auto& [newName, ok] = input.getInput();
 
     if(!ok)
     {
@@ -638,11 +645,11 @@ void STransferFunction::copyPreset()
             // Gets TF presets.
             if(this->hasPresetName(presets, newName))
             {
-                sight::ui::base::dialog::MessageDialog messageBox;
+                sight::ui::dialog::message messageBox;
                 messageBox.setTitle("Error");
                 messageBox.setMessage("This preset name already exists, please choose another one.");
-                messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
-                messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+                messageBox.setIcon(sight::ui::dialog::message::WARNING);
+                messageBox.addButton(sight::ui::dialog::message::OK);
                 messageBox.show();
                 return;
             }
@@ -655,7 +662,7 @@ void STransferFunction::copyPreset()
             tf->setName(newName);
 
             const auto scoped_emitter = presets.scoped_emit();
-            scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
+            scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
             presets[newName] = tf;
 
             // Recreates presets.
@@ -670,11 +677,11 @@ void STransferFunction::copyPreset()
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Error");
         messageBox.setMessage("No preset name specified.");
-        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(sight::ui::dialog::message::WARNING);
+        messageBox.addButton(sight::ui::dialog::message::OK);
         messageBox.show();
     }
 }
@@ -692,8 +699,8 @@ void STransferFunction::reinitializePresets()
         {
             // If we specify the presets, restore the initial state from the internal map
             const auto scoped_emitter = optPresets->scoped_emit();
-            scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
-            optPresets->deepCopy(m_tfPresets);
+            scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
+            optPresets->deep_copy(m_tfPresets);
         }
     }
     m_tfPresets->clear();
@@ -708,11 +715,11 @@ void STransferFunction::renamePreset()
 {
     const auto& oldName = m_presetComboBox->currentText().toStdString();
 
-    sight::ui::base::dialog::InputDialog inputDialog;
-    inputDialog.setTitle("Rename transfer function preset");
-    inputDialog.setMessage("Enter new name:");
-    inputDialog.setInput(oldName);
-    const auto& [newName, ok] = inputDialog.getInput();
+    sight::ui::dialog::input input;
+    input.setTitle("Rename transfer function preset");
+    input.setMessage("Enter new name:");
+    input.setInput(oldName);
+    const auto& [newName, ok] = input.getInput();
 
     if(!ok)
     {
@@ -744,11 +751,11 @@ void STransferFunction::renamePreset()
             }
             else
             {
-                sight::ui::base::dialog::MessageDialog messageBox;
+                sight::ui::dialog::message messageBox;
                 messageBox.setTitle("Warning");
                 messageBox.setMessage("This TF preset name already exists so you can not overwrite it.");
-                messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
-                messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+                messageBox.setIcon(sight::ui::dialog::message::WARNING);
+                messageBox.addButton(sight::ui::dialog::message::OK);
                 messageBox.show();
                 return;
             }
@@ -763,13 +770,13 @@ void STransferFunction::renamePreset()
 
 void STransferFunction::importPreset()
 {
-    const auto newTF = data::TransferFunction::New();
+    const auto newTF = std::make_shared<data::TransferFunction>();
 
-    const auto reader = service::add<io::base::service::IReader>("sight::module::io::session::SReader");
+    const auto reader = sight::service::add<io::service::reader>("sight::module::io::session::SReader");
 
-    reader->setInOut(newTF, io::base::service::s_DATA_KEY);
+    reader->setInOut(newTF, io::service::s_DATA_KEY);
 
-    service::IService::ConfigType config;
+    service::config_t config;
     config.put("dialog.<xmlattr>.extension", ".tf");
     config.put("dialog.<xmlattr>.description", "Transfer Function Preset");
     config.put("archive.<xmlattr>.format", "filesystem");
@@ -794,7 +801,7 @@ void STransferFunction::importPreset()
             }
 
             const auto scoped_emitter = presets.scoped_emit();
-            scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
+            scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
             presets[presetName] = newTF;
             newTF->setName(presetName);
 
@@ -806,20 +813,20 @@ void STransferFunction::importPreset()
     }
 
     reader->stop().wait();
-    service::remove(reader);
+    sight::service::remove(reader);
 }
 
 //------------------------------------------------------------------------------
 
 void STransferFunction::exportPreset()
 {
-    const auto writer = service::add<io::base::service::IWriter>("sight::module::io::session::SWriter");
+    const auto writer = sight::service::add<io::service::writer>("sight::module::io::session::SWriter");
     {
         const auto currentTf = m_currentTF.const_lock();
-        writer->setInput(currentTf.get_shared(), io::base::service::s_DATA_KEY);
+        writer->setInput(currentTf.get_shared(), io::service::s_DATA_KEY);
     }
 
-    service::IService::ConfigType config;
+    service::config_t config;
     config.add("dialog.<xmlattr>.extension", ".tf");
     config.add("dialog.<xmlattr>.description", "Transfer Function Preset");
     config.put("archive.<xmlattr>.format", "filesystem");
@@ -829,7 +836,7 @@ void STransferFunction::exportPreset()
     writer->openLocationDialog();
     writer->update().wait();
     writer->stop().wait();
-    service::remove(writer);
+    sight::service::remove(writer);
 }
 
 //------------------------------------------------------------------------------

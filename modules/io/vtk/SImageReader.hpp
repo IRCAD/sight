@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/vtk/config.hpp" // Declaration of class and function export
 
-#include <io/base/service/IReader.hpp> // Definition of abstract reader class
+#include <io/__/service/reader.hpp> // Definition of abstract reader class
 
 #include <filesystem> // Used to save the file system path of loaded image
 
@@ -39,7 +39,7 @@ class Image;
 namespace sight::core::jobs
 {
 
-class IJob;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -50,7 +50,7 @@ namespace sight::module::io::vtk
  * @brief Service reading a VTK Image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is loading (it should be
  * connected to a SJobBar).
  *
  * @section Slots Slots
@@ -70,16 +70,16 @@ namespace sight::module::io::vtk
  * - \b file (optional): path of the image to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API SImageReader : public sight::io::base::service::IReader
+class MODULE_IO_VTK_CLASS_API SImageReader : public sight::io::service::reader
 {
 public:
 
     ~SImageReader() noexcept override =
         default;
 
-    SIGHT_DECLARE_SERVICE(SImageReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SImageReader, sight::io::service::reader);
 
-    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
 
     /**
      * @brief Configure the image path with a dialogBox.
@@ -107,7 +107,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::service::IOPathType getIOPathType() const override;
 
     /// Method called when the service is started, does nothing.
     MODULE_IO_VTK_API void starting() override;

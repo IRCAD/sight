@@ -5,7 +5,7 @@ add_dependencies(
     sightrun
     data
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_viz_scene3d
     module_viz_scene3dQt
@@ -14,7 +14,7 @@ add_dependencies(
     module_io_vtk
 )
 
-target_link_libraries(Tuto13MeshGeneratorCpp PUBLIC data geometry_data service ui_base)
+target_link_libraries(Tuto13MeshGeneratorCpp PUBLIC data geometry_data service ui)
 
 # Allow dark theme via module_ui_qt
 module_param(

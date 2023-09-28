@@ -8,14 +8,14 @@
     <config>
         <object uid="seriesSet" type="sight::data::SeriesSet" />
 
-        <service uid="action_open" type="sight::module::ui::base::series::SDBMerger">
+        <service uid="action_open" type="sight::module::ui::series::SDBMerger">
             <inout key="seriesSet" uid="seriesSet" />
             <IOSelectorSrvConfig name="SDBSessionReaderIOSelectorConfig" />
         </service>
-        <service uid="action_save" type="sight::module::ui::base::com::SStarter">
+        <service uid="action_save" type="sight::module::ui::com::SStarter">
             <start uid="SDBWriter" />
         </service>
-        <service uid="SDBWriter" type="sight::module::ui::base::io::SSelector">
+        <service uid="SDBWriter" type="sight::module::ui::io::SSelector">
             <inout key="data" uid="seriesSet" />
             <type mode="writer" />
             <selection mode="include" />
@@ -23,7 +23,7 @@
             <config id="SightDataConfig" service="sight::module::io::session::SWriter" />
         </service>
 
-        <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+        <service uid="mainFrame" type="sight::module::ui::SFrame">
             <gui>
                 <frame>
                     <name>${appName}</name>
@@ -39,7 +39,7 @@
             </registry>
         </service>
 
-        <service uid="menuBar" type="sight::module::ui::base::SMenuBar">
+        <service uid="menuBar" type="sight::module::ui::SMenuBar">
             <gui>
                 <layout>
                     <menu name="File" />
@@ -54,7 +54,7 @@
             </registry>
         </service>
 
-        <service uid="menu_file" type="sight::module::ui::base::SMenu">
+        <service uid="menu_file" type="sight::module::ui::SMenu">
             <gui>
                 <layout>
                     <menuItem name="Open" shortcut="Ctrl+O" />
@@ -69,7 +69,7 @@
             </registry>
         </service>
 
-        <service uid="menu_preferences" type="sight::module::ui::base::SMenu">
+        <service uid="menu_preferences" type="sight::module::ui::SMenu">
             <gui>
                 <layout>
                     <menuItem name="Preferences configuration"/>
@@ -80,7 +80,7 @@
             </registry>
         </service>
 
-        <service uid="menu_help" type="sight::module::ui::base::SMenu">
+        <service uid="menu_help" type="sight::module::ui::SMenu">
             <gui>
                 <layout>
                     <menuItem name="About" specialAction="ABOUT" />
@@ -91,7 +91,7 @@
             </registry>
         </service>
 
-        <service uid="action_quit" type="sight::module::ui::base::SQuit" />
+        <service uid="action_quit" type="sight::module::ui::SQuit" />
 
         <service uid="action_configuration" type="sight::module::ui::qt::SPreferencesConfiguration">
             <preference>
@@ -131,7 +131,7 @@
             </parameters>
         </service>
 
-        <service uid="progress_statusbar" type="sight::module::ui::base::SJobBar" />
+        <service uid="progress_statusbar" type="sight::module::ui::SJobBar" />
 
          <service uid="qtSelector" type="sight::module::ui::qt::SStyleSelector" />
 

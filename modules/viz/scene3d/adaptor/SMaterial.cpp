@@ -25,8 +25,8 @@
 #include "modules/viz/scene3d/adaptor/SShaderParameter.hpp"
 #include "modules/viz/scene3d/adaptor/STexture.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Composite.hpp>
 #include <data/helper/Field.hpp>
@@ -37,8 +37,8 @@
 #include <service/op/Add.hpp>
 #include <service/op/Get.hpp>
 
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/helper/Shading.hpp>
-#include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/Material.hpp>
 #include <viz/scene3d/Utils.hpp>
 
@@ -47,10 +47,10 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::Slots::SlotKeyType SMaterial::s_UPDATE_FIELD_SLOT   = "updateField";
-const core::com::Slots::SlotKeyType SMaterial::s_SWAP_TEXTURE_SLOT   = "swapTexture";
-const core::com::Slots::SlotKeyType SMaterial::s_ADD_TEXTURE_SLOT    = "addTexture";
-const core::com::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeTexture";
+const core::com::slots::key_t SMaterial::UPDATE_FIELD_SLOT   = "updateField";
+const core::com::slots::key_t SMaterial::SWAP_TEXTURE_SLOT   = "swapTexture";
+const core::com::slots::key_t SMaterial::ADD_TEXTURE_SLOT    = "addTexture";
+const core::com::slots::key_t SMaterial::REMOVE_TEXTURE_SLOT = "removeTexture";
 
 const std::string SMaterial::s_MATERIAL_INOUT = "material";
 
@@ -58,10 +58,10 @@ const std::string SMaterial::s_MATERIAL_INOUT = "material";
 
 SMaterial::SMaterial() noexcept
 {
-    newSlot(s_UPDATE_FIELD_SLOT, &SMaterial::updateField, this);
-    newSlot(s_SWAP_TEXTURE_SLOT, &SMaterial::swapTexture, this);
-    newSlot(s_ADD_TEXTURE_SLOT, &SMaterial::createTextureAdaptor, this);
-    newSlot(s_REMOVE_TEXTURE_SLOT, &SMaterial::removeTextureAdaptor, this);
+    new_slot(UPDATE_FIELD_SLOT, &SMaterial::updateField, this);
+    new_slot(SWAP_TEXTURE_SLOT, &SMaterial::swapTexture, this);
+    new_slot(ADD_TEXTURE_SLOT, &SMaterial::createTextureAdaptor, this);
+    new_slot(REMOVE_TEXTURE_SLOT, &SMaterial::removeTextureAdaptor, this);
 
     m_representationDict["SURFACE"]   = data::Material::SURFACE;
     m_representationDict["POINT"]     = data::Material::POINT;
@@ -84,7 +84,7 @@ void SMaterial::configuring()
     static const std::string s_REPRESENTATION_MODE_CONFIG    = s_CONFIG + "representationMode";
 
     m_materialTemplateName = config.get(s_MATERIAL_TEMPLATE_NAME_CONFIG, m_materialTemplateName);
-    m_materialName         = config.get(s_MATERIAL_NAME_CONFIG, this->getID());
+    m_materialName         = config.get(s_MATERIAL_NAME_CONFIG, this->get_id());
     m_textureName          = config.get(s_TEXTURE_NAME_CONFIG, m_textureName);
     m_shadingMode          = config.get(s_SHADING_MODE_CONFIG, m_shadingMode);
     m_representationMode   = config.get(s_REPRESENTATION_MODE_CONFIG, m_representationMode);
@@ -112,7 +112,7 @@ void SMaterial::configure(
     const std::string& _template
 )
 {
-    this->setID(_id);
+    this->set_id(_id);
     this->setMaterialName(_name);
     this->setRenderService(_service);
     this->setLayerID(_layer);
@@ -148,7 +148,7 @@ void SMaterial::starting()
 
         m_materialFw = std::make_unique<sight::viz::scene3d::Material>(m_materialName, m_materialTemplateName);
 
-        data::String::sptr string = data::String::New();
+        data::String::sptr string = std::make_shared<data::String>();
         string->setValue(m_materialTemplateName);
 
         data::helper::Field helper(material.get_shared());
@@ -174,9 +174,9 @@ void SMaterial::starting()
 
         m_textureConnection.connect(
             m_texAdaptor,
-            module::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG,
-            this->getSptr(),
-            module::viz::scene3d::adaptor::SMaterial::s_SWAP_TEXTURE_SLOT
+            module::viz::scene3d::adaptor::STexture::TEXTURE_SWAPPED_SIG,
+            this->get_sptr(),
+            module::viz::scene3d::adaptor::SMaterial::SWAP_TEXTURE_SLOT
         );
 
         if(m_texAdaptor->isStarted())
@@ -199,14 +199,14 @@ void SMaterial::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
+service::connections_t SMaterial::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
-    connections.push(s_MATERIAL_INOUT, data::Material::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
-    connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT);
-    connections.push(s_MATERIAL_INOUT, data::Material::s_REMOVED_TEXTURE_SIG, s_REMOVE_TEXTURE_SLOT);
+    service::connections_t connections;
+    connections.push(s_MATERIAL_INOUT, data::Material::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_MATERIAL_INOUT, data::Material::ADDED_FIELDS_SIG, UPDATE_FIELD_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::CHANGED_FIELDS_SIG, UPDATE_FIELD_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::ADDED_TEXTURE_SIG, ADD_TEXTURE_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::REMOVED_TEXTURE_SIG, REMOVE_TEXTURE_SLOT);
     return connections;
 }
 
@@ -274,8 +274,8 @@ void SMaterial::createShaderParameterAdaptors()
                                               == Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
                                                                             :
                                               "geometry";
-            const core::tools::fwID::IDType id =
-                std::string(this->getID()) + "_" + shaderTypeStr + "-" + constantName;
+            const core::tools::id::type id =
+                std::string(this->get_id()) + "_" + shaderTypeStr + "-" + constantName;
 
             // Creates an Ogre adaptor and associates it with the Sight object
             auto srv =
@@ -288,7 +288,7 @@ void SMaterial::createShaderParameterAdaptors()
             // Naming convention for shader parameters
             srv->setRenderService(this->getRenderService());
 
-            service::IService::ConfigType config;
+            service::config_t config;
             config.add("config.<xmlattr>.parameter", constantName);
             config.add("config.<xmlattr>.shaderType", shaderTypeStr);
             config.add("config.<xmlattr>.materialName", m_materialName);
@@ -303,7 +303,7 @@ void SMaterial::createShaderParameterAdaptors()
 
             data::Composite::sptr composite = materialData->setDefaultField(
                 "shaderParameters",
-                data::Composite::New()
+                std::make_shared<data::Composite>()
             );
             (*composite)[constantName] = obj;
         }
@@ -353,7 +353,7 @@ void SMaterial::updateField(data::Object::FieldsContainerType _fields)
             {
                 const auto material = m_materialData.lock();
 
-                data::String::csptr string = data::String::dynamicCast(elt.second);
+                data::String::csptr string = std::dynamic_pointer_cast<data::String>(elt.second);
                 if(string->value() == m_materialTemplateName)
                 {
                     // Avoid useless update if this is the same template material
@@ -425,18 +425,18 @@ void SMaterial::createTextureAdaptor()
         );
         m_texAdaptor->setInput(texture, "image", true);
 
-        m_texAdaptor->setID(this->getID() + "_" + m_texAdaptor->getID());
+        m_texAdaptor->set_id(this->get_id() + "_" + m_texAdaptor->get_id());
         m_texAdaptor->setRenderService(this->getRenderService());
         m_texAdaptor->setLayerID(m_layerID);
 
-        const std::string materialName = material->getID();
+        const std::string materialName = material->get_id();
         m_texAdaptor->setTextureName(materialName + "_Texture");
 
         m_textureConnection.connect(
             m_texAdaptor,
-            module::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG,
-            this->getSptr(),
-            module::viz::scene3d::adaptor::SMaterial::s_SWAP_TEXTURE_SLOT
+            module::viz::scene3d::adaptor::STexture::TEXTURE_SWAPPED_SIG,
+            this->get_sptr(),
+            module::viz::scene3d::adaptor::SMaterial::SWAP_TEXTURE_SLOT
         );
 
         m_texAdaptor->start();

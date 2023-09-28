@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,17 +46,6 @@ const std::string ImagePositionPatientSorter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSorter::ImagePositionPatientSorter(filter::dicom::IFilter::Key /*unused*/)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-ImagePositionPatientSorter::~ImagePositionPatientSorter()
-= default;
-
-//-----------------------------------------------------------------------------
-
 std::string ImagePositionPatientSorter::getName() const
 {
     return ImagePositionPatientSorter::s_FILTER_NAME;
@@ -73,22 +62,22 @@ std::string ImagePositionPatientSorter::getDescription() const
 
 ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 ) const
 {
     DicomSeriesContainerType result;
 
-    using SortedDicomMapType = std::map<double, core::memory::BufferObject::sptr>;
+    using SortedDicomMapType = std::map<double, core::memory::buffer_object::sptr>;
     SortedDicomMapType sortedDicom;
 
     OFCondition status;
 
     for(const auto& item : series->getDicomContainer())
     {
-        const core::memory::BufferObject::sptr bufferObj = item.second;
-        const std::size_t buffSize                       = bufferObj->getSize();
-        core::memory::BufferObject::Lock lock(bufferObj);
-        char* buffer = static_cast<char*>(lock.getBuffer());
+        const core::memory::buffer_object::sptr bufferObj = item.second;
+        const std::size_t buffSize                        = bufferObj->size();
+        core::memory::buffer_object::lock_t lock(bufferObj);
+        char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
         is.setBuffer(buffer, offile_off_t(buffSize));
@@ -99,7 +88,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
         if(!fileFormat.read(is).good())
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << item.first << "')"
             );
         }
@@ -114,7 +103,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
             const std::string msg =
                 "Unable to split the series using ImagePositionPatient and ImageOrientationPatient. "
                 "Tag(s) missing.";
-            throw filter::dicom::exceptions::FilterFailure(msg);
+            throw sight::filter::dicom::exceptions::FilterFailure(msg);
         }
 
         fwVec3d imagePosition;
@@ -146,7 +135,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
             "Unable to sort the series using the ImagePositionPatient tag. Some images have the same "
             "position meaning this series contains multiple volumes. Try to split the volumes using a different "
             "filter.";
-        throw filter::dicom::exceptions::FilterFailure(msg);
+        throw sight::filter::dicom::exceptions::FilterFailure(msg);
     }
 
     series->clearDicomContainer();

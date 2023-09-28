@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/matrix/config.hpp"
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <filesystem>
 
@@ -46,16 +46,16 @@ namespace sight::module::io::matrix
  * @subsection In-Out In-Out
  * - \b data [sight::data::Matrix4]: matrix to read.
  */
-class MODULE_IO_MATRIX_CLASS_API Matrix4ReaderService : public sight::io::base::service::IReader
+class MODULE_IO_MATRIX_CLASS_API Matrix4ReaderService : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(Matrix4ReaderService, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(Matrix4ReaderService, sight::io::service::reader);
 
     /// Super class of reader services
-    typedef sight::io::base::service::IReader SuperClass;
+    typedef sight::io::service::reader SuperClass;
 
-    /** @name Specified reader service methods ( override from sight::io::base::service::IReader )
+    /** @name Specified reader service methods ( override from sight::io::service::reader )
      * @{
      */
 
@@ -74,38 +74,38 @@ public:
     /// @}
 
     /// Return path type managed by the service, here FILE
-    MODULE_IO_MATRIX_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_MATRIX_API sight::io::service::IOPathType getIOPathType() const override;
 
 protected:
 
-    /** @name Service methods ( override from service::IService )
+    /** @name Service methods ( override from service::base )
      * @{
      */
 
     /**
-     * @brief Starting method. This method is called by start() from base service ( service::IService )
+     * @brief Starting method. This method is called by start() from base service ( service::base )
      *
      * This method is used to initialize the service. The starting method is empty for this service.
      */
     MODULE_IO_MATRIX_API void starting() override;
 
     /**
-     * @brief Stopping method. This method is called by stop() from base service ( service::IService )
+     * @brief Stopping method. This method is called by stop() from base service ( service::base )
      *
      * The stopping method is empty for this service.
      */
     MODULE_IO_MATRIX_API void stopping() override;
 
     /**
-     * @brief Configuring method : calls implementation from `io::IReader`
+     * @brief Configuring method : calls implementation from `io::reader`
      */
     MODULE_IO_MATRIX_API void configuring() override;
 
     /**
-     * @brief Updating method. This method is called by update() from base service ( service::IService )
+     * @brief Updating method. This method is called by update() from base service ( service::base )
      *
      * This method is used to update the service.
-     * The transformation matrix is read with the reader io::base::reader::Matrix4Reader.
+     * The transformation matrix is read with the reader io::reader::Matrix4Reader.
      * Notify reading.
      */
     MODULE_IO_MATRIX_API void updating() override;

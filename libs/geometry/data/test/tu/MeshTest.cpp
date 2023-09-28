@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ void MeshTest::colorizePointsTest()
         const std::uint8_t B = 33;
         const std::uint8_t A = 63;
 
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
@@ -105,7 +105,7 @@ void MeshTest::colorizePointsTest()
         const std::uint8_t B = 34;
         const std::uint8_t A = 124;
 
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
@@ -170,7 +170,7 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t G = 55;
         const std::uint8_t B = 3;
 
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
@@ -202,7 +202,7 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t B = 33;
         const std::uint8_t A = 63;
 
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
@@ -233,7 +233,7 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t G = 55;
         const std::uint8_t B = 3;
 
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
@@ -282,7 +282,7 @@ void MeshTest::colorizeCellsTest()
         const std::uint8_t B = 75;
         const std::uint8_t A = 55;
 
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         mesh->resize(
@@ -359,7 +359,7 @@ void MeshTest::transformTest()
 
     // Points only
     {
-        sight::data::Mesh::sptr in = sight::data::Mesh::New();
+        sight::data::Mesh::sptr in = std::make_shared<sight::data::Mesh>();
         const auto inLock          = in->dump_lock();
         in->pushPoint(1, 2, 3);
         in->pushPoint(4, 5, 6);
@@ -379,7 +379,7 @@ void MeshTest::transformTest()
 
     // Points + Point normals
     {
-        sight::data::Mesh::sptr in = sight::data::Mesh::New();
+        sight::data::Mesh::sptr in = std::make_shared<sight::data::Mesh>();
         in->reserve(3, 1, sight::data::Mesh::CellType::POINT, sight::data::Mesh::Attributes::POINT_NORMALS);
         const auto inLock = in->dump_lock();
         auto id           = in->pushPoint(1, 2, 3);
@@ -408,7 +408,7 @@ void MeshTest::transformTest()
 
     // Points + Cell normals
     {
-        sight::data::Mesh::sptr in = sight::data::Mesh::New();
+        sight::data::Mesh::sptr in = std::make_shared<sight::data::Mesh>();
         in->reserve(3, 3, sight::data::Mesh::CellType::POINT, sight::data::Mesh::Attributes::CELL_NORMALS);
         const auto inLock = in->dump_lock();
         auto idP          = in->pushPoint(1, 2, 3);
@@ -440,7 +440,7 @@ void MeshTest::transformTest()
 
     // Points + All normals
     {
-        sight::data::Mesh::sptr in = sight::data::Mesh::New();
+        sight::data::Mesh::sptr in = std::make_shared<sight::data::Mesh>();
         in->reserve(
             3,
             3,
@@ -488,7 +488,7 @@ void MeshTest::transformTest()
 void MeshTest::isClosedTest()
 {
     {
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         utestData::generator::Mesh::generateTriangleMesh(mesh);
 
         const bool isClosed = geometry::data::Mesh::isClosed(mesh);
@@ -497,7 +497,7 @@ void MeshTest::isClosedTest()
     }
 
     {
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         utestData::generator::Mesh::generateQuadMesh(mesh);
 
         const bool isClosed = geometry::data::Mesh::isClosed(mesh);
@@ -506,7 +506,7 @@ void MeshTest::isClosedTest()
     }
 
     {
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         utestData::generator::Mesh::generateTriangleQuadMesh(mesh);
 
         const bool isClosed = geometry::data::Mesh::isClosed(mesh);
@@ -515,7 +515,7 @@ void MeshTest::isClosedTest()
     }
 
     {
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         const auto dumpLock          = mesh->dump_lock();
 
         mesh->pushPoint(0.F, 0.F, 0.F);
@@ -540,7 +540,7 @@ void MeshTest::isClosedTest()
     }
 
     {
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         const auto dumpLock          = mesh->dump_lock();
 
         mesh->pushPoint(0.F, 0.F, 0.F);
@@ -571,7 +571,7 @@ void MeshTest::isClosedTest()
     }
 
     {
-        sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+        sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
         const auto dumpLock          = mesh->dump_lock();
 
         mesh->pushPoint(0.F, 0.F, 0.F);
@@ -606,7 +606,7 @@ void MeshTest::isClosedTest()
 
 void MeshTest::cellNormalTest()
 {
-    sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+    sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
     const auto dumpLock          = mesh->dump_lock();
 
     mesh->pushPoint(0.F, 0.F, 0.F);
@@ -675,7 +675,7 @@ void MeshTest::cellNormalTest()
 
 void MeshTest::pointNormalTest()
 {
-    sight::data::Mesh::sptr mesh = sight::data::Mesh::New();
+    sight::data::Mesh::sptr mesh = std::make_shared<sight::data::Mesh>();
     const auto dumpLock          = mesh->dump_lock();
 
     mesh->pushPoint(0.F, 0.F, 0.F);

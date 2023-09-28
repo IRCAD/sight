@@ -17,9 +17,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <view align="center" minWidth="200" />
                     <view align="bottom"/>
                     <view align="right" minWidth="350" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolBar" type="sight::module::ui::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Read DICOM files" icon="sight::module::ui::icons/Import.svg" />
@@ -59,9 +59,9 @@
         </service>
 
 
-        <service uid="centerView" type="sight::module::ui::base::SView" >
+        <service uid="centerView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
                     <view caption="DICOM Information" align="center" minWidth="200" />
                     <view caption="DICOM Preview" align="right" minWidth="200" />
@@ -73,9 +73,9 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="sight::module::ui::base::SView" >
+        <service uid="bottomView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
                     <view caption="Loaded Series" align="center" minWidth="200" />
                     <view caption="Loaded Preview" align="right" minWidth="200" />
@@ -87,9 +87,9 @@
             </registry>
         </service>
 
-        <service uid="rightView" type="sight::module::ui::base::SView" >
+        <service uid="rightView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
                     <view caption="Filters" align="center" minWidth="200" />
                 </layout>
@@ -100,7 +100,7 @@
         </service>
 
         <!--HELP -->
-        <service uid="menuHelp" type="sight::module::ui::base::SMenu" >
+        <service uid="menuHelp" type="sight::module::ui::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Activity help" />
@@ -118,7 +118,7 @@
         </service>
 
         <!-- READING SELECTION -->
-        <service uid="action_readDicomSeries" type="sight::module::ui::base::series::SDBMerger" >
+        <service uid="action_readDicomSeries" type="sight::module::ui::series::SDBMerger" >
             <inout key="seriesSet" uid="readingSeriesSet" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesSetReader" />
         </service>
@@ -142,7 +142,7 @@
         </service>
 
         <!-- FILTERED SELECTION -->
-        <service uid="action_previewFilteredDicomSeries" type="sight::module::ui::base::SConfigLauncher">
+        <service uid="action_previewFilteredDicomSeries" type="sight::module::ui::SConfigLauncher">
             <appConfig id="DicomPreview" />
             <inout group="data">
                 <key name="SERIES_SET" uid="filteredSeriesSet" />
@@ -169,7 +169,7 @@
             </configs>
         </service>
 
-        <service uid="action_pushSeries" type="sight::module::ui::base::series::SPushSelection">
+        <service uid="action_pushSeries" type="sight::module::ui::series::SPushSelection">
             <in key="selectedSeries" uid="loadedSelection" />
             <inout key="seriesSet" uid="${SERIES_SET}" />
         </service>

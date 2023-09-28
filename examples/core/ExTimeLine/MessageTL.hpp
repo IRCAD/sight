@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,14 +51,14 @@ class MessageTL : public sight::data::GenericTL<MsgData>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(MessageTL, sight::data::TimeLine, sight::data::factory::New<MessageTL>);
+    SIGHT_DECLARE_CLASS(MessageTL, sight::data::TimeLine);
 
     /**
      * @brief Creates the data.
      * @param _key private construction key.
      */
-    MessageTL(sight::data::Object::Key _key) :
-        GenericTL<MsgData>(_key)
+    MessageTL() :
+        GenericTL<MsgData>()
     {
     }
 };

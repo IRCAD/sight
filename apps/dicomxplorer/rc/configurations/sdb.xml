@@ -12,9 +12,9 @@
         <object uid="${SERIES_SET}" type="sight::data::SeriesSet" src="ref" />
         <object uid="selections" type="sight::data::Vector" />
 
-        <service uid="mainview" type="sight::module::ui::base::SView">
+        <service uid="mainview" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <view caption="Information" align="center" minWidth="200" />
                     <view caption="Preview" align="bottom" minHeight="200" />
                 </layout>
@@ -28,7 +28,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::base::SToolBar">
+        <service uid="toolBar" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::icons/Import.svg" />
@@ -55,7 +55,7 @@
             </registry>
         </service>
 
-        <service uid="action_import" type="sight::module::ui::base::series::SDBMerger">
+        <service uid="action_import" type="sight::module::ui::series::SDBMerger">
             <inout key="seriesSet" uid="${SERIES_SET}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>

@@ -58,7 +58,7 @@ Image::Image(
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Image::sptr& image,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -74,10 +74,10 @@ Image::~Image()
 
 //------------------------------------------------------------------------------
 
-double getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj)
+double getInstanceZPosition(const core::memory::buffer_object::sptr& bufferObj)
 {
     gdcm::ImageReader reader;
-    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
     SPTR(std::istream) is = streamInfo.stream;
     reader.SetStream(*is);
 
@@ -284,7 +284,7 @@ void Image::readImagePixelModule()
     // Compute final image type
     data::dicom::Image imageHelper(
         samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
-    core::Type imageType                = imageHelper.findImageTypeFromMinMaxValues();
+    core::type imageType                = imageHelper.findImageTypeFromMinMaxValues();
     gdcm::PixelFormat targetPixelFormat = io::dicom::helper::DicomDataTools::getPixelType(imageType);
 
     if(targetPixelFormat == gdcm::PixelFormat::UNKNOWN)
@@ -385,7 +385,7 @@ void Image::readImagePixelModule()
         imageType,
         {dimensions[0], dimensions[1], dimensions[2]},
         format,
-        core::memory::BufferNewPolicy::New()
+        std::make_shared<core::memory::buffer_new_policy>()
     );
 
     if(sight::data::helper::MedicalImage::checkImageValidity(m_object))
@@ -398,7 +398,7 @@ void Image::readImagePixelModule()
 
 char* Image::readImageBuffer(
     const std::vector<unsigned int>& dimensions,
-    const core::Type imageType,
+    const core::type imageType,
     const std::uint16_t bitsAllocated,
     const std::uint16_t newBitsAllocated,
     const bool performRescale
@@ -436,9 +436,9 @@ char* Image::readImageBuffer(
     {
         // Read a frame
         gdcm::ImageReader frameReader;
-        const core::memory::BufferObject::sptr bufferObj         = item.second;
-        const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
-        const std::string dicomPath                              = bufferObj->getStreamInfo().fsFile.string();
+        const core::memory::buffer_object::sptr bufferObj          = item.second;
+        const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
+        const std::string dicomPath                                = bufferObj->get_stream_info().fs_file.string();
         SPTR(std::istream) is = streamInfo.stream;
         frameReader.SetStream(*is);
 

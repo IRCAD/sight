@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 #include "io/dicom/helper/DicomDataWriter.hxx"
 
-#include <core/tools/dateAndTime.hpp>
+#include <core/tools/date_and_time.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -45,7 +45,7 @@ SpatialFiducials::SpatialFiducials(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Image::csptr& image,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -69,11 +69,11 @@ void SpatialFiducials::writeSpatialFiducialsModule()
     boost::posix_time::ptime ptime = boost::posix_time::second_clock::local_time();
 
     // Content Date - Type 1 - FIXME: Keep series date ?
-    std::string date = core::tools::getDate(ptime);
+    std::string date = core::tools::get_date(ptime);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0023>(date, dataset);
 
     // Content Time - Type 1 - FIXME: Keep series time ?
-    std::string time = core::tools::getTime(ptime);
+    std::string time = core::tools::get_time(ptime);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0033>(time, dataset);
 
     // Instance Number - Type 1

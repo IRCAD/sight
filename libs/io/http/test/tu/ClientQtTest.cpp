@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <ui/qt/App.hpp>
 #include <ui/qt/WorkerQt.hpp>
 
-#include <utest/Exception.hpp>
+#include <utest/exception.hpp>
 
 #include <array>
 
@@ -104,8 +104,8 @@ void ClientQtTest::setUp()
     m_worker = ui::qt::getQtWorker(argc, argv.data(), callback, "", "");
 
     m_server.moveToThread(&m_thread);
-    QThread::connect(&m_thread, &QThread::started, [ =, this]{m_server.listen();});
-    QThread::connect(&m_thread, &QThread::finished, [ =, this]{m_server.close();});
+    QThread::connect(&m_thread, &QThread::started, [this]{m_server.listen();});
+    QThread::connect(&m_thread, &QThread::finished, [this]{m_server.close();});
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ void ClientQtTest::tearDown()
     m_server.disconnect();
 
     m_worker->post([]{return QCoreApplication::quit();});
-    m_worker->getFuture().wait();
+    m_worker->get_future().wait();
     m_worker.reset();
 
     CPPUNIT_ASSERT(qApp == nullptr);
@@ -133,7 +133,7 @@ void ClientQtTest::get()
     QTcpServer::connect(
         &m_server,
         &QTcpServer::newConnection,
-        [ =, this]
+        [this]
         {
             QTcpSocket* socket = m_server.nextPendingConnection();
             QByteArray data;
@@ -190,7 +190,7 @@ void ClientQtTest::post()
     QTcpServer::connect(
         &m_server,
         &QTcpServer::newConnection,
-        [ =, this]
+        [this]
         {
             QTcpSocket* socket = m_server.nextPendingConnection();
             QByteArray data;

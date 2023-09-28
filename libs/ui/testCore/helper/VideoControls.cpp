@@ -25,7 +25,7 @@
 #include "ComboBox.hpp"
 #include "Dialog.hpp"
 #include "FileDialog.hpp"
-#include "SelectorDialog.hpp"
+#include "selector_dialog.hpp"
 
 namespace sight::ui::testCore::helper
 {
@@ -45,7 +45,7 @@ void VideoControls::load(Tester& tester, const std::string& controlsName, const 
     helper::Dialog::maybeTake(tester, "choose video grabber implementation dialog");
     if(tester.exists())
     {
-        helper::SelectorDialog::select(tester, "OpenCV player");
+        helper::selector_dialog::select(tester, "OpenCV player");
     }
 }
 

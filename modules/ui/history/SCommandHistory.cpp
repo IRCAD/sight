@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,38 +22,38 @@
 
 #include "SCommandHistory.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 
 #include <numeric>
 
 namespace sight::module::ui::history
 {
 
-static const core::com::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
-static const core::com::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";
+static const core::com::signals::key_t CANUNDO_SIGNAL = "canUndo";
+static const core::com::signals::key_t CANREDO_SIGNAL = "canRedo";
 
-static const core::com::Slots::SlotKeyType s_ENQUEUE_SLOT = "enqueue";
-static const core::com::Slots::SlotKeyType s_UNDO_SLOT    = "undo";
-static const core::com::Slots::SlotKeyType s_REDO_SLOT    = "redo";
-static const core::com::Slots::SlotKeyType s_CLEAR_SLOT   = "clear";
+static const core::com::slots::key_t ENQUEUE_SLOT = "enqueue";
+static const core::com::slots::key_t UNDO_SLOT    = "undo";
+static const core::com::slots::key_t REDO_SLOT    = "redo";
+static const core::com::slots::key_t CLEAR_SLOT   = "clear";
 
 //-----------------------------------------------------------------------------
 
 SCommandHistory::SCommandHistory()
 {
-    newSlot(s_ENQUEUE_SLOT, &SCommandHistory::enqueue, this);
-    newSlot(s_UNDO_SLOT, &SCommandHistory::undo, this);
-    newSlot(s_REDO_SLOT, &SCommandHistory::redo, this);
-    newSlot(s_CLEAR_SLOT, &SCommandHistory::clear, this);
+    new_slot(ENQUEUE_SLOT, &SCommandHistory::enqueue, this);
+    new_slot(UNDO_SLOT, &SCommandHistory::undo, this);
+    new_slot(REDO_SLOT, &SCommandHistory::redo, this);
+    new_slot(CLEAR_SLOT, &SCommandHistory::clear, this);
 
-    m_canUndoSig = newSignal<CanDoSignalType>(s_CANUNDO_SIGNAL);
-    m_canRedoSig = newSignal<CanDoSignalType>(s_CANREDO_SIGNAL);
+    m_canUndoSig = new_signal<CanDoSignalType>(CANUNDO_SIGNAL);
+    m_canRedoSig = new_signal<CanDoSignalType>(CANREDO_SIGNAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ SCommandHistory::~SCommandHistory()
 
 void SCommandHistory::configuring()
 {
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     auto maxCommands = config.get_optional<std::size_t>("maxCommands");
     auto maxMemory   = config.get_optional<std::size_t>("maxMemory");
@@ -104,7 +104,7 @@ void SCommandHistory::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SCommandHistory::enqueue(sight::ui::history::ICommand::sptr command)
+void SCommandHistory::enqueue(sight::ui::history::command::sptr command)
 {
     m_undoRedoManager.enqueue(command);
     this->emitModifiedSig();
@@ -138,8 +138,8 @@ void SCommandHistory::clear()
 
 void SCommandHistory::emitModifiedSig() const
 {
-    m_canUndoSig->asyncEmit(m_undoRedoManager.canUndo());
-    m_canRedoSig->asyncEmit(m_undoRedoManager.canRedo());
+    m_canUndoSig->async_emit(m_undoRedoManager.canUndo());
+    m_canRedoSig->async_emit(m_undoRedoManager.canRedo());
 }
 
 //-----------------------------------------------------------------------------

@@ -24,11 +24,11 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/IActivitySequencer.hpp>
+#include <activity/sequencer.hpp>
 
 #include <data/ActivitySet.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -117,14 +117,14 @@ namespace sight::module::ui::qt::activity
  * @todo listen the current activity data to notify when the next activity can be created
  */
 class MODULE_UI_QT_CLASS_API SSequencer : public QObject,
-                                          public sight::ui::base::IEditor,
-                                          public sight::activity::IActivitySequencer
+                                          public sight::ui::editor,
+                                          public sight::activity::sequencer
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSequencer, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSequencer, sight::ui::editor);
 
     /// Initialize signals and slots
     MODULE_UI_QT_API SSequencer() noexcept;
@@ -134,7 +134,7 @@ public:
 
     struct MODULE_UI_QT_CLASS_API Slots final
     {
-        using key_t = sight::core::com::Slots::SlotKeyType;
+        using key_t = sight::core::com::slots::key_t;
 
         inline static const key_t GO_TO         = "goTo";
         inline static const key_t CHECK_NEXT    = "checkNext";
@@ -146,7 +146,7 @@ public:
 
     struct MODULE_UI_QT_CLASS_API Signals final
     {
-        using key_t = sight::core::com::Signals::SignalKeyType;
+        using key_t = sight::core::com::signals::key_t;
 
         inline static const key_t ACTIVITY_CREATED = "activityCreated";
         inline static const key_t DATA_REQUIRED    = "dataRequired";
@@ -158,9 +158,9 @@ public:
         inline static const key_t NEXT_VALID     = "nextValid";
         inline static const key_t NEXT_INVALID   = "nextInvalid";
 
-        using void_signal_t     = core::com::Signal<void ()>;
-        using bool_signal_t     = core::com::Signal<void (bool)>;
-        using activity_signal_t = core::com::Signal<void (data::Activity::sptr)>;
+        using void_signal_t     = core::com::signal<void ()>;
+        using bool_signal_t     = core::com::signal<void (bool)>;
+        using activity_signal_t = core::com::signal<void (data::Activity::sptr)>;
     };
 
     /// Slot: Check if the next activities can be enabled
@@ -204,7 +204,7 @@ protected:
     void updating() override;
 
     /// Connect the service to the ActivitySet signals
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
 private:
 
@@ -234,35 +234,35 @@ private:
     double m_fontSize {12.0};
 
     const Signals::activity_signal_t::sptr m_activity_created {
-        newSignal<Signals::activity_signal_t>(Signals::ACTIVITY_CREATED)
+        new_signal<Signals::activity_signal_t>(Signals::ACTIVITY_CREATED)
     };
 
     const Signals::activity_signal_t::sptr m_data_required {
-        newSignal<Signals::activity_signal_t>(Signals::DATA_REQUIRED)
+        new_signal<Signals::activity_signal_t>(Signals::DATA_REQUIRED)
     };
 
     const Signals::bool_signal_t::sptr m_has_previous {
-        newSignal<Signals::bool_signal_t>(Signals::HAS_PREVIOUS)
+        new_signal<Signals::bool_signal_t>(Signals::HAS_PREVIOUS)
     };
 
     const Signals::bool_signal_t::sptr m_has_next {
-        newSignal<Signals::bool_signal_t>(Signals::HAS_NEXT)
+        new_signal<Signals::bool_signal_t>(Signals::HAS_NEXT)
     };
 
     const Signals::bool_signal_t::sptr m_next_enabled {
-        newSignal<Signals::bool_signal_t>(Signals::NEXT_ENABLED)
+        new_signal<Signals::bool_signal_t>(Signals::NEXT_ENABLED)
     };
 
     const Signals::bool_signal_t::sptr m_next_validated {
-        newSignal<Signals::bool_signal_t>(Signals::NEXT_VALIDATED)
+        new_signal<Signals::bool_signal_t>(Signals::NEXT_VALIDATED)
     };
 
     const Signals::void_signal_t::sptr m_next_valid {
-        newSignal<Signals::void_signal_t>(Signals::NEXT_VALID)
+        new_signal<Signals::void_signal_t>(Signals::NEXT_VALID)
     };
 
     const Signals::void_signal_t::sptr m_next_invalid {
-        newSignal<Signals::void_signal_t>(Signals::NEXT_INVALID)
+        new_signal<Signals::void_signal_t>(Signals::NEXT_INVALID)
     };
 
     static constexpr std::string_view s_ACTIVITY_SET_INOUT = "activitySet";

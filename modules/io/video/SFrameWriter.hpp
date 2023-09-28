@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 namespace sight::module::io::video
 {
@@ -59,14 +59,14 @@ namespace sight::module::io::video
  * - \b data [sight::data::FrameTL]: timeline containing the frame to save.
  *
  * @subsection Configuration Configuration
- * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
+ * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::writer
  * - \b format: optional, file format used to store frames. Possible extensions (.jpeg ,.bmp, .tiff, .png, .jp2,... )
  */
-class MODULE_IO_VIDEO_CLASS_API SFrameWriter : public sight::io::base::service::IWriter
+class MODULE_IO_VIDEO_CLASS_API SFrameWriter : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrameWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SFrameWriter, sight::io::service::writer);
 
     /// Constructor.
     MODULE_IO_VIDEO_API SFrameWriter() noexcept;
@@ -75,13 +75,13 @@ public:
     MODULE_IO_VIDEO_API ~SFrameWriter() noexcept override;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    MODULE_IO_VIDEO_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_VIDEO_API service::connections_t getAutoConnections() const override;
 
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_VIDEO_API void openLocationDialog() override;
 
-    /// Return file type (io::base::service::FOLDER)
-    MODULE_IO_VIDEO_API sight::io::base::service::IOPathType getIOPathType() const override;
+    /// Return file type (io::service::FOLDER)
+    MODULE_IO_VIDEO_API sight::io::service::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -100,10 +100,10 @@ protected:
 private:
 
     /// SLOT: Adds the current frame in the video
-    void saveFrame(core::HiResClock::HiResClockType timestamp);
+    void saveFrame(core::hires_clock::type timestamp);
 
     /// Writes frame on the disk
-    void write(core::HiResClock::HiResClockType timestamp);
+    void write(core::hires_clock::type timestamp);
 
     /// SLOT: Starts recording
     void startRecord();

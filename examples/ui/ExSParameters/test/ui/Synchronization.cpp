@@ -25,8 +25,6 @@
 
 #include <core/runtime/path.hpp>
 
-#include <QToolButton>
-
 #include <ui/testCore/helper/Button.hpp>
 #include <ui/testCore/helper/CheckBox.hpp>
 #include <ui/testCore/helper/ColorParameter.hpp>
@@ -35,6 +33,8 @@
 #include <ui/testCore/helper/Slider.hpp>
 #include <ui/testCore/helper/SpinBox.hpp>
 #include <ui/testCore/Tester.hpp>
+
+#include <QToolButton>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::examples::ui::exsparameters::test::ui::Synchronization);
 
@@ -45,7 +45,7 @@ namespace sight::examples::ui::exsparameters::test::ui
 
 std::filesystem::path Synchronization::getProfilePath()
 {
-    const std::filesystem::path cwd = sight::core::runtime::getWorkingPath();
+    const std::filesystem::path cwd = sight::core::runtime::working_path();
     return cwd / "share/sight/ExSParameters/profile.xml";
 }
 

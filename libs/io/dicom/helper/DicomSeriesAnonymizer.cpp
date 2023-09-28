@@ -23,20 +23,20 @@
 #include "io/dicom/helper/DicomSeriesAnonymizer.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/jobs/Observer.hpp>
-#include <core/os/TempPath.hpp>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/job.hpp>
+#include <core/jobs/observer.hpp>
+#include <core/os/temp_path.hpp>
 
 namespace sight::io::dicom::helper
 {
 
 DicomSeriesAnonymizer::DicomSeriesAnonymizer() :
-    m_job(core::jobs::Aggregator::New("Anonymization process"))
+    m_job(std::make_shared<core::jobs::aggregator>("Anonymization process"))
 {
-    m_writer = io::dicom::helper::DicomSeriesWriter::New();
-    m_reader = io::dicom::reader::SeriesSet::New();
+    m_writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
+    m_reader = std::make_shared<io::dicom::reader::SeriesSet>();
 }
 
 //------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ void DicomSeriesAnonymizer::anonymize(
     auto anonymizerObserver = m_anonymizer.getJob();
 
     // Set up observer cancel callback
-    m_job->addSimpleCancelHook(
+    m_job->add_simple_cancel_hook(
         [&]
         {
             writerObserver->cancel();
@@ -75,14 +75,14 @@ void DicomSeriesAnonymizer::anonymize(
     const auto future = m_job->run();
 
     // Create destination directory
-    core::os::TempDir dest;
+    core::os::temp_dir dest;
 
     // Write DicomSeries (Copy files)
     m_writer->setObject(source);
-    m_writer->setFolder(dest);
+    m_writer->set_folder(dest);
     m_writer->write();
 
-    if(m_job->cancelRequested())
+    if(m_job->cancel_requested())
     {
         return;
     }
@@ -90,7 +90,7 @@ void DicomSeriesAnonymizer::anonymize(
     // Anonymize directory
     m_anonymizer.anonymize(dest);
 
-    if(m_job->cancelRequested())
+    if(m_job->cancel_requested())
     {
         return;
     }
@@ -102,19 +102,19 @@ void DicomSeriesAnonymizer::anonymize(
     // However, this reader also uses an aggregator - we discovered that an aggregator of aggregator exits
     // immediately, thus its state is FINISHED when we try to start the task...
     // Read anonymized series
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
     m_reader->setObject(series_set);
-    m_reader->setFolder(dest);
+    m_reader->set_folder(dest);
     m_reader->readDicomSeries();
 
     // Update DicomSeries
-    auto anonymizedSeries = data::DicomSeries::dynamicCast(series_set->front());
-    destination->deepCopy(anonymizedSeries);
+    auto anonymizedSeries = std::dynamic_pointer_cast<data::DicomSeries>(series_set->front());
+    destination->deep_copy(anonymizedSeries);
 }
 
 //------------------------------------------------------------------------------
 
-core::jobs::Aggregator::sptr DicomSeriesAnonymizer::getJob() const
+core::jobs::aggregator::sptr DicomSeriesAnonymizer::getJob() const
 {
     return m_job;
 }

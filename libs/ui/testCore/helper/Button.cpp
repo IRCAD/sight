@@ -34,7 +34,7 @@ static void take(
 )
 {
     button.select(tester);
-    if(tester.isA<QAction*>())
+    if(tester.is_a<QAction*>())
     {
         tester.yields(
             "actual " + button.getDescription(tester) + " button",

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,7 @@ class IO_DIMSE_CLASS_API PacsConfiguration : public sight::data::Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(PacsConfiguration, sight::data::Object, sight::data::factory::New<PacsConfiguration>);
-
-    /**
-     * @brief Constructor
-     * @param key Private construction key
-     */
-    IO_DIMSE_API PacsConfiguration(sight::data::Object::Key key);
+    SIGHT_DECLARE_CLASS(PacsConfiguration, sight::data::Object, sight::data::factory::make<PacsConfiguration>);
 
     /// Destructor
     IO_DIMSE_API ~PacsConfiguration() noexcept override = default;
@@ -187,7 +181,7 @@ protected:
     /// Defines shallow copy
     /// @throws data::Exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    IO_DIMSE_API void shallowCopy(const sight::data::Object::csptr& source) override;
+    IO_DIMSE_API void shallow_copy(const sight::data::Object::csptr& source) override;
 
     /// Local application title
     std::string m_localApplicationTitle;

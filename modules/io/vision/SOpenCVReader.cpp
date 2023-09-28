@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #include "SOpenCVReader.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/signal.hxx>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/CameraSet.hpp>
 
-#include <io/base/service/ioTypes.hpp>
+#include <io/__/service/ioTypes.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/__/dialog/location.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -54,7 +54,7 @@ SOpenCVReader::~SOpenCVReader()
 
 void SOpenCVReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 }
 
 // ----------------------------------------------------------------------------
@@ -71,21 +71,21 @@ bool SOpenCVReader::defineLocationGUI()
     bool ok = false;
 
     // Ask user for the file path
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(ui::dialog::location::READ);
+    dialogFile.setType(ui::dialog::location::SINGLE_FILE);
     dialogFile.addFilter("XML or YAML file", "*.xml *.yml *.yaml");
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
 
     if(result)
     {
-        this->setFile(result->getFile());
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        this->set_file(result->get_file());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
         ok = true;
     }
@@ -126,11 +126,11 @@ void SOpenCVReader::updating()
         }
     }
 
-    cv::FileStorage fs(this->getFile().string(), cv::FileStorage::READ); // Read the settings
+    cv::FileStorage fs(this->get_file().string(), cv::FileStorage::READ); // Read the settings
     if(!fs.isOpened())
     {
         this->m_readFailed = true;
-        SIGHT_ERROR("The file " + this->getFile().string() + " cannot be opened.");
+        SIGHT_ERROR("The file " + this->get_file().string() + " cannot be opened.");
     }
 
     // Remove all CameraSet
@@ -144,8 +144,8 @@ void SOpenCVReader::updating()
         camera_set->remove_camera(std::const_pointer_cast<data::Camera>(cam));
 
         auto sig = camera_set->signal<data::CameraSet::removed_camera_signal_t>
-                       (data::CameraSet::s_REMOVED_CAMERA_SIG);
-        sig->asyncEmit(std::const_pointer_cast<data::Camera>(cam));
+                       (data::CameraSet::REMOVED_CAMERA_SIG);
+        sig->async_emit(std::const_pointer_cast<data::Camera>(cam));
     }
 
     int nbCameras = 0;
@@ -181,7 +181,7 @@ void SOpenCVReader::updating()
             scale = 1.;
         }
 
-        data::Camera::sptr cam = data::Camera::New();
+        data::Camera::sptr cam = std::make_shared<data::Camera>();
         cam->setFx(matrix.at<double>(0, 0));
         cam->setFy(matrix.at<double>(1, 1));
         cam->setCx(matrix.at<double>(0, 2));
@@ -205,15 +205,15 @@ void SOpenCVReader::updating()
 
         camera_set->add_camera(cam);
 
-        auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(data::CameraSet::s_ADDED_CAMERA_SIG);
-        sig->asyncEmit(cam);
+        auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(data::CameraSet::ADDED_CAMERA_SIG);
+        sig->async_emit(cam);
 
         cv::Mat extrinsic;
         n["extrinsic"] >> extrinsic;
 
         if(!extrinsic.empty())
         {
-            data::Matrix4::sptr extMat = data::Matrix4::New();
+            data::Matrix4::sptr extMat = std::make_shared<data::Matrix4>();
 
             for(std::size_t i = 0 ; i < 4 ; ++i)
             {
@@ -225,15 +225,15 @@ void SOpenCVReader::updating()
 
             camera_set->set_extrinsic_matrix(static_cast<std::size_t>(c), extMat);
             auto sigExtrinsic = camera_set->signal<data::CameraSet::extrinsic_calibrated_signal_t>
-                                    (data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG);
-            sigExtrinsic->asyncEmit();
+                                    (data::CameraSet::EXTRINSIC_CALIBRATED_SIG);
+            sigExtrinsic->async_emit();
         }
     }
 
     fs.release(); // close file
 
-    auto sig = camera_set->signal<data::CameraSet::ModifiedSignalType>(data::CameraSet::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    auto sig = camera_set->signal<data::CameraSet::ModifiedSignalType>(data::CameraSet::MODIFIED_SIG);
+    sig->async_emit();
 
     //clear locations only if it was configured through GUI.
     if(use_dialog)
@@ -244,9 +244,9 @@ void SOpenCVReader::updating()
 
 // ----------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SOpenCVReader::getIOPathType() const
+sight::io::service::IOPathType SOpenCVReader::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 // ----------------------------------------------------------------------------

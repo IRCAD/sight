@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -75,17 +75,17 @@ namespace sight::module::geometry::vision
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the scaling factor to be applied to the input image.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SChessBoardDetector : public service::IController
+class MODULE_GEOMETRY_VISION_CLASS_API SChessBoardDetector : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SChessBoardDetector, sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SChessBoardDetector, sight::service::controller);
 
     /// Signal type sent after trying to detect a chessboard in an image. Sends whether detection was successful.
-    typedef core::com::Signal<void (bool)> ChessboardDetectedSignalType;
+    typedef core::com::signal<void (bool)> ChessboardDetectedSignalType;
 
     /// Signal type sent after a successful detection.
-    typedef core::com::Signal<void ()> ChessboardFoundSignalType;
+    typedef core::com::signal<void ()> ChessboardFoundSignalType;
 
     /// Constructor
     MODULE_GEOMETRY_VISION_API SChessBoardDetector() noexcept;
@@ -108,7 +108,7 @@ protected:
     MODULE_GEOMETRY_VISION_API void stopping() override;
 
     /// Returns proposals to update the service when the input image is modified.
-    MODULE_GEOMETRY_VISION_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_GEOMETRY_VISION_API connections_t getAutoConnections() const override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,9 @@
 #include <data/Image.hpp>
 #include <data/MarkerMap.hpp>
 
-#include <service/ITracker.hpp>
+#include <service/tracker.hpp>
 
-#include <ui/base/parameter.hpp>
+#include <ui/__/parameter.hpp>
 
 #include <opencv2/aruco.hpp>
 
@@ -40,17 +40,17 @@ namespace sight::module::navigation::optics
 /**
  * @brief   Class used to track multiple tags with ArUco.
  *
- * @see service::ITracker
+ * @see service::tracker
  *
  * @section Signals Signals
- * - \b detectionDone(core::HiResClock::HiResClockType) : This signal is emitted when the tracker find tags.
+ * - \b detectionDone(core::hires_clock::type) : This signal is emitted when the tracker find tags.
  *
  * @section Slots Slots
- * @subsection Inherited Inherited slots (from ITracker)
+ * @subsection Inherited Inherited slots (from tracker)
  * - \b track(timestamp) : Slot to fills the timeline with the new positions of the grid
  * - \b startTracking() : Slot called when the user wants to start tracking
  * - \b stopTracking() : Slot called when the user wants to stop tracking
- * - \b setParameter(ui::base::parameter_t, std::string): set a parameter from the UI.
+ * - \b setParameter(ui::parameter_t, std::string): set a parameter from the UI.
  *
  * @section XML XML Configuration
  *
@@ -90,14 +90,14 @@ namespace sight::module::navigation::optics
  *  - \b cornerRefinement: if true, corner refinement by subpixel will be activated
  *  not.
  */
-class MODULE_NAVIGATION_OPTICS_CLASS_API SArucoTracker : public service::ITracker
+class MODULE_NAVIGATION_OPTICS_CLASS_API SArucoTracker : public service::tracker
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SArucoTracker, service::ITracker);
+    SIGHT_DECLARE_SERVICE(SArucoTracker, service::tracker);
 
-    typedef core::com::Signal<void (core::HiResClock::HiResClockType timestamp)> DetectionDoneSignalType;
-    typedef core::com::Signal<void (bool)> MarkerDetectedSignalType;
+    typedef core::com::signal<void (core::hires_clock::type timestamp)> DetectionDoneSignalType;
+    typedef core::com::signal<void (bool)> MarkerDetectedSignalType;
 
     /**
      * @name Signal API
@@ -105,16 +105,16 @@ public:
      */
 
     /// Key in m_signals map of signal m_sigDetectionDone
-    MODULE_NAVIGATION_OPTICS_API static const core::com::Signals::SignalKeyType s_DETECTION_DONE_SIG;
+    MODULE_NAVIGATION_OPTICS_API static const core::com::signals::key_t DETECTION_DONE_SIG;
 
     /// Signal always emitted with boolean true if a least a maker from id list is found, false otherwise.
-    MODULE_NAVIGATION_OPTICS_API static const core::com::Signals::SignalKeyType s_MARKER_DETECTED_SIG;
+    MODULE_NAVIGATION_OPTICS_API static const core::com::signals::key_t MARKER_DETECTED_SIG;
     /** @} */
     /**
      * @name Slots API
      * @{
      */
-    MODULE_NAVIGATION_OPTICS_API static const core::com::Slots::SlotKeyType s_SET_PARAMETER_SLOT;
+    MODULE_NAVIGATION_OPTICS_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
     /** @} */
 
     typedef std::vector<int> MarkerIDType;
@@ -135,7 +135,7 @@ protected:
     /// Depending on the configuration this connects:
     /// - the input timeline to the tracking() slot
     /// - the input frame modifications to the update() slot
-    service::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::connections_t getAutoConnections() const override;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
@@ -158,7 +158,7 @@ protected:
     MODULE_NAVIGATION_OPTICS_API void stopping() override;
 
     /// Detect marker
-    MODULE_NAVIGATION_OPTICS_API void tracking(core::HiResClock::HiResClockType& timestamp) override;
+    MODULE_NAVIGATION_OPTICS_API void tracking(core::hires_clock::type& timestamp) override;
 
 private:
 
@@ -171,7 +171,7 @@ private:
     };
 
     /// Slot called when a boolean value is changed
-    void setParameter(sight::ui::base::parameter_t _val, std::string _key);
+    void setParameter(sight::ui::parameter_t _val, std::string _key);
 
     /// Camera parameters
     Camera m_cameraParams;

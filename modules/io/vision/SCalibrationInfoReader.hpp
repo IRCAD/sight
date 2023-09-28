@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/vision/config.hpp"
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <string>
 
@@ -51,11 +51,11 @@ namespace sight::module::io::vision
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the (optional) scaling factor to be applied to the input image.
  */
-class MODULE_IO_VISION_CLASS_API SCalibrationInfoReader : public sight::io::base::service::IReader
+class MODULE_IO_VISION_CLASS_API SCalibrationInfoReader : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SCalibrationInfoReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SCalibrationInfoReader, sight::io::service::reader);
 
     /// Constructor.
     MODULE_IO_VISION_API SCalibrationInfoReader() noexcept;
@@ -69,7 +69,7 @@ public:
 protected:
 
     /// Returns the folder path type.
-    MODULE_IO_VISION_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API sight::io::service::IOPathType getIOPathType() const override;
 
     /// Configures the output file format and the chessboard preference keys.
     MODULE_IO_VISION_API void configuring() override;

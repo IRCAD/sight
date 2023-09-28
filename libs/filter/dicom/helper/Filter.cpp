@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "filter/dicom/helper/Filter.hpp"
 
-#include "filter/dicom/composite/IComposite.hpp"
+#include "filter/dicom/composite/base.hpp"
 
 namespace sight::filter::dicom::helper
 {
@@ -31,9 +31,9 @@ namespace sight::filter::dicom::helper
 
 bool Filter::applyFilter(
     DicomSeriesContainerType& dicomSeriesContainer,
-    filter::dicom::IFilter::sptr filter,
+    sight::filter::dicom::filter::sptr filter,
     bool forcedApply,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 {
     bool ignoredError = false;
@@ -45,13 +45,13 @@ bool Filter::applyFilter(
         // Apply filter and copy result
         DicomSeriesContainerType tempo;
         // Regular filter application
-        if(!forcedApply || filter->getFilterType() != filter::dicom::IFilter::COMPOSITE)
+        if(!forcedApply || filter->getFilterType() != sight::filter::dicom::filter::COMPOSITE)
         {
             try
             {
                 tempo = filter->apply(dicomSeries, logger);
             }
-            catch(filter::dicom::exceptions::FilterFailure& /*e*/)
+            catch(sight::filter::dicom::exceptions::FilterFailure& /*e*/)
             {
                 if(!forcedApply)
                 {
@@ -65,8 +65,8 @@ bool Filter::applyFilter(
         // Forced filter application for composite
         else
         {
-            filter::dicom::composite::IComposite::sptr composite =
-                filter::dicom::composite::IComposite::dynamicCast(filter);
+            sight::filter::dicom::composite::base::sptr composite =
+                std::dynamic_pointer_cast<sight::filter::dicom::composite::base>(filter);
             tempo = composite->forcedApply(dicomSeries, logger);
         }
 

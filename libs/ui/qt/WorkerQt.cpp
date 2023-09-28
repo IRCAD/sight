@@ -24,9 +24,9 @@
 
 #include "ui/qt/util/FuncSlot.hpp"
 
-#include <core/thread/Timer.hpp>
-#include <core/thread/Worker.hpp>
-#include <core/tools/Os.hpp>
+#include <core/thread/timer.hpp>
+#include <core/thread/worker.hpp>
+#include <core/tools/os.hpp>
 
 #include <QApplication>
 #include <QDir>
@@ -44,7 +44,7 @@ class WorkerQtTask : public QEvent
 {
 public:
 
-    explicit WorkerQtTask(core::thread::Worker::TaskType handler) :
+    explicit WorkerQtTask(core::thread::worker::task_t handler) :
         QEvent(static_cast<QEvent::Type>(s_WORKER_QT_TASK_EVENT_TYPE)),
         m_handler(std::move(handler))
     {
@@ -60,15 +60,15 @@ public:
 
 private:
 
-    core::thread::Worker::TaskType m_handler;
+    core::thread::worker::task_t m_handler;
 };
 
 const int WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE = QEvent::registerEventType();
 
 /**
- * @brief Private implementation of core::thread::Worker using boost::asio.
+ * @brief Private implementation of core::thread::worker using boost::asio.
  */
-class WorkerQt : public core::thread::Worker
+class WorkerQt : public core::thread::worker
 {
 public:
 
@@ -86,17 +86,17 @@ public:
 
     void stop() override;
 
-    void post(TaskType handler) override;
+    void post(task_t handler) override;
 
     void setApp(QSharedPointer<QCoreApplication> app, const std::string& name, const std::string& version);
 
-    core::thread::Worker::FutureType getFuture() override;
+    core::thread::worker::future_t get_future() override;
 
-    core::thread::ThreadIdType getThreadId() const override;
+    core::thread::thread_id_t get_thread_id() const override;
 
-    void processTasks() override;
+    void process_tasks() override;
 
-    void processTasks(PeriodType maxtime) override;
+    void process_tasks(period_t maxtime) override;
 
 private:
 
@@ -105,14 +105,14 @@ private:
 
     QSharedPointer<QCoreApplication> m_app;
 
-    SPTR(core::thread::Timer) createTimer() override;
+    SPTR(core::thread::timer) create_timer() override;
 
-    core::thread::ThreadIdType m_threadId;
+    core::thread::thread_id_t m_threadId;
 };
 
 //-----------------------------------------------------------------------------
 
-core::thread::Worker::sptr getQtWorker(
+core::thread::worker::sptr getQtWorker(
     int& argc,
     char** argv,
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,
@@ -131,7 +131,7 @@ core::thread::Worker::sptr getQtWorker(
 /**
  * @brief Private Timer implementation using Qt.
  */
-class TimerQt : public core::thread::Timer
+class TimerQt : public core::thread::timer
 {
 public:
 
@@ -155,26 +155,26 @@ public:
     void stop() override;
 
     /// Sets time duration.
-    void setDuration(TimeDurationType duration) override;
+    void set_duration(time_duration_t duration) override;
 
     /// Returns if the timer mode is 'one shot'.
-    bool isOneShot() const override
+    bool is_one_shot() const override
     {
-        core::mt::ScopedLock lock(m_mutex);
+        core::mt::scoped_lock lock(m_mutex);
         return m_timerQt->isSingleShot();
     }
 
     /// Sets timer mode.
-    void setOneShot(bool oneShot) override
+    void set_one_shot(bool oneShot) override
     {
-        core::mt::ScopedLock lock(m_mutex);
+        core::mt::scoped_lock lock(m_mutex);
         m_timerQt->setSingleShot(oneShot);
     }
 
     /// Returns true if the timer is currently running.
-    bool isRunning() const override
+    bool is_running() const override
     {
-        core::mt::ScopedLock lock(m_mutex);
+        core::mt::scoped_lock lock(m_mutex);
         return m_timerQt->isActive();
     }
 
@@ -184,7 +184,7 @@ protected Q_SLOTS:
 
 private:
 
-    void updatedFunction() override;
+    void updated_function() override;
 
     QPointer<QTimer> m_timerQt;
 
@@ -198,7 +198,7 @@ private:
 WorkerQt::WorkerQt() :
 
     m_app(nullptr),
-    m_threadId(core::thread::getCurrentThreadId())
+    m_threadId(core::thread::get_current_thread_id())
 {
 }
 
@@ -215,7 +215,7 @@ void WorkerQt::init(int& argc, char** argv)
     // you are executing the application in the build tree or in the install tree
     // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
     // This work in all cases when we use VCPkg.
-    std::filesystem::path qt5LibDir           = core::tools::os::getSharedLibraryPath("Qt5Core").remove_filename();
+    std::filesystem::path qt5LibDir           = core::tools::os::get_shared_library_path("Qt5Core").remove_filename();
     const std::filesystem::path qt5PluginsDir = (qt5LibDir.parent_path().parent_path()) / "plugins";
 
     QDir pluginDir(QString::fromStdString(qt5PluginsDir.string()));
@@ -254,18 +254,18 @@ WorkerQt::~WorkerQt()
 
 //------------------------------------------------------------------------------
 
-core::thread::Worker::FutureType WorkerQt::getFuture()
+core::thread::worker::future_t WorkerQt::get_future()
 {
     if(!m_future.valid())
     {
         SIGHT_ASSERT(
             "WorkerQt loop shall be created and ran from main thread ",
-            !m_future.valid() && core::thread::getCurrentThreadId() == this->getThreadId()
+            !m_future.valid() && core::thread::get_current_thread_id() == this->get_thread_id()
         );
 
-        std::packaged_task<ExitReturnType()> task([]{return QCoreApplication::exec();});
+        std::packaged_task<exit_return_type()> task([]{return QCoreApplication::exec();});
 
-        std::future<ExitReturnType> future = task.get_future();
+        std::future<exit_return_type> future = task.get_future();
 
         m_future = std::move(future);
 
@@ -277,7 +277,7 @@ core::thread::Worker::FutureType WorkerQt::getFuture()
 
 //------------------------------------------------------------------------------
 
-core::thread::ThreadIdType WorkerQt::getThreadId() const
+core::thread::thread_id_t WorkerQt::get_thread_id() const
 {
     return m_threadId;
 }
@@ -286,33 +286,33 @@ core::thread::ThreadIdType WorkerQt::getThreadId() const
 
 void WorkerQt::stop()
 {
-    this->postTask<void>(&QCoreApplication::quit).wait();
+    this->post_task<void>(&QCoreApplication::quit).wait();
 }
 
 //------------------------------------------------------------------------------
 
-SPTR(core::thread::Timer) WorkerQt::createTimer()
+SPTR(core::thread::timer) WorkerQt::create_timer()
 {
     return std::make_shared<TimerQt>();
 }
 
 //------------------------------------------------------------------------------
 
-void WorkerQt::post(TaskType handler)
+void WorkerQt::post(task_t handler)
 {
     QCoreApplication::postEvent(QCoreApplication::instance(), new WorkerQtTask(handler));
 }
 
 //------------------------------------------------------------------------------
 
-void WorkerQt::processTasks()
+void WorkerQt::process_tasks()
 {
     QCoreApplication::sendPostedEvents(nullptr, ui::qt::WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE);
 }
 
 //------------------------------------------------------------------------------
 
-void WorkerQt::processTasks(PeriodType maxtime)
+void WorkerQt::process_tasks(period_t maxtime)
 {
     QCoreApplication::processEvents(QEventLoop::AllEvents, int(maxtime));
 }
@@ -338,9 +338,9 @@ TimerQt::~TimerQt()
 
 //------------------------------------------------------------------------------
 
-void TimerQt::setDuration(TimeDurationType duration)
+void TimerQt::set_duration(time_duration_t duration)
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
     m_timerQt->setInterval(
         static_cast<int>(
             std::chrono::duration_cast<std::chrono::milliseconds>(duration).count())
@@ -351,7 +351,7 @@ void TimerQt::setDuration(TimeDurationType duration)
 
 void TimerQt::start()
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
     m_timerQt->start();
 }
 
@@ -359,7 +359,7 @@ void TimerQt::start()
 
 void TimerQt::stop()
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
     m_timerQt->stop();
 }
 
@@ -372,9 +372,9 @@ void TimerQt::call()
 
 //------------------------------------------------------------------------------
 
-void TimerQt::updatedFunction()
+void TimerQt::updated_function()
 {
-    m_qtFunc->setFunction(m_function);
+    m_qtFunc->set_function(m_function);
 }
 
 } //namespace sight::ui::qt

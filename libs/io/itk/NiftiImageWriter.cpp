@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,10 +25,10 @@
 #include "io/itk/itk.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
+#include <core/tools/dispatcher.hpp>
+#include <core/tools/type_key_type_mapping.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 #include <itkImageFileWriter.h>
 #include <itkNiftiImageIO.h>
@@ -39,17 +39,6 @@ SIGHT_REGISTER_IO_WRITER(sight::io::itk::NiftiImageWriter);
 
 namespace sight::io::itk
 {
-
-//------------------------------------------------------------------------------
-
-NiftiImageWriter::NiftiImageWriter(io::base::writer::IObjectWriter::Key /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-NiftiImageWriter::~NiftiImageWriter()
-= default;
 
 struct NiftiSaverFunctor
 {
@@ -65,7 +54,7 @@ struct NiftiSaverFunctor
     template<class PIXELTYPE>
     void operator()(const Parameter& param)
     {
-        SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::Type::get<PIXELTYPE>().name());
+        SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
         // Reader IO (*1*)
         typename ::itk::NiftiImageIO::Pointer imageIOWrite = ::itk::NiftiImageIO::New();
@@ -100,12 +89,12 @@ void NiftiImageWriter::write()
     assert(m_object.lock());
 
     NiftiSaverFunctor::Parameter saverParam;
-    saverParam.m_filename  = this->getFile().string();
+    saverParam.m_filename  = this->get_file().string();
     saverParam.m_dataImage = getConcreteObject();
-    saverParam.m_fwWriter  = this->getSptr();
+    saverParam.m_fwWriter  = this->get_sptr();
     assert(saverParam.m_dataImage);
 
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, NiftiSaverFunctor>::invoke(
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, NiftiSaverFunctor>::invoke(
         saverParam.m_dataImage->getType(),
         saverParam
     );
@@ -115,12 +104,12 @@ void NiftiImageWriter::write()
 
 std::string NiftiImageWriter::extension() const
 {
-    if(getFile().empty() || (getFile().string().find(".nii") != std::string::npos))
+    if(get_file().empty() || (get_file().string().find(".nii") != std::string::npos))
     {
         return ".nii";
     }
 
-    return getFile().filename().extension().string();
+    return get_file().filename().extension().string();
 }
 
 //------------------------------------------------------------------------------

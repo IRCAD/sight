@@ -24,8 +24,8 @@
 
 #include "modules/filter/vision/SOpticalFlow.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <io/opencv/FrameTL.hpp>
 
@@ -35,15 +35,15 @@
 namespace sight::module::filter::vision
 {
 
-static const core::com::Signals::SignalKeyType s_CAMERA_MOVED_SIG    = "cameraMoved";
-static const core::com::Signals::SignalKeyType s_CAMERA_REMAINED_SIG = "cameraRemained";
+static const core::com::signals::key_t CAMERA_MOVED_SIG    = "cameraMoved";
+static const core::com::signals::key_t CAMERA_REMAINED_SIG = "cameraRemained";
 
 // ----------------------------------------------------------------------------
 
 SOpticalFlow::SOpticalFlow() noexcept
 {
-    m_motionSignal   = newSignal<MotionSignalType>(s_CAMERA_MOVED_SIG);
-    m_noMotionSignal = newSignal<NoMotionSignalType>(s_CAMERA_REMAINED_SIG);
+    m_motionSignal   = new_signal<MotionSignalType>(CAMERA_MOVED_SIG);
+    m_noMotionSignal = new_signal<NoMotionSignalType>(CAMERA_REMAINED_SIG);
 }
 
 // ----------------------------------------------------------------------------
@@ -90,7 +90,7 @@ void SOpticalFlow::updating()
     {
         const auto frameTL = m_timeline.lock();
         SIGHT_ASSERT(" Input " << s_FRAME_TIMELINE_INPUT << " cannot be null", frameTL);
-        core::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp();
+        core::hires_clock::type timestamp = frameTL->getNewerTimestamp();
         if(timestamp < m_lastTimestamp + m_latency)
         {
             return;
@@ -201,14 +201,14 @@ void SOpticalFlow::updating()
     if((RMS > 100) && ((static_cast<float>(n_move) / (static_cast<float>(acc))) > 0.8F) && !m_motion)
     {
         m_motion = !m_motion;
-        m_motionSignal->asyncEmit();
+        m_motionSignal->async_emit();
     }
     // No movement or movement on few points (ex: an object moving on the video):
     // we can assume that camera is not moving.
     else if((RMS < 1 || ((static_cast<float>(n_move) / (static_cast<float>(acc))) < 0.5F)) && m_motion)
     {
         m_motion = !m_motion;
-        m_noMotionSignal->asyncEmit();
+        m_noMotionSignal->async_emit();
     }
 
     // Keep last image.
@@ -229,11 +229,11 @@ void SOpticalFlow::stopping()
 
 // ----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SOpticalFlow::getAutoConnections() const
+service::connections_t SOpticalFlow::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_FRAME_TIMELINE_INPUT, data::FrameTL::s_OBJECT_PUSHED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_FRAME_TIMELINE_INPUT, data::FrameTL::OBJECT_PUSHED_SIG, service::slots::UPDATE);
 
     return connections;
 }

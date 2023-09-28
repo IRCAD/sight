@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
 
 #include <data/ImageSeries.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -33,7 +33,7 @@
 namespace sight::core::jobs
 {
 
-class IJob;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -58,11 +58,11 @@ namespace sight::module::io::itk
  * - \b data [sight::data::ImageSeries]: ImageSeries containing read image
  *
  */
-class MODULE_IO_ITK_CLASS_API SImageSeriesReader : public sight::io::base::service::IReader
+class MODULE_IO_ITK_CLASS_API SImageSeriesReader : public sight::io::service::reader
 {
 public:
 
-    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
 
     /**
      * @brief Constructor. Do nothing.
@@ -72,7 +72,7 @@ public:
     ~SImageSeriesReader() noexcept override =
         default;
 
-    SIGHT_DECLARE_SERVICE(SImageSeriesReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SImageSeriesReader, sight::io::service::reader);
 
     /**
      * @brief Configure the image path.
@@ -81,7 +81,7 @@ public:
 
 protected:
 
-    MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_ITK_API sight::io::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

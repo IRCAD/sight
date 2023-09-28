@@ -22,18 +22,18 @@
 
 #include "SFilterSelectorDialog.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
 
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <filter/dicom/IFilter.hpp>
+#include <filter/dicom/filter.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/SelectorDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/selector.hpp>
 
 namespace sight::module::ui::dicom
 {
@@ -99,23 +99,23 @@ void SFilterSelectorDialog::stopping()
 void SFilterSelectorDialog::updating()
 {
     // Retrieve available filters
-    std::vector<filter::dicom::IFilter::sptr> registredFilters;
-    for(const std::string& key : filter::dicom::registry::get()->getFactoryKeys())
+    std::vector<sight::filter::dicom::filter::sptr> registredFilters;
+    for(const std::string& key : sight::filter::dicom::registry::get()->get_factory_keys())
     {
-        filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(key);
+        sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(key);
         registredFilters.push_back(filter);
     }
 
     // Filter available extensions and replace id by service description
-    std::map<std::string, filter::dicom::IFilter::sptr> availableFiltersMap;
+    std::map<std::string, sight::filter::dicom::filter::sptr> availableFiltersMap;
     std::vector<std::string> availableFilterNames;
 
-    for(const filter::dicom::IFilter::sptr& filter : registredFilters)
+    for(const sight::filter::dicom::filter::sptr& filter : registredFilters)
     {
         const bool filterIsSelectedByUser = std::find(
             m_selectedFilters.begin(),
             m_selectedFilters.end(),
-            filter->getClassname()
+            filter->get_classname()
                                             ) != m_selectedFilters.end();
 
         // Test if the filter is considered here as available by users
@@ -126,7 +126,7 @@ void SFilterSelectorDialog::updating()
         {
             // Add this filter
             std::string filterName = filter->getName();
-            filterName                      = (filterName.empty()) ? filter->getClassname() : filterName;
+            filterName                      = (filterName.empty()) ? filter->get_classname() : filterName;
             availableFiltersMap[filterName] = filter;
             availableFilterNames.push_back(filterName);
         }
@@ -144,11 +144,12 @@ void SFilterSelectorDialog::updating()
         // Selection of extension when availableFilterNames.size() > 1
         if(availableFilterNames.size() > 1)
         {
-            sight::ui::base::dialog::SelectorDialog::sptr selector = sight::ui::base::dialog::SelectorDialog::New();
+            sight::ui::dialog::selector::sptr selector =
+                std::make_shared<sight::ui::dialog::selector>();
 
             selector->setTitle("Filter to use");
-            selector->setSelections(availableFilterNames);
-            filterName                = selector->show();
+            selector->set_choices(availableFilterNames);
+            filterName                = selector->show()[0];
             filterSelectionIsCanceled = filterName.empty();
 
             SIGHT_ASSERT(
@@ -160,29 +161,29 @@ void SFilterSelectorDialog::updating()
 
         if(!filterSelectionIsCanceled)
         {
-            filter::dicom::IFilter::sptr filter = availableFiltersMap[filterName];
+            sight::filter::dicom::filter::sptr filter = availableFiltersMap[filterName];
 
             auto obj = m_filter.lock();
             SIGHT_ASSERT("The inout key 'filter' is not correctly set.", obj);
 
-            obj->setValue(filter->getClassname());
+            obj->setValue(filter->get_classname());
 
             auto sig =
-                obj->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                obj->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
             {
-                core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                sig->asyncEmit();
+                core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                sig->async_emit();
             }
         }
     }
     else
     {
         SIGHT_WARN("SFilterSelectorDialog::load : availableFilters is empty.");
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Filter not found");
         messageBox.setMessage("There is no available filter for this reader.");
-        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(sight::ui::dialog::message::WARNING);
+        messageBox.addButton(sight::ui::dialog::message::OK);
         messageBox.show();
     }
 }

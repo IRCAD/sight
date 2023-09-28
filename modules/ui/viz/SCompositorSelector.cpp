@@ -22,14 +22,14 @@
 
 #include "SCompositorSelector.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Composite.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/SRender.hpp>
 
@@ -45,7 +45,7 @@ namespace sight::module::ui::viz
 
 using sight::viz::scene3d::Layer;
 
-const core::com::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
+const core::com::slots::key_t SCompositorSelector::INIT_COMPOSITOR_LIST_SLOT = "initCompositorList";
 
 static const std::string s_COMPOSITOR_RESOURCEGROUP_NAME = "compositorsPostFX";
 
@@ -53,7 +53,7 @@ static const std::string s_COMPOSITOR_RESOURCEGROUP_NAME = "compositorsPostFX";
 
 SCompositorSelector::SCompositorSelector() noexcept
 {
-    newSlot(s_INIT_COMPOSITOR_LIST_SLOT, &SCompositorSelector::initCompositorList, this);
+    new_slot(INIT_COMPOSITOR_LIST_SLOT, &SCompositorSelector::initCompositorList, this);
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void SCompositorSelector::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
@@ -177,24 +177,24 @@ void SCompositorSelector::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    const auto renderers = service::getServices("sight::viz::scene3d::SRender");
+    const auto renderers = sight::service::getServices("sight::viz::scene3d::SRender");
 
     for(const auto& srv : renderers)
     {
-        auto render = sight::viz::scene3d::SRender::dynamicCast(srv);
+        auto render = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(srv);
 
         for(auto& layerMap : render->getLayers())
         {
             const std::string id = layerMap.first;
-            std::string renderID = render->getID();
+            std::string renderID = render->get_id();
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
             m_connections.connect(
                 layerMap.second,
-                Layer::s_INIT_LAYER_SIG,
-                this->getSptr(),
-                s_INIT_COMPOSITOR_LIST_SLOT
+                Layer::INIT_LAYER_SIG,
+                this->get_sptr(),
+                INIT_COMPOSITOR_LIST_SLOT
             );
         }
     }

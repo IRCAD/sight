@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #include "modules/ui/qt/calibration/SImagesSelector.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
-#include <core/tools/fwID.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
+#include <core/tools/id.hpp>
 
 #include <data/Image.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -39,16 +39,16 @@
 namespace sight::module::ui::qt::calibration
 {
 
-const core::com::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT    = "add";
-const core::com::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
-const core::com::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
+const core::com::slots::key_t SImagesSelector::ADD_SLOT    = "add";
+const core::com::slots::key_t SImagesSelector::REMOVE_SLOT = "remove";
+const core::com::slots::key_t SImagesSelector::RESET_SLOT  = "reset";
 
 //------------------------------------------------------------------------------
 SImagesSelector::SImagesSelector() noexcept
 {
-    newSlot(s_ADD_SLOT, &SImagesSelector::add, this);
-    newSlot(s_REMOVE_SLOT, &SImagesSelector::remove, this);
-    newSlot(s_RESET_SLOT, &SImagesSelector::reset, this);
+    new_slot(ADD_SLOT, &SImagesSelector::add, this);
+    new_slot(REMOVE_SLOT, &SImagesSelector::remove, this);
+    new_slot(RESET_SLOT, &SImagesSelector::reset, this);
 }
 
 //------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ SImagesSelector::~SImagesSelector() noexcept =
 
 void SImagesSelector::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -70,8 +70,8 @@ void SImagesSelector::starting()
     const auto frameTL = m_frameTL.lock();
     SIGHT_ASSERT("Frame timeline is not found.", frameTL);
 
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     // Main container, VBox
     auto* vLayout = new QVBoxLayout();
@@ -116,12 +116,12 @@ void SImagesSelector::updating()
     unsigned int captureIdx = 0;
     for(const data::Object::sptr& obj : *vector)
     {
-        data::Image::sptr image = data::Image::dynamicCast(obj);
+        data::Image::sptr image = std::dynamic_pointer_cast<data::Image>(obj);
         if(image)
         {
             QString countString;
 
-            countString = QString("%1. %2").arg(captureIdx).arg(QString::fromStdString(image->getID()));
+            countString = QString("%1. %2").arg(captureIdx).arg(QString::fromStdString(image->get_id()));
             m_capturesListWidget->addItem(countString);
             ++captureIdx;
         }
@@ -163,7 +163,7 @@ void SImagesSelector::reset()
 
 //------------------------------------------------------------------------------
 
-void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
+void SImagesSelector::add(core::hires_clock::type timestamp)
 {
     const auto frameTL = m_frameTL.lock();
     CSPTR(data::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
@@ -174,7 +174,7 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
         return;
     }
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
 
     data::Image::Size size;
     size[0] = frameTL->getWidth();
@@ -213,8 +213,8 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     const auto dumpLock = image->dump_lock();
 
     const std::uint8_t* frameBuff = &buffer->getElement(0);
-    auto* imgBuffer               = static_cast<std::uint8_t*>(image->getBuffer());
-    std::copy(frameBuff, frameBuff + buffer->getSize(), imgBuffer);
+    auto* imgBuffer               = static_cast<std::uint8_t*>(image->buffer());
+    std::copy(frameBuff, frameBuff + buffer->size(), imgBuffer);
 
     const auto vector = m_selected_image.lock();
 

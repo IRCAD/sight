@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 namespace sight::core::thread
 {
 
-class Worker;
+class worker;
 
 } // namespace sight::core::thread
 
@@ -43,7 +43,7 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-UI_QT_API SPTR(core::thread::Worker) getQtWorker(
+UI_QT_API SPTR(core::thread::worker) getQtWorker(
     int& argc,
     char** argv,
     std::function<QSharedPointer<QCoreApplication>(int&, char**)> callback,

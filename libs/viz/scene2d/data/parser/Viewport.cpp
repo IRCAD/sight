@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include <service/macros.hpp>
 
 SIGHT_REGISTER_SERVICE(
-    sight::service::IXMLParser,
+    sight::service::object_parser,
     sight::viz::scene2d::data::parser::Viewport,
     sight::viz::scene2d::data::Viewport
 );
@@ -36,9 +36,9 @@ namespace sight::viz::scene2d::data::parser
 
 //------------------------------------------------------------------------------
 
-void Viewport::createConfig(core::tools::Object::sptr _obj)
+void Viewport::createConfig(core::tools::object::sptr _obj)
 {
-    const data::Viewport::sptr viewport = data::Viewport::dynamicCast(_obj);
+    const data::Viewport::sptr viewport = std::dynamic_pointer_cast<data::Viewport>(_obj);
     SIGHT_ASSERT("Viewport does not exist.", viewport);
 
     const auto config = m_cfg.get_child_optional("config.<xmlattr>");

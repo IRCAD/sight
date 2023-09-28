@@ -23,11 +23,11 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/data/Landmarks.hpp>
+#include <data/Landmarks.hpp>
 
-#include <ui/base/parameter.hpp>
+#include <ui/__/parameter.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/PredefinedPositionInteractor.hpp>
 
 #include <memory>
@@ -76,22 +76,22 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b updateTransform: Update adaptor using the input transformation,
  * this slot is called automatically if autoConnect="true".
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SPredefinedCamera final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API SPredefinedCamera final : public sight::viz::scene3d::adaptor
 {
 public:
 
     struct slots
     {
-        using slots_t = core::com::Slots::SlotKeyType;
+        using slots_t = core::com::slots::key_t;
 
-        inline static const slots_t s_SET_PARAMETER     = "setParameter";
-        inline static const slots_t s_NEXT_POSITION     = "nextPosition";
-        inline static const slots_t s_PREVIOUS_POSITION = "previousPosition";
-        inline static const slots_t s_UPDATE_TRANSFORM  = "updateTransform";
+        inline static const slots_t SET_PARAMETER     = "setParameter";
+        inline static const slots_t NEXT_POSITION     = "nextPosition";
+        inline static const slots_t PREVIOUS_POSITION = "previousPosition";
+        inline static const slots_t UPDATE_TRANSFORM  = "updateTransform";
     };
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPredefinedCamera, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SPredefinedCamera, sight::viz::scene3d::adaptor);
 
     /// Constructor.
     MODULE_VIZ_SCENE3D_API SPredefinedCamera() noexcept;
@@ -115,10 +115,10 @@ protected:
 
 private:
 
-    KeyConnectionsMap getAutoConnections() const final;
+    connections_t getAutoConnections() const final;
 
     void updateTransform();
-    void setParameter(ui::base::parameter_t value, std::string key);
+    void setParameter(ui::parameter_t value, std::string key);
 
     using predefined_position_t = sight::viz::scene3d::interactor::PredefinedPositionInteractor::predefined_position_t;
 

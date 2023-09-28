@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/CameraSet.hpp>
 #include <data/Image.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -55,11 +55,11 @@ namespace sight::module::filter::vision
  * @subsection In-Out In-Out
  * - \b scaledDepth [sight::data::Image]: scaled depth map.
  */
-class MODULE_FILTER_VISION_CLASS_API STransformDepthMap2mm : public service::IFilter
+class MODULE_FILTER_VISION_CLASS_API STransformDepthMap2mm : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STransformDepthMap2mm, service::IFilter);
+    SIGHT_DECLARE_SERVICE(STransformDepthMap2mm, service::filter);
 
     /**
      * @brief STransformDepthMap2mm constructor.

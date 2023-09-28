@@ -46,13 +46,13 @@ Window{
                     y: description.height / 2 - icon.height / 2 + 15
                     fillMode: Image.PreserveAspectFit
                     mipmap: true
-                    source: loggerDialog.icon
+                    source: logger.icon
                 }
                 // this label is the summary of the number of errors
                 Label {
                     id:description
 
-                    text: loggerDialog.message
+                    text: logger.message
                     // For text to wrap, a width has to be explicitly provided
                     width: window.width
                     // This setting makes the text wrap at word boundaries when it goes
@@ -79,7 +79,7 @@ Window{
                     fillMode: Image.PreserveAspectFit
                     mipmap: true
                     antialiasing: true
-                    source: checkbox.checkState ? loggerDialog.shown : loggerDialog.hidden
+                    source: checkbox.checkState ? logger.shown : logger.hidden
                     cache : true;
                     asynchronous: true;
                 }
@@ -169,11 +169,11 @@ Window{
         }
 
         onAccepted: {
-            loggerDialog.resultDialog(true)
+            logger.resultDialog(true)
             window.close()
         }
         onRejected: {
-            loggerDialog.resultDialog(false)
+            logger.resultDialog(false)
             window.close()
         }
         onVisibleChanged: visible ? "" : reset()

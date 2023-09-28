@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene3d/adaptor/SNegato2DCamera.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
@@ -35,17 +35,19 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCamera";
-static const core::com::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT    = "resizeViewport";
-static const core::com::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
+static const core::com::slots::key_t RESET_CAMERA_SLOT       = "resetCamera";
+static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT    = "resizeViewport";
+static const core::com::slots::key_t CHANGE_ORIENTATION_SLOT = "changeOrientation";
+
+namespace interactor_3d = sight::viz::scene3d::interactor;
 
 //-----------------------------------------------------------------------------
 
 SNegato2DCamera::SNegato2DCamera() noexcept
 {
-    newSlot(s_RESET_CAMERA_SLOT, &SNegato2DCamera::resetCamera, this);
-    newSlot(s_RESIZE_VIEWPORT_SLOT, &SNegato2DCamera::resizeViewport, this);
-    newSlot(s_CHANGE_ORIENTATION_SLOT, &SNegato2DCamera::changeOrientation, this);
+    new_slot(RESET_CAMERA_SLOT, &SNegato2DCamera::resetCamera, this);
+    new_slot(RESIZE_VIEWPORT_SLOT, &SNegato2DCamera::resizeViewport, this);
+    new_slot(CHANGE_ORIENTATION_SLOT, &SNegato2DCamera::changeOrientation, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +92,7 @@ void SNegato2DCamera::starting()
     this->initialize();
 
     const auto layer = this->getLayer();
-    auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+    auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     layer->addInteractor(interactor, m_priority);
 
     Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
@@ -98,9 +100,9 @@ void SNegato2DCamera::starting()
 
     m_layerConnection.connect(
         this->getLayer(),
-        sight::viz::scene3d::Layer::s_RESIZE_LAYER_SIG,
-        this->getSptr(),
-        s_RESIZE_VIEWPORT_SLOT
+        sight::viz::scene3d::Layer::RESIZE_LAYER_SIG,
+        this->get_sptr(),
+        RESIZE_VIEWPORT_SLOT
     );
 
     this->resetCamera();
@@ -119,17 +121,17 @@ void SNegato2DCamera::stopping()
 {
     m_layerConnection.disconnect();
     const auto layer = this->getLayer();
-    auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+    auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     layer->removeInteractor(interactor);
 }
 
 // ----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
+service::connections_t SNegato2DCamera::getAutoConnections() const
 {
     return {
-        {s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT},
-        {s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT}
+        {s_IMAGE_INOUT, data::Image::MODIFIED_SIG, RESET_CAMERA_SLOT},
+        {s_IMAGE_INOUT, data::Image::SLICE_TYPE_MODIFIED_SIG, CHANGE_ORIENTATION_SLOT}
     };
 }
 
@@ -139,7 +141,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
 {
     const auto layer = this->getLayer();
 
-    if(IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant))
+    if(interactor_3d::base::isInLayer(_x, _y, layer, m_layerOrderDependant))
     {
         // CTRL + wheel = Zoom in/out.
         if(_modifier == Modifier::CONTROL)
@@ -191,7 +193,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
             // Get Index
             const int current_index =
                 static_cast<int>(imHelper::getSliceIndex(*image, m_currentNegatoOrientation).value_or(0));
-            const int max_slice = static_cast<int>(image->getSize()[m_currentNegatoOrientation] - 1);
+            const int max_slice = static_cast<int>(image->size()[m_currentNegatoOrientation] - 1);
 
             if(max_slice <= 0)
             {
@@ -242,9 +244,9 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
 
             // Send signal.
             auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>(
-                data::Image::s_SLICE_INDEX_MODIFIED_SIG
+                data::Image::SLICE_INDEX_MODIFIED_SIG
             );
-            sig->asyncEmit(idx[2], idx[1], idx[0]);
+            sig->async_emit(idx[2], idx[1], idx[0]);
         }
     }
 }
@@ -276,7 +278,7 @@ void SNegato2DCamera::panGestureReleaseEvent(int /*_x*/, int /*_y*/, int /*_dx*/
 // ----------------------------------------------------------------------------
 
 void SNegato2DCamera::mouseMoveEvent(
-    IInteractor::MouseButton _button,
+    interactor_3d::base::MouseButton _button,
     Modifier /*_mods*/,
     int _x,
     int _y,
@@ -318,14 +320,14 @@ void SNegato2DCamera::mouseMoveEvent(
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifier /*_mods*/, int _x, int _y)
+void SNegato2DCamera::buttonPressEvent(interactor_3d::base::MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
     const auto layer = this->getLayer();
     if(_button == MouseButton::MIDDLE)
     {
-        m_isInteracting = IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant);
+        m_isInteracting = interactor_3d::base::isInLayer(_x, _y, layer, m_layerOrderDependant);
     }
-    else if(_button == MouseButton::RIGHT && IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant))
+    else if(_button == MouseButton::RIGHT && interactor_3d::base::isInLayer(_x, _y, layer, m_layerOrderDependant))
     {
         m_isInteracting = true;
 
@@ -341,7 +343,7 @@ void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifie
 //-----------------------------------------------------------------------------
 
 void SNegato2DCamera::buttonReleaseEvent(
-    IInteractor::MouseButton /*_button*/,
+    interactor_3d::base::MouseButton /*_button*/,
     Modifier /*_mods*/,
     int /*_x*/,
     int /*_y*/
@@ -355,7 +357,7 @@ void SNegato2DCamera::buttonReleaseEvent(
 void SNegato2DCamera::keyPressEvent(int _key, Modifier /*_mods*/, int _x, int _y)
 {
     const auto layer = this->getLayer();
-    if(IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant) && (_key == 'R' || _key == 'r'))
+    if(interactor_3d::base::isInLayer(_x, _y, layer, m_layerOrderDependant) && (_key == 'R' || _key == 'r'))
     {
         this->resetCamera();
     }
@@ -386,7 +388,7 @@ void SNegato2DCamera::resetCamera()
 
     const auto image   = m_image.const_lock();
     const auto origin  = image->getOrigin();
-    const auto size    = image->getSize();
+    const auto size    = image->size();
     const auto spacing = image->getSpacing();
 
     if(size[0] > 0 && size[1] > 0 && size[2] > 0)
@@ -493,10 +495,10 @@ void SNegato2DCamera::updateWindowing(double _dw, double _dl)
         tf->setWindow(newWindow);
         tf->setLevel(newLevel);
         const auto sig = tf->template signal<data::TransferFunction::WindowingModifiedSignalType>(
-            data::TransferFunction::s_WINDOWING_MODIFIED_SIG
+            data::TransferFunction::WINDOWING_MODIFIED_SIG
         );
         {
-            sig->asyncEmit(newWindow, newLevel);
+            sig->async_emit(newWindow, newLevel);
         }
     }
 }

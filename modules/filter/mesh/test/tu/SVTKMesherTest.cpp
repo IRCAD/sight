@@ -23,10 +23,9 @@
 
 #include "data/Exception.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 #include <core/runtime/runtime.hpp>
-#include <core/service/base.hpp>
-#include <core/tools/random/Generator.hpp>
+#include <core/tools/random/generator.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -35,6 +34,7 @@
 #include <io/vtk/ImageReader.hpp>
 #include <io/vtk/ImageWriter.hpp>
 
+#include <service/op.hpp>
 #include <service/op/Add.hpp>
 
 #include <utestData/generator/Image.hpp>
@@ -55,7 +55,7 @@ void SVTKMesherTest::setUp()
 {
     // Set up context before running a test.
     core::runtime::init();
-    auto module = core::runtime::loadModule(std::string("sight::module::filter::mesh"));
+    auto module = core::runtime::load_module(std::string("sight::module::filter::mesh"));
 }
 
 //------------------------------------------------------------------------------
@@ -67,13 +67,13 @@ void SVTKMesherTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-inline static std::pair<sight::service::IService::sptr, sight::data::ImageSeries::sptr> generateMeshService()
+inline static std::pair<sight::service::base::sptr, sight::data::ImageSeries::sptr> generateMeshService()
 {
     // Create service
-    sight::service::IService::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::SVTKMesher");
+    sight::service::base::sptr generateMeshService = sight::service::add("sight::module::filter::mesh::SVTKMesher");
     CPPUNIT_ASSERT(generateMeshService);
 
-    auto imageSeries    = sight::data::ImageSeries::New();
+    auto imageSeries    = std::make_shared<sight::data::ImageSeries>();
     const auto dumpLock = imageSeries->dump_lock();
 
     const data::Image::Size size       = {10, 20, 90};
@@ -85,7 +85,7 @@ inline static std::pair<sight::service::IService::sptr, sight::data::ImageSeries
         size,
         spacing,
         origin,
-        core::Type::get<std::int16_t>(),
+        core::type::get<std::int16_t>(),
         data::Image::PixelFormat::GRAY_SCALE
     );
 
@@ -120,10 +120,10 @@ inline static std::pair<sight::service::IService::sptr, sight::data::ImageSeries
         }
     }
 
-    core::os::TempFile tempFile;
-    auto myWriter = io::vtk::ImageWriter::New();
+    core::os::temp_file tempFile;
+    auto myWriter = std::make_shared<io::vtk::ImageWriter>();
     myWriter->setObject(imageSeries);
-    myWriter->setFile(tempFile);
+    myWriter->set_file(tempFile);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
 
     return {generateMeshService, imageSeries};
@@ -136,7 +136,7 @@ void SVTKMesherTest::generateMesh()
     // Create service
     auto [mesherService, imageSeries] = generateMeshService();
 
-    service::IService::ConfigType config;
+    service::config_t config;
     std::stringstream config_string;
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
@@ -150,7 +150,7 @@ void SVTKMesherTest::generateMesh()
     mesherService->start().wait();
     mesherService->update().wait();
     {
-        auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").const_lock();
+        auto modelSeries          = mesherService->output<sight::data::ModelSeries>("modelSeries").const_lock();
         unsigned int numberPoints = 77;
         unsigned int numberCells  = 125;
         CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
@@ -167,7 +167,7 @@ void SVTKMesherTest::generateMeshWithMinReduction()
     // Create service
     auto [mesherService, imageSeries] = generateMeshService();
 
-    service::IService::ConfigType config;
+    service::config_t config;
     std::stringstream config_string;
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
@@ -181,7 +181,7 @@ void SVTKMesherTest::generateMeshWithMinReduction()
     mesherService->start().wait();
     mesherService->update().wait();
     {
-        auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").const_lock();
+        auto modelSeries          = mesherService->output<sight::data::ModelSeries>("modelSeries").const_lock();
         unsigned int numberPoints = 147;
         unsigned int numberCells  = 253;
         CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
@@ -198,7 +198,7 @@ void SVTKMesherTest::noMeshGenerated()
     // Create service
     auto [mesherService, imageSeries] = generateMeshService();
 
-    service::IService::ConfigType config;
+    service::config_t config;
     std::stringstream config_string;
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
@@ -212,7 +212,7 @@ void SVTKMesherTest::noMeshGenerated()
     mesherService->start().wait();
     mesherService->update().wait();
     {
-        auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").const_lock();
+        auto modelSeries          = mesherService->output<sight::data::ModelSeries>("modelSeries").const_lock();
         unsigned int numberPoints = 0;
         unsigned int numberCells  = 0;
         CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
@@ -228,7 +228,7 @@ void SVTKMesherTest::updateThresholdTest()
 {
     // Create service
     auto [mesherService, imageSeries] = generateMeshService();
-    service::IService::ConfigType config;
+    service::config_t config;
     std::stringstream config_string;
 
     //threshold is set to 255 by the configuration
@@ -249,7 +249,7 @@ void SVTKMesherTest::updateThresholdTest()
     mesherService->start().wait();
     mesherService->update().wait();
     {
-        auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").const_lock();
+        auto modelSeries          = mesherService->output<sight::data::ModelSeries>("modelSeries").const_lock();
         unsigned int numberPoints = 0;
         unsigned int numberCells  = 0;
         CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);

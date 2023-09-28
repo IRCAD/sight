@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "SOpenCVIntrinsic.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <io/opencv/Matrix.hpp>
 
-#include <ui/base/Preferences.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -35,16 +35,16 @@
 namespace sight::module::geometry::vision
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
-static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+static const core::com::signals::key_t ERROR_COMPUTED_SIG = "errorComputed";
 
 // ----------------------------------------------------------------------------
 
 SOpenCVIntrinsic::SOpenCVIntrinsic() noexcept
 {
-    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
-    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateChessboardSize, this);
+    new_signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG);
+    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateChessboardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -138,11 +138,11 @@ void SOpenCVIntrinsic::updating()
         std::vector<float> distCoeffs;
         std::vector<cv::Mat> rvecs;
         std::vector<cv::Mat> tvecs;
-        cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
+        cv::Size2i imgsize(static_cast<int>(img->size()[0]), static_cast<int>(img->size()[1]));
 
         double err = cv::calibrateCamera(objectPoints, imagePoints, imgsize, cameraMatrix, distCoeffs, rvecs, tvecs);
 
-        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
+        this->signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG)->async_emit(err);
 
         const auto poseCamera = m_poseVector.lock();
         if(poseCamera)
@@ -151,15 +151,15 @@ void SOpenCVIntrinsic::updating()
 
             for(std::size_t index = 0 ; index < rvecs.size() ; ++index)
             {
-                data::Matrix4::sptr mat3D = data::Matrix4::New();
+                data::Matrix4::sptr mat3D = std::make_shared<data::Matrix4>();
 
                 io::opencv::Matrix::copyFromCv(rvecs.at(index), tvecs.at(index), mat3D);
 
                 poseCamera->push_back(mat3D);
                 auto sig = poseCamera->signal<data::Vector::added_signal_t>(
-                    data::Vector::s_ADDED_OBJECTS_SIG
+                    data::Vector::ADDED_OBJECTS_SIG
                 );
-                sig->asyncEmit(poseCamera->get_content());
+                sig->async_emit(poseCamera->get_content());
             }
         }
 
@@ -171,18 +171,18 @@ void SOpenCVIntrinsic::updating()
         cam->setCy(cameraMatrix.at<double>(1, 2));
         cam->setFx(cameraMatrix.at<double>(0, 0));
         cam->setFy(cameraMatrix.at<double>(1, 1));
-        cam->setWidth(img->getSize()[0]);
-        cam->setHeight(img->getSize()[1]);
+        cam->setWidth(img->size()[0]);
+        cam->setHeight(img->size()[1]);
         cam->setDistortionCoefficient(distCoeffs[0], distCoeffs[1], distCoeffs[2], distCoeffs[3], distCoeffs[4]);
 
         cam->setIsCalibrated(true);
 
         data::Camera::IntrinsicCalibratedSignalType::sptr sig;
         sig = cam->signal<data::Camera::IntrinsicCalibratedSignalType>(
-            data::Camera::s_INTRINSIC_CALIBRATED_SIG
+            data::Camera::INTRINSIC_CALIBRATED_SIG
         );
 
-        sig->asyncEmit();
+        sig->async_emit();
     }
 }
 
@@ -192,7 +192,7 @@ void SOpenCVIntrinsic::updateChessboardSize()
 {
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
 
         if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_widthKey); saved)
         {
@@ -209,7 +209,7 @@ void SOpenCVIntrinsic::updateChessboardSize()
             m_squareSize = *saved;
         }
     }
-    catch(const ui::base::PreferencesDisabled&)
+    catch(const ui::PreferencesDisabled&)
     {
         // Nothing to do..
     }

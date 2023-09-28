@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@ namespace sight::io::dicom::exception
 //----------------------------------------------------------------------------
 
 InvalidTag::InvalidTag(const std::string& message) :
-    core::Exception(message)
+    core::exception(message)
 {
 }
 

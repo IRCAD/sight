@@ -24,8 +24,8 @@
 
 #include "modules/viz/qt3d/adaptor/SMaterial.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Mesh.hpp>
 #include <data/mt/locked_ptr.hpp>
@@ -97,10 +97,10 @@ void SMesh::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+service::connections_t SMesh::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_MESH_INOUT, data::Mesh::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_MESH_INOUT, data::Mesh::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -125,7 +125,7 @@ void SMesh::updating()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = service::getServices<module::viz::qt3d::adaptor::SMaterial>();
+        auto mtlAdaptors = sight::service::getServices<module::viz::qt3d::adaptor::SMaterial>();
 
         auto result =
             std::find_if(

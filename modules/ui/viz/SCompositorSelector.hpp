@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <viz/scene3d/compositor/ChainManager.hpp>
 #include <viz/scene3d/Layer.hpp>
@@ -46,13 +46,13 @@ namespace sight::module::ui::viz
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class MODULE_UI_VIZ_CLASS_API SCompositorSelector : public QObject,
-                                                    public sight::ui::base::IEditor
+                                                    public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SCompositorSelector, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SCompositorSelector, sight::ui::editor);
 
     /** @} */
 
@@ -60,10 +60,10 @@ public:
      * @name Slots API
      * @{
      */
-    typedef core::com::Slot<void (sight::viz::scene3d::Layer::sptr)> InitLayerSlotType;
+    typedef core::com::slot<void (sight::viz::scene3d::Layer::sptr)> InitLayerSlotType;
 
     /// Slot: Populate the list of available compositors for the selected layer
-    MODULE_UI_VIZ_API static const core::com::Slots::SlotKeyType s_INIT_COMPOSITOR_LIST_SLOT;
+    MODULE_UI_VIZ_API static const core::com::slots::key_t INIT_COMPOSITOR_LIST_SLOT;
 
     /** @} */
 
@@ -138,7 +138,7 @@ private:
     sight::viz::scene3d::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
 
     ///Connection service, needed for slot/signal association
-    core::com::helper::SigSlotConnection m_connections;
+    core::com::helper::sig_slot_connection m_connections;
 };
 
 } // namespace sight::module::ui::viz

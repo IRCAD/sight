@@ -22,8 +22,8 @@
 
 #include "SConsumer.hpp"
 
-#include <core/com/Slots.hxx>
-#include <core/thread/Timer.hpp>
+#include <core/com/slots.hxx>
+#include <core/thread/timer.hpp>
 
 #include <service/macros.hpp>
 
@@ -34,13 +34,13 @@ namespace ExTimeLine
 
 //------------------------------------------------------------------------------
 
-const sight::core::com::Slots::SlotKeyType SConsumer::s_CONSUME_SLOT = "consume";
+const sight::core::com::slots::key_t SConsumer::CONSUME_SLOT = "consume";
 
 //------------------------------------------------------------------------------
 
 SConsumer::SConsumer() noexcept
 {
-    newSlot(s_CONSUME_SLOT, &SConsumer::consume, this);
+    new_slot(CONSUME_SLOT, &SConsumer::consume, this);
 }
 
 //------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ SConsumer::~SConsumer() noexcept =
 
 void SConsumer::configuring()
 {
-    sight::service::IService::ConfigType config = this->getConfiguration();
+    sight::service::config_t config = this->getConfiguration();
 
     m_receiverId = config.get<unsigned int>("id");
     m_period     = config.get<unsigned int>("period", 0);
@@ -64,9 +64,9 @@ void SConsumer::starting()
 {
     if(m_period != 0U)
     {
-        m_timer = this->worker()->createTimer();
-        m_timer->setFunction([this](auto&& ...){updating();});
-        m_timer->setDuration(std::chrono::milliseconds(m_period));
+        m_timer = this->worker()->create_timer();
+        m_timer->set_function([this](auto&& ...){updating();});
+        m_timer->set_duration(std::chrono::milliseconds(m_period));
         m_timer->start();
     }
 }
@@ -84,7 +84,7 @@ void SConsumer::updating()
 {
     const auto timeline = m_timeline.lock();
 
-    const auto timestamp = sight::core::HiResClock::getTimeInMilliSec();
+    const auto timestamp = sight::core::hires_clock::get_time_in_milli_sec();
     const CSPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 
     if(buffer)
@@ -98,7 +98,7 @@ void SConsumer::updating()
 
 //------------------------------------------------------------------------------
 
-void SConsumer::consume(sight::core::HiResClock::HiResClockType timestamp)
+void SConsumer::consume(sight::core::hires_clock::type timestamp)
 {
     const auto timeline = m_timeline.lock();
 

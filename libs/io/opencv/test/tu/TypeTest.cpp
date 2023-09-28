@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ void TypeTest::tearDown()
 template<typename T, std::size_t NUM_COMPONENTS>
 void testToCv(std::int32_t _expectedType)
 {
-    core::Type type        = core::Type::get<T>();
+    core::type type        = core::type::get<T>();
     const auto imageFormat = io::opencv::Type::toCv(type, NUM_COMPONENTS);
     CPPUNIT_ASSERT_EQUAL(_expectedType, imageFormat);
 }
@@ -59,7 +59,7 @@ void testToCv(std::int32_t _expectedType)
 template<typename EXPECTED_T, uint8_t EXPECTED_NUM_COMPONENTS>
 void testFromCv(std::int32_t _cvType)
 {
-    core::Type expectedType = core::Type::get<EXPECTED_T>();
+    core::type expectedType = core::type::get<EXPECTED_T>();
     const auto format       = io::opencv::Type::fromCv(_cvType);
     const auto type         = format.first;
     const auto comp         = format.second;

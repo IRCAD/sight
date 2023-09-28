@@ -1,0 +1,71 @@
+/************************************************************************
+ *
+ * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#pragma once
+
+#include <data/TransferFunction.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace sight::data::ut
+{
+
+class TransferFunctionTest : public CPPUNIT_NS::TestFixture
+{
+private:
+
+    CPPUNIT_TEST_SUITE(TransferFunctionTest);
+    CPPUNIT_TEST(constructorTest);
+    CPPUNIT_TEST(defaultTfTest);
+    CPPUNIT_TEST(classicGetSetTest);
+    CPPUNIT_TEST(setTFDataTest);
+    CPPUNIT_TEST(shallowAndDeepCopyTest);
+    CPPUNIT_TEST(linearColorTest);
+    CPPUNIT_TEST(nearestColorTest);
+    CPPUNIT_TEST(mapValuesTest);
+    CPPUNIT_TEST(piecewiseFunctionTest);
+    CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST_SUITE_END();
+
+public:
+
+    // interface
+    void setUp() override;
+    void tearDown() override;
+
+    static void constructorTest();
+    static void defaultTfTest();
+    static void classicGetSetTest();
+    void usingTfTest();
+    void setTFDataTest();
+    static void shallowAndDeepCopyTest();
+    void linearColorTest();
+    void nearestColorTest();
+    static void mapValuesTest();
+    static void piecewiseFunctionTest();
+    static void equalityTest();
+
+    static data::TransferFunction::sptr createTFColor();
+    static void checkTFColor(data::TransferFunction::sptr tf);
+};
+
+} // namespace sight::data::ut

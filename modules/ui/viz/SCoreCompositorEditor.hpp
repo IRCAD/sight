@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <viz/scene3d/Layer.hpp>
 
@@ -52,13 +52,13 @@ namespace sight::module::ui::viz
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
 class MODULE_UI_VIZ_CLASS_API SCoreCompositorEditor : public QObject,
-                                                      public sight::ui::base::IEditor
+                                                      public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SCoreCompositorEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SCoreCompositorEditor, sight::ui::editor);
 
     /// Constructor.
     MODULE_UI_VIZ_API SCoreCompositorEditor() noexcept;

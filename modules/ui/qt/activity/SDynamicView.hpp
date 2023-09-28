@@ -24,15 +24,15 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/ActivityMsg.hpp>
 #include <activity/extension/Activity.hpp>
+#include <activity/message.hpp>
 
 #include <data/Activity.hpp>
 
-#include <service/IAppConfigManager.hpp>
+#include <service/app_config_manager.hpp>
 
-#include <ui/base/view/IActivityView.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/view/IActivityView.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -66,7 +66,7 @@ namespace sight::module::ui::qt::activity
  *
  * @section Slots Slots
  * - \b launchActivity( data::Activity::sptr ): this slot allows to create a tab with the given activity.
- * - \b createTab( activity::ActivityMsg ): this slot allows to create a tab with the given activity information.
+ * - \b createTab( activity::message ): this slot allows to create a tab with the given activity information.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -92,13 +92,13 @@ namespace sight::module::ui::qt::activity
  *  - \b document (optional, default="true") : sets the document mode of the tab bar.
  */
 class MODULE_UI_QT_CLASS_API SDynamicView : public QObject,
-                                            public sight::ui::base::view::IActivityView
+                                            public sight::ui::view::IActivityView
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SDynamicView, sight::ui::base::view::IActivityView);
+    SIGHT_DECLARE_SERVICE(SDynamicView, sight::ui::view::IActivityView);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SDynamicView() noexcept;
@@ -107,10 +107,10 @@ public:
 
     MODULE_UI_QT_API ~SDynamicView() noexcept override;
 
-    typedef core::com::Signal<void (data::Object::sptr)> ActivitySelectedSignalType;
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
-    typedef core::com::Signal<void ()> NothingSelectedSignalType;
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_NOTHING_SELECTED_SIG;
+    typedef core::com::signal<void (data::Object::sptr)> ActivitySelectedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_SELECTED_SIG;
+    typedef core::com::signal<void ()> NothingSelectedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t NOTHING_SELECTED_SIG;
 
 protected:
 
@@ -132,7 +132,7 @@ protected:
 
     /**
      * @brief Configure the view
-     * @see sight::ui::base::IGuiContainer::initialize()
+     * @see sight::ui::service::initialize()
      */
     void configuring() override;
 
@@ -144,8 +144,8 @@ private:
 
     struct SDynamicViewInfo
     {
-        sight::ui::qt::container::QtContainer::sptr container;
-        service::IAppConfigManager::sptr helper;
+        sight::ui::qt::container::widget::sptr container;
+        sight::service::app_config_manager::sptr helper;
         std::string wid;
         std::string title;
         bool closable {};
@@ -171,7 +171,7 @@ private:
     void launchActivity(data::Activity::sptr activity) override;
 
     /// launch a new tab according to the receiving msg
-    void createTab(sight::activity::ActivityMsg info);
+    void createTab(sight::activity::message info);
 
     /// Create the main activity and launch the activity
     virtual void buildMainActivity();

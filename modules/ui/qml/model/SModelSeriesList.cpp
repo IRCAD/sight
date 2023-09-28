@@ -22,7 +22,7 @@
 
 #include "SModelSeriesList.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <data/Boolean.hpp>
 #include <data/helper/Field.hpp>
@@ -32,13 +32,13 @@
 namespace sight::module::ui::qml::model
 {
 
-const core::com::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
-const core::com::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
+const core::com::signals::key_t SModelSeriesList::RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
+const core::com::signals::key_t SModelSeriesList::EMPTIED_SELECTION_SIG       = "emptiedSelection";
 
 SModelSeriesList::SModelSeriesList() noexcept
 {
-    m_sigReconstructionSelected = newSignal<ReconstructionSelectedSignalType>(s_RECONSTRUCTION_SELECTED_SIG);
-    m_sigEmptiedSelection       = newSignal<EmptiedSelectionSignalType>(s_EMPTIED_SELECTION_SIG);
+    m_sigReconstructionSelected = new_signal<ReconstructionSelectedSignalType>(RECONSTRUCTION_SELECTED_SIG);
+    m_sigEmptiedSelection       = new_signal<EmptiedSelectionSignalType>(EMPTIED_SELECTION_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ SModelSeriesList::~SModelSeriesList() noexcept =
 
 void SModelSeriesList::starting()
 {
-    sight::ui::qml::IQmlEditor::starting();
+    sight::ui::qml::editor::starting();
 }
 
 //------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ void SModelSeriesList::stopping()
 {
     m_listModel->updateModelSeries(nullptr);
 
-    sight::ui::qml::IQmlEditor::stopping();
+    sight::ui::qml::editor::stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -91,11 +91,11 @@ void SModelSeriesList::onOrganSelected(int index)
         const auto& recs = modelSeries->getReconstructionDB();
 
         const auto& selectedRec = recs.at(static_cast<std::size_t>(index));
-        m_sigReconstructionSelected->asyncEmit(selectedRec);
+        m_sigReconstructionSelected->async_emit(selectedRec);
     }
     else
     {
-        m_sigEmptiedSelection->asyncEmit();
+        m_sigEmptiedSelection->async_emit();
     }
 }
 
@@ -106,7 +106,7 @@ void SModelSeriesList::onShowReconstructions(int state)
     auto modelSeries = m_modelSeries.lock();
     SIGHT_ASSERT("'" << s_MODEL_SERIES_INOUT << "' must be defined as 'inout'", modelSeries);
     data::helper::Field helper(modelSeries.get_shared());
-    helper.addOrSwap("ShowReconstructions", data::Boolean::New(state == Qt::Unchecked));
+    helper.addOrSwap("ShowReconstructions", std::make_shared<data::Boolean>(state == Qt::Unchecked));
     helper.notify();
 }
 
@@ -128,9 +128,9 @@ void SModelSeriesList::onOrganVisibilityChanged(int index, bool visible)
 
             data::Reconstruction::VisibilityModifiedSignalType::sptr sig;
             sig = selectedRec->signal<data::Reconstruction::VisibilityModifiedSignalType>(
-                data::Reconstruction::s_VISIBILITY_MODIFIED_SIG
+                data::Reconstruction::VISIBILITY_MODIFIED_SIG
             );
-            sig->asyncEmit(visible);
+            sig->async_emit(visible);
         }
     }
 }
@@ -150,9 +150,9 @@ void SModelSeriesList::onCheckAllBoxes(bool checked)
 
             data::Reconstruction::VisibilityModifiedSignalType::sptr sig;
             sig = rec->signal<data::Reconstruction::VisibilityModifiedSignalType>(
-                data::Reconstruction::s_VISIBILITY_MODIFIED_SIG
+                data::Reconstruction::VISIBILITY_MODIFIED_SIG
             );
-            sig->asyncEmit(checked);
+            sig->async_emit(checked);
         }
     }
 
@@ -161,12 +161,12 @@ void SModelSeriesList::onCheckAllBoxes(bool checked)
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
+service::connections_t SModelSeriesList::getAutoConnections() const
 {
     return {
-        {s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, IService::slots::s_UPDATE},
-        {s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE}
+        {s_MODEL_SERIES_INOUT, data::ModelSeries::MODIFIED_SIG, service::slots::UPDATE},
+        {s_MODEL_SERIES_INOUT, data::ModelSeries::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE},
+        {s_MODEL_SERIES_INOUT, data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE}
     };
 }
 

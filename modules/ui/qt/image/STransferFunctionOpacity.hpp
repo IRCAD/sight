@@ -25,7 +25,7 @@
 
 #include <data/TransferFunction.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QPointer>
 
@@ -55,13 +55,13 @@ namespace sight::module::ui::qt::image
  * whole function.
  */
 class MODULE_UI_QT_CLASS_API STransferFunctionOpacity final : public QObject,
-                                                              public sight::ui::base::IEditor
+                                                              public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(STransferFunctionOpacity, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(STransferFunctionOpacity, sight::ui::editor);
 
     /// Initialize signals and slots.
     MODULE_UI_QT_API STransferFunctionOpacity() noexcept = default;
@@ -88,7 +88,7 @@ protected:
      *
      * Connect all transfers functions signals to the update() slot.
      */
-    [[nodiscard]] KeyConnectionsMap getAutoConnections() const final;
+    [[nodiscard]] connections_t getAutoConnections() const final;
 
 protected Q_SLOTS:
 

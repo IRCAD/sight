@@ -28,7 +28,7 @@
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 #include <vtkImageActor.h>
 #include <vtkImageReslice.h>
@@ -71,11 +71,11 @@ namespace sight::module::filter::image
  *    - \b orientation (mandatory, values=axial|sagital|frontal): image orientation, determines the slicing plane axes.
  */
 
-class MODULE_FILTER_IMAGE_CLASS_API SPlaneSlicer : public service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SPlaneSlicer : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SPlaneSlicer, service::IFilter);
+    SIGHT_DECLARE_SERVICE(SPlaneSlicer, service::filter);
 
     /// Constructor.
     MODULE_FILTER_IMAGE_API SPlaneSlicer() noexcept;
@@ -93,14 +93,14 @@ protected:
     /**
      * @brief Returns proposals to connect service slots to associated object signals.
      *
-     * Connect image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect image::s_BUFFER_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_DEFAULT_VALUE_SLOT
-     * Connect imageExtent::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
-     * Connect imageExtent::s_SLICE_TYPE_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect axes::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_DEFAULT_VALUE_SLOT
+     * Connect imageExtent::SLICE_INDEX_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
+     * Connect imageExtent::SLICE_TYPE_MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect axes::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API connections_t getAutoConnections() const override;
 
 private:
 

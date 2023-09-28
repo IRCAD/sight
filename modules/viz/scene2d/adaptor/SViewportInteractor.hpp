@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
-#include <viz/scene2d/IAdaptor.hpp>
+#include <viz/scene2d/adaptor.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -40,11 +40,11 @@ namespace sight::module::viz::scene2d::adaptor
    @endcode
  *
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SViewportInteractor : public sight::viz::scene2d::IAdaptor
+class MODULE_VIZ_SCENE2D_CLASS_API SViewportInteractor : public sight::viz::scene2d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SViewportInteractor, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SViewportInteractor, sight::viz::scene2d::adaptor);
 
     MODULE_VIZ_SCENE2D_API SViewportInteractor() noexcept;
 

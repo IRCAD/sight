@@ -28,8 +28,8 @@
 
 #include <geometry/data/PointList.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/interactor/IInteractor.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/IText.hpp>
 #include <viz/scene3d/Material.hpp>
 
@@ -82,21 +82,21 @@ namespace sight::module::viz::scene3dQt::adaptor
  *
  */
 class SImageMultiDistances final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::interactor::IInteractor
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::interactor::base
 {
 public:
 
     struct signals
     {
-        using key_t = sight::core::com::Signals::SignalKeyType;
-        static inline const key_t s_DEACTIVATE_DISTANCE_TOOL = "deactivateDistanceTool";
+        using key_t = sight::core::com::signals::key_t;
+        static inline const key_t DEACTIVATE_DISTANCE_TOOL = "deactivateDistanceTool";
 
-        using void_signal_t = sight::core::com::Signal<void ()>;
+        using void_signal_t = sight::core::com::signal<void ()>;
     };
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SImageMultiDistances, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SImageMultiDistances, sight::viz::scene3d::adaptor);
 
     /// Initialize slots.
     MODULE_VIZ_SCENE3DQT_API SImageMultiDistances() noexcept;
@@ -151,11 +151,11 @@ protected:
     /**
      * @brief Proposals to connect service slots to associated object signals.
      *
-     * Connect data::Image::s_DISTANCE_REMOVED_SIG to s_REMOVE_DISTANCE_SLOT
-     * Connect data::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
-     * Connect data::Image::s_MODIFIED_SIG to IService::slots::s_UPDATE
+     * Connect data::Image::DISTANCE_REMOVED_SIG to REMOVE_DISTANCE_SLOT
+     * Connect data::Image::DISTANCE_DISPLAYED_SIG to UPDATE_VISIBILITY_SLOT
+     * Connect data::Image::MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3DQT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3DQT_API connections_t getAutoConnections() const override;
 
     /// Updates materials and all distances.
     MODULE_VIZ_SCENE3DQT_API void updating() override;
@@ -197,7 +197,7 @@ private:
     };
 
     /// Map each distances to there related list ID.
-    using DistanceMap = std::map<core::tools::fwID::IDType, DistanceData>;
+    using DistanceMap = std::map<core::tools::id::type, DistanceData>;
 
     class DeleteBinButtonWhenFocusOut : public QObject
     {
@@ -282,7 +282,7 @@ private:
      * @brief Destroys a distance from its ID and remove it from m_distances.
      * @param _id ID of the distance.
      */
-    void destroyDistance(core::tools::fwID::IDType _id);
+    void destroyDistance(core::tools::id::type _id);
 
     /// Slot: Allows visualizing the creation and/or modification of distances field of an Image in multiple
     /// adaptors(Negato2d/Negato3d) by displaying the distances synchronously.

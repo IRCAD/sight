@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "helper.hpp"
 
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Matrix4.hpp>
@@ -69,14 +69,14 @@ void MIPMatchingRegistrationTest::identityTest()
 {
     data::Image::csptr moving = createSphereImage<std::uint16_t, 3>();
     data::Image::csptr fixed  = data::Object::copy(moving);
-    data::Matrix4::sptr mat   = data::Matrix4::New();
+    data::Matrix4::sptr mat   = std::make_shared<data::Matrix4>();
 
     filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
-    params.transform = data::Matrix4::New();
-    core::Type type = moving->getType();
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
+    params.transform = std::make_shared<data::Matrix4>();
+    core::type type = moving->getType();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, RegistrationDispatch>::invoke(type, params);
 
     for(std::size_t i = 0 ; i != 3 ; ++i)
     {
@@ -93,9 +93,9 @@ void MIPMatchingRegistrationTest::identityTest()
 void MIPMatchingRegistrationTest::translateTransformTest()
 {
     data::Image::csptr moving = createSphereImage<std::uint16_t, 3>();
-    data::Image::sptr fixed   = data::Image::New();
+    data::Image::sptr fixed   = std::make_shared<data::Image>();
 
-    data::Matrix4::sptr transform = data::Matrix4::New();
+    data::Matrix4::sptr transform = std::make_shared<data::Matrix4>();
     (*transform)(0, 3) = 4.;
     (*transform)(1, 3) = 12.;
     (*transform)(2, 3) = 7.;
@@ -105,9 +105,9 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = fixed;
     params.moving    = moving;
-    params.transform = data::Matrix4::New();
-    core::Type type = moving->getType();
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
+    params.transform = std::make_shared<data::Matrix4>();
+    core::type type = moving->getType();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, RegistrationDispatch>::invoke(type, params);
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
@@ -129,12 +129,12 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     auto movingSpacing = ImageType::SpacingType(1.);
     movingSpacing[1] = 1.3;
     data::Image::sptr moving = createSphereImage<std::uint16_t, 3>(movingSpacing);
-    data::Image::sptr fixed  = data::Image::New();
+    data::Image::sptr fixed  = std::make_shared<data::Image>();
     moving->setOrigin({107., 50., -30.});
 
     // Translate the image a bit
     std::array<double, 3> vTrans {{4., 19., 7.}};
-    data::Matrix4::sptr transform = data::Matrix4::New();
+    data::Matrix4::sptr transform = std::make_shared<data::Matrix4>();
     (*transform)(0, 3) = vTrans[0];
     (*transform)(1, 3) = vTrans[1];
     (*transform)(2, 3) = vTrans[2];
@@ -157,7 +157,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     ImageType::SpacingType newSpacing(2.);
     for(uint8_t i = 0 ; i != 3 ; ++i)
     {
-        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * double(moving->getSize()[i]));
+        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * double(moving->size()[i]));
     }
 
     auto resample = itk::ResampleImageFilter<ImageType, ImageType>::New();
@@ -172,9 +172,9 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = resampledF4sFixed;
     params.moving    = moving;
-    params.transform = data::Matrix4::New();
-    core::Type type = moving->getType();
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
+    params.transform = std::make_shared<data::Matrix4>();
+    core::type type = moving->getType();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, RegistrationDispatch>::invoke(type, params);
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(

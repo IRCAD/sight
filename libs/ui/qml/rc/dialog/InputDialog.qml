@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.12
 
 import sight.style 1.0
-import sight.InputDialog 1.0
+import sight.input 1.0
 
 Window {
     id: window
@@ -20,7 +20,7 @@ Window {
         width: window.width
         height: window.height
         standardButtons: Dialog.Cancel | Dialog.Ok
-        title: inputDialog.title
+        title: input.title
 
         ColumnLayout {
             id: column
@@ -28,7 +28,7 @@ Window {
 
             //Label to show program message
             Label {
-                text: inputDialog.message
+                text: input.message
                 font.bold: true
                 Layout.columnSpan: 2
                 Layout.fillWidth: true
@@ -39,17 +39,17 @@ Window {
             TextField {
                 id: answer
                 Layout.fillWidth: true
-                placeholderText: inputDialog.input
-                echoMode: inputDialog.echoMode == EchoMode.NOECHO ? TextInput.NoEcho : inputDialog.echoMode == EchoMode.PASSWORD ? TextInput.Password : inputDialog.echoMode == EchoMode.ECHO_ON_EDIT ? TextInput.PasswordEchoOnEdit : TextInput.Normal
+                placeholderText: input.input
+                echoMode: input.echoMode == EchoMode.NOECHO ? TextInput.NoEcho : input.echoMode == EchoMode.PASSWORD ? TextInput.Password : input.echoMode == EchoMode.ECHO_ON_EDIT ? TextInput.PasswordEchoOnEdit : TextInput.Normal
             }
         }
 
         onAccepted: {
-            inputDialog.resultDialog(answer.text, true)
+            input.resultDialog(answer.text, true)
             window.close()
         }
         onRejected: {
-            inputDialog.resultDialog(answer.text, false)
+            input.resultDialog(answer.text, false)
             window.close()
         }
         onVisibleChanged: visible ? "" : reset()

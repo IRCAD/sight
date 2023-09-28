@@ -22,8 +22,8 @@
 
 #include "modules/filter/vision/SColourImageMasking.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <io/opencv/FrameTL.hpp>
 #include <io/opencv/Image.hpp>
@@ -34,13 +34,13 @@
 namespace sight::module::filter::vision
 {
 
-const core::com::Slots::SlotKeyType s_SET_BACKGROUND_SLOT            = "setBackground";
-const core::com::Slots::SlotKeyType s_SET_FOREGROUND_SLOT            = "setForeground";
-const core::com::Slots::SlotKeyType s_SET_THRESHOLD_SLOT             = "setThreshold";
-const core::com::Slots::SlotKeyType s_SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
-const core::com::Slots::SlotKeyType s_SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
-const core::com::Slots::SlotKeyType s_SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
-const core::com::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT              = "clearMaskTL";
+const core::com::slots::key_t SET_BACKGROUND_SLOT            = "setBackground";
+const core::com::slots::key_t SET_FOREGROUND_SLOT            = "setForeground";
+const core::com::slots::key_t SET_THRESHOLD_SLOT             = "setThreshold";
+const core::com::slots::key_t SET_NOISE_LEVEL_SLOT           = "setNoiseLevel";
+const core::com::slots::key_t SET_BACKGROUND_COMPONENTS_SLOT = "setBackgroundComponents";
+const core::com::slots::key_t SET_FOREGROUND_COMPONENTS_SLOT = "setForegroundComponents";
+const core::com::slots::key_t CLEAR_MASKTL_SLOT              = "clearMaskTL";
 
 // ------------------------------------------------------------------------------
 
@@ -50,13 +50,13 @@ SColourImageMasking::SColourImageMasking() noexcept :
     m_lowerColor(cv::Scalar(0, 0, 0)),
     m_upperColor(cv::Scalar(255, 255, 255))
 {
-    newSlot(s_SET_BACKGROUND_SLOT, &SColourImageMasking::setBackground, this);
-    newSlot(s_SET_FOREGROUND_SLOT, &SColourImageMasking::setForeground, this);
-    newSlot(s_SET_THRESHOLD_SLOT, &SColourImageMasking::setThreshold, this);
-    newSlot(s_SET_NOISE_LEVEL_SLOT, &SColourImageMasking::setNoiseLevel, this);
-    newSlot(s_SET_BACKGROUND_COMPONENTS_SLOT, &SColourImageMasking::setBackgroundComponents, this);
-    newSlot(s_SET_FOREGROUND_COMPONENTS_SLOT, &SColourImageMasking::setForegroundComponents, this);
-    newSlot(s_CLEAR_MASKTL_SLOT, &SColourImageMasking::clearMaskTL, this);
+    new_slot(SET_BACKGROUND_SLOT, &SColourImageMasking::setBackground, this);
+    new_slot(SET_FOREGROUND_SLOT, &SColourImageMasking::setForeground, this);
+    new_slot(SET_THRESHOLD_SLOT, &SColourImageMasking::setThreshold, this);
+    new_slot(SET_NOISE_LEVEL_SLOT, &SColourImageMasking::setNoiseLevel, this);
+    new_slot(SET_BACKGROUND_COMPONENTS_SLOT, &SColourImageMasking::setBackgroundComponents, this);
+    new_slot(SET_FOREGROUND_COMPONENTS_SLOT, &SColourImageMasking::setForegroundComponents, this);
+    new_slot(CLEAR_MASKTL_SLOT, &SColourImageMasking::clearMaskTL, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ SColourImageMasking::~SColourImageMasking() noexcept =
 
 void SColourImageMasking::configuring()
 {
-    const service::IService::ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
+    const service::config_t config = this->getConfiguration().get_child("config.<xmlattr>");
 
     m_scaleFactor          = config.get<float>("scaleFactor", 1.0);
     m_noise                = config.get<double>("noise", 0.0);
@@ -92,9 +92,9 @@ void SColourImageMasking::configuring()
     m_lowerColor = cv::Scalar(0, 0, 0);
     m_upperColor = cv::Scalar(255, 255, 255);
 
-    const service::IService::ConfigType hsvConfig = this->getConfiguration().get_child("HSV");
-    std::string s_lowerValue                      = hsvConfig.get<std::string>("lower", "");
-    std::string s_upperValue                      = hsvConfig.get<std::string>("upper", "");
+    const service::config_t hsvConfig = this->getConfiguration().get_child("HSV");
+    std::string s_lowerValue          = hsvConfig.get<std::string>("lower", "");
+    std::string s_upperValue          = hsvConfig.get<std::string>("upper", "");
 
     const boost::char_separator<char> sep {",", ";"};
 
@@ -140,12 +140,12 @@ void SColourImageMasking::stopping()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SColourImageMasking::getAutoConnections() const
+service::connections_t SColourImageMasking::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_VIDEO_TL_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_VIDEO_TL_KEY, data::FrameTL::s_CLEARED_SIG, s_CLEAR_MASKTL_SLOT);
+    connections.push(s_VIDEO_TL_KEY, data::FrameTL::OBJECT_PUSHED_SIG, service::slots::UPDATE);
+    connections.push(s_VIDEO_TL_KEY, data::FrameTL::CLEARED_SIG, CLEAR_MASKTL_SLOT);
 
     return connections;
 }
@@ -164,7 +164,7 @@ void SColourImageMasking::updating()
         SIGHT_ASSERT("Missing input '" << s_MASK_KEY << "'.", mask);
         SIGHT_ASSERT("Missing input '" << s_VIDEO_TL_KEY << "'.", videoTL);
         SIGHT_ASSERT("Missing inout '" << s_VIDEO_MASK_TL_KEY << "'.", videoMaskTL);
-        const auto maskSize = mask->getSize();
+        const auto maskSize = mask->size();
         if(maskSize[0] != videoTL->getWidth() || maskSize[1] != videoTL->getHeight())
         {
             SIGHT_ERROR(
@@ -177,12 +177,12 @@ void SColourImageMasking::updating()
         // This service can take a while to run, this blocker skips frames that arrive while we're already processing
         // one
         auto sig_ = videoTL->signal<data::FrameTL::ObjectPushedSignalType>(
-            data::FrameTL::s_OBJECT_PUSHED_SIG
+            data::FrameTL::OBJECT_PUSHED_SIG
         );
-        core::com::Connection::Blocker blocker(sig_->getConnection(slot(IService::slots::s_UPDATE)));
+        core::com::connection::blocker blocker(sig_->get_connection(slot(service::slots::UPDATE)));
 
         // Get the timestamp from the latest video frame
-        core::HiResClock::HiResClockType currentTimestamp = videoTL->getNewerTimestamp();
+        core::hires_clock::type currentTimestamp = videoTL->getNewerTimestamp();
 
         // Get image from the video timeline
         CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
@@ -195,7 +195,7 @@ void SColourImageMasking::updating()
 
         const std::uint8_t* frameBuffOutVideo = &videoBuffer->getElement(0);
 
-        core::HiResClock::HiResClockType videoTimestamp = videoBuffer->getTimestamp();
+        core::hires_clock::type videoTimestamp = videoBuffer->getTimestamp();
         if(videoTimestamp <= m_lastVideoTimestamp)
         {
             SIGHT_WARN(
@@ -233,9 +233,9 @@ void SColourImageMasking::updating()
         videoMaskTL->pushObject(maskBuffer);
 
         auto sig = videoMaskTL->signal<data::TimeLine::ObjectPushedSignalType>(
-            data::TimeLine::s_OBJECT_PUSHED_SIG
+            data::TimeLine::OBJECT_PUSHED_SIG
         );
-        sig->asyncEmit(currentTimestamp);
+        sig->async_emit(currentTimestamp);
     }
 }
 
@@ -246,7 +246,7 @@ void SColourImageMasking::setBackground()
     const auto mask    = m_mask.lock();
     const auto videoTL = m_videoTL.lock();
 
-    core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
+    core::hires_clock::type currentTimestamp = core::hires_clock::get_time_in_milli_sec();
     CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
@@ -295,7 +295,7 @@ void SColourImageMasking::setBackground()
     videoMaskTL->initPoolSize(
         videoTL->getWidth(),
         videoTL->getHeight(),
-        core::Type::UINT8,
+        core::type::UINT8,
         data::FrameTL::PixelFormat::RGBA
     );
 }
@@ -306,7 +306,7 @@ void SColourImageMasking::setForeground()
 {
     const auto videoTL = m_videoTL.lock();
 
-    core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
+    core::hires_clock::type currentTimestamp = core::hires_clock::get_time_in_milli_sec();
     CSPTR(data::FrameTL::BufferType) videoBuffer = videoTL->getClosestBuffer(currentTimestamp);
     if(!videoBuffer)
     {
@@ -386,9 +386,9 @@ void SColourImageMasking::clearMaskTL()
     auto videoMaskTL = m_videoMaskTL.lock();
     videoMaskTL->clearTimeline();
     auto sigTLCleared = videoMaskTL->signal<data::FrameTL::ObjectClearedSignalType>(
-        data::FrameTL::s_CLEARED_SIG
+        data::FrameTL::CLEARED_SIG
     );
-    sigTLCleared->asyncEmit();
+    sigTLCleared->async_emit();
     m_lastVideoTimestamp = 0.;
 }
 

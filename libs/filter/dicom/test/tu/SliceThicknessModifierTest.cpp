@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,8 @@
 #include "SliceThicknessModifierTest.hpp"
 
 #include <filter/dicom/factory/new.hpp>
+#include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/Filter.hpp>
-#include <filter/dicom/IFilter.hpp>
 
 #include <io/dicom/reader/SeriesSet.hpp>
 
@@ -58,7 +58,7 @@ void SliceThicknessModifierTest::tearDown()
 
 void SliceThicknessModifierTest::simpleApplication()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "09-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -69,29 +69,29 @@ void SliceThicknessModifierTest::simpleApplication()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
+    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Sort instances according to instance number
-    filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
+    sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::sorter::InstanceNumberSorter"
     );
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
 
     // Apply filter
-    filter = filter::dicom::factory::New("sight::filter::dicom::modifier::SliceThicknessModifier");
+    filter = sight::filter::dicom::factory::make("sight::filter::dicom::modifier::SliceThicknessModifier");
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
     dicomSeries = dicomSeriesContainer[0];
 
@@ -106,7 +106,7 @@ void SliceThicknessModifierTest::simpleApplication()
 
 void SliceThicknessModifierTest::applyFilterOn2DImage()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -117,24 +117,24 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
+    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
-    filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
+    sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::modifier::SliceThicknessModifier"
     );
     CPPUNIT_ASSERT(filter);
-    CPPUNIT_ASSERT(!filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false));
+    CPPUNIT_ASSERT(!sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, false));
 }
 
 //------------------------------------------------------------------------------

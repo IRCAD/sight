@@ -4,13 +4,13 @@ add_dependencies(
     ExVideoRecorder
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_viz_scene3d
     module_ui_qt
     module_viz_scene3dQt
     data
     module_service
-    module_ui_base
+    module_ui
     module_ui_flaticons
     module_sync
     module_io_video

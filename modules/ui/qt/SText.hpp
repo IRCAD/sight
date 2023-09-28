@@ -23,7 +23,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QPointer>
 
@@ -49,12 +49,12 @@ namespace sight::module::ui::qt
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
  */
 class MODULE_UI_QT_CLASS_API SText final : public QObject,
-                                           public sight::ui::base::IEditor
+                                           public sight::ui::editor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SText, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SText, sight::ui::editor);
 
     /// Initializes slots and member.
     MODULE_UI_QT_API SText();

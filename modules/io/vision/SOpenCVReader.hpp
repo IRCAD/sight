@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/vision/config.hpp"
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 namespace sight::module::io::vision
 {
@@ -41,11 +41,11 @@ namespace sight::module::io::vision
  * @subsection In-Out In-Out
  * - \b data [sight::data::CameraSet]: object to read
  */
-class MODULE_IO_VISION_CLASS_API SOpenCVReader : public sight::io::base::service::IReader
+class MODULE_IO_VISION_CLASS_API SOpenCVReader : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SOpenCVReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SOpenCVReader, sight::io::service::reader);
 
     ///Constructor
     MODULE_IO_VISION_API SOpenCVReader();
@@ -79,7 +79,7 @@ protected:
     MODULE_IO_VISION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_VISION_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API sight::io::service::IOPathType getIOPathType() const override;
 };
 
 } //namespace sight::module::io::vision

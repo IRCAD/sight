@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,11 +23,11 @@
 #pragma once
 
 #include "io/igtl/config.hpp"
-#include "io/igtl/INetwork.hpp"
+#include "io/igtl/network.hpp"
 // Patched header.
 #include "io/igtl/patch/igtlSocket.h"
 
-#include <core/Exception.hpp>
+#include <core/exception.hpp>
 
 #include <data/Object.hpp>
 
@@ -43,7 +43,7 @@ namespace sight::io::igtl
  *
  * @brief A Network client using igtl::ClientSocket can send fwData primitive
  */
-class IO_IGTL_CLASS_API Client : public io::igtl::INetwork
+class IO_IGTL_CLASS_API Client : public io::igtl::network
 {
 public:
 

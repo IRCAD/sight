@@ -120,12 +120,12 @@ public:
         const auto& image_type = image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << image_type,
-            image_type != core::Type::INT8
-            && image_type != core::Type::UINT8
-            && image_type != core::Type::INT16
-            && image_type != core::Type::UINT16
-            && image_type != core::Type::INT32
-            && image_type != core::Type::UINT32
+            image_type != core::type::INT8
+            && image_type != core::type::UINT8
+            && image_type != core::type::INT16
+            && image_type != core::type::UINT16
+            && image_type != core::type::INT32
+            && image_type != core::type::UINT32
         );
 
         const auto& pixel_format = image.getPixelFormat();
@@ -203,7 +203,7 @@ public:
         opj_stream_set_seek_function(keeper.m_stream, seekCallback);
 
         // Adjust parameters
-        const auto& sizes       = image.getSize();
+        const auto& sizes       = image.size();
         const OPJ_UINT32 width  = OPJ_UINT32(sizes[0]);
         const OPJ_UINT32 height = OPJ_UINT32(sizes[1]);
 
@@ -223,7 +223,7 @@ public:
         std::vector<opj_image_cmptparm_t> component_params(num_components);
 
         const OPJ_UINT32 prec = OPJ_UINT32(image_type.size() * 8);
-        const OPJ_UINT32 sgnd = image_type.isSigned() ? 1 : 0;
+        const OPJ_UINT32 sgnd = image_type.is_signed() ? 1 : 0;
 
         std::ranges::fill(
             component_params,
@@ -263,7 +263,7 @@ public:
         switch(prec)
         {
             case 8:
-                if(image_type.isSigned())
+                if(image_type.is_signed())
                 {
                     toOpenJPEG<std::int8_t>(image, *keeper.m_image);
                 }
@@ -275,7 +275,7 @@ public:
                 break;
 
             case 16:
-                if(image_type.isSigned())
+                if(image_type.is_signed())
                 {
                     toOpenJPEG<std::int16_t>(image, *keeper.m_image);
                 }
@@ -287,7 +287,7 @@ public:
                 break;
 
             case 32:
-                if(image_type.isSigned())
+                if(image_type.is_signed())
                 {
                     toOpenJPEG<std::uint32_t>(image, *keeper.m_image);
                 }
@@ -505,7 +505,7 @@ private:
     template<typename P>
     inline static void toOpenJPEGPixels(const data::Image& image, opj_image_t& opj_image)
     {
-        const auto& sizes = image.getSize();
+        const auto& sizes = image.size();
 
         auto pixel_it        = image.cbegin<P>();
         const auto pixel_end = image.cend<P>();

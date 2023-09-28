@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -50,12 +50,12 @@ namespace sight::module::filter::image
  * @subsection Output Output
  * - \b outputImage [sight::data::Image]: result of operation 'AND' between input image and mask
  */
-class MODULE_FILTER_IMAGE_CLASS_API SBitwiseAnd final : public sight::service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SBitwiseAnd final : public sight::service::filter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SBitwiseAnd, sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SBitwiseAnd, sight::service::filter);
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_API SBitwiseAnd();

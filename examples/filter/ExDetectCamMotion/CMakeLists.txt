@@ -4,7 +4,7 @@ add_dependencies(
     ExDetectCamMotion
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_viz_scene3d
     module_ui_qt
     module_viz_scene3dQt

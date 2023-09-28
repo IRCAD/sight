@@ -73,7 +73,7 @@ void SViewer::updating()
     if(vector->size() == 1)
     {
         data::Object::sptr obj = vector->front();
-        std::string classname  = obj->getClassname();
+        std::string classname  = obj->get_classname();
         auto itr               = m_seriesConfigs.find(classname);
 
         if(itr != m_seriesConfigs.end())
@@ -83,10 +83,10 @@ void SViewer::updating()
 
             std::map<std::string, std::string> replaceMap;
             // Generate generic UID
-            std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(this->getID());
+            std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(this->get_id());
             replaceMap["GENERIC_UID"] = genericUidAdaptor;
             replaceMap["WID_PARENT"]  = m_parentView;
-            replaceMap["objectID"]    = obj->getID();
+            replaceMap["objectID"]    = obj->get_id();
 
             for(const ReplaceValuesMapType::value_type& elt : info.parameters)
             {
@@ -98,7 +98,7 @@ void SViewer::updating()
             }
 
             // Init manager
-            m_configTemplateManager = service::IAppConfigManager::New();
+            m_configTemplateManager = service::app_config_manager::make();
             m_configTemplateManager->setConfig(configId, replaceMap);
 
             // Launch config
@@ -148,12 +148,12 @@ void SViewer::configuring()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SViewer::getAutoConnections() const
+service::connections_t SViewer::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_SERIES, data::Vector::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
-    connections.push(s_SERIES, data::Vector::s_REMOVED_OBJECTS_SIG, IService::slots::s_UPDATE);
+    connections.push(s_SERIES, data::Vector::ADDED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(s_SERIES, data::Vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE);
 
     return connections;
 }

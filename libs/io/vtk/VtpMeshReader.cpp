@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 #include "io/vtk/helper/vtkLambdaCommand.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
 
-#include <io/base/reader/registry/macros.hpp>
+#include <io/__/reader/registry/macros.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -42,8 +42,8 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-VtpMeshReader::VtpMeshReader(io::base::reader::IObjectReader::Key /*unused*/) :
-    m_job(core::jobs::Observer::New("VTP Mesh reader"))
+VtpMeshReader::VtpMeshReader() :
+    m_job(std::make_shared<core::jobs::observer>("VTP Mesh reader"))
 {
 }
 
@@ -67,26 +67,26 @@ void VtpMeshReader::read()
     using helper::vtkLambdaCommand;
 
     vtkSmartPointer<vtkXMLGenericDataObjectReader> reader = vtkSmartPointer<vtkXMLGenericDataObjectReader>::New();
-    reader->SetFileName(this->getFile().string().c_str());
+    reader->SetFileName(this->get_file().string().c_str());
 
-    vtkSmartPointer<vtkLambdaCommand> progressCallback;
+    vtkSmartPointer<vtkLambdaCommand> progress_callback;
 
-    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progressCallback->SetCallback(
+    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progress_callback->SetCallback(
         [&](vtkObject* caller, std::uint64_t, void*)
         {
             auto* const filter = static_cast<vtkXMLGenericDataObjectReader*>(caller);
-            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
-    reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+    reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->addSimpleCancelHook([&]{reader->AbortExecuteOn();});
+    m_job->add_simple_cancel_hook([&]{reader->AbortExecuteOn();});
 
     reader->Update();
 
     vtkDataObject* obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
-    SIGHT_THROW_IF("VtpMeshReader cannot read VTK Mesh file : " << this->getFile().string(), !mesh);
+    SIGHT_THROW_IF("VtpMeshReader cannot read VTK Mesh file : " << this->get_file().string(), !mesh);
     io::vtk::helper::Mesh::fromVTKMesh(mesh, pMesh);
 
     m_job->finish();
@@ -101,7 +101,7 @@ std::string VtpMeshReader::extension() const
 
 //------------------------------------------------------------------------------
 
-core::jobs::IJob::sptr VtpMeshReader::getJob() const
+core::jobs::base::sptr VtpMeshReader::getJob() const
 {
     return m_job;
 }

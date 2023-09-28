@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,8 +42,7 @@ const std::string InstanceNumberSorter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-InstanceNumberSorter::InstanceNumberSorter(filter::dicom::IFilter::Key key) :
-    filter::dicom::sorter::TagValueSorter(key)
+InstanceNumberSorter::InstanceNumberSorter()
 {
     this->setTag(DCM_InstanceNumber);
 }

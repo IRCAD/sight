@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,20 @@
 
 #include "SMatricesReader.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -46,27 +46,27 @@
 namespace sight::module::io::matrix
 {
 
-static const core::com::Slots::SlotKeyType s_START_READING    = "startReading";
-static const core::com::Slots::SlotKeyType s_STOP_READING     = "stopReading";
-static const core::com::Slots::SlotKeyType s_PAUSE            = "pause";
-static const core::com::Slots::SlotKeyType s_TOGGLE_LOOP_MODE = "toggleLoopMode";
+static const core::com::slots::key_t START_READING    = "startReading";
+static const core::com::slots::key_t STOP_READING     = "stopReading";
+static const core::com::slots::key_t PAUSE            = "pause";
+static const core::com::slots::key_t TOGGLE_LOOP_MODE = "toggleLoopMode";
 
-static const core::com::Slots::SlotKeyType s_READ_NEXT     = "readNext";
-static const core::com::Slots::SlotKeyType s_READ_PREVIOUS = "readPrevious";
-static const core::com::Slots::SlotKeyType s_SET_STEP      = "setStep";
+static const core::com::slots::key_t READ_NEXT     = "readNext";
+static const core::com::slots::key_t READ_PREVIOUS = "readPrevious";
+static const core::com::slots::key_t SET_STEP      = "setStep";
 
 //------------------------------------------------------------------------------
 
 SMatricesReader::SMatricesReader() noexcept
 {
-    newSlot(s_START_READING, &SMatricesReader::startReading, this);
-    newSlot(s_STOP_READING, &SMatricesReader::stopReading, this);
-    newSlot(s_PAUSE, &SMatricesReader::pause, this);
-    newSlot(s_TOGGLE_LOOP_MODE, &SMatricesReader::toggleLoopMode, this);
+    new_slot(START_READING, &SMatricesReader::startReading, this);
+    new_slot(STOP_READING, &SMatricesReader::stopReading, this);
+    new_slot(PAUSE, &SMatricesReader::pause, this);
+    new_slot(TOGGLE_LOOP_MODE, &SMatricesReader::toggleLoopMode, this);
 
-    newSlot(s_READ_NEXT, &SMatricesReader::readNext, this);
-    newSlot(s_READ_PREVIOUS, &SMatricesReader::readPrevious, this);
-    newSlot(s_SET_STEP, &SMatricesReader::setStep, this);
+    new_slot(READ_NEXT, &SMatricesReader::readNext, this);
+    new_slot(READ_PREVIOUS, &SMatricesReader::readPrevious, this);
+    new_slot(SET_STEP, &SMatricesReader::setStep, this);
 }
 
 //------------------------------------------------------------------------------
@@ -82,18 +82,18 @@ SMatricesReader::~SMatricesReader() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SMatricesReader::getIOPathType() const
+sight::io::service::IOPathType SMatricesReader::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatricesReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     m_fps = config.get<unsigned int>("fps", 30);
     SIGHT_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
@@ -115,34 +115,34 @@ void SMatricesReader::configuring()
 
 void SMatricesReader::starting()
 {
-    m_worker = core::thread::Worker::New();
+    m_worker = core::thread::worker::make();
 }
 
 //------------------------------------------------------------------------------
 
 void SMatricesReader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a csv file to read" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(ui::dialog::location::READ);
+    dialogFile.setType(ui::dialog::location::SINGLE_FILE);
     dialogFile.addFilter(".csv file", "*.csv");
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
-        this->setFile(result->getFile());
+        this->set_file(result->get_file());
 
         if(nullptr != m_filestream)
         {
             m_filestream->close();
         }
 
-        m_filestream = new std::ifstream(this->getFile().string());
+        m_filestream = new std::ifstream(this->get_file().string());
     }
     else
     {
@@ -185,7 +185,7 @@ void SMatricesReader::readPrevious()
         }
         else
         {
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "MatricesReader",
                 "No previous Matrices."
             );
@@ -214,7 +214,7 @@ void SMatricesReader::readNext()
         }
         else
         {
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "MatricesReader",
                 "No more matrices to read."
             );
@@ -257,7 +257,7 @@ void SMatricesReader::startReading()
     {
         if(nullptr == m_filestream)
         {
-            std::string file = this->getFile().string();
+            std::string file = this->get_file().string();
 
             m_filestream = new std::ifstream(file);
         }
@@ -314,25 +314,25 @@ void SMatricesReader::startReading()
         }
         else
         {
-            SIGHT_ERROR("The csv file '" + this->getFile().string() + "' can not be openned.");
+            SIGHT_ERROR("The csv file '" + this->get_file().string() + "' can not be openned.");
         }
 
         if(m_oneShot)
         {
-            m_timer = m_worker->createTimer();
-            m_timer->setOneShot(true);
-            m_timer->setFunction([this](auto&& ...){readMatrices();});
-            m_timer->setDuration(std::chrono::milliseconds(0));
+            m_timer = m_worker->create_timer();
+            m_timer->set_one_shot(true);
+            m_timer->set_function([this](auto&& ...){readMatrices();});
+            m_timer->set_duration(std::chrono::milliseconds(0));
             m_timer->start();
         }
         else
         {
-            m_timer = m_worker->createTimer();
+            m_timer = m_worker->create_timer();
 
-            core::thread::Timer::TimeDurationType duration;
+            core::thread::timer::time_duration_t duration;
             if(m_useTimelapse)
             {
-                m_timer->setOneShot(true);
+                m_timer->set_one_shot(true);
                 if(m_tsMatrices.size() >= 2)
                 {
                     duration =
@@ -352,8 +352,8 @@ void SMatricesReader::startReading()
                 duration = std::chrono::milliseconds(1000 / m_fps);
             }
 
-            m_timer->setFunction([this](auto&& ...){readMatrices();});
-            m_timer->setDuration(duration);
+            m_timer->set_function([this](auto&& ...){readMatrices();});
+            m_timer->set_duration(duration);
             m_timer->start();
         }
 
@@ -369,7 +369,7 @@ void SMatricesReader::stopReading()
 
     if(m_timer)
     {
-        if(m_timer->isRunning())
+        if(m_timer->is_running())
         {
             m_timer->stop();
         }
@@ -395,8 +395,8 @@ void SMatricesReader::stopReading()
     const auto matrixTL = m_matrixTL.lock();
     matrixTL->clearTimeline();
 
-    auto sig = matrixTL->signal<data::TimeLine::ObjectClearedSignalType>(data::TimeLine::s_CLEARED_SIG);
-    sig->asyncEmit();
+    auto sig = matrixTL->signal<data::TimeLine::ObjectClearedSignalType>(data::TimeLine::CLEARED_SIG);
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -416,16 +416,16 @@ void SMatricesReader::readMatrices()
 {
     if(!m_isPaused && m_tsMatricesCount < m_tsMatrices.size())
     {
-        const auto tStart   = core::HiResClock::getTimeInMilliSec();
+        const auto tStart   = core::hires_clock::get_time_in_milli_sec();
         const auto matrixTL = m_matrixTL.lock();
 
         TimeStampedMatrices currentMatrices = m_tsMatrices[m_tsMatricesCount];
 
-        core::HiResClock::HiResClockType timestamp = NAN;
+        core::hires_clock::type timestamp = NAN;
 
         if(m_createNewTS)
         {
-            timestamp = core::HiResClock::getTimeInMilliSec();
+            timestamp = core::hires_clock::get_time_in_milli_sec();
         }
         else
         {
@@ -445,7 +445,7 @@ void SMatricesReader::readMatrices()
 
         if(m_useTimelapse && (m_tsMatricesCount + m_step) < m_tsMatrices.size())
         {
-            const auto elapsedTime          = core::HiResClock::getTimeInMilliSec() - tStart;
+            const auto elapsedTime          = core::hires_clock::get_time_in_milli_sec() - tStart;
             const std::size_t currentMatrix = m_tsMatricesCount;
             const double currentTime        = m_tsMatrices[currentMatrix].timestamp + elapsedTime;
             double nextDuration             = m_tsMatrices[m_tsMatricesCount + m_step].timestamp - currentTime;
@@ -466,8 +466,8 @@ void SMatricesReader::readMatrices()
                 {
                     matrixTL->clearTimeline();
                     m_tsMatricesCount = 0;
-                    core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / m_fps);
-                    m_timer->setDuration(duration);
+                    core::thread::timer::time_duration_t duration = std::chrono::milliseconds(1000 / m_fps);
+                    m_timer->set_duration(duration);
                     m_timer->start();
                 }
             }
@@ -475,10 +475,10 @@ void SMatricesReader::readMatrices()
             {
                 nextDuration = m_tsMatrices[m_tsMatricesCount + m_step].timestamp
                                - currentTime;
-                core::thread::Timer::TimeDurationType duration =
+                core::thread::timer::time_duration_t duration =
                     std::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
                 m_timer->stop();
-                m_timer->setDuration(duration);
+                m_timer->set_duration(duration);
                 m_timer->start();
             }
         }
@@ -486,9 +486,9 @@ void SMatricesReader::readMatrices()
         //Notify
         data::TimeLine::ObjectPushedSignalType::sptr sig;
         sig = matrixTL->signal<data::TimeLine::ObjectPushedSignalType>(
-            data::TimeLine::s_OBJECT_PUSHED_SIG
+            data::TimeLine::OBJECT_PUSHED_SIG
         );
-        sig->asyncEmit(timestamp);
+        sig->async_emit(timestamp);
 
         m_tsMatricesCount += m_step;
     }

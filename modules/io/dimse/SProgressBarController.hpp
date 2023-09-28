@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,12 @@
 
 #include "modules/io/dimse/config.hpp"
 
-#include <core/com/Slot.hpp>
+#include <core/com/slot.hpp>
 #include <core/mt/types.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 #include <filesystem>
 
@@ -49,11 +49,11 @@ namespace sight::module::io::dimse
     <service uid="progressBarController" type="sight::module::io::dimse::SProgressBarController" />
    @endcode
  */
-class MODULE_IO_DIMSE_CLASS_API SProgressBarController : public service::IController
+class MODULE_IO_DIMSE_CLASS_API SProgressBarController : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SProgressBarController, service::IController);
+    SIGHT_DECLARE_SERVICE(SProgressBarController, service::controller);
 
     /// Initializes slots.
     MODULE_IO_DIMSE_API SProgressBarController() noexcept;
@@ -87,10 +87,10 @@ private:
     void stopProgress(std::string _id);
 
     /// Stores progress bars.
-    std::map<std::string, sight::ui::base::dialog::ProgressDialog::sptr> m_progressDialogs;
+    std::map<std::string, sight::ui::dialog::progress::sptr> m_progressDialogs;
 
     /// Synchronizes progress bars access.
-    core::mt::Mutex m_mutex;
+    core::mt::mutex m_mutex;
 };
 
 } // namespace sight::module::io::dimse.

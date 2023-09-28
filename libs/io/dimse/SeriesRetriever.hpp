@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "io/dimse/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
+#include <core/tools/progress_adviser.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scp.h>
@@ -39,16 +39,16 @@ namespace sight::io::dimse
 /**
  * @brief Reads DICOM series from pacs.
  */
-class IO_DIMSE_CLASS_API SeriesRetriever : public core::BaseObject,
+class IO_DIMSE_CLASS_API SeriesRetriever : public core::base_object,
                                            public DcmSCP
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SeriesRetriever, io::dimse::SeriesRetriever, new SeriesRetriever);
+    SIGHT_DECLARE_CLASS(SeriesRetriever, io::dimse::SeriesRetriever);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_DIMSE_API static const core::com::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
-    typedef core::com::Slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
+    IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
+    typedef core::com::slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
 
     /// Constructor
     IO_DIMSE_API SeriesRetriever();
@@ -62,13 +62,13 @@ public:
      * @param[in] applicationport Move application port
      * @param[in] path Local dicom folder path
      * @param[in] timeout Connection timeout
-     * @param[in] progressCallback Progress callback
+     * @param[in] progress_callback Progress callback
      */
     IO_DIMSE_API void initialize(
         const std::string& applicationTitle,
         std::uint16_t applicationport,
-        int timeout                                     = 3,
-        ProgressCallbackSlotType::sptr progressCallback = ProgressCallbackSlotType::sptr()
+        int timeout                                      = 3,
+        ProgressCallbackSlotType::sptr progress_callback = ProgressCallbackSlotType::sptr()
     );
 
     /// Start the server

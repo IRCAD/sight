@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,8 @@
 #include <data/Camera.hpp>
 #include <data/Material.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <string>
 
@@ -65,13 +65,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SFrustum final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SFrustum, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SFrustum, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SFrustum() noexcept;
@@ -91,10 +91,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
-     * Connect data::Camera::s_MODIFIED_SIG of s_CAMERA_INPUT to s_CALIBRATE_SLOT
+     * Connect data::Camera::INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to CALIBRATE_SLOT
+     * Connect data::Camera::MODIFIED_SIG of s_CAMERA_INPUT to CALIBRATE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
 
     /// Deletes the frustum.
     MODULE_VIZ_SCENE3D_API void stopping() override;

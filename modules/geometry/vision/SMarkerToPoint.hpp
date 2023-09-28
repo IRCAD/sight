@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/MatrixTL.hpp>
 #include <data/PointList.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -55,19 +55,19 @@ namespace sight::module::geometry::vision
  * @subsection In-Out In-Out
  * - \b pointList [sight::data::Pointlist]: marker position.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SMarkerToPoint : public service::IController
+class MODULE_GEOMETRY_VISION_CLASS_API SMarkerToPoint : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMarkerToPoint, service::IController);
+    SIGHT_DECLARE_SERVICE(SMarkerToPoint, service::controller);
 
     /**
      * @name Slots API
      * @{
      */
-    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT;
+    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t ADD_POINT_SLOT;
 
-    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_CLEAR_SLOT;
+    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t CLEAR_SLOT;
     ///@}
 
     /// Constructor

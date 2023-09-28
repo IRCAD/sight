@@ -23,32 +23,30 @@
 
 #include "io/itk/config.hpp"
 
-#include <core/location/SingleFile.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/location/single_file.hpp>
+#include <core/tools/progress_adviser.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API NiftiImageWriter : public base::writer::GenericObjectWriter<data::Image>,
-                                          public core::location::SingleFile,
-                                          public core::tools::ProgressAdviser
+class IO_ITK_CLASS_API NiftiImageWriter : public writer::GenericObjectWriter<data::Image>,
+                                          public core::location::single_file,
+                                          public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         NiftiImageWriter,
-        io::base::writer::GenericObjectWriter<data::Image>,
-        io::base::writer::factory::New<NiftiImageWriter>
+        io::writer::GenericObjectWriter<data::Image>,
+        io::writer::factory::make<NiftiImageWriter>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_ITK_API NiftiImageWriter(io::base::writer::IObjectWriter::Key key);
-
-    IO_ITK_API ~NiftiImageWriter() override;
+    IO_ITK_API ~NiftiImageWriter() override = default;
 
     IO_ITK_API void write() override;
 

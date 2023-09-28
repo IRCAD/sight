@@ -322,13 +322,12 @@ Shading::ShaderConstantsType Shading::findShaderConstants(
 
             if(found)
             {
-                parameters.push_back(
-                    std::make_tuple(
-                        cstDef.first,
-                        cstDef.second.constType,
-                        _shaderType,
-                        constantValue
-                    )
+                parameters.emplace_back(
+                    cstDef.first,
+                    cstDef.second.constType,
+                    _shaderType,
+                    constantValue
+
                 );
             }
         }
@@ -347,7 +346,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
     {
         case Ogre::GpuConstantType::GCT_FLOAT1:
         {
-            auto newObj = data::Float::New();
+            auto newObj = std::make_shared<data::Float>();
             newObj->setValue(_value.f[0]);
             object = newObj;
             break;
@@ -355,9 +354,9 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_FLOAT2:
         {
-            data::Array::sptr arrayObject = data::Array::New();
+            data::Array::sptr arrayObject = std::make_shared<data::Array>();
 
-            arrayObject->resize({2}, core::Type::FLOAT);
+            arrayObject->resize({2}, core::type::FLOAT);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -370,9 +369,9 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_FLOAT3:
         {
-            data::Array::sptr arrayObject = data::Array::New();
+            data::Array::sptr arrayObject = std::make_shared<data::Array>();
 
-            arrayObject->resize({3}, core::Type::FLOAT);
+            arrayObject->resize({3}, core::type::FLOAT);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -386,19 +385,19 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_FLOAT4:
         {
-            auto newObj = data::Color::New();
+            auto newObj = std::make_shared<data::Color>();
             newObj->setRGBA(_value.f[0], _value.f[1], _value.f[2], _value.f[3]);
             object = newObj;
             break;
         }
 
         case Ogre::GpuConstantType::GCT_MATRIX_4X4:
-            object = data::Matrix4::New();
+            object = std::make_shared<data::Matrix4>();
             break;
 
         case Ogre::GpuConstantType::GCT_INT1:
         {
-            auto newObj = data::Integer::New();
+            auto newObj = std::make_shared<data::Integer>();
             newObj->setValue(_value.i[0]);
             object = newObj;
             break;
@@ -406,9 +405,9 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_INT2:
         {
-            data::Array::sptr arrayObject = data::Array::New();
+            data::Array::sptr arrayObject = std::make_shared<data::Array>();
 
-            arrayObject->resize({2}, core::Type::INT32);
+            arrayObject->resize({2}, core::type::INT32);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -421,9 +420,9 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_INT3:
         {
-            data::Array::sptr arrayObject = data::Array::New();
+            data::Array::sptr arrayObject = std::make_shared<data::Array>();
 
-            arrayObject->resize({3}, core::Type::INT32);
+            arrayObject->resize({3}, core::type::INT32);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -437,9 +436,9 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_INT4:
         {
-            data::Array::sptr arrayObject = data::Array::New();
+            data::Array::sptr arrayObject = std::make_shared<data::Array>();
 
-            arrayObject->resize({4}, core::Type::INT32);
+            arrayObject->resize({4}, core::type::INT32);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -454,7 +453,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_DOUBLE1:
         {
-            auto newObj = data::Float::New();
+            auto newObj = std::make_shared<data::Float>();
             newObj->setValue(static_cast<float>(_value.d[0]));
             object = newObj;
             break;
@@ -462,9 +461,9 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_DOUBLE2:
         {
-            data::Array::sptr arrayObject = data::Array::New();
+            data::Array::sptr arrayObject = std::make_shared<data::Array>();
 
-            arrayObject->resize({2}, core::Type::DOUBLE);
+            arrayObject->resize({2}, core::type::DOUBLE);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -477,9 +476,9 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_DOUBLE3:
         {
-            data::Array::sptr arrayObject = data::Array::New();
+            data::Array::sptr arrayObject = std::make_shared<data::Array>();
 
-            arrayObject->resize({3}, core::Type::DOUBLE);
+            arrayObject->resize({3}, core::type::DOUBLE);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -493,9 +492,9 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
 
         case Ogre::GpuConstantType::GCT_DOUBLE4:
         {
-            data::Array::sptr arrayObject = data::Array::New();
+            data::Array::sptr arrayObject = std::make_shared<data::Array>();
 
-            arrayObject->resize({4}, core::Type::DOUBLE);
+            arrayObject->resize({4}, core::type::DOUBLE);
 
             const auto dumpLock = arrayObject->dump_lock();
 
@@ -509,7 +508,7 @@ data::Object::sptr Shading::createObjectFromShaderParameter(Ogre::GpuConstantTyp
         }
 
         case Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
-            object = data::Matrix4::New();
+            object = std::make_shared<data::Matrix4>();
             break;
 
         default:

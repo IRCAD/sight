@@ -22,16 +22,16 @@
 
 #include "SPdfWriter.hpp"
 
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/thread/Worker.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/thread/worker.hpp>
 
 #include <data/iterator/types.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/GuiRegistry.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/registry.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QPainter>
 #include <QPixmap>
@@ -43,7 +43,7 @@ namespace sight::module::io::document
 
 void SPdfWriter::info(std::ostream& _sstream)
 {
-    this->IWriter::info(_sstream);
+    this->writer::info(_sstream);
     _sstream << std::endl << " External data file reader";
 }
 
@@ -51,7 +51,7 @@ void SPdfWriter::info(std::ostream& _sstream)
 
 void SPdfWriter::configuring()
 {
-    this->IWriter::configuring();
+    this->writer::configuring();
 
     const auto& config = this->getConfiguration();
 
@@ -66,21 +66,21 @@ void SPdfWriter::configuring()
 
 void SPdfWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an external data file" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("pdf", "*.pdf");
 
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::dialog::location::WRITE);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
-        this->setFile(result->getFile());
+        this->set_file(result->get_file());
     }
     else
     {
@@ -172,20 +172,20 @@ void SPdfWriter::starting()
 {
     for(const auto& id : m_containersIDs)
     {
-        ui::qt::container::QtContainer::sptr containerElt;
-        sight::ui::base::container::fwContainer::sptr fwContainerFromConfig;
-        if(sight::ui::base::GuiRegistry::hasSIDContainer(id))
+        ui::qt::container::widget::sptr containerElt;
+        sight::ui::container::widget::sptr fwContainerFromConfig;
+        if(sight::ui::registry::hasSIDContainer(id))
         {
-            fwContainerFromConfig = sight::ui::base::GuiRegistry::getSIDContainer(id);
+            fwContainerFromConfig = sight::ui::registry::getSIDContainer(id);
         }
         else
         {
-            fwContainerFromConfig = sight::ui::base::GuiRegistry::getWIDContainer(id);
+            fwContainerFromConfig = sight::ui::registry::getWIDContainer(id);
         }
 
         if(fwContainerFromConfig)
         {
-            containerElt = ui::qt::container::QtContainer::dynamicCast(fwContainerFromConfig);
+            containerElt = std::dynamic_pointer_cast<ui::qt::container::widget>(fwContainerFromConfig);
             m_containersToExport.push_back(containerElt->getQtContainer());
         }
     }
@@ -205,9 +205,9 @@ void SPdfWriter::stopping()
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SPdfWriter::getIOPathType() const
+sight::io::service::IOPathType SPdfWriter::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
@@ -216,10 +216,10 @@ QImage SPdfWriter::convertFwImageToQImage(const data::Image& fwImage)
 {
     if(fwImage.numComponents() == 3
        && fwImage.getType().name() == "uint8"
-       && fwImage.getSize()[2] == 1)
+       && fwImage.size()[2] == 1)
     {
         // Initialize QImage parameters
-        const data::Image::Size dimension = fwImage.getSize();
+        const data::Image::Size dimension = fwImage.size();
         const int width                   = static_cast<int>(dimension[0]);
         const int height                  = static_cast<int>(dimension[1]);
 

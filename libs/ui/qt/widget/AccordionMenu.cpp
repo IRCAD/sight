@@ -22,7 +22,7 @@
 #include "AccordionMenu.hpp"
 
 #include <core/runtime/path.hpp>
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <QAbstractButton>
 #include <QApplication>
@@ -51,8 +51,9 @@ AccordionMenu::AccordionMenu(QWidget* parent, Qt::Orientation orientation) :
     m_pixmap =
         QPixmap(
             QString::fromStdString(
-                core::runtime::getLibraryResourceFilePath("sight::ui::qt/Bracket_white.svg").
-                string()
+                core::runtime::get_library_resource_file_path(
+                    "sight::ui::qt/Bracket_white.svg"
+                ).string()
             )
         );
     m_pixmap = m_pixmap.scaled(m_pixmap.size() / 20);

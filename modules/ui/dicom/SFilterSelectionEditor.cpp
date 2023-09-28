@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,15 +27,15 @@
 #include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
-#include <filter/dicom/composite/IComposite.hpp>
+#include <filter/dicom/composite/base.hpp>
 #include <filter/dicom/exceptions/FilterFailure.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/registry/detail.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -67,7 +67,7 @@ void SFilterSelectionEditor::info(std::ostream& _sstream)
 
 void SFilterSelectionEditor::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -81,8 +81,8 @@ void SFilterSelectionEditor::starting()
     const auto selectedDicomSeries = m_selectedDicomSeries.lock();
     SIGHT_ASSERT("Selected dicom Series vector should not be null.", selectedDicomSeries);
 
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* mainLayout = new QVBoxLayout();
     mainLayout->setAlignment(Qt::AlignTop);
@@ -103,7 +103,7 @@ void SFilterSelectionEditor::starting()
     this->fillAvailableFilters();
     topLayout->addWidget(m_availableFilterListWidget);
 
-    auto path = core::runtime::getModuleResourcePath("sight::module::ui::icons");
+    auto path = core::runtime::get_module_resource_path("sight::module::ui::icons");
 
     // Add filter button
     m_addFilterButton = new QPushButton(QIcon(QString::fromStdString((path / "Plus.svg").string())), "Add");
@@ -199,10 +199,10 @@ void SFilterSelectionEditor::onForceChecked(int state)
 {
     if(state == Qt::Checked)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Be careful",
             "You asked to ignore reading errors, there are high risks of issues for resulting image.",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
 }
@@ -213,22 +213,22 @@ void SFilterSelectionEditor::fillAvailableFilters()
 {
     int index = 0;
 
-    std::vector<filter::dicom::IFilter::sptr> sortedFilters;
-    for(const std::string& key : filter::dicom::registry::get()->getFactoryKeys())
+    std::vector<sight::filter::dicom::filter::sptr> sortedFilters;
+    for(const std::string& key : sight::filter::dicom::registry::get()->get_factory_keys())
     {
-        filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(key);
+        sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(key);
         sortedFilters.push_back(filter);
     }
 
     std::sort(sortedFilters.begin(), sortedFilters.end(), SFilterSelectionEditor::sortFilters);
 
-    for(const filter::dicom::IFilter::sptr& filter : sortedFilters)
+    for(const sight::filter::dicom::filter::sptr& filter : sortedFilters)
     {
         // If the filter doesn't have a configuration or if it is configurable using GUI
         if(!filter->isConfigurationRequired() || filter->isConfigurableWithGUI())
         {
             // Create filter
-            m_availableFilterListWidget->addItem(filter->getName().c_str(), filter->getClassname().c_str());
+            m_availableFilterListWidget->addItem(filter->getName().c_str(), filter->get_classname().c_str());
 
             // Set icon
             m_availableFilterListWidget->setItemIcon(index, SFilterSelectionEditor::getFilterIcon(filter));
@@ -306,8 +306,8 @@ void SFilterSelectionEditor::addFilter(int filterTypeIndex, int position)
     std::string key     = m_availableFilterListWidget->itemData(filterTypeIndex).toString().toStdString();
 
     // Create filter
-    filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(key);
-    std::string id                      = filter->getID();
+    sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(key);
+    std::string id                            = filter->get_id();
     m_filtersMap[id] = filter;
 
     // Add a the filter in the list
@@ -354,17 +354,17 @@ void SFilterSelectionEditor::splitFilter()
     int currentIndex        = m_selectedFilterListWidget->currentRow();
     std::string compositeId =
         m_selectedFilterListWidget->item(currentIndex)->data(Qt::UserRole).toString().toStdString();
-    filter::dicom::composite::IComposite::sptr composite =
-        filter::dicom::composite::IComposite::dynamicCast(m_filtersMap[compositeId]);
+    sight::filter::dicom::composite::base::sptr composite =
+        std::dynamic_pointer_cast<sight::filter::dicom::composite::base>(m_filtersMap[compositeId]);
 
     // Remove composite filter
     this->removeFilter();
 
     // Add filters
     int position = currentIndex;
-    for(const filter::dicom::IFilter::sptr& filter : composite->getChildren())
+    for(const sight::filter::dicom::filter::sptr& filter : composite->getChildren())
     {
-        std::string id = filter->getID();
+        std::string id = filter->get_id();
         m_filtersMap[id] = filter;
         m_selectedFilterListWidget->insertItem(position, filter->getName().c_str());
         m_selectedFilterListWidget->item(position)->setIcon(SFilterSelectionEditor::getFilterIcon(filter));
@@ -392,7 +392,7 @@ void SFilterSelectionEditor::updateButtonStatus(int filterIndex)
         m_configureFilterButton->setEnabled(m_filtersMap[id]->isConfigurableWithGUI());
 
         // Split filter button
-        m_splitFilterButton->setEnabled(m_filtersMap[id]->getFilterType() == filter::dicom::IFilter::COMPOSITE);
+        m_splitFilterButton->setEnabled(m_filtersMap[id]->getFilterType() == sight::filter::dicom::filter::COMPOSITE);
     }
     else
     {
@@ -406,16 +406,16 @@ void SFilterSelectionEditor::updateButtonStatus(int filterIndex)
 void SFilterSelectionEditor::applyFilters()
 {
     using DicomSeriesContainertype = std::vector<data::DicomSeries::sptr>;
-    using FilterContainertype      = std::vector<filter::dicom::IFilter::sptr>;
+    using FilterContainertype      = std::vector<sight::filter::dicom::filter::sptr>;
 
     // Get selected DicomSeries
     const auto selectedDicomSeries = m_selectedDicomSeries.lock();
     SIGHT_ASSERT("Selected dicom Series vector  object should not be null.", selectedDicomSeries);
 
     // Display the informations
-    sight::ui::base::dialog::MessageDialog messageBox;
-    messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::INFO);
-    messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+    sight::ui::dialog::message messageBox;
+    messageBox.setIcon(sight::ui::dialog::message::INFO);
+    messageBox.addButton(sight::ui::dialog::message::OK);
     messageBox.setTitle("Filters information");
 
     // Clear destination SeriesSet
@@ -443,11 +443,11 @@ void SFilterSelectionEditor::applyFilters()
         // Copy selected DicomSeries
         for(const data::Object::sptr& obj : *selectedDicomSeries)
         {
-            data::DicomSeries::sptr srcDicomSerie = data::DicomSeries::dynamicCast(obj);
+            data::DicomSeries::sptr srcDicomSerie = std::dynamic_pointer_cast<data::DicomSeries>(obj);
             SIGHT_ASSERT("The series should be a DicomSerie.", srcDicomSerie);
 
-            data::DicomSeries::sptr destinationDicomSerie = data::DicomSeries::New();
-            destinationDicomSerie->deepCopy(srcDicomSerie);
+            data::DicomSeries::sptr destinationDicomSerie = std::make_shared<data::DicomSeries>();
+            destinationDicomSerie->deep_copy(srcDicomSerie);
             dicomSeriesContainer.push_back(destinationDicomSerie);
         }
 
@@ -464,15 +464,15 @@ void SFilterSelectionEditor::applyFilters()
 
         ssFilters << "<b>Filters :</b><br />";
         // Let's apply all the filters
-        for(const filter::dicom::IFilter::sptr& filter : filterContainer)
+        for(const sight::filter::dicom::filter::sptr& filter : filterContainer)
         {
             ssFilters << "- " << filter->getName() << " -> ";
             try
             {
-                filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, forcedApply);
+                sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, forcedApply);
                 ssFilters << "<font color=\"Green\">OK</font><br />";
             }
-            catch(filter::dicom::exceptions::FilterFailure& e)
+            catch(sight::filter::dicom::exceptions::FilterFailure& e)
             {
                 ssFilters << "<font color=\"Red\">ERROR</font><br />";
                 ssInfos << "- " << e.what() << "<br />";
@@ -534,8 +534,8 @@ void SFilterSelectionEditor::showContextMenuForSelectedFilter(const QPoint& pos)
     if(filterItem != nullptr)
     {
         // Get filter
-        std::string id                      = filterItem->data(Qt::UserRole).toString().toStdString();
-        filter::dicom::IFilter::sptr filter = m_filtersMap[id];
+        std::string id                            = filterItem->data(Qt::UserRole).toString().toStdString();
+        sight::filter::dicom::filter::sptr filter = m_filtersMap[id];
 
         // Remove action
         auto* removeAction = new QAction("Remove", m_selectedFilterListWidget);
@@ -550,7 +550,7 @@ void SFilterSelectionEditor::showContextMenuForSelectedFilter(const QPoint& pos)
 
         // Split action
         auto* splitAction = new QAction("Split", m_selectedFilterListWidget);
-        splitAction->setEnabled(filter->getFilterType() == filter::dicom::IFilter::COMPOSITE);
+        splitAction->setEnabled(filter->getFilterType() == sight::filter::dicom::filter::COMPOSITE);
         QObject::connect(splitAction, &QAction::triggered, this, &SFilterSelectionEditor::removeFilter);
         contextMenu.addAction(splitAction);
     }
@@ -562,8 +562,8 @@ void SFilterSelectionEditor::showContextMenuForSelectedFilter(const QPoint& pos)
 //------------------------------------------------------------------------------
 
 bool SFilterSelectionEditor::sortFilters(
-    const filter::dicom::IFilter::sptr& a,
-    const filter::dicom::IFilter::sptr& b
+    const sight::filter::dicom::filter::sptr& a,
+    const sight::filter::dicom::filter::sptr& b
 )
 {
     if(a->getFilterType() == b->getFilterType())
@@ -576,9 +576,9 @@ bool SFilterSelectionEditor::sortFilters(
 
 //------------------------------------------------------------------------------
 
-QIcon SFilterSelectionEditor::getFilterIcon(filter::dicom::IFilter::sptr filter)
+QIcon SFilterSelectionEditor::getFilterIcon(sight::filter::dicom::filter::sptr filter)
 {
-    const std::filesystem::path path = core::runtime::getModuleResourcePath(std::string("sight::module::ui::icons"));
+    const std::filesystem::path path = core::runtime::get_module_resource_path(std::string("sight::module::ui::icons"));
     std::array icons {
         QIcon(QString::fromStdString((path / "Modifier.svg").string())),
         QIcon(QString::fromStdString((path / "Sorter.svg").string())),
@@ -591,7 +591,7 @@ QIcon SFilterSelectionEditor::getFilterIcon(filter::dicom::IFilter::sptr filter)
 
 //------------------------------------------------------------------------------
 
-std::string SFilterSelectionEditor::getFilterDescription(filter::dicom::IFilter::sptr filter)
+std::string SFilterSelectionEditor::getFilterDescription(sight::filter::dicom::filter::sptr filter)
 {
     std::array types {"Modifier", "Sorter", "Splitter", "Composite", "Custom"};
     std::string description =

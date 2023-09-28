@@ -77,11 +77,11 @@ public:
         const auto& pixel_type = image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel type: " << pixel_type,
-            pixel_type != core::Type::INT8
-            && pixel_type != core::Type::UINT8
-            && pixel_type != core::Type::INT16
-            && pixel_type != core::Type::UINT16
-            && pixel_type != core::Type::FLOAT
+            pixel_type != core::type::INT8
+            && pixel_type != core::type::UINT8
+            && pixel_type != core::type::INT16
+            && pixel_type != core::type::UINT16
+            && pixel_type != core::type::FLOAT
         );
 
         struct Keeper final
@@ -114,22 +114,22 @@ public:
         SIGHT_THROW_IF("TIFFOpen() failed.", keeper.m_tiff == nullptr);
 
         // Set the configuration
-        const auto& sizes        = image.getSize();
+        const auto& sizes        = image.size();
         const auto& image_width  = sizes[0];
         const auto& image_height = sizes[1];
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_IMAGEWIDTH, image_width));
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_IMAGELENGTH, image_height));
         CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_BITSPERSAMPLE, pixel_type.size() * 8));
 
-        if(pixel_type == core::Type::INT8 || pixel_type == core::Type::INT16)
+        if(pixel_type == core::type::INT8 || pixel_type == core::type::INT16)
         {
             CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT));
         }
-        else if(pixel_type == core::Type::UINT8 || pixel_type == core::Type::UINT16)
+        else if(pixel_type == core::type::UINT8 || pixel_type == core::type::UINT16)
         {
             CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT));
         }
-        else if(pixel_type == core::Type::FLOAT || pixel_type == core::Type::DOUBLE)
+        else if(pixel_type == core::type::FLOAT || pixel_type == core::type::DOUBLE)
         {
             CHECK_TIFF(TIFFSetField(keeper.m_tiff, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP));
         }

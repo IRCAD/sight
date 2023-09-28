@@ -22,9 +22,9 @@
 
 #include "modules/viz/scene2d/adaptor/SNegato.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -42,11 +42,11 @@
 namespace sight::module::viz::scene2d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
-static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
-static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
-static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT          = "updateTF";
+static const core::com::slots::key_t UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+static const core::com::slots::key_t UPDATE_BUFFER_SLOT      = "updateBuffer";
+static const core::com::slots::key_t UPDATE_VISIBILITY_SLOT  = "updateVisibility";
+static const core::com::slots::key_t UPDATE_TF_SLOT          = "updateTF";
 
 namespace medHelper = data::helper::MedicalImage;
 
@@ -54,11 +54,11 @@ namespace medHelper = data::helper::MedicalImage;
 
 SNegato::SNegato() noexcept
 {
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SNegato::updateSliceIndex, this);
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
-    newSlot(s_UPDATE_BUFFER_SLOT, &SNegato::updateBuffer, this);
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato::updateVisibility, this);
-    newSlot(s_UPDATE_TF_SLOT, &SNegato::updateTF, this);
+    new_slot(UPDATE_SLICE_INDEX_SLOT, &SNegato::updateSliceIndex, this);
+    new_slot(UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
+    new_slot(UPDATE_BUFFER_SLOT, &SNegato::updateBuffer, this);
+    new_slot(UPDATE_VISIBILITY_SLOT, &SNegato::updateVisibility, this);
+    new_slot(UPDATE_TF_SLOT, &SNegato::updateTF, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,8 +121,8 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
     // Window max
     auto image                     = m_image.lock();
-    const data::Image::Size size   = image->getSize();
-    const auto* imgBuff            = static_cast<const std::int16_t*>(image->getBuffer());
+    const data::Image::Size size   = image->size();
+    const auto* imgBuff            = static_cast<const std::int16_t*>(image->buffer());
     const std::size_t imageZOffset = size[0] * size[1];
 
     std::uint8_t* pDest = _img->bits();
@@ -221,7 +221,7 @@ QImage* SNegato::createQImage()
             return nullptr;
         }
 
-        size    = img->getSize();
+        size    = img->size();
         spacing = img->getSpacing();
         origin  = img->getOrigin();
     }
@@ -528,26 +528,26 @@ void SNegato::changeImageMinMaxFromCoord(
     tf->setWindow(newImgWindow);
     tf->setLevel(newImgLevel);
     auto sig = tf->signal<data::TransferFunction::WindowingModifiedSignalType>(
-        data::TransferFunction::s_WINDOWING_MODIFIED_SIG
+        data::TransferFunction::WINDOWING_MODIFIED_SIG
     );
     {
-        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_TF_SLOT)));
-        sig->asyncEmit(newImgWindow, newImgLevel);
+        const core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_TF_SLOT)));
+        sig->async_emit(newImgWindow, newImgLevel);
     }
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SNegato::getAutoConnections() const
+service::connections_t SNegato::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT},
-        {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT},
-        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT},
-        {s_TF_INOUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
-        {s_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
-        {s_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}
+        {s_IMAGE_IN, data::Image::MODIFIED_SIG, service::slots::UPDATE},
+        {s_IMAGE_IN, data::Image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_INDEX_SLOT},
+        {s_IMAGE_IN, data::Image::SLICE_INDEX_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT},
+        {s_IMAGE_IN, data::Image::BUFFER_MODIFIED_SIG, UPDATE_BUFFER_SLOT},
+        {s_TF_INOUT, data::TransferFunction::MODIFIED_SIG, UPDATE_TF_SLOT},
+        {s_TF_INOUT, data::TransferFunction::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
+        {s_TF_INOUT, data::TransferFunction::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
     };
 }
 

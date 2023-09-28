@@ -24,7 +24,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 #include <chrono>
 #include <fstream>
@@ -36,7 +36,7 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 SAutomaticRegistration::SAutomaticRegistration() :
-    IHasParameters(m_slots)
+    has_parameters(m_slots)
 {
 }
 
@@ -49,7 +49,7 @@ SAutomaticRegistration::~SAutomaticRegistration()
 
 void SAutomaticRegistration::configuring()
 {
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     m_minStep = config.get<double>("minStep", -1.);
 
@@ -82,13 +82,13 @@ void SAutomaticRegistration::configuring()
         const std::uint64_t shrink = std::stoul(parameters[0]);
         const double sigma         = std::stod(parameters[1]);
 
-        m_multiResolutionParameters.push_back(std::make_pair(shrink, sigma));
+        m_multiResolutionParameters.emplace_back(shrink, sigma);
     }
 
     if(m_multiResolutionParameters.empty())
     {
         // By default, no multi-resolution
-        m_multiResolutionParameters.push_back(std::make_pair(1, 0.0));
+        m_multiResolutionParameters.emplace_back(1, 0.0);
     }
 
     m_samplingPercentage = config.get<double>("samplingPercentage", 1.);
@@ -133,7 +133,7 @@ void SAutomaticRegistration::updating()
 
     AutomaticRegistration registrator;
 
-    sight::ui::base::dialog::ProgressDialog dialog("Automatic Registration", "Registering, please be patient.");
+    sight::ui::dialog::progress dialog("Automatic Registration", "Registering, please be patient.");
 
     dialog.setCancelCallback(
         [&registrator]()
@@ -169,7 +169,7 @@ void SAutomaticRegistration::updating()
     }
 
     auto transfoModifiedSig = transform->signal<data::Matrix4::ModifiedSignalType>
-                                  (data::Matrix4::s_MODIFIED_SIG);
+                                  (data::Matrix4::MODIFIED_SIG);
 
     std::chrono::time_point<std::chrono::high_resolution_clock> regStartTime;
     std::size_t i = 0;
@@ -228,7 +228,7 @@ void SAutomaticRegistration::updating()
                 regLog.flush(); // Flush, just to be sure.
             }
 
-            transfoModifiedSig->asyncEmit();
+            transfoModifiedSig->async_emit();
         };
 
     try
@@ -250,8 +250,8 @@ void SAutomaticRegistration::updating()
         SIGHT_ERROR("[ITK EXCEPTION]" << e.GetDescription());
     }
 
-    m_sigComputed->asyncEmit();
-    transfoModifiedSig->asyncEmit();
+    m_sigComputed->async_emit();
+    transfoModifiedSig->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -262,14 +262,14 @@ void SAutomaticRegistration::stopping()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SAutomaticRegistration::getAutoConnections() const
+service::connections_t SAutomaticRegistration::getAutoConnections() const
 {
     return {
-        {s_TARGET_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_TARGET_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_REFERENCE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_REFERENCE_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE}
+        {s_TARGET_IN, data::Image::MODIFIED_SIG, service::slots::UPDATE},
+        {s_TARGET_IN, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {s_REFERENCE_IN, data::Image::MODIFIED_SIG, service::slots::UPDATE},
+        {s_REFERENCE_IN, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {s_TRANSFORM_INOUT, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

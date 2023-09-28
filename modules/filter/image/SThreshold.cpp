@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "modules/filter/image/SThreshold.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/tools/Dispatcher.hpp>
+#include <core/com/signal.hxx>
+#include <core/tools/dispatcher.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -58,14 +58,14 @@ void SThreshold::stopping()
 
 void SThreshold::configuring()
 {
-    const service::IService::ConfigType& srvConfig = this->getConfiguration();
+    const service::config_t& srvConfig = this->getConfiguration();
 
     SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1);
 
-    const service::IService::ConfigType& config = srvConfig.get_child("config");
+    const service::config_t& config = srvConfig.get_child("config");
 
     SIGHT_ASSERT("You must have one <threshold/> element.", config.count("threshold") == 1);
-    const service::IService::ConfigType& thresholdCfg = config.get_child("threshold");
+    const service::config_t& thresholdCfg = config.get_child("threshold");
     m_threshold = thresholdCfg.get_value<double>();
 }
 
@@ -101,7 +101,7 @@ struct ThresholdFilter
         SIGHT_ASSERT("Sorry, image must be 3D", imageIn->numDimensions() == 3);
 
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
-        imageOut->resize(imageOut->getSize(), imageOut->getType(), imageOut->getPixelFormat());
+        imageOut->resize(imageOut->size(), imageOut->getType(), imageOut->getPixelFormat());
         const auto lockin  = imageIn->dump_lock();
         const auto lockOut = imageOut->dump_lock();
 
@@ -131,8 +131,8 @@ void SThreshold::updating()
     auto input = m_source.lock();
 
     // try to dynamic cast to an Image and an ImageSeries to know which type of data we use
-    data::ImageSeries::csptr imageSeriesSrc = data::ImageSeries::dynamicConstCast(input.get_shared());
-    data::Image::csptr imageSrc             = data::Image::dynamicConstCast(input.get_shared());
+    data::ImageSeries::csptr imageSeriesSrc = std::dynamic_pointer_cast<const data::ImageSeries>(input.get_shared());
+    data::Image::csptr imageSrc             = std::dynamic_pointer_cast<const data::Image>(input.get_shared());
     data::Object::sptr output;
 
     // Get source/target image
@@ -144,8 +144,8 @@ void SThreshold::updating()
         imageSeriesDest->setDicomReference(imageSeriesSrc->getDicomReference());
 
         // create the output image
-        data::Image::sptr imageOut = data::Image::New();
-        imageSeriesDest->Image::shallowCopy(imageOut);
+        data::Image::sptr imageOut = std::make_shared<data::Image>();
+        imageSeriesDest->Image::shallow_copy(imageOut);
         param.imageOut = imageSeriesDest;
         output         = imageSeriesDest;
     }
@@ -153,7 +153,7 @@ void SThreshold::updating()
     {
         param.imageIn = imageSrc;
         // create the output image
-        data::Image::sptr imageOut = data::Image::New();
+        data::Image::sptr imageOut = std::make_shared<data::Image>();
         param.imageOut = imageOut;
         output         = imageOut;
     }
@@ -165,21 +165,21 @@ void SThreshold::updating()
     param.thresholdValue = m_threshold;
 
     // get image type
-    core::Type type = param.imageIn->getType();
+    core::type type = param.imageIn->getType();
 
     /* The dispatcher allows to apply the filter on any type of image.
      * It invokes the template functor ThresholdFilter using the image type.
      * - template parameters:
-     *   - core::tools::SupportedDispatcherTypes defined all the supported type of the functor, here all the type
-     *     supported by core::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
+     *   - core::tools::supported_dispatcher_types defined all the supported type of the functor, here all the type
+     *     supported by core::type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
      *     std::uint32_t, std::int64_t, std::uint64_t, float, double)
      *   - ThresholdFilter: functor struct or class
      * - parameters:
-     *   - type: core::Type of the image
+     *   - type: core::type of the image
      *   - param: struct containing the functor parameters (here the input and output images and the threshold value)
      */
 
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ThresholdFilter>::invoke(type, param);
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, ThresholdFilter>::invoke(type, param);
 
     // register the output image to be accesible by the other service from the XML configuration
     m_target = output;

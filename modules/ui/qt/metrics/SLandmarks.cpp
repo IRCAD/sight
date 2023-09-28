@@ -25,18 +25,18 @@
 #include "data/ImageSeries.hpp"
 #include "data/Landmarks.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 
 #include <data/FiducialsSeries.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QColorDialog>
 #include <QLabel>
@@ -54,8 +54,8 @@ namespace sight::module::ui::qt::metrics
 {
 
 static_assert(
-    std::is_same_v<data::Landmarks::GroupModifiedSignalType, data::IHasFiducials::signals::GroupModified>,
-    "'groupModified' signal from data::Landmarks and data::IHasFiducials must have the same signature"
+    std::is_same_v<data::Landmarks::GroupModifiedSignalType, data::has_fiducials::signals::GroupModified>,
+    "'groupModified' signal from data::Landmarks and data::has_fiducials must have the same signature"
 );
 
 namespace
@@ -162,40 +162,40 @@ namespace
 static const char* s_GROUP_PROPERTY_NAME = "group";
 static const int s_GROUP_NAME_ROLE       = Qt::UserRole + 1;
 
-static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT      = "addPoint";
-static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT   = "modifyPoint";
-static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT   = "selectPoint";
-static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT = "deselectPoint";
-static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
-static const core::com::Slots::SlotKeyType s_ADD_GROUP_SLOT      = "addGroup";
-static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT   = "removeGroup";
-static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT   = "modifyGroup";
-static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT   = "renameGroup";
+static const core::com::slots::key_t ADD_POINT_SLOT      = "addPoint";
+static const core::com::slots::key_t MODIFY_POINT_SLOT   = "modifyPoint";
+static const core::com::slots::key_t SELECT_POINT_SLOT   = "selectPoint";
+static const core::com::slots::key_t DESELECT_POINT_SLOT = "deselectPoint";
+static const core::com::slots::key_t REMOVE_POINT_SLOT   = "removePoint";
+static const core::com::slots::key_t ADD_GROUP_SLOT      = "addGroup";
+static const core::com::slots::key_t REMOVE_GROUP_SLOT   = "removeGroup";
+static const core::com::slots::key_t MODIFY_GROUP_SLOT   = "modifyGroup";
+static const core::com::slots::key_t RENAME_GROUP_SLOT   = "renameGroup";
 
 static const std::string s_SIZE_CONFIG     = "size";
 static const std::string s_OPACITY_CONFIG  = "opacity";
 static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
 
-const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWorldCoord";
-const core::com::Signals::SignalKeyType SLandmarks::s_GROUP_SELECTED   = "groupSelected";
+const core::com::signals::key_t SLandmarks::SEND_WORLD_COORD = "sendWorldCoord";
+const core::com::signals::key_t SLandmarks::GROUP_SELECTED   = "groupSelected";
 
 //------------------------------------------------------------------------------
 
 SLandmarks::SLandmarks() noexcept
 {
-    newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
-    newSlot(s_MODIFY_POINT_SLOT, &SLandmarks::modifyPoint, this);
-    newSlot(s_SELECT_POINT_SLOT, &SLandmarks::selectPoint, this);
-    newSlot(s_DESELECT_POINT_SLOT, &SLandmarks::deselectPoint, this);
-    newSlot(s_ADD_GROUP_SLOT, &SLandmarks::addGroup, this);
-    newSlot(s_REMOVE_POINT_SLOT, &SLandmarks::removePoint, this);
-    newSlot(s_REMOVE_GROUP_SLOT, &SLandmarks::removeGroup, this);
-    newSlot(s_MODIFY_GROUP_SLOT, &SLandmarks::modifyGroup, this);
-    newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
+    new_slot(ADD_POINT_SLOT, &SLandmarks::addPoint, this);
+    new_slot(MODIFY_POINT_SLOT, &SLandmarks::modifyPoint, this);
+    new_slot(SELECT_POINT_SLOT, &SLandmarks::selectPoint, this);
+    new_slot(DESELECT_POINT_SLOT, &SLandmarks::deselectPoint, this);
+    new_slot(ADD_GROUP_SLOT, &SLandmarks::addGroup, this);
+    new_slot(REMOVE_POINT_SLOT, &SLandmarks::removePoint, this);
+    new_slot(REMOVE_GROUP_SLOT, &SLandmarks::removeGroup, this);
+    new_slot(MODIFY_GROUP_SLOT, &SLandmarks::modifyGroup, this);
+    new_slot(RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
 
-    newSignal<world_coordinates_signal_t>(s_SEND_WORLD_COORD);
-    newSignal<GroupSelectedSignal>(s_GROUP_SELECTED);
+    new_signal<world_coordinates_signal_t>(SEND_WORLD_COORD);
+    new_signal<GroupSelectedSignal>(GROUP_SELECTED);
 }
 
 //------------------------------------------------------------------------------
@@ -207,9 +207,9 @@ SLandmarks::~SLandmarks() noexcept =
 
 void SLandmarks::configuring()
 {
-    this->sight::ui::base::IGuiContainer::initialize();
+    this->sight::ui::service::initialize();
 
-    const service::IService::ConfigType config = this->getConfiguration();
+    const service::config_t config = this->getConfiguration();
 
     m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
     SIGHT_FATAL_IF(
@@ -232,11 +232,11 @@ void SLandmarks::configuring()
 
 void SLandmarks::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    const auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     qtContainer->getQtContainer()->setObjectName(serviceID);
@@ -328,31 +328,31 @@ void SLandmarks::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+service::connections_t SLandmarks::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_MODIFIED_SIG, s_MODIFY_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_SELECTED_SIG, s_SELECT_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_DESELECTED_SIG, s_DESELECT_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_ADDED_SIG, s_ADD_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_RENAMED_SIG, s_RENAME_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_ADDED_SIG, ADD_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_MODIFIED_SIG, MODIFY_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_SELECTED_SIG, SELECT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_DESELECTED_SIG, DESELECT_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_ADDED_SIG, ADD_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_REMOVED_SIG, REMOVE_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_REMOVED_SIG, REMOVE_POINT_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_MODIFIED_SIG, MODIFY_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_RENAMED_SIG, RENAME_GROUP_SLOT);
 
-    connections.push(s_IMAGE_SERIES_INOUT, data::ImageSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_ADDED, s_ADD_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_MODIFIED, s_MODIFY_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_SELECTED, s_SELECT_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_DESELECTED, s_DESELECT_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_ADDED, s_ADD_GROUP_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_REMOVED, s_REMOVE_GROUP_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_REMOVED, s_REMOVE_POINT_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_MODIFIED, s_MODIFY_GROUP_SLOT);
-    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_RENAMED, s_RENAME_GROUP_SLOT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::ImageSeries::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_ADDED, ADD_POINT_SLOT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_MODIFIED, MODIFY_POINT_SLOT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_SELECTED, SELECT_POINT_SLOT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_DESELECTED, DESELECT_POINT_SLOT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_ADDED, ADD_GROUP_SLOT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_REMOVED, REMOVE_GROUP_SLOT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_REMOVED, REMOVE_POINT_SLOT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_MODIFIED, MODIFY_GROUP_SLOT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_RENAMED, RENAME_GROUP_SLOT);
 
     return connections;
 }
@@ -406,7 +406,7 @@ void SLandmarks::onColorButton()
     QObject* const sender = this->sender();
 
     // Create Color choice dialog.
-    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer         = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
@@ -440,7 +440,7 @@ void SLandmarks::onColorButton()
                 group.m_color = color;
 
                 sig = liLock.landmarks->signal<data::Landmarks::GroupModifiedSignalType>(
-                    data::Landmarks::s_GROUP_MODIFIED_SIG
+                    data::Landmarks::GROUP_MODIFIED_SIG
                 );
             }
             else if(liLock.imageSeries != nullptr)
@@ -453,8 +453,8 @@ void SLandmarks::onColorButton()
                 }
 
                 liLock.imageSeries->getFiducials()->setColor(fiducialSet->second, color);
-                sig = liLock.imageSeries->signal<data::IHasFiducials::signals::GroupModified>(
-                    data::IHasFiducials::signals::GROUP_MODIFIED
+                sig = liLock.imageSeries->signal<data::has_fiducials::signals::GroupModified>(
+                    data::has_fiducials::signals::GROUP_MODIFIED
                 );
             }
         }
@@ -462,8 +462,8 @@ void SLandmarks::onColorButton()
         m_opacitySlider->setValue(static_cast<int>(color[3] * float(m_opacitySlider->maximum())));
 
         {
-            core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
-            sig->asyncEmit(groupName);
+            core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
+            sig->async_emit(groupName);
         }
     }
 }
@@ -505,12 +505,12 @@ void SLandmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
                         liLock.landmarks->renameGroup(oldGroupName.toStdString(), newGroupName.toStdString());
 
                         const auto sig = liLock.landmarks->signal<data::Landmarks::GroupRenamedSignalType>(
-                            data::Landmarks::s_GROUP_RENAMED_SIG
+                            data::Landmarks::GROUP_RENAMED_SIG
                         );
 
                         {
-                            core::com::Connection::Blocker block(sig->getConnection(this->slot(s_RENAME_GROUP_SLOT)));
-                            sig->asyncEmit(oldGroupName.toStdString(), newGroupName.toStdString());
+                            core::com::connection::blocker block(sig->get_connection(this->slot(RENAME_GROUP_SLOT)));
+                            sig->async_emit(oldGroupName.toStdString(), newGroupName.toStdString());
                         }
                     }
                     else if(liLock.imageSeries != nullptr)
@@ -528,12 +528,12 @@ void SLandmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
                         );
 
                         const auto sig =
-                            liLock.imageSeries->signal<data::IHasFiducials::signals::GroupRenamed>(
-                                data::IHasFiducials::signals::GROUP_RENAMED
+                            liLock.imageSeries->signal<data::has_fiducials::signals::GroupRenamed>(
+                                data::has_fiducials::signals::GROUP_RENAMED
                             );
 
-                        core::com::Connection::Blocker block(sig->getConnection(this->slot(s_RENAME_GROUP_SLOT)));
-                        sig->asyncEmit(oldGroupName.toStdString(), newGroupName.toStdString());
+                        core::com::connection::blocker block(sig->get_connection(this->slot(RENAME_GROUP_SLOT)));
+                        sig->async_emit(oldGroupName.toStdString(), newGroupName.toStdString());
                     }
                 }
 
@@ -572,23 +572,23 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
         data::Landmarks::PointDeselectedSignalType::sptr deselectSig;
         static_assert(
             std::is_same_v<data::Landmarks::PointDeselectedSignalType,
-                           data::IHasFiducials::signals::PointDeselected>,
-            "'pointDeselected' signal from data::Landmarks and data::IHasFiducials must have the same signature"
+                           data::has_fiducials::signals::PointDeselected>,
+            "'pointDeselected' signal from data::Landmarks and data::has_fiducials must have the same signature"
         );
         if(liLock.landmarks != nullptr)
         {
             deselectSig = liLock.landmarks->signal<data::Landmarks::PointDeselectedSignalType>(
-                data::Landmarks::s_POINT_DESELECTED_SIG
+                data::Landmarks::POINT_DESELECTED_SIG
             );
         }
         else if(liLock.imageSeries != nullptr)
         {
-            deselectSig = liLock.imageSeries->signal<data::IHasFiducials::signals::PointDeselected>(
-                data::IHasFiducials::signals::POINT_DESELECTED
+            deselectSig = liLock.imageSeries->signal<data::has_fiducials::signals::PointDeselected>(
+                data::has_fiducials::signals::POINT_DESELECTED
             );
         }
 
-        const core::com::Connection::Blocker block(deselectSig->getConnection(this->slot(s_DESELECT_POINT_SLOT)));
+        const core::com::connection::blocker block(deselectSig->get_connection(this->slot(DESELECT_POINT_SLOT)));
 
         if(m_advancedMode)
         {
@@ -605,14 +605,14 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
                     index < numPoints(liLock, groupName)
                 );
 
-                deselectSig->asyncEmit(groupName, index);
+                deselectSig->async_emit(groupName, index);
             }
         }
         else
         {
             const std::string& groupName = _previous->text(0).toStdString();
 
-            deselectSig->asyncEmit(groupName, 0);
+            deselectSig->async_emit(groupName, 0);
         }
     }
 
@@ -632,19 +632,19 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
             data::Landmarks::PointSelectedSignalType::sptr selectSig;
             static_assert(
                 std::is_same_v<data::Landmarks::PointSelectedSignalType,
-                               data::IHasFiducials::signals::PointSelected>,
-                "'pointSelected' signal from data::Landmarks and data::IHasFiducials must have the same signature"
+                               data::has_fiducials::signals::PointSelected>,
+                "'pointSelected' signal from data::Landmarks and data::has_fiducials must have the same signature"
             );
             if(liLock.landmarks != nullptr)
             {
                 selectSig = liLock.landmarks->signal<data::Landmarks::PointSelectedSignalType>(
-                    data::Landmarks::s_POINT_SELECTED_SIG
+                    data::Landmarks::POINT_SELECTED_SIG
                 );
             }
             else if(liLock.imageSeries != nullptr)
             {
-                selectSig = liLock.imageSeries->signal<data::IHasFiducials::signals::PointSelected>(
-                    data::IHasFiducials::signals::POINT_SELECTED
+                selectSig = liLock.imageSeries->signal<data::has_fiducials::signals::PointSelected>(
+                    data::has_fiducials::signals::POINT_SELECTED
                 );
             }
 
@@ -665,8 +665,8 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
                         index < numPoints(liLock, groupName)
                     );
 
-                    const core::com::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
-                    selectSig->asyncEmit(groupName, index);
+                    const core::com::connection::blocker block(selectSig->get_connection(this->slot(SELECT_POINT_SLOT)));
+                    selectSig->async_emit(groupName, index);
                 }
                 else
                 {
@@ -677,8 +677,8 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
             {
                 groupName = _current->text(0).toStdString();
 
-                core::com::Connection::Blocker block(selectSig->getConnection(this->slot(s_SELECT_POINT_SLOT)));
-                selectSig->asyncEmit(groupName, 0);
+                core::com::connection::blocker block(selectSig->get_connection(this->slot(SELECT_POINT_SLOT)));
+                selectSig->async_emit(groupName, 0);
             }
 
             std::optional<data::Landmarks::LandmarksGroup> group = getGroup(liLock, groupName);
@@ -692,7 +692,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
             shapeText = group->m_shape == data::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
             opacity   = group->m_color[3];
 
-            signal<GroupSelectedSignal>(s_GROUP_SELECTED)->asyncEmit(groupName);
+            signal<GroupSelectedSignal>(GROUP_SELECTED)->async_emit(groupName);
         }
 
         // Set widget values
@@ -703,7 +703,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
     }
     else
     {
-        signal<GroupSelectedSignal>(s_GROUP_SELECTED)->asyncEmit("");
+        signal<GroupSelectedSignal>(GROUP_SELECTED)->async_emit("");
     }
 
     m_groupEditorWidget->setDisabled(_current == nullptr);
@@ -767,7 +767,7 @@ void SLandmarks::updateCurrentLandmark(data::Landmarks::PointType& world_coord) 
         " Send world coordinates [" << world_coord[0] << ", " << world_coord[1]
         << ", " << world_coord[2] << " ]"
     );
-    this->signal<world_coordinates_signal_t>(s_SEND_WORLD_COORD)->asyncEmit(
+    this->signal<world_coordinates_signal_t>(SEND_WORLD_COORD)->async_emit(
         world_coord[0],
         world_coord[1],
         world_coord[2]
@@ -780,9 +780,9 @@ void SLandmarks::updateCurrentLandmark(data::Landmarks::PointType& world_coord) 
         currentLandmark->setCoord(world_coord);
         auto currentLandmarkModifiedSig =
             currentLandmark->signal<sight::data::Object::ModifiedSignalType>(
-                sight::data::Object::s_MODIFIED_SIG
+                sight::data::Object::MODIFIED_SIG
             );
-        currentLandmarkModifiedSig->asyncEmit();
+        currentLandmarkModifiedSig->async_emit();
     }
 }
 
@@ -805,14 +805,14 @@ void SLandmarks::onSizeChanged(int _newSize)
         if(liLock.landmarks != nullptr)
         {
             sig = liLock.landmarks->signal<data::Landmarks::GroupModifiedSignalType>(
-                data::Landmarks::s_GROUP_MODIFIED_SIG
+                data::Landmarks::GROUP_MODIFIED_SIG
             );
             liLock.landmarks->setGroupSize(groupName, realSize);
         }
         else if(liLock.imageSeries != nullptr)
         {
-            sig = liLock.imageSeries->signal<data::IHasFiducials::signals::GroupModified>(
-                data::IHasFiducials::signals::GROUP_MODIFIED
+            sig = liLock.imageSeries->signal<data::has_fiducials::signals::GroupModified>(
+                data::has_fiducials::signals::GROUP_MODIFIED
             );
             std::optional<std::pair<data::FiducialsSeries::FiducialSet,
                                     std::size_t> > fiducialSet =
@@ -826,9 +826,9 @@ void SLandmarks::onSizeChanged(int _newSize)
             liLock.imageSeries->getFiducials()->setSize(fiducialSet->second, realSize);
         }
 
-        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        const core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
 
-        sig->asyncEmit(groupName);
+        sig->async_emit(groupName);
     }
 }
 
@@ -854,7 +854,7 @@ void SLandmarks::onOpacityChanged(int _newOpacity)
         if(liLock.landmarks != nullptr)
         {
             sig = liLock.landmarks->signal<data::Landmarks::GroupModifiedSignalType>(
-                data::Landmarks::s_GROUP_MODIFIED_SIG
+                data::Landmarks::GROUP_MODIFIED_SIG
             );
 
             const auto groupColor = liLock.landmarks->getGroup(groupName).m_color;
@@ -866,8 +866,8 @@ void SLandmarks::onOpacityChanged(int _newOpacity)
         }
         else if(liLock.imageSeries != nullptr)
         {
-            sig = liLock.imageSeries->signal<data::IHasFiducials::signals::GroupModified>(
-                data::IHasFiducials::signals::GROUP_MODIFIED
+            sig = liLock.imageSeries->signal<data::has_fiducials::signals::GroupModified>(
+                data::has_fiducials::signals::GROUP_MODIFIED
             );
             std::optional<std::pair<data::FiducialsSeries::FiducialSet,
                                     std::size_t> > fs =
@@ -893,9 +893,9 @@ void SLandmarks::onOpacityChanged(int _newOpacity)
 
         setColorButtonIcon(colorButton, currentColor);
 
-        core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
 
-        sig->asyncEmit(groupName);
+        sig->async_emit(groupName);
     }
 }
 
@@ -917,12 +917,12 @@ void SLandmarks::onVisibilityChanged(int _visibility)
             liLock.landmarks->setGroupVisibility(groupName, static_cast<bool>(_visibility));
 
             const auto sig = liLock.landmarks->signal<data::Landmarks::GroupModifiedSignalType>(
-                data::Landmarks::s_GROUP_MODIFIED_SIG
+                data::Landmarks::GROUP_MODIFIED_SIG
             );
 
-            const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+            const core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
 
-            sig->asyncEmit(groupName);
+            sig->async_emit(groupName);
         }
         else if(liLock.imageSeries != nullptr)
         {
@@ -939,8 +939,8 @@ void SLandmarks::onVisibilityChanged(int _visibility)
             const auto sig = liLock.imageSeries->signal<data::ImageSeries::signals::GroupModified>(
                 data::ImageSeries::signals::GROUP_MODIFIED
             );
-            const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
-            sig->asyncEmit(groupName);
+            const core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
+            sig->async_emit(groupName);
         }
     }
 }
@@ -967,14 +967,14 @@ void SLandmarks::onShapeChanged(const QString& _shape)
         if(liLock.landmarks != nullptr)
         {
             sig = liLock.landmarks->signal<data::Landmarks::GroupModifiedSignalType>(
-                data::Landmarks::s_GROUP_MODIFIED_SIG
+                data::Landmarks::GROUP_MODIFIED_SIG
             );
             liLock.landmarks->setGroupShape(groupName, s);
         }
         else if(liLock.imageSeries != nullptr)
         {
-            sig = liLock.imageSeries->signal<data::IHasFiducials::signals::GroupModified>(
-                data::IHasFiducials::signals::GROUP_MODIFIED
+            sig = liLock.imageSeries->signal<data::has_fiducials::signals::GroupModified>(
+                data::has_fiducials::signals::GROUP_MODIFIED
             );
             std::optional<std::pair<data::FiducialsSeries::FiducialSet,
                                     std::size_t> > fiducialSet =
@@ -992,9 +992,9 @@ void SLandmarks::onShapeChanged(const QString& _shape)
             );
         }
 
-        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
+        const core::com::connection::blocker block(sig->get_connection(this->slot(MODIFY_GROUP_SLOT)));
 
-        sig->asyncEmit(groupName);
+        sig->async_emit(groupName);
     }
 }
 
@@ -1012,16 +1012,16 @@ void SLandmarks::onAddNewGroup()
     if(liLock.landmarks != nullptr)
     {
         liLock.landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
-        liLock.landmarks->signal<data::Landmarks::GroupAddedSignalType>(data::Landmarks::s_GROUP_ADDED_SIG)->asyncEmit(
+        liLock.landmarks->signal<data::Landmarks::GroupAddedSignalType>(data::Landmarks::GROUP_ADDED_SIG)->async_emit(
             groupName
         );
     }
     else if(liLock.imageSeries != nullptr)
     {
         liLock.imageSeries->getFiducials()->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
-        liLock.imageSeries->signal<data::IHasFiducials::signals::GroupAdded>(
-            data::IHasFiducials::signals::GROUP_ADDED
-        )->asyncEmit(groupName);
+        liLock.imageSeries->signal<data::has_fiducials::signals::GroupAdded>(
+            data::has_fiducials::signals::GROUP_ADDED
+        )->async_emit(groupName);
     }
 }
 
@@ -1053,21 +1053,21 @@ void SLandmarks::onRemoveSelection()
             data::Landmarks::PointRemovedSignalType::sptr sig;
             static_assert(
                 std::is_same_v<data::Landmarks::PointRemovedSignalType,
-                               data::IHasFiducials::signals::PointRemoved>,
-                "'pointRemoved' signal from data::Landmarks and data::IHasFiducials must have the same signature"
+                               data::has_fiducials::signals::PointRemoved>,
+                "'pointRemoved' signal from data::Landmarks and data::has_fiducials must have the same signature"
             );
 
             if(liLock.landmarks != nullptr)
             {
                 sig = liLock.landmarks->signal<data::Landmarks::PointRemovedSignalType>(
-                    data::Landmarks::s_POINT_REMOVED_SIG
+                    data::Landmarks::POINT_REMOVED_SIG
                 );
                 liLock.landmarks->removePoint(groupName, index);
             }
             else if(liLock.imageSeries != nullptr)
             {
-                sig = liLock.imageSeries->signal<data::IHasFiducials::signals::PointRemoved>(
-                    data::IHasFiducials::signals::POINT_REMOVED
+                sig = liLock.imageSeries->signal<data::has_fiducials::signals::PointRemoved>(
+                    data::has_fiducials::signals::POINT_REMOVED
                 );
                 liLock.imageSeries->getFiducials()->removePoint(groupName, index);
             }
@@ -1075,8 +1075,8 @@ void SLandmarks::onRemoveSelection()
             itemParent->removeChild(item);
 
             {
-                const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
-                sig->asyncEmit(groupName, index);
+                const core::com::connection::blocker block(sig->get_connection(this->slot(REMOVE_POINT_SLOT)));
+                sig->async_emit(groupName, index);
             }
         }
         else
@@ -1086,21 +1086,21 @@ void SLandmarks::onRemoveSelection()
             data::Landmarks::GroupRemovedSignalType::sptr sig;
             static_assert(
                 std::is_same_v<data::Landmarks::GroupRemovedSignalType,
-                               data::IHasFiducials::signals::GroupRemoved>,
-                "'groupRemoved' signal from data::Landmarks and data::IHasFiducials must have the same signature"
+                               data::has_fiducials::signals::GroupRemoved>,
+                "'groupRemoved' signal from data::Landmarks and data::has_fiducials must have the same signature"
             );
 
             if(liLock.landmarks != nullptr)
             {
                 sig = liLock.landmarks->signal<data::Landmarks::GroupRemovedSignalType>(
-                    data::Landmarks::s_GROUP_REMOVED_SIG
+                    data::Landmarks::GROUP_REMOVED_SIG
                 );
                 liLock.landmarks->removeGroup(groupName);
             }
             else if(liLock.imageSeries != nullptr)
             {
-                sig = liLock.imageSeries->signal<data::IHasFiducials::signals::GroupRemoved>(
-                    data::IHasFiducials::signals::GROUP_REMOVED
+                sig = liLock.imageSeries->signal<data::has_fiducials::signals::GroupRemoved>(
+                    data::has_fiducials::signals::GROUP_REMOVED
                 );
                 liLock.imageSeries->getFiducials()->removeGroup(groupName);
             }
@@ -1108,8 +1108,8 @@ void SLandmarks::onRemoveSelection()
             delete m_treeWidget->takeTopLevelItem(topLevelIndex);
 
             {
-                const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
-                sig->asyncEmit(groupName);
+                const core::com::connection::blocker block(sig->get_connection(this->slot(REMOVE_GROUP_SLOT)));
+                sig->async_emit(groupName);
             }
         }
 

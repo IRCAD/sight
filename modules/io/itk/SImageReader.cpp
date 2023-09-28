@@ -23,23 +23,23 @@
 #include "SImageReader.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 #include <io/itk/InrImageReader.hpp>
 #include <io/itk/NiftiImageReader.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -58,30 +58,30 @@ SImageReader::~SImageReader() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SImageReader::getIOPathType() const
+sight::io::service::IOPathType SImageReader::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SImageReader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(ui::dialog::location::READ);
+    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        this->setFile(result->getFile());
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        this->set_file(result->get_file());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -95,7 +95,7 @@ void SImageReader::openLocationDialog()
 
 void SImageReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -119,27 +119,27 @@ void SImageReader::updating()
             "The object is not a '"
             + data::Image::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             image
         );
 
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
+        sight::ui::cursor cursor;
+        cursor.setCursor(ui::cursor_base::BUSY);
 
         try
         {
-            if(sight::module::io::itk::SImageReader::loadImage(this->getFile(), image))
+            if(sight::module::io::itk::SImageReader::loadImage(this->get_file(), image))
             {
                 m_readFailed = false;
-                auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
                 {
-                    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                    sig->asyncEmit();
+                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                    sig->async_emit();
                 }
             }
         }
-        catch(core::tools::Failed& e)
+        catch(core::tools::failed& e)
         {
             cursor.setDefaultCursor();
             SIGHT_THROW_EXCEPTION(e);
@@ -164,17 +164,17 @@ bool SImageReader::loadImage(
     std::string ext = imgFile.extension().string();
     boost::algorithm::to_lower(ext);
 
-    sight::io::base::reader::IObjectReader::sptr imageReader;
+    sight::io::reader::IObjectReader::sptr imageReader;
     if(boost::algorithm::ends_with(imgFile.string(), ".inr.gz"))
     {
-        auto inrReader = sight::io::itk::InrImageReader::New();
-        inrReader->setFile(imgFile);
+        auto inrReader = std::make_shared<sight::io::itk::InrImageReader>();
+        inrReader->set_file(imgFile);
         imageReader = inrReader;
     }
     else if(ext == ".nii" || boost::algorithm::ends_with(imgFile.string(), ".nii.gz"))
     {
-        auto niftiReader = sight::io::itk::NiftiImageReader::New();
-        niftiReader->setFile(imgFile);
+        auto niftiReader = std::make_shared<sight::io::itk::NiftiImageReader>();
+        niftiReader->set_file(imgFile);
         imageReader = niftiReader;
     }
     else
@@ -182,10 +182,10 @@ bool SImageReader::loadImage(
         std::stringstream ss;
         ss << "The file extension " << ext
         << " is not supported by the image reader. Please choose either *.inr.gz, *.nii or *.nii.gz files";
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Error",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
         return false;
     }
@@ -200,19 +200,19 @@ bool SImageReader::loadImage(
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         ok = false;
     }
     catch(...)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             "Warning during loading",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         ok = false;
     }

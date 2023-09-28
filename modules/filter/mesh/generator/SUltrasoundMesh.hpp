@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <service/IGenerator.hpp>
+#include <service/generator.hpp>
 
 #include <boost/multi_array.hpp>
 
@@ -73,12 +73,12 @@ namespace sight::module::filter::mesh::generator
  * - \b angle (optional, default=60) : angle of the US beam.
  * - \b deltaDepth (optional, default=50) : delta depth of the US plane.
  */
-class MODULE_FILTER_MESH_CLASS_API SUltrasoundMesh final : public service::IGenerator
+class MODULE_FILTER_MESH_CLASS_API SUltrasoundMesh final : public service::generator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SUltrasoundMesh, service::IService);
+    SIGHT_DECLARE_SERVICE(SUltrasoundMesh, service::base);
 
     /// Create slots.
     MODULE_FILTER_MESH_API SUltrasoundMesh() noexcept;

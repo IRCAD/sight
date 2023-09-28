@@ -17,6 +17,8 @@ lint:sheldon:
   extends: .lint
   variables:
     ENABLE_CLANG_TIDY: "ON"
+  tags:
+    - linux-power-runner
 
 .linux_build:
   extends: .linux_before

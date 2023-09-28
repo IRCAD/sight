@@ -15,7 +15,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+        <service uid="mainFrame" type="sight::module::ui::SFrame">
             <window onclose="notify" />
             <gui>
                 <frame>

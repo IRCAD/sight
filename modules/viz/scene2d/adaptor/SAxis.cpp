@@ -506,10 +506,10 @@ void SAxis::processInteraction(sight::viz::scene2d::data::Event& _event)
 
 //----------------------------------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SAxis::getAutoConnections() const
+service::connections_t SAxis::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

@@ -1,0 +1,94 @@
+/************************************************************************
+ *
+ * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#pragma once
+
+#include "ui/__/config.hpp"
+#include "ui/__/dialog/location_base.hpp"
+
+#include <core/base.hpp>
+
+namespace sight::ui::dialog
+{
+
+/**
+ * @brief   Defines the generic file/folder selector dialog for IHM.
+ *
+ * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
+ * The specific implementation are in fwGuiWX and fwGuiQT libraries.
+ */
+class UI_CLASS_API location : public location_base
+{
+public:
+
+    SIGHT_DECLARE_CLASS(location, ui::dialog::location_base);
+
+    /// Will instantiate the concrete implementation
+    UI_API location();
+
+    UI_API ~location() override;
+
+    /**
+     * @brief Display the dialog
+     * @return the ILocation selected or null sptr if user cancel the operation
+     */
+    UI_API core::location::base::sptr show() override;
+
+    /// allow to set option to the file dialog mode=READ/WRITE, check=FILE_MUST_EXIST
+    UI_API void setOption(location::Options option)
+    override;
+
+    /// Set the type of location for the dialog (SINGLE_FILE, FOLDER, MULTI_FILES)
+    UI_API void setType(location::Types type) override;
+
+    /**
+     * @brief specify some filtering when browsing files:
+     * @param[in] filterName a string that will be displayed as filter name
+     * @param[in] wildcardList a string of extension (glob syntax) separated by spaces
+     * example : addFilter("images","*.png *.jpg")
+     */
+    UI_API void addFilter(const std::string& filterName, const std::string& wildcardList) override;
+
+    /// Set the title for the dialog
+    UI_API void setTitle(const std::string& title) override;
+
+    /// Returns the title for the dialog
+    UI_API const std::string& getTitle() override;
+
+    /// Set the initial location for the dialog
+    UI_API void setDefaultLocation(core::location::base::sptr loc) override;
+
+    /// Gets the default location for the dialog (from preferences or specified by user)
+    UI_API core::location::base::sptr getDefaultLocation() override;
+
+    /// Save the specified default location for the dialog in preferences (if available)
+    UI_API void saveDefaultLocation(core::location::base::sptr loc) override;
+
+    /// Gets the current extension file selection
+    UI_API std::string getCurrentSelection() const override;
+
+protected:
+
+    ui::dialog::location_base::sptr m_implementation;
+};
+
+} // namespace sight::ui::dialog

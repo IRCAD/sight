@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,20 +30,16 @@ SIGHT_REGISTER_DATA(sight::io::dimse::data::PacsConfiguration);
 namespace sight::io::dimse::data
 {
 
-PacsConfiguration::PacsConfiguration(sight::data::Object::Key /*key*/)
-{
-}
-
 //------------------------------------------------------------------------------
 
-void PacsConfiguration::shallowCopy(const sight::data::Object::csptr& source)
+void PacsConfiguration::shallow_copy(const sight::data::Object::csptr& source)
 {
-    const auto& other = dynamicConstCast(source);
+    const auto& other = std::dynamic_pointer_cast<const PacsConfiguration>(source);
 
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::Exception(
-            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
-            + " to " + getClassname()
+            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            + " to " + get_classname()
         ),
         !bool(other)
     );
@@ -56,7 +52,7 @@ void PacsConfiguration::shallowCopy(const sight::data::Object::csptr& source)
     m_moveApplicationPort   = other->m_moveApplicationPort;
     m_retrieveMethod        = other->m_retrieveMethod;
 
-    BaseClass::shallowCopy(other);
+    base_class::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------

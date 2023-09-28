@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,8 +41,8 @@ namespace sight::io::vtk
 
 struct TypeTranslator
 {
-    typedef std::map<core::Type, int> fwToolsToVtkMap;
-    typedef std::map<int, core::Type> VtkTofwToolsMap;
+    typedef std::map<core::type, int> fwToolsToVtkMap;
+    typedef std::map<int, core::type> VtkTofwToolsMap;
 
     IO_VTK_API static fwToolsToVtkMap::mapped_type translate(const fwToolsToVtkMap::key_type& key);
     IO_VTK_API static VtkTofwToolsMap::mapped_type translate(const VtkTofwToolsMap::key_type& key);

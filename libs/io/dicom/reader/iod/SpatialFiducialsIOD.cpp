@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace sight::io::dicom::reader::iod
 SpatialFiducialsIOD::SpatialFiducialsIOD(
     const data::DicomSeries::csptr& dicomSeries,
     const io::dicom::container::DicomInstance::sptr& instance,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -58,7 +58,7 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 void SpatialFiducialsIOD::read(data::Series::sptr series)
 {
     // Retrieve images
-    data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
+    data::ImageSeries::sptr imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
     SIGHT_ASSERT("ImageSeries should not be null.", imageSeries);
 
     // Create GDCM Reader
@@ -75,8 +75,8 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
         );
     }
 
-    const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
-    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::buffer_object::sptr bufferObj          = dicomContainer.begin()->second;
+    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
 
@@ -84,7 +84,7 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed(
             "Unable to read the DICOM instance \""
-            + bufferObj->getStreamInfo().fsFile.string()
+            + bufferObj->get_stream_info().fs_file.string()
             + "\" using the GDCM Reader."
         ),
         !success

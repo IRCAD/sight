@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <data/Color.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <io/base/reader/DictionaryReader.hpp>
+#include <io/__/reader/DictionaryReader.hpp>
 
 #include <data/DicomSeries.hpp>
 
@@ -52,7 +52,7 @@ Surface::Surface(
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::ModelSeries::sptr& series,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -122,7 +122,7 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
         }
 
         // Create the reconstruction
-        data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
+        data::Reconstruction::sptr reconstruction = std::make_shared<data::Reconstruction>();
 
         // Retrieve the Segment Sequence Item
         const gdcm::Item& segmentItem = segmentSequence->GetItem(itemIndex++);
@@ -265,7 +265,7 @@ void Surface::readSurfaceMeshModule(
 )
 {
     // Create material
-    data::Material::sptr material = data::Material::New();
+    data::Material::sptr material = std::make_shared<data::Material>();
 
     // Convert CIE Lab to RGBA
     const std::uint16_t* lab = surface->GetRecommendedDisplayCIELabValue();
@@ -284,7 +284,7 @@ void Surface::readSurfaceMeshModule(
     reconstruction->setIsVisible(rgba[3] > epsilon);
 
     // Set reconstruction's color
-    data::Color::sptr color = data::Color::New();
+    data::Color::sptr color = std::make_shared<data::Color>();
     color->setRGBA(rgba);
     material->setDiffuse(color);
 

@@ -20,10 +20,10 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
                 <toolBar />
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
                 </layout>
             </gui>
@@ -34,7 +34,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
@@ -60,7 +60,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="sight::module::ui::base::SAction" />
+        <service uid="writeCalibrationAct" type="sight::module::ui::SAction" />
 
         <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::SCameraConfigLauncher">
             <inout key="cameraSet" uid="${cameraSet}" />
@@ -107,18 +107,18 @@
             </preference>
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::base::SExportSet" autoConnect="true">
+        <service uid="exportAct" type="sight::module::ui::SExportSet" autoConnect="true">
             <inout key="container" uid="${dataSet}" />
             <inout key="data" uid="${cameraSet}" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
                          This service send signals to enable or not the actions. -->
-        <service uid="previousAct" type="sight::module::ui::base::com::SSignal">
+        <service uid="previousAct" type="sight::module::ui::com::SSignal">
             <state visible="false" />
         </service>
 
-        <service uid="nextAct" type="sight::module::ui::base::com::SSignal">
+        <service uid="nextAct" type="sight::module::ui::com::SSignal">
             <state visible="false" />
         </service>
 

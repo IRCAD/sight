@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,18 +33,18 @@ namespace sight::filter::dicom::splitter
 /**
  * @brief Filter that uses the AcquisitionNumber tag to split the instances.
  */
-class FILTER_DICOM_CLASS_API AcquisitionNumberSplitter : public filter::dicom::splitter::TagValueSplitter
+class FILTER_DICOM_CLASS_API AcquisitionNumberSplitter : public sight::filter::dicom::splitter::TagValueSplitter
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         AcquisitionNumberSplitter,
-        ISplitter,
-        filter::dicom::factory::New<AcquisitionNumberSplitter>
+        base,
+        sight::filter::dicom::factory::make<AcquisitionNumberSplitter>
     );
 
     /// Constructor
-    FILTER_DICOM_API AcquisitionNumberSplitter(filter::dicom::IFilter::Key key);
+    FILTER_DICOM_API AcquisitionNumberSplitter();
 
     /// Destructor
     FILTER_DICOM_API ~AcquisitionNumberSplitter() override;

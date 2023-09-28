@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 #include "io/itk/itk.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 #include <itkImageFileWriter.h>
 #include <itkNiftiImageIOFactory.h>
@@ -39,17 +39,6 @@ SIGHT_REGISTER_IO_WRITER(sight::io::itk::InrImageWriter);
 
 namespace sight::io::itk
 {
-
-//------------------------------------------------------------------------------
-
-InrImageWriter::InrImageWriter(io::base::writer::IObjectWriter::Key /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-InrImageWriter::~InrImageWriter()
-= default;
 
 struct InrSaverFunctor
 {
@@ -65,7 +54,7 @@ struct InrSaverFunctor
     template<class PIXELTYPE>
     void operator()(const Parameter& param)
     {
-        SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::Type::get<PIXELTYPE>().name());
+        SIGHT_DEBUG("itk::ImageFileWriter with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
         // Reader IO (*1*)
         typename ::itk::ImageIOBase::Pointer imageIOWrite = ::itk::ImageIOFactory::CreateImageIO(
@@ -104,12 +93,12 @@ void InrImageWriter::write()
     assert(m_object.lock());
 
     InrSaverFunctor::Parameter saverParam;
-    saverParam.m_filename  = this->getFile().string();
+    saverParam.m_filename  = this->get_file().string();
     saverParam.m_dataImage = getConcreteObject();
-    saverParam.m_fwWriter  = this->getSptr();
+    saverParam.m_fwWriter  = this->get_sptr();
     assert(saverParam.m_dataImage);
 
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, InrSaverFunctor>::invoke(
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, InrSaverFunctor>::invoke(
         saverParam.m_dataImage->getType(),
         saverParam
     );
@@ -119,12 +108,12 @@ void InrImageWriter::write()
 
 std::string InrImageWriter::extension() const
 {
-    if(getFile().empty() || (getFile().string().find(".inr.gz") != std::string::npos))
+    if(get_file().empty() || (get_file().string().find(".inr.gz") != std::string::npos))
     {
         return ".inr.gz";
     }
 
-    return getFile().filename().extension().string();
+    return get_file().filename().extension().string();
 }
 
 //------------------------------------------------------------------------------

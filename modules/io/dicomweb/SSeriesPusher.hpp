@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "modules/io/dicomweb/config.hpp"
 
-#include <core/memory/BufferObject.hpp>
+#include <core/memory/buffer_object.hpp>
 
 #include <data/Vector.hpp>
 
 #include <io/http/ClientQt.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 #include <vector>
 
@@ -61,16 +61,16 @@ namespace sight::module::io::dicomweb
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service are from the preference settings.
  */
-class MODULE_IO_DICOMWEB_CLASS_API SSeriesPusher : public service::IController
+class MODULE_IO_DICOMWEB_CLASS_API SSeriesPusher : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesPusher, sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SSeriesPusher, sight::service::controller);
 
     typedef std::vector<CSPTR(data::Series)> DicomSeriesContainerType;
 
-    MODULE_IO_DICOMWEB_API static const core::com::Slots::SlotKeyType s_DISPLAY_SLOT;
-    typedef core::com::Slot<void (const std::string&, bool)> DisplayMessageSlotType;
+    MODULE_IO_DICOMWEB_API static const core::com::slots::key_t DISPLAY_SLOT;
+    typedef core::com::slot<void (const std::string&, bool)> DisplayMessageSlotType;
 
     /**
      * @brief Constructor

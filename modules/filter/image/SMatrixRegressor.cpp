@@ -22,7 +22,7 @@
 
 #include "modules/filter/image/SMatrixRegressor.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <filter/image/MatrixRegressor.hpp>
 
@@ -81,12 +81,12 @@ void SMatrixRegressor::updating()
         sight::filter::image::MatrixRegressor regressor(matrixList.get_shared(), ptList);
 
         data::Matrix4::csptr initVal =
-            data::Matrix4::dynamicCast((*matrixList)[0]);
+            std::dynamic_pointer_cast<data::Matrix4>((*matrixList)[0]);
 
         data::Matrix4::sptr res = regressor.minimize(*initVal, 1., 1e-4, 1e-4);
-        optimalMatrix->deepCopy(res);
+        optimalMatrix->deep_copy(res);
 
-        m_sigComputed->asyncEmit();
+        m_sigComputed->async_emit();
     }
 }
 
@@ -98,15 +98,15 @@ void SMatrixRegressor::stopping()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SMatrixRegressor::getAutoConnections() const
+service::connections_t SMatrixRegressor::getAutoConnections() const
 {
     return {
-        {s_MATRIX_LIST_IN, data::Vector::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE},
-        {s_MATRIX_LIST_IN, data::Vector::s_REMOVED_OBJECTS_SIG, IService::slots::s_UPDATE},
-        {s_MATRIX_LIST_IN, data::Vector::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_POINT_LIST_IN, data::PointList::s_POINT_ADDED_SIG, IService::slots::s_UPDATE},
-        {s_POINT_LIST_IN, data::PointList::s_POINT_REMOVED_SIG, IService::slots::s_UPDATE},
-        {s_POINT_LIST_IN, data::PointList::s_MODIFIED_SIG, IService::slots::s_UPDATE}
+        {s_MATRIX_LIST_IN, data::Vector::ADDED_OBJECTS_SIG, service::slots::UPDATE},
+        {s_MATRIX_LIST_IN, data::Vector::REMOVED_OBJECTS_SIG, service::slots::UPDATE},
+        {s_MATRIX_LIST_IN, data::Vector::MODIFIED_SIG, service::slots::UPDATE},
+        {s_POINT_LIST_IN, data::PointList::POINT_ADDED_SIG, service::slots::UPDATE},
+        {s_POINT_LIST_IN, data::PointList::POINT_REMOVED_SIG, service::slots::UPDATE},
+        {s_POINT_LIST_IN, data::PointList::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

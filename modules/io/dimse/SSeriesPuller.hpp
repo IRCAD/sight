@@ -28,13 +28,13 @@
 #include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesRetriever.hpp>
 
-#include <service/IController.hpp>
-#include <service/IHasServices.hpp>
-#include <service/INotifier.hpp>
+#include <service/controller.hpp>
+#include <service/has_services.hpp>
+#include <service/notifier.hpp>
 
 #include <vector>
 
@@ -70,14 +70,14 @@ namespace sight::module::io::dimse
  * - \b dicomReader (mandatory, string): reader type to use.
  * - \b readerConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
-class MODULE_IO_DIMSE_CLASS_API SSeriesPuller final : public service::IController,
-                                                      public service::IHasServices,
-                                                      private service::INotifier
+class MODULE_IO_DIMSE_CLASS_API SSeriesPuller final : public service::controller,
+                                                      public service::has_services,
+                                                      private service::notifier
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SSeriesPuller, sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SSeriesPuller, sight::service::controller);
 
     /// Creates the service and slots.
     MODULE_IO_DIMSE_API SSeriesPuller() noexcept;
@@ -105,15 +105,15 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connects data::SeriesSet::s_REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to s_REMOVE_SERIES_SLOT (removeSeries)
+     * Connects data::SeriesSet::REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to REMOVE_SERIES_SLOT (removeSeries)
      */
-    MODULE_IO_DIMSE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_DIMSE_API connections_t getAutoConnections() const override;
 
     typedef data::SeriesSet::container_type DicomSeriesContainerType;
-    typedef core::com::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
-    typedef core::com::Signal<void (std::string)> ProgressStartedSignalType;
-    typedef core::com::Signal<void (std::string, float, std::string)> ProgressedSignalType;
-    typedef core::com::Signal<void (std::string)> ProgressStoppedSignalType;
+    typedef core::com::slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
+    typedef core::com::signal<void (std::string)> ProgressStartedSignalType;
+    typedef core::com::signal<void (std::string, float, std::string)> ProgressedSignalType;
+    typedef core::com::signal<void (std::string)> ProgressStoppedSignalType;
 
     /// Pulls series from the PACS.
     void pullSeries();
@@ -140,7 +140,7 @@ private:
     void removeSeries(data::SeriesSet::container_type _removedSeries);
 
     /// Defines the worker of the series enquire thread.
-    core::thread::Worker::sptr m_requestWorker;
+    core::thread::worker::sptr m_requestWorker;
 
     /// Defines the DICOM reader implementation.
     std::string m_dicomReaderImplementation;
@@ -149,7 +149,7 @@ private:
     std::string m_readerConfig;
 
     /// Contains the DICOM reader.
-    sight::io::base::service::IReader::sptr m_dicomReader {nullptr};
+    sight::io::service::reader::sptr m_dicomReader {nullptr};
 
     /// Contains the series_set where the DICOM reader sets its output.
     data::SeriesSet::sptr m_series_set {nullptr};

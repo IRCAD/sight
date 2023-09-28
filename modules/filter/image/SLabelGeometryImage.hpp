@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/PointList.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -67,12 +67,12 @@ namespace sight::module::filter::image
  * - \b clusters: Must contains a group a clusters.
  * - \b cluster: Contains a list of std::size_t labels value.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SLabelGeometryImage final : public service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SLabelGeometryImage final : public service::filter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLabelGeometryImage, service::IFilter);
+    SIGHT_DECLARE_SERVICE(SLabelGeometryImage, service::filter);
 
     /// Initializes slots.
     MODULE_FILTER_IMAGE_API SLabelGeometryImage();

@@ -84,8 +84,8 @@ function(get_header_file_install_destination)
     # activities -> activity/theme/project/
     # apps -> project
     # examples -> project
-    # libs -> theme/project/ except for theme=core project
-    # modules -> modules/theme/project/  except for theme=core modules/project
+    # libs -> theme/project/ except for theme=main project
+    # modules -> modules/theme/project/  except for theme=main modules/project
     # tutorials -> project
     file(RELATIVE_PATH CURRENT_SOURCE_DIR_REL ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
     string(REPLACE "/" ";" CURRENT_SOURCE_DIRS ${CURRENT_SOURCE_DIR_REL})
@@ -98,7 +98,7 @@ function(get_header_file_install_destination)
     else()
         list(GET CURRENT_SOURCE_DIRS 1 THEME)
         list(GET CURRENT_SOURCE_DIRS 2 PROJECT)
-        string(REPLACE "core" "." THEME ${THEME})
+        string(REPLACE "__" "." THEME ${THEME})
         set(PROJECT_PATH "${THEME}/${PROJECT}")
     endif()
 
@@ -573,7 +573,7 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
         target_include_directories(
             ${TARGET_OBJECT_LIB}
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
-                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
+                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/__/>
         )
         target_include_directories(${SIGHT_TARGET} PUBLIC $<INSTALL_INTERFACE:include>)
         target_link_libraries(${SIGHT_TARGET} PUBLIC ${TARGET_OBJECT_LIB})
@@ -585,7 +585,7 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
         target_include_directories(
             ${SIGHT_TARGET}
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/> $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
-                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/> $<INSTALL_INTERFACE:include>
+                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/__/> $<INSTALL_INTERFACE:include>
         )
     endif()
 
@@ -772,8 +772,8 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
         # Allows include of all folders in libs, i.e. <ui/..> <io/..> ...
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs>)
-        # Allows include of type <core/..> <data/..> ...
-        target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core>)
+        # Allows include of type <__/..> <data/..> ...
+        target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/__>)
         # Allows include of type <modules/../..>
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 

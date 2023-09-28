@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -157,7 +157,7 @@ MemoryReadArchive::~MemoryReadArchive()
 
 //-----------------------------------------------------------------------------
 
-SPTR(std::istream) MemoryReadArchive::getFile(const std::filesystem::path& path)
+SPTR(std::istream) MemoryReadArchive::get_file(const std::filesystem::path& path)
 {
     if(m_streams.find(path.string()) != m_streams.end())
     {

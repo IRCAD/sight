@@ -177,7 +177,7 @@ public:
         // Allocate destination image
         image.resize(
             {width, height, 0},
-            core::Type::UINT8,
+            core::type::UINT8,
             data::Image::PixelFormat::RGB
         );
 
@@ -187,7 +187,7 @@ public:
         // Copy GPU memory so we can convert to planar there
         CHECK_CUDA(
             cudaMemcpy(
-                image.getBuffer(),
+                image.buffer(),
                 m_gpu_buffer,
                 size_in_bytes,
                 cudaMemcpyDeviceToHost

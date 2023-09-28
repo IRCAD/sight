@@ -24,8 +24,8 @@
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <Ogre.h>
 
@@ -58,12 +58,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SGrid final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SGrid, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SGrid, sight::viz::scene3d::adaptor);
 
     MODULE_VIZ_SCENE3D_API SGrid() noexcept;
     MODULE_VIZ_SCENE3D_API ~SGrid() noexcept override = default;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "modules/io/vtk/SSeriesSetReader.hpp"
 
-#include <core/com/HasSignals.hpp>
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/has_signals.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/jobs/base.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/SeriesSet.hpp>
 
@@ -35,41 +35,41 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 #include <filesystem>
 
 namespace sight::module::io::vtk
 {
 
-static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SSeriesSetReader::SSeriesSetReader() noexcept
 {
-    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SSeriesSetReader::getIOPathType() const
+sight::io::service::IOPathType SSeriesSetReader::getIOPathType() const
 {
-    return sight::io::base::service::FILES;
+    return sight::io::service::FILES;
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesSetReader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
+    dialogFile.setType(ui::dialog::location::MULTI_FILES);
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
     dialogFile.addFilter("MetaImage files", "*.mhd");
@@ -80,20 +80,20 @@ void SSeriesSetReader::openLocationDialog()
     dialogFile.addFilter("VTK Legacy Files(.vtk)", "*.vtk");
     dialogFile.addFilter("VTK Polydata Files(.vtp)", "*.vtp");
     dialogFile.addFilter("VTU Image files", "*.vtu");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(ui::dialog::location::READ);
+    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = core::location::MultipleFiles::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialogFile.show());
     if(result)
     {
-        const std::vector<std::filesystem::path> paths = result->getFiles();
+        const std::vector<std::filesystem::path> paths = result->get_files();
         if(!paths.empty())
         {
-            defaultDirectory->setFolder(paths[0].parent_path());
+            defaultDirectory->set_folder(paths[0].parent_path());
             dialogFile.saveDefaultLocation(defaultDirectory);
         }
 
-        this->setFiles(paths);
+        this->set_files(paths);
     }
     else
     {
@@ -117,7 +117,7 @@ void SSeriesSetReader::stopping()
 
 void SSeriesSetReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -136,9 +136,9 @@ void SSeriesSetReader::loadSeriesSet(
 {
     m_readFailed = true;
 
-    auto reader = sight::io::vtk::SeriesSetReader::New();
+    auto reader = std::make_shared<sight::io::vtk::SeriesSetReader>();
     reader->setObject(series_set);
-    reader->setFiles(vtkFiles);
+    reader->set_files(vtkFiles);
 
     m_sigJobCreated->emit(reader->getJob());
 
@@ -152,20 +152,20 @@ void SSeriesSetReader::loadSeriesSet(
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
     catch(...)
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             "Warning during loading.",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
 }
@@ -186,23 +186,23 @@ void SSeriesSetReader::updating()
             "The object is not a '"
             + data::SeriesSet::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             series_set
         );
 
-        auto local_series_set = data::SeriesSet::New();
+        auto local_series_set = std::make_shared<data::SeriesSet>();
 
-        sight::ui::base::BusyCursor cursor;
+        sight::ui::BusyCursor cursor;
 
-        this->loadSeriesSet(this->getFiles(), local_series_set);
+        this->loadSeriesSet(this->get_files(), local_series_set);
 
         if(!m_readFailed)
         {
             const auto scoped_emitter = series_set->scoped_emit();
 
             series_set->clear();
-            series_set->shallowCopy(local_series_set);
+            series_set->shallow_copy(local_series_set);
         }
     }
 }

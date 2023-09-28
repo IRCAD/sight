@@ -22,9 +22,9 @@
 
 #include "SPlaneSlicer.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Point.hpp>
@@ -42,8 +42,8 @@
 namespace sight::module::filter::image
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT    = "updateSliceType";
-static const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "updateDefaultValue";
+static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT    = "updateSliceType";
+static const core::com::slots::key_t UPDATE_DEFAULT_VALUE_SLOT = "updateDefaultValue";
 
 //------------------------------------------------------------------------------
 
@@ -51,8 +51,8 @@ SPlaneSlicer::SPlaneSlicer() noexcept :
 
     m_reslicer(vtkSmartPointer<vtkImageReslice>::New())
 {
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SPlaneSlicer::updateorientation_t, this);
-    newSlot(s_UPDATE_DEFAULT_VALUE_SLOT, &SPlaneSlicer::updateDefaultValue, this);
+    new_slot(UPDATE_SLICE_TYPE_SLOT, &SPlaneSlicer::updateorientation_t, this);
+    new_slot(UPDATE_DEFAULT_VALUE_SLOT, &SPlaneSlicer::updateDefaultValue, this);
 }
 
 //------------------------------------------------------------------------------
@@ -103,16 +103,16 @@ void SPlaneSlicer::updating()
     // HACK: Make output slice three-dimensional.
     // We need to do so in order to visualize it with ::visuVTKAdaptor::SImageSlice.
     // This is because the adaptor uses a vtkImageActor which doesn't handle 2d images.
-    const auto size = slice->getSize();
+    const auto size = slice->size();
     slice->resize({{size[0], size[1], 1}}, slice->getType(), slice->getPixelFormat());
     const auto spacing = slice->getSpacing();
     slice->setSpacing({{spacing[0], spacing[1], 0}});
     const auto origin = slice->getOrigin();
     slice->setOrigin({{origin[0], origin[1], 0}});
 
-    auto sig = slice->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
+    auto sig = slice->signal<data::Image::ModifiedSignalType>(data::Image::MODIFIED_SIG);
 
-    sig->asyncEmit();
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -145,15 +145,15 @@ void SPlaneSlicer::configuring()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
+service::connections_t SPlaneSlicer::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_DEFAULT_VALUE_SLOT},
-        {s_EXTENT_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_EXTENT_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT},
-        {s_AXES_IN, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE}
+        {s_IMAGE_IN, data::Image::MODIFIED_SIG, service::slots::UPDATE},
+        {s_IMAGE_IN, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {s_IMAGE_IN, data::Image::BUFFER_MODIFIED_SIG, UPDATE_DEFAULT_VALUE_SLOT},
+        {s_EXTENT_IN, data::Image::SLICE_INDEX_MODIFIED_SIG, service::slots::UPDATE},
+        {s_EXTENT_IN, data::Image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT},
+        {s_AXES_IN, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 
@@ -165,7 +165,7 @@ void SPlaneSlicer::setReslicerExtent()
 
     SIGHT_ASSERT("No " << s_EXTENT_IN << " found", extentImg);
 
-    const auto& size    = extentImg->getSize();
+    const auto& size    = extentImg->size();
     const auto& origin  = extentImg->getOrigin();
     const auto& spacing = extentImg->getSpacing();
 

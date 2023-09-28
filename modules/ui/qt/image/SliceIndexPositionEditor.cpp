@@ -23,15 +23,15 @@
 #include "modules/ui/qt/image/SliceIndexPositionEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -47,17 +47,17 @@ namespace sight::module::ui::qt::image
 
 namespace imHelper = data::helper::MedicalImage;
 
-static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+static const core::com::slots::key_t UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
-const service::IService::KeyType SliceIndexPositionEditor::s_IMAGE_INOUT = "image";
+const service::base::KeyType SliceIndexPositionEditor::s_IMAGE_INOUT = "image";
 
 //------------------------------------------------------------------------------
 
 SliceIndexPositionEditor::SliceIndexPositionEditor() noexcept
 {
-    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SliceIndexPositionEditor::updateSliceIndex, this);
-    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SliceIndexPositionEditor::updateSliceType, this);
+    new_slot(UPDATE_SLICE_INDEX_SLOT, &SliceIndexPositionEditor::updateSliceIndex, this);
+    new_slot(UPDATE_SLICE_TYPE_SLOT, &SliceIndexPositionEditor::updateSliceType, this);
 }
 
 //------------------------------------------------------------------------------
@@ -71,11 +71,11 @@ void SliceIndexPositionEditor::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     auto* layout = new QVBoxLayout();
 
@@ -85,11 +85,11 @@ void SliceIndexPositionEditor::starting()
     m_sliceSelectorPanel->setObjectName(serviceID);
 
     sight::ui::qt::SliceSelector::ChangeIndexCallback changeIndexCallback;
-    changeIndexCallback = [this](unsigned PH1, auto&& ...){sliceIndexNotification(std::forward<decltype(PH1)>(PH1));};
+    changeIndexCallback = [this](int i){sliceIndexNotification(i);};
     m_sliceSelectorPanel->setChangeIndexCallback(changeIndexCallback);
 
     sight::ui::qt::SliceSelector::ChangeIndexCallback changeTypeCallback;
-    changeTypeCallback = [this](auto&& PH1, auto&& ...){sliceTypeNotification(std::forward<decltype(PH1)>(PH1));};
+    changeTypeCallback = [this](int t){sliceTypeNotification(t);};
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
     m_sliceSelectorPanel->setTypeSelection(m_orientation);
 
@@ -222,14 +222,14 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg(const sight::data::Image&
     if(imHelper::checkImageValidity(_image))
     {
         // Default value take the middle of the size.
-        const auto image_size = _image.getSize();
+        const auto image_size = _image.size();
         const auto index      = imHelper::getSliceIndex(_image, m_orientation).value_or(image_size[m_orientation] / 2);
 
         // Update QSlider
         int max = 0;
         if(_image.numDimensions() > m_orientation)
         {
-            max = static_cast<int>(_image.getSize()[m_orientation] - 1);
+            max = static_cast<int>(_image.size()[m_orientation] - 1);
         }
 
         m_sliceSelectorPanel->setSliceRange(0, max);
@@ -252,7 +252,7 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(const orientation_t& type)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::sliceIndexNotification(unsigned int index)
+void SliceIndexPositionEditor::sliceIndexNotification(int index)
 {
     const auto image = m_image.lock();
 
@@ -274,10 +274,10 @@ void SliceIndexPositionEditor::sliceIndexNotification(unsigned int index)
     };
 
     auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>(
-        data::Image::s_SLICE_INDEX_MODIFIED_SIG
+        data::Image::SLICE_INDEX_MODIFIED_SIG
     );
-    core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_INDEX_SLOT)));
-    sig->asyncEmit(idx[2], idx[1], idx[0]);
+    core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_SLICE_INDEX_SLOT)));
+    sig->async_emit(idx[2], idx[1], idx[0]);
 }
 
 //------------------------------------------------------------------------------
@@ -301,11 +301,11 @@ void SliceIndexPositionEditor::sliceTypeNotification(int _type)
         const auto image = m_image.const_lock();
 
         auto sig = image->signal<data::Image::SliceTypeModifiedSignalType>(
-            data::Image::s_SLICE_TYPE_MODIFIED_SIG
+            data::Image::SLICE_TYPE_MODIFIED_SIG
         );
         {
-            core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_SLICE_TYPE_SLOT)));
-            sig->asyncEmit(oldType, _type);
+            core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_SLICE_TYPE_SLOT)));
+            sig->async_emit(oldType, _type);
         }
         this->updateSliceIndexFromImg(*image);
     }
@@ -313,14 +313,14 @@ void SliceIndexPositionEditor::sliceTypeNotification(int _type)
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SliceIndexPositionEditor::getAutoConnections() const
+service::connections_t SliceIndexPositionEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE_INOUT, data::Image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE_INOUT, data::Image::SLICE_INDEX_MODIFIED_SIG, UPDATE_SLICE_INDEX_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }

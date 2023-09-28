@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #include "helperTest.hpp"
 
-#include <core/data/Point.hpp>
-#include <core/tools/random/Generator.hpp>
+#include <core/tools/random/generator.hpp>
+
+#include <data/Point.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 #include <geometry/vision/helper.hpp>
@@ -43,7 +44,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vision::ut::helperTest);
 namespace sight::geometry::vision::ut
 {
 
-using core::tools::random::safeRand;
+using core::tools::random::safe_rand;
 
 using ExpectedChessboardType = std::vector<sight::data::Point::PointCoordArrayType>;
 
@@ -325,10 +326,10 @@ void helperTest::reprojectionRealDatasetTest2()
 void helperTest::toolCalibrationBasic()
 {
     const std::uint8_t nbMatrices = 34;
-    auto matricesVector           = sight::data::Vector::New();
+    auto matricesVector           = std::make_shared<sight::data::Vector>();
 
-    auto resCenterMatrix    = sight::data::Matrix4::New();
-    auto resTransformMatrix = sight::data::Matrix4::New();
+    auto resCenterMatrix    = std::make_shared<sight::data::Matrix4>();
+    auto resTransformMatrix = std::make_shared<sight::data::Matrix4>();
 
     const glm::dvec3 center(0., 0., 0.);
     const double radius = 18;
@@ -337,12 +338,12 @@ void helperTest::toolCalibrationBasic()
     // generates matrices
     for(std::size_t i = 0 ; i < nbMatrices ; ++i)
     {
-        const double angleInDegrees = safeRand() % 180;
+        const double angleInDegrees = safe_rand() % 180;
         const double angle          = glm::radians(angleInDegrees);
 
-        const double x = safeRand() % 100 / 100.;
-        const double y = safeRand() % 100 / 100.;
-        const double z = safeRand() % 100 / 100.;
+        const double x = safe_rand() % 100 / 100.;
+        const double y = safe_rand() % 100 / 100.;
+        const double z = safe_rand() % 100 / 100.;
 
         glm::dvec3 axis(x, y, z);
         axis = glm::normalize(axis);
@@ -353,7 +354,7 @@ void helperTest::toolCalibrationBasic()
 
         matrix = glm::translate(matrix, translation);
 
-        auto mat = sight::data::Matrix4::New();
+        auto mat = std::make_shared<sight::data::Matrix4>();
         geometry::data::setTF3DFromMatrix(*mat, matrix);
 
         matricesVector->push_back(mat);
@@ -400,10 +401,10 @@ void helperTest::toolCalibrationBasic()
 void helperTest::toolCalibration()
 {
     const std::uint8_t nbMatrices = 46;
-    auto matricesVector           = sight::data::Vector::New();
+    auto matricesVector           = std::make_shared<sight::data::Vector>();
 
-    auto resCenterMatrix    = sight::data::Matrix4::New();
-    auto resTransformMatrix = sight::data::Matrix4::New();
+    auto resCenterMatrix    = std::make_shared<sight::data::Matrix4>();
+    auto resTransformMatrix = std::make_shared<sight::data::Matrix4>();
 
     const glm::dvec3 center(36., 52., -530.);
     const glm::dvec3 translation(-459.45, 46.6, -88.54);
@@ -411,12 +412,12 @@ void helperTest::toolCalibration()
     // generates matrices
     for(std::size_t i = 0 ; i < nbMatrices ; ++i)
     {
-        const double angleInDegrees = safeRand() % 360;
+        const double angleInDegrees = safe_rand() % 360;
         const double angle          = glm::radians(angleInDegrees);
 
-        const double x = safeRand() % 100 / 100.;
-        const double y = safeRand() % 100 / 100.;
-        const double z = safeRand() % 100 / 100.;
+        const double x = safe_rand() % 100 / 100.;
+        const double y = safe_rand() % 100 / 100.;
+        const double z = safe_rand() % 100 / 100.;
 
         glm::dvec3 axis(x, y, z);
         axis = glm::normalize(axis);
@@ -425,7 +426,7 @@ void helperTest::toolCalibration()
         matrix = glm::rotate(matrix, angle, axis);
         matrix = glm::translate(matrix, translation);
 
-        sight::data::Matrix4::sptr mat = sight::data::Matrix4::New();
+        sight::data::Matrix4::sptr mat = std::make_shared<sight::data::Matrix4>();
         geometry::data::setTF3DFromMatrix(*mat, matrix);
 
         matricesVector->push_back(mat);

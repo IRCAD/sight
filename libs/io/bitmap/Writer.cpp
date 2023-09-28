@@ -31,7 +31,7 @@
 namespace sight::io::bitmap
 {
 
-Writer::Writer(base::writer::IObjectWriter::Key /*unused*/) :
+Writer::Writer() :
     m_pimpl(std::make_unique<detail::WriterImpl>(this))
 {
 }
@@ -47,7 +47,7 @@ std::string Writer::extension() const
     {
         const auto& [backend, extensions] = detail::guessBackendOrExtension(
             Backend::ANY,
-            getFile().extension().string()
+            get_file().extension().string()
         );
 
         return extensions.front();
@@ -69,7 +69,7 @@ void Writer::write()
 
 std::size_t Writer::write(Backend backend, Mode mode)
 {
-    auto file = getFile();
+    auto file = get_file();
 
     try
     {

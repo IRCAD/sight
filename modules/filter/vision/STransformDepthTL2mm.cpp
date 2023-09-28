@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,21 +22,21 @@
 
 #include "STransformDepthTL2mm.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
 namespace sight::module::filter::vision
 {
 
-static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT = "compute";
+static const core::com::slots::key_t COMPUTE_SLOT = "compute";
 
 //------------------------------------------------------------------------------
 
 STransformDepthTL2mm::STransformDepthTL2mm()
 {
-    newSlot(s_COMPUTE_SLOT, &STransformDepthTL2mm::compute, this);
+    new_slot(COMPUTE_SLOT, &STransformDepthTL2mm::compute, this);
 }
 
 //------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void STransformDepthTL2mm::configuring()
 
 //------------------------------------------------------------------------------
 
-void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
+void STransformDepthTL2mm::compute(core::hires_clock::type timestamp)
 {
     if(timestamp > m_lastTimestamp)
     {
@@ -92,7 +92,7 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
                 scaledFrameTL->initPoolSize(
                     width,
                     height,
-                    core::Type::UINT16,
+                    core::type::UINT16,
                     data::FrameTL::PixelFormat::GRAY_SCALE
                 );
             }
@@ -112,10 +112,10 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
 
             auto sig =
                 scaledFrameTL->signal<data::TimeLine::ObjectPushedSignalType>(
-                    data::TimeLine::s_OBJECT_PUSHED_SIG
+                    data::TimeLine::OBJECT_PUSHED_SIG
                 );
-            sig->asyncEmit(timestamp);
-            m_sigComputed->asyncEmit();
+            sig->async_emit(timestamp);
+            m_sigComputed->async_emit();
         }
 
         m_lastTimestamp = timestamp;
@@ -130,9 +130,9 @@ void STransformDepthTL2mm::updating()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() const
+service::connections_t STransformDepthTL2mm::getAutoConnections() const
 {
-    return {{s_ORIGIN_FRAME_TL_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT}};
+    return {{s_ORIGIN_FRAME_TL_INPUT, data::BufferTL::OBJECT_PUSHED_SIG, COMPUTE_SLOT}};
 }
 
 //-----------------------------------------------------------------------------

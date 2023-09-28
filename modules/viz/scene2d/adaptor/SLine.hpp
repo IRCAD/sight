@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
-#include <viz/scene2d/IAdaptor.hpp>
+#include <viz/scene2d/adaptor.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -51,11 +51,11 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b zValue (optional, default=0): z value of the layer
  *    - \b color (optional, default black): color of the line
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SLine : public sight::viz::scene2d::IAdaptor
+class MODULE_VIZ_SCENE2D_CLASS_API SLine : public sight::viz::scene2d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SLine, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SLine, sight::viz::scene2d::adaptor);
 
     /// Basic constructor, do nothing.
     MODULE_VIZ_SCENE2D_API SLine() noexcept;

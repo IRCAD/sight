@@ -22,7 +22,7 @@
 
 #include "WriterReaderTest.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <data/Boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
@@ -103,18 +103,18 @@ void WriterReaderTest::writeReadImageSeriesTest()
     }
 
     auto imgSeries = utestData::generator::SeriesSet::createImageSeries();
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
-    auto writer = io::dicom::writer::Series::New();
+    auto writer = std::make_shared<io::dicom::writer::Series>();
     writer->setObject(imgSeries);
-    writer->setFolder(tmpDir);
+    writer->set_folder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // load ImageSeries
-    auto series_set = data::SeriesSet::New();
-    auto reader     = io::dicom::reader::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
+    auto reader     = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(tmpDir);
+    reader->set_folder(tmpDir);
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
@@ -122,7 +122,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     auto series    = series_set->front();
-    auto imgseries = data::ImageSeries::dynamicCast(series);
+    auto imgseries = std::dynamic_pointer_cast<data::ImageSeries>(series);
     roundSpacing(imgseries);
 }
 
@@ -131,7 +131,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
 data::SeriesSet::sptr WriterReaderTest::createSeriesSet()
 {
     //create SeriesSet
-    auto series_set  = data::SeriesSet::New();
+    auto series_set  = std::make_shared<data::SeriesSet>();
     auto imgSeries   = utestData::generator::SeriesSet::createImageSeries();
     auto modelSeries = utestData::generator::SeriesSet::createModelSeries(1);
 
@@ -142,22 +142,22 @@ data::SeriesSet::sptr WriterReaderTest::createSeriesSet()
     data::PointList::sptr landmarks    = data::helper::MedicalImage::getLandmarks(*imgSeries);
     const data::Image::Spacing spacing = imgSeries->getSpacing();
     const data::Image::Origin origin   = imgSeries->getOrigin();
-    const data::Point::sptr point      = data::Point::New(
+    const data::Point::sptr point      = std::make_shared<data::Point>(
         2.6 + origin[0],
         1.2 + origin[1],
         4.5 + origin[2]
     );
     point->setLabel("Label1");
     landmarks->getPoints().push_back(point);
-    data::Point::sptr point2 = data::Point::New(
+    data::Point::sptr point2 = std::make_shared<data::Point>(
         1.2 + origin[0],
         2.4 + origin[1],
         0.3 + origin[2]
     );
     point2->setLabel("Label2");
     landmarks->getPoints().push_back(point2);
-    const data::Image::Size size   = imgSeries->getSize();
-    const data::Point::sptr point3 = data::Point::New(
+    const data::Image::Size size   = imgSeries->size();
+    const data::Point::sptr point3 = std::make_shared<data::Point>(
         1.2 + origin[0],
         2.4 + origin[1],
         static_cast<double>(size[2] - 1) * spacing[2] + origin[2]
@@ -166,9 +166,9 @@ data::SeriesSet::sptr WriterReaderTest::createSeriesSet()
     landmarks->getPoints().push_back(point3);
 
     // Add distance
-    data::PointList::sptr pl    = data::PointList::New();
-    const data::Point::sptr pt1 = data::Point::New(0., 0., 0.);
-    const data::Point::sptr pt2 = data::Point::New(
+    data::PointList::sptr pl    = std::make_shared<data::PointList>();
+    const data::Point::sptr pt1 = std::make_shared<data::Point>(0., 0., 0.);
+    const data::Point::sptr pt2 = std::make_shared<data::Point>(
         static_cast<double>(size[0] - 1) * spacing[0],
         static_cast<double>(size[1] - 1) * spacing[1],
         static_cast<double>(size[2] - 1) * spacing[2]
@@ -180,7 +180,7 @@ data::SeriesSet::sptr WriterReaderTest::createSeriesSet()
 
     if(!vectDist)
     {
-        vectDist = data::Vector::New();
+        vectDist = std::make_shared<data::Vector>();
         data::helper::MedicalImage::setDistances(*imgSeries, vectDist);
     }
 
@@ -196,13 +196,13 @@ data::SeriesSet::sptr WriterReaderTest::createSeriesSet()
     mesh->clear<data::Mesh::Attributes::CELL_NORMALS>();
 
     // gdcm only manage ambient color in reconstruction
-    data::Material::sptr material = data::Material::New();
+    data::Material::sptr material = std::make_shared<data::Material>();
     data::Color::sptr color       = utestData::generator::Object::randomizeColor();
     material->setDiffuse(color);
     rec->setMaterial(material);
     rec->setImage(data::Image::sptr()); // not managed
 
-    modelSeries->setField("ShowReconstructions", data::Boolean::New(true));
+    modelSeries->setField("ShowReconstructions", std::make_shared<data::Boolean>(true));
 
     return series_set;
 }

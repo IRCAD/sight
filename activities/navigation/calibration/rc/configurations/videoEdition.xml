@@ -23,10 +23,10 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
                 <toolBar />
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" />
                 </layout>
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <editor />
@@ -53,7 +53,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="editionAct" type="sight::module::ui::base::SAction" />
+        <service uid="editionAct" type="sight::module::ui::SAction" />
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 

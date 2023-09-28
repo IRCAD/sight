@@ -371,7 +371,7 @@ public:
      * @return Is the current component castable to the given type?
      */
     template<typename T>
-    bool isA();
+    bool is_a();
 
     /**
      * @brief Get the current component.

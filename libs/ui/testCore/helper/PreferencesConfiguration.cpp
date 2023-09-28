@@ -64,15 +64,15 @@ void PreferencesConfiguration::fill(Tester& tester, const std::map<std::string, 
         tester.take("preferences configuration window", window);
         tester.yields('"' + key + "\" field", key);
         QString qValue = QString::fromStdString(value);
-        if(tester.isA<QLineEdit*>())
+        if(tester.is_a<QLineEdit*>())
         {
             tester.get<QLineEdit*>()->setText(qValue);
         }
-        else if(tester.isA<QCheckBox*>())
+        else if(tester.is_a<QCheckBox*>())
         {
             tester.get<QCheckBox*>()->setChecked(qValue == "true");
         }
-        else if(tester.isA<QComboBox*>())
+        else if(tester.is_a<QComboBox*>())
         {
             tester.get<QComboBox*>()->setCurrentText(qValue);
         }

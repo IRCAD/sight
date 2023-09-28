@@ -24,9 +24,9 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/SRender.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <OGRE/OgreSceneNode.h>
 
@@ -52,15 +52,15 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b parent (optional, string, default=""): Name of the parent Ogre Transform you want to attach to.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API STransform final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STransform, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(STransform, sight::viz::scene3d::adaptor);
 
     /// Creates the service.
     MODULE_VIZ_SCENE3D_API STransform() noexcept = default;
@@ -80,9 +80,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to IService::slots::s_UPDATE
+     * Connect data::Object::MODIFIED_SIG of s_TRANSFORM_INOUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Updates m_transformNode from the data::Matrix4.
     MODULE_VIZ_SCENE3D_API void updating() final;

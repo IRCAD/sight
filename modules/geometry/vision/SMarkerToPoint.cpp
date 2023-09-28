@@ -22,26 +22,26 @@
 
 #include "SMarkerToPoint.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Matrix4.hpp>
 #include <data/Point.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 
 namespace sight::module::geometry::vision
 {
 
-const core::com::Slots::SlotKeyType SMarkerToPoint::s_ADD_POINT_SLOT = "addPoint";
-const core::com::Slots::SlotKeyType SMarkerToPoint::s_CLEAR_SLOT     = "clear";
+const core::com::slots::key_t SMarkerToPoint::ADD_POINT_SLOT = "addPoint";
+const core::com::slots::key_t SMarkerToPoint::CLEAR_SLOT     = "clear";
 
 // ----------------------------------------------------------------------------
 
 SMarkerToPoint::SMarkerToPoint() noexcept
 {
-    newSlot(s_ADD_POINT_SLOT, &SMarkerToPoint::addPoint, this);
-    newSlot(s_CLEAR_SLOT, &SMarkerToPoint::clear, this);
+    new_slot(ADD_POINT_SLOT, &SMarkerToPoint::addPoint, this);
+    new_slot(CLEAR_SLOT, &SMarkerToPoint::clear, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -79,9 +79,9 @@ void SMarkerToPoint::addPoint()
 {
     const auto matrixTL = m_matrixTL.lock();
 
-    data::Matrix4::sptr matrix3D = data::Matrix4::New();
+    data::Matrix4::sptr matrix3D = std::make_shared<data::Matrix4>();
 
-    core::HiResClock::HiResClockType currentTimestamp = core::HiResClock::getTimeInMilliSec();
+    core::hires_clock::type currentTimestamp = core::hires_clock::get_time_in_milli_sec();
     CSPTR(data::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
     SIGHT_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
 
@@ -102,7 +102,7 @@ void SMarkerToPoint::addPoint()
     );
 
     //Save the position and drop the orientation
-    data::Point::sptr p = data::Point::New(
+    data::Point::sptr p = std::make_shared<data::Point>(
         (*matrix3D)(0, 3),
         (*matrix3D)(1, 3),
         (*matrix3D)(2, 3)
@@ -110,10 +110,10 @@ void SMarkerToPoint::addPoint()
 
     const auto pl = m_pointList.lock();
     pl->pushBack(p);
-    auto sig = pl->signal<data::PointList::PointAddedSignalType>(data::PointList::s_POINT_ADDED_SIG);
+    auto sig = pl->signal<data::PointList::PointAddedSignalType>(data::PointList::POINT_ADDED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit(p);
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit(p);
     }
 }
 
@@ -127,10 +127,10 @@ void SMarkerToPoint::clear()
     {
         pl->clear();
 
-        auto sig = pl->signal<data::PointList::ModifiedSignalType>(data::PointList::s_MODIFIED_SIG);
+        auto sig = pl->signal<data::PointList::ModifiedSignalType>(data::PointList::MODIFIED_SIG);
         {
-            core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-            sig->asyncEmit();
+            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+            sig->async_emit();
         }
     }
 }

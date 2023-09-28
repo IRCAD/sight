@@ -39,7 +39,7 @@ ClippingBoxInteractor::ClippingBoxInteractor(
     const std::string& _boxMtlName,
     const std::string& _handleMtlName
 ) noexcept :
-    IInteractor(_layer, _layerOrderDependant),
+    base(_layer, _layerOrderDependant),
     m_widget(_id, _parentSceneNode, _layer->getDefaultCamera(), _layer->getSceneManager(),
              _clippingMatrix, _clippingUpdateCb, _boxMtlName, _handleMtlName)
 {

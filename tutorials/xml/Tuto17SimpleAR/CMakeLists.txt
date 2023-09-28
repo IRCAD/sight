@@ -14,13 +14,13 @@ add_dependencies(
     Tuto17SimpleAR
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_viz_scene3d
     module_viz_scene3dQt
     data
     module_service
-    module_ui_base
+    module_ui
     module_ui_flaticons
     module_io_matrix
     module_io_vtk
@@ -30,7 +30,7 @@ add_dependencies(
     module_sync
     module_navigation_optics
     module_geometry_vision
-    module_geometry_base
+    module_geometry
 )
 
 # Main application's configuration to launch

@@ -26,7 +26,7 @@
 #include "viz/scene3d/helper/Technique.hpp"
 #include "viz/scene3d/ogre.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTechnique.h>

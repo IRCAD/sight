@@ -46,8 +46,8 @@ SliceSelector::SliceSelector(bool displayAxisSelector, bool displayStepButtons, 
 {
     m_sliceIndexStyle = new AbsoluteProxyStyle(m_sliceIndex->style());
     m_sliceIndex->setStyle(m_sliceIndexStyle);
-    m_fctChangeIndexCallback = [this](auto&& PH1, auto&& ...){printIndex(std::forward<decltype(PH1)>(PH1));};
-    m_fctChangeTypeCallback  = [this](auto&& PH1, auto&& ...){printType(std::forward<decltype(PH1)>(PH1));};
+    m_fctChangeIndexCallback = [this](int i){printIndex(i);};
+    m_fctChangeTypeCallback  = [this](int t){printType(t);};
 
     auto* layout = new QHBoxLayout(this);
     if(displayAxisSelector)
@@ -73,7 +73,7 @@ SliceSelector::SliceSelector(bool displayAxisSelector, bool displayStepButtons, 
         layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
         auto* stepBackward = new QToolButton(this);
-        auto path          = core::runtime::getModuleResourcePath("sight::module::ui::flaticons");
+        auto path          = core::runtime::get_module_resource_path("sight::module::ui::flaticons");
         stepBackward->setIcon(QIcon(QString::fromStdString((path / "YellowBackwardStep.svg").string())));
         stepBackward->setToolTip(tr("Step backward"));
 

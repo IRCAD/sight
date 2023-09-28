@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,14 +31,14 @@ namespace sight::filter::dicom::splitter
 /**
  * @brief Filter that uses the ImageType tag to split the instances.
  */
-class FILTER_DICOM_CLASS_API ImageTypeSplitter : public filter::dicom::splitter::TagValueSplitter
+class FILTER_DICOM_CLASS_API ImageTypeSplitter : public sight::filter::dicom::splitter::TagValueSplitter
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ImageTypeSplitter, ISplitter, filter::dicom::factory::New<ImageTypeSplitter>);
+    SIGHT_DECLARE_CLASS(ImageTypeSplitter, base, sight::filter::dicom::factory::make<ImageTypeSplitter>);
 
     /// Constructor
-    FILTER_DICOM_API ImageTypeSplitter(filter::dicom::IFilter::Key key);
+    FILTER_DICOM_API ImageTypeSplitter();
 
     /// Destructor
     FILTER_DICOM_API ~ImageTypeSplitter() override;

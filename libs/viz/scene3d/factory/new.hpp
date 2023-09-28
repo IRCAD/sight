@@ -30,7 +30,7 @@
 namespace sight::viz::scene3d
 {
 
-class IWindowInteractor;
+class window_interactor;
 class ILight;
 class IText;
 class Layer;
@@ -39,29 +39,16 @@ namespace factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  New();
+SPTR(CLASSNAME)  make();
 
-/**
- * @brief Key class used to restrict access to Object construction.
- * See http://www.drdobbs.com/184402053
- */
-class Key
-{
-template<typename CLASSNAME>
-friend SPTR(CLASSNAME) viz::scene3d::factory::New();
-
-Key()
-= default;
-};
-
-VIZ_SCENE3D_API SPTR(viz::scene3d::IWindowInteractor) New(
+VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
     const viz::scene3d::registry::KeyType& classname
 );
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  New()
+SPTR(CLASSNAME)  make()
 {
-    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>();
     return obj;
 }
 
@@ -71,33 +58,17 @@ namespace offscreenInteractorMgrFactory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned int> _dims);
+SPTR(CLASSNAME) make(std::pair<unsigned int, unsigned int> _dims);
 
-/**
- * @brief Key class used to restrict access to Object construction.
- * See http://www.drdobbs.com/184402053
- */
-class Key
-{
-template<typename CLASSNAME>
-friend SPTR(CLASSNAME) viz::scene3d::offscreenInteractorMgrFactory::New(
-    std::pair<unsigned int,
-              unsigned int> /*_dims*/
-);
-
-Key()
-= default;
-};
-
-VIZ_SCENE3D_API SPTR(viz::scene3d::IWindowInteractor) New(
+VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
     const viz::scene3d::registry::KeyType& classname,
     std::pair<unsigned int, unsigned int> _dims
 );
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) New(std::pair<unsigned int, unsigned int> _dims)
+SPTR(CLASSNAME) make(std::pair<unsigned int, unsigned int> _dims)
 {
-    return std::make_shared<CLASSNAME>(Key(), _dims.first, _dims.second);
+    return std::make_shared<CLASSNAME>(_dims.first, _dims.second);
 }
 
 } // namespace offscreenInteractorMgrFactory
@@ -106,27 +77,16 @@ namespace lightFactory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  New();
+SPTR(CLASSNAME)  make();
 
-/**
- * @brief Key class used to restrict access to Object construction.
- * See http://www.drdobbs.com/184402053
- */
-class Key
-{
-template<typename CLASSNAME>
-friend SPTR(CLASSNAME) viz::scene3d::lightFactory::New();
-Key() = default;
-};
-
-VIZ_SCENE3D_API SPTR(viz::scene3d::ILight) New(
+VIZ_SCENE3D_API SPTR(viz::scene3d::ILight) make(
     const viz::scene3d::registry::KeyType& classname
 );
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) New()
+SPTR(CLASSNAME) make()
 {
-    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>();
     return obj;
 }
 
@@ -136,24 +96,17 @@ namespace textFactory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) New(const SPTR(sight::viz::scene3d::Layer) & _layer);
+SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::Layer) & _layer);
 
-class Key
-{
-template<typename CLASSNAME>
-friend SPTR(CLASSNAME) viz::scene3d::textFactory::New(const SPTR(sight::viz::scene3d::Layer) & _layer);
-Key() = default;
-};
-
-VIZ_SCENE3D_API SPTR(viz::scene3d::IText) New(
+VIZ_SCENE3D_API SPTR(viz::scene3d::IText) make(
     const viz::scene3d::registry::KeyType& classname,
     const SPTR(sight::viz::scene3d::Layer) & _layer
 );
 
 template<class CLASSNAME>
-SPTR(CLASSNAME) New(const SPTR(sight::viz::scene3d::Layer) & _layer)
+SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::Layer) & _layer)
 {
-    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key(), _layer);
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(_layer);
     return obj;
 }
 

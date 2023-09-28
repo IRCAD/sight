@@ -23,8 +23,8 @@
 
 #include "ReaderWriterTest.hpp"
 
-#include <core/tools/System.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/tools/system.hpp>
+#include <core/tools/uuid.hpp>
 
 #include <data/ImageSeries.hpp>
 
@@ -55,11 +55,11 @@ inline static sight::data::SeriesSet::sptr read(const std::filesystem::path path
         std::filesystem::exists(path)
     );
 
-    auto seriesSet = data::SeriesSet::New();
+    auto seriesSet = std::make_shared<data::SeriesSet>();
 
-    auto reader = io::dicom::Reader::New();
+    auto reader = std::make_shared<io::dicom::Reader>();
     reader->setObject(seriesSet);
-    reader->setFolder(path);
+    reader->set_folder(path);
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
@@ -75,7 +75,7 @@ inline static sight::data::SeriesSet::sptr read(const std::filesystem::path path
 
 inline static std::filesystem::path createTempFolder()
 {
-    auto tmp_folder = core::tools::System::getTemporaryFolder() / core::tools::UUID::generateUUID();
+    auto tmp_folder = core::tools::system::get_temporary_folder() / core::tools::UUID::generate();
     std::filesystem::remove_all(tmp_folder);
     std::filesystem::create_directories(tmp_folder);
 
@@ -96,8 +96,8 @@ inline static void compareEnhancedUSVolume(
     CPPUNIT_ASSERT_EQUAL(expected->getSOPKeyword(), actual->getSOPKeyword());
 
     // Sizes
-    const auto& expected_sizes = expected->getSize();
-    const auto& actual_sizes   = actual->getSize();
+    const auto& expected_sizes = expected->size();
+    const auto& actual_sizes   = actual->size();
     CPPUNIT_ASSERT_EQUAL(expected_sizes.size(), actual_sizes.size());
 
     for(std::size_t i = 0 ; i < expected_sizes.size() ; ++i)
@@ -164,7 +164,7 @@ inline static void compareEnhancedUSVolume(
     // Compare buffer
     const auto expected_locked = expected->dump_lock();
     const auto actual_locked   = actual->dump_lock();
-    CPPUNIT_ASSERT_EQUAL(0, std::memcmp(expected->getBuffer(), actual->getBuffer(), expected->getSizeInBytes()));
+    CPPUNIT_ASSERT_EQUAL(0, std::memcmp(expected->buffer(), actual->buffer(), expected->getSizeInBytes()));
 }
 
 //------------------------------------------------------------------------------
@@ -174,8 +174,8 @@ inline static void compareEnhancedUSVolume(const data::SeriesSet::sptr& expected
     CPPUNIT_ASSERT_EQUAL(expected->size(), actual->size());
     for(std::size_t i = 0 ; i < expected->size() ; i++)
     {
-        const auto& expectedImageSeries = data::ImageSeries::dynamicCast((*expected)[i]);
-        const auto& actualImageSeries   = data::ImageSeries::dynamicCast((*actual)[i]);
+        const auto& expectedImageSeries = std::dynamic_pointer_cast<data::ImageSeries>((*expected)[i]);
+        const auto& actualImageSeries   = std::dynamic_pointer_cast<data::ImageSeries>((*actual)[i]);
         compareEnhancedUSVolume(expectedImageSeries, actualImageSeries);
     }
 }
@@ -185,7 +185,7 @@ inline static void compareEnhancedUSVolume(const data::SeriesSet::sptr& expected
 void ReaderWriterTest::setUp()
 {
     // Set up context before running a test.
-    core::memory::BufferManager::getDefault()->setLoadingMode(core::memory::BufferManager::DIRECT);
+    core::memory::buffer_manager::get()->set_loading_mode(core::memory::buffer_manager::DIRECT);
 }
 
 //------------------------------------------------------------------------------
@@ -195,15 +195,15 @@ static void testImage(const std::string& name)
     const auto& folder   = createTempFolder();
     const auto& expected = read(utestData::Data::dir() / name);
 
-    auto writer = io::dicom::Writer::New();
+    auto writer = std::make_shared<io::dicom::Writer>();
     writer->setObject(expected);
-    writer->setFolder(folder);
+    writer->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    auto actual = data::SeriesSet::New();
-    auto reader = io::dicom::Reader::New();
+    auto actual = std::make_shared<data::SeriesSet>();
+    auto reader = std::make_shared<io::dicom::Reader>();
     reader->setObject(actual);
-    reader->setFolder(folder);
+    reader->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     compareEnhancedUSVolume(expected, actual);

@@ -26,7 +26,7 @@
 
 #include <data/Matrix4.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -57,11 +57,11 @@ namespace sight::module::ui::qt::viz
  */
 
 class MODULE_UI_QT_CLASS_API SMatrixViewer : public QObject,
-                                             public sight::ui::base::IEditor
+                                             public sight::ui::editor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMatrixViewer, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SMatrixViewer, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SMatrixViewer() noexcept;
@@ -73,9 +73,9 @@ public:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Matrix4::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect Matrix4::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
 protected:
 

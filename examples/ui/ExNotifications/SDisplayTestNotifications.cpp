@@ -22,26 +22,26 @@
 
 #include "SDisplayTestNotifications.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
 namespace ExNotifications
 {
 
-static const sight::core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
-static const sight::core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
-static const sight::core::com::Slots::SlotKeyType s_CLOSE_CHANNEL1_SLOT     = "closeChannel1";
+static const sight::core::com::slots::key_t SET_ENUM_PARAMETER_SLOT = "setEnumParameter";
+static const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT = "setBoolParameter";
+static const sight::core::com::slots::key_t CLOSE_CHANNEL1_SLOT     = "closeChannel1";
 
 //------------------------------------------------------------------------------
 
 SDisplayTestNotifications::SDisplayTestNotifications() noexcept :
-    INotifier(m_signals)
+    notifier(m_signals)
 {
-    newSlot(s_SET_ENUM_PARAMETER_SLOT, &SDisplayTestNotifications::setEnumParameter, this);
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SDisplayTestNotifications::setBoolParameter, this);
-    newSlot(s_CLOSE_CHANNEL1_SLOT, &SDisplayTestNotifications::closeChannel1, this);
+    new_slot(SET_ENUM_PARAMETER_SLOT, &SDisplayTestNotifications::setEnumParameter, this);
+    new_slot(SET_BOOL_PARAMETER_SLOT, &SDisplayTestNotifications::setBoolParameter, this);
+    new_slot(CLOSE_CHANNEL1_SLOT, &SDisplayTestNotifications::closeChannel1, this);
 }
 
 //------------------------------------------------------------------------------
@@ -57,31 +57,31 @@ void SDisplayTestNotifications::setEnumParameter(std::string _val, std::string _
         }
         else if(_val == "TOP_LEFT")
         {
-            m_notification.position = ::dial::NotificationDialog::Position::TOP_LEFT;
+            m_notification.position = ::dial::notification::Position::TOP_LEFT;
         }
         else if(_val == "TOP_RIGHT")
         {
-            m_notification.position = ::dial::NotificationDialog::Position::TOP_RIGHT;
+            m_notification.position = ::dial::notification::Position::TOP_RIGHT;
         }
         else if(_val == "CENTERED_TOP")
         {
-            m_notification.position = ::dial::NotificationDialog::Position::CENTERED_TOP;
+            m_notification.position = ::dial::notification::Position::CENTERED_TOP;
         }
         else if(_val == "CENTERED")
         {
-            m_notification.position = ::dial::NotificationDialog::Position::CENTERED;
+            m_notification.position = ::dial::notification::Position::CENTERED;
         }
         else if(_val == "BOTTOM_LEFT")
         {
-            m_notification.position = ::dial::NotificationDialog::Position::BOTTOM_LEFT;
+            m_notification.position = ::dial::notification::Position::BOTTOM_LEFT;
         }
         else if(_val == "BOTTOM_RIGHT")
         {
-            m_notification.position = ::dial::NotificationDialog::Position::BOTTOM_RIGHT;
+            m_notification.position = ::dial::notification::Position::BOTTOM_RIGHT;
         }
         else if(_val == "CENTERED_BOTTOM")
         {
-            m_notification.position = ::dial::NotificationDialog::Position::CENTERED_BOTTOM;
+            m_notification.position = ::dial::notification::Position::CENTERED_BOTTOM;
         }
         else
         {
@@ -92,15 +92,15 @@ void SDisplayTestNotifications::setEnumParameter(std::string _val, std::string _
     {
         if(_val == "SUCCESS")
         {
-            m_notification.type = ::dial::NotificationDialog::Type::SUCCESS;
+            m_notification.type = ::dial::notification::Type::SUCCESS;
         }
         else if(_val == "INFO")
         {
-            m_notification.type = ::dial::NotificationDialog::Type::INFO;
+            m_notification.type = ::dial::notification::Type::INFO;
         }
         else if(_val == "FAILURE")
         {
-            m_notification.type = ::dial::NotificationDialog::Type::FAILURE;
+            m_notification.type = ::dial::notification::Type::FAILURE;
         }
         else
         {
@@ -188,8 +188,8 @@ void SDisplayTestNotifications::info(std::ostream& _sstream)
 
 void SDisplayTestNotifications::configuring()
 {
-    this->IAction::initialize();
-    this->INotifier::initialize(this->getConfiguration());
+    this->action::initialize();
+    this->notifier::initialize(this->getConfiguration());
 }
 
 //------------------------------------------------------------------------------
@@ -265,7 +265,7 @@ void SDisplayTestNotifications::updating()
     }
     else
     {
-        // Mode 2: Standalone, you decide where to pop the notification by calling directly the NotificationDialog.
+        // Mode 2: Standalone, you decide where to pop the notification by calling directly the notification.
         if(m_displayAll)
         {
             using Position = sight::service::Notification::Position;
@@ -280,7 +280,7 @@ void SDisplayTestNotifications::updating()
                     Position::CENTERED_BOTTOM
                 })
             {
-                ::dial::NotificationDialog::show(
+                ::dial::notification::show(
                     sight::service::Notification
                     {
                         .type     = m_notification.type,
@@ -294,7 +294,7 @@ void SDisplayTestNotifications::updating()
         }
         else
         {
-            ::dial::NotificationDialog::show(
+            ::dial::notification::show(
                 sight::service::Notification
                 {
                     .type     = m_notification.type,
@@ -320,14 +320,14 @@ void SDisplayTestNotifications::updating()
 
 void SDisplayTestNotifications::starting()
 {
-    this->sight::ui::base::IAction::actionServiceStarting();
+    this->sight::ui::action::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SDisplayTestNotifications::stopping()
 {
-    this->sight::ui::base::IAction::actionServiceStopping();
+    this->sight::ui::action::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

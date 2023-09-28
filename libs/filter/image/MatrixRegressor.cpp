@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,7 +105,7 @@ data::Matrix4::sptr MatrixRegressor::minimize(
     result = glm::translate(result, glm::dvec3(finalPosition[0], finalPosition[1], finalPosition[2]));
     result = glm::scale(result, glm::dvec3(finalPosition[6], finalPosition[6], finalPosition[6]));
 
-    data::Matrix4::sptr resMat = data::Matrix4::New();
+    data::Matrix4::sptr resMat = std::make_shared<data::Matrix4>();
     geometry::data::setTF3DFromMatrix(*resMat, result);
 
     return resMat;

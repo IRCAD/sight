@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,8 +42,8 @@
 namespace sight::core::jobs
 {
 
-class IJob;
-class Observer;
+class base;
+class observer;
 
 } // namespace sight::core::jobs
 
@@ -59,13 +59,6 @@ class IO_DICOM_CLASS_API DicomAnonymizer
 public:
 
     SIGHT_DECLARE_CLASS(DicomAnonymizer);
-
-    //------------------------------------------------------------------------------
-
-    static sptr New()
-    {
-        return std::make_shared<DicomAnonymizer>();
-    }
 
     /// Constructor
     IO_DICOM_API DicomAnonymizer();
@@ -98,7 +91,7 @@ public:
     );
 
     /// Get job observer
-    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::IJob) getJob() const;
+    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::base) getJob() const;
 
     /// Return next file index
     IO_DICOM_API unsigned int getNextIndex();
@@ -212,7 +205,7 @@ private:
     static const unsigned int s_NUMBER_OF_TAGS;
 
     /// Job observer
-    SPTR(core::jobs::Observer) m_observer;
+    SPTR(core::jobs::observer) m_observer;
 
     /// Archiving boolean used to compute correct progress when archiving
     bool m_archiving {false};

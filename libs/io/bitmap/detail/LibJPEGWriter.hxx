@@ -102,7 +102,7 @@ public:
         const auto& pixel_type = image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << pixel_type,
-            pixel_type != core::Type::UINT8
+            pixel_type != core::type::UINT8
         );
 
         // Prepare the output buffers
@@ -121,7 +121,7 @@ public:
         jpeg_mem_dest(&m_cinfo, &m_output_buffer, &m_output_buffer_size);
 
         // Configure libJPEG
-        const auto& sizes = image.getSize();
+        const auto& sizes = image.size();
         m_cinfo.image_width  = JDIMENSION(sizes[0]);
         m_cinfo.image_height = JDIMENSION(sizes[1]);
 

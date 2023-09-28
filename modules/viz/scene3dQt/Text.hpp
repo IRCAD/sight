@@ -47,7 +47,7 @@ class Text : public sight::viz::scene3d::IText
 public:
 
     /// Constructors, instantiates the overlay text element.
-    Text(sight::viz::scene3d::IText::Key, const sight::viz::scene3d::Layer::sptr& _layer);
+    Text(const sight::viz::scene3d::Layer::sptr& _layer);
 
     /// Destructor, destroys the overlay text element.
     ~Text() override;
@@ -126,11 +126,11 @@ private:
     /// To update the text position according to a scene node
     NodeListener* m_nodeListener {};
 
-    using ResizeLayerSlot_t = core::com::Slot<void (int, int)>;
+    using ResizeLayerSlot_t = core::com::slot<void (int, int)>;
     ResizeLayerSlot_t::sptr m_resizeSlot;
 
     /// Handles connection with the layer.
-    core::com::Connection m_resizeConnection;
+    core::com::connection m_resizeConnection;
 };
 
 } // namespace sight::module::viz::scene3dQt

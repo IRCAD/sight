@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/Camera.hpp>
 #include <data/Matrix4.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -62,13 +62,13 @@ namespace sight::module::ui::qt::calibration
    0   0   0   0
  */
 class MODULE_UI_QT_CLASS_API SOpticalCenterEditor : public QObject,
-                                                    public sight::ui::base::IEditor
+                                                    public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SOpticalCenterEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SOpticalCenterEditor, sight::ui::editor);
 
     /// Constructor.
     MODULE_UI_QT_API SOpticalCenterEditor() noexcept;
@@ -91,7 +91,7 @@ protected:
     MODULE_UI_QT_API void updating() override;
 
     /// Defines the connection between camera and matrix and this editor
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
 private Q_SLOTS:
 

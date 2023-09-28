@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,17 @@
 
 #pragma once
 
+#include "viz/scene3d/adaptor.hpp"
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/factory/new.hpp"
-#include "viz/scene3d/IAdaptor.hpp"
-#include "viz/scene3d/ITransformable.hpp"
 #include "viz/scene3d/registry/detail.hpp"
 #include "viz/scene3d/SRender.hpp"
+#include "viz/scene3d/transformable.hpp"
 
 #include <data/Color.hpp>
 #include <data/Matrix4.hpp>
 
-#include <ui/base/container/fwContainer.hpp>
+#include <ui/__/container/widget.hpp>
 
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreColourValue.h>
@@ -46,8 +46,8 @@ namespace sight::viz::scene3d
 /**
  * @brief Defines the service interface managing the light adaptor.
  */
-class VIZ_SCENE3D_CLASS_API ILight : public viz::scene3d::IAdaptor,
-                                     public viz::scene3d::ITransformable
+class VIZ_SCENE3D_CLASS_API ILight : public viz::scene3d::adaptor,
+                                     public viz::scene3d::transformable
 {
 public:
 
@@ -64,16 +64,14 @@ public:
 
         Registry(std::string functorKey)
         {
-            viz::scene3d::registry::getLightRegistry()->addFactory(functorKey, &viz::scene3d::lightFactory::New<T>);
+            viz::scene3d::registry::getLightRegistry()->add_factory(functorKey, &viz::scene3d::lightFactory::make<T>);
         }
     };
 
     /// Defines the key used for the factory.
     VIZ_SCENE3D_API static const std::string REGISTRY_KEY;
 
-    typedef viz::scene3d::lightFactory::Key Key;
-
-    SIGHT_DECLARE_CLASS(ILight, viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_CLASS(ILight, viz::scene3d::adaptor);
 
     /// Defines point type light.
     VIZ_SCENE3D_API static const std::string s_POINT_LIGHT;

@@ -24,7 +24,7 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/Material.hpp>
 #include <viz/scene3d/R2VBRenderable.hpp>
 
@@ -34,12 +34,12 @@ namespace sight::viz::scene3d
 {
 
 /// This adaptor adapts a data::Material, allowing to tweak material parameters.
-class VIZ_SCENE3D_CLASS_API IMaterialAdaptor : public sight::viz::scene3d::IAdaptor
+class VIZ_SCENE3D_CLASS_API IMaterialAdaptor : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(IMaterialAdaptor, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(IMaterialAdaptor, sight::viz::scene3d::adaptor);
 
     /**
      * @name In-Out In-Out API

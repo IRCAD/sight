@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,14 +31,14 @@ namespace sight::viz::scene2d::data
 
 //------------------------------------------------------------------------------
 
-void Viewport::shallowCopy(const sight::data::Object::csptr& source)
+void Viewport::shallow_copy(const sight::data::Object::csptr& source)
 {
-    const auto& other = dynamicConstCast(source);
+    const auto& other = std::dynamic_pointer_cast<const Viewport>(source);
 
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::Exception(
-            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
-            + " to " + getClassname()
+            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            + " to " + get_classname()
         ),
         !bool(other)
     );
@@ -48,22 +48,22 @@ void Viewport::shallowCopy(const sight::data::Object::csptr& source)
     m_width  = other->m_width;
     m_height = other->m_height;
 
-    BaseClass::shallowCopy(other);
+    base_class::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Viewport::deepCopy(
+void Viewport::deep_copy(
     const sight::data::Object::csptr& source,
     const std::unique_ptr<sight::data::Object::DeepCopyCacheType>& cache
 )
 {
-    const auto& other = dynamicConstCast(source);
+    const auto& other = std::dynamic_pointer_cast<const Viewport>(source);
 
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::Exception(
-            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
-            + " to " + getClassname()
+            "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
+            + " to " + get_classname()
         ),
         !bool(other)
     );
@@ -73,7 +73,7 @@ void Viewport::deepCopy(
     m_width  = other->m_width;
     m_height = other->m_height;
 
-    BaseClass::deepCopy(other, cache);
+    base_class::deep_copy(other, cache);
 }
 
 } // namespace sight::viz::scene2d::data

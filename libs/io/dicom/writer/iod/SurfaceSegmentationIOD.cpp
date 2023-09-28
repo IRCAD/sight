@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@
 #include "io/dicom/writer/ie/Surface.hpp"
 
 #include <core/runtime/path.hpp>
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <data/ModelSeries.hpp>
 
@@ -47,7 +47,7 @@ SurfaceSegmentationIOD::SurfaceSegmentationIOD(
     const SPTR(io::dicom::container::DicomInstance)& instance,
     SPTR(io::dicom::container::DicomInstance)imageInstance,
     const std::filesystem::path& destinationPath,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -70,7 +70,7 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 {
     // Retrieve model series
-    data::ModelSeries::csptr modelSeries = data::ModelSeries::dynamicCast(series);
+    data::ModelSeries::csptr modelSeries = std::dynamic_pointer_cast<const data::ModelSeries>(series);
     SIGHT_ASSERT("Image series should not be null.", modelSeries);
 
     // Create writer
@@ -86,7 +86,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
     io::dicom::writer::ie::Surface surfaceIE(writer, m_instance, m_imageInstance, modelSeries, m_logger);
 
     // Load Segmented Property Registry
-    const std::filesystem::path filepath = core::runtime::getLibraryResourceFilePath(
+    const std::filesystem::path filepath = core::runtime::get_library_resource_file_path(
         "io_dicom/SegmentedPropertyRegistry.csv"
     );
 
@@ -131,7 +131,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 
     // Write the file
     if((!m_cancelRequestedCallback || !m_cancelRequestedCallback())
-       && (!m_logger || (m_logger->count(core::log::Log::CRITICAL) == 0U)))
+       && (!m_logger || (m_logger->count(core::log::log::CRITICAL) == 0U)))
     {
         io::dicom::helper::FileWriter::write(m_destinationPath, writer);
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,22 +23,22 @@
 #include "SImageWriter.hpp"
 
 #include <core/base.hpp>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 #include <io/itk/InrImageWriter.hpp>
 #include <io/itk/JpgImageWriter.hpp>
 #include <io/itk/NiftiImageWriter.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -62,29 +62,29 @@ SImageWriter::~SImageWriter() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SImageWriter::getIOPathType() const
+sight::io::service::IOPathType SImageWriter::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SImageWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::dialog::location::WRITE);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        this->setFile(result->getFile());
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        this->set_file(result->get_file());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -109,7 +109,7 @@ void SImageWriter::stopping()
 
 void SImageWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -123,36 +123,36 @@ void SImageWriter::info(std::ostream& _sstream)
 
 bool SImageWriter::saveImage(const std::filesystem::path& imgSavePath, const data::Image::csptr& image)
 {
-    sight::io::base::writer::IObjectWriter::sptr myWriter;
+    sight::io::writer::IObjectWriter::sptr myWriter;
     std::string ext = imgSavePath.extension().string();
     boost::algorithm::to_lower(ext);
 
     if(boost::algorithm::ends_with(imgSavePath.string(), ".inr.gz"))
     {
-        auto inrWriter = sight::io::itk::InrImageWriter::New();
-        sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
-        inrWriter->addHandler(progressMeterGUI);
-        inrWriter->setFile(imgSavePath);
+        auto inrWriter = std::make_shared<sight::io::itk::InrImageWriter>();
+        sight::ui::dialog::progress progressMeterGUI("Saving images... ");
+        inrWriter->add_handler(progressMeterGUI);
+        inrWriter->set_file(imgSavePath);
         myWriter = inrWriter;
     }
     else if(ext == ".nii" || boost::algorithm::ends_with(imgSavePath.string(), ".nii.gz"))
     {
-        auto niftiWriter = sight::io::itk::NiftiImageWriter::New();
-        niftiWriter->setFile(imgSavePath);
+        auto niftiWriter = std::make_shared<sight::io::itk::NiftiImageWriter>();
+        niftiWriter->set_file(imgSavePath);
         myWriter = niftiWriter;
     }
     else if(std::filesystem::is_directory(imgSavePath))
     {
-        auto jpgWriter = sight::io::itk::JpgImageWriter::New();
-        sight::ui::base::dialog::ProgressDialog progressMeterGUI("Saving images... ");
-        jpgWriter->addHandler(progressMeterGUI);
-        jpgWriter->setFolder(imgSavePath);
+        auto jpgWriter = std::make_shared<sight::io::itk::JpgImageWriter>();
+        sight::ui::dialog::progress progressMeterGUI("Saving images... ");
+        jpgWriter->add_handler(progressMeterGUI);
+        jpgWriter->set_folder(imgSavePath);
         myWriter = jpgWriter;
     }
     else
     {
         SIGHT_THROW_EXCEPTION(
-            core::tools::Failed(
+            core::tools::failed(
                 "Unsupported " + ext + " format (Available formats: "
                 + ".inr.gz, .nii, .jpg, .jpeg)"
             )
@@ -169,19 +169,19 @@ bool SImageWriter::saveImage(const std::filesystem::path& imgSavePath, const dat
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         return false;
     }
     catch(...)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             "Warning during saving",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         return false;
     }
@@ -197,16 +197,16 @@ void SImageWriter::updating()
     {
         const auto data  = m_data.lock();
         const auto image = std::dynamic_pointer_cast<const data::Image>(data.get_shared());
-        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", image);
+        SIGHT_ASSERT("The input key '" + sight::io::service::s_DATA_KEY + "' is not correctly set.", image);
 
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
+        sight::ui::cursor cursor;
+        cursor.setCursor(ui::cursor_base::BUSY);
         try
         {
-            saveImage(this->getFile(), image);
+            saveImage(this->get_file(), image);
             m_writeFailed = false;
         }
-        catch(core::tools::Failed& e)
+        catch(core::tools::failed& e)
         {
             SIGHT_THROW_EXCEPTION(e);
         }

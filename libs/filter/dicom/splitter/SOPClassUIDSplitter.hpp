@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,18 +33,18 @@ namespace sight::filter::dicom::splitter
 /**
  * @brief Filter that uses the SOPClassUID tag to split the instances
  */
-class FILTER_DICOM_CLASS_API SOPClassUIDSplitter : public filter::dicom::splitter::TagValueSplitter
+class FILTER_DICOM_CLASS_API SOPClassUIDSplitter : public sight::filter::dicom::splitter::TagValueSplitter
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         SOPClassUIDSplitter,
-        filter::dicom::splitter::TagValueSplitter,
-        filter::dicom::factory::New<SOPClassUIDSplitter>
+        sight::filter::dicom::splitter::TagValueSplitter,
+        sight::filter::dicom::factory::make<SOPClassUIDSplitter>
     );
 
     /// Constructor
-    FILTER_DICOM_API SOPClassUIDSplitter(filter::dicom::IFilter::Key key);
+    FILTER_DICOM_API SOPClassUIDSplitter();
 
     /// Destructor
     FILTER_DICOM_API ~SOPClassUIDSplitter() override;
@@ -52,7 +52,7 @@ public:
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
         const data::DicomSeries::sptr& series,
-        const core::log::Logger::sptr& logger
+        const core::log::logger::sptr& logger
     ) const override;
 
     /// Return the name of the filter

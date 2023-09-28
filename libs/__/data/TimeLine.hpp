@@ -1,0 +1,113 @@
+/************************************************************************
+ *
+ * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2012-2019 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#pragma once
+
+#include "data/config.hpp"
+#include "data/Object.hpp"
+#include "data/timeline/Object.hpp"
+
+namespace sight::data
+{
+
+/**
+ * @brief   This class defines the interface of TimeLine. Timeline is a collection of objects, each object being
+ *          associated with a timestamp. It is intended to store lightweight objects.
+ */
+
+class DATA_CLASS_API TimeLine : public Object
+{
+public:
+
+    SIGHT_DECLARE_CLASS(TimeLine, Object);
+
+    typedef enum
+    {
+        PAST   = -1,
+        BOTH   = 0,
+        FUTURE = 1
+    } DirectionType;
+
+    typedef core::com::signal<void (core::hires_clock::type timestamp)> ObjectPushedSignalType;
+    typedef core::com::signal<void (core::hires_clock::type timestamp)> ObjectRemovedSignalType;
+    typedef core::com::signal<void ()> ObjectClearedSignalType;
+
+    DATA_API static const core::com::signals::key_t OBJECT_PUSHED_SIG;
+    DATA_API static const core::com::signals::key_t OBJECT_REMOVED_SIG;
+    DATA_API static const core::com::signals::key_t CLEARED_SIG;
+
+    DATA_API TimeLine();
+    DATA_API ~TimeLine() override = default;
+
+    /// Push an object to the timeline
+    DATA_API virtual void pushObject(const SPTR(timeline::Object)& obj) = 0;
+
+    /// Removes an object from the timeline
+    DATA_API virtual SPTR(timeline::Object) popObject(core::hires_clock::type timestamp) = 0;
+
+    /// modify an object timestamp
+    DATA_API virtual void modifyTime(
+        core::hires_clock::type timestamp,
+        core::hires_clock::type newTimestamp
+    ) = 0;
+
+    /// Change an object to the specified timestamp
+    DATA_API virtual void setObject(
+        core::hires_clock::type timestamp,
+        const SPTR(timeline::Object)& obj
+    ) = 0;
+
+    /**
+     * @brief Return a new timeline::Object with the given timestamp.
+     * @note This buffer memory is managed by the pool.
+     * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
+     */
+    DATA_API virtual SPTR(timeline::Object) createObject(core::hires_clock::type timestamp) = 0;
+
+    /**
+     * @brief Return the closest object to the given timestamp
+     * @param timestamp timestamp used to find the closest object
+     * @param direction direction to find the closest object (PAST, FUTURE, BOTH)
+     */
+    DATA_API virtual CSPTR(timeline::Object) getClosestObject(
+        core::hires_clock::type timestamp,
+        DirectionType direction = BOTH
+    ) const = 0;
+
+    /// Return the object with the specified timestamp
+    DATA_API virtual CSPTR(timeline::Object) getObject(core::hires_clock::type timestamp) const = 0;
+
+    /// Equality comparison operators
+    /// @{
+    DATA_API bool operator==(const TimeLine& other) const noexcept;
+    DATA_API bool operator!=(const TimeLine& other) const noexcept;
+    /// @}
+
+protected:
+
+    /// Signal to emit when an object is pushed in the timeline.
+    ObjectPushedSignalType::sptr m_sigObjectPushed;
+    /// Signal to emit when an object is removed in the timeline.
+    ObjectPushedSignalType::sptr m_sigObjectRemoved;
+}; // class TimeLine
+
+} // namespace sight::data

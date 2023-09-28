@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,7 +97,7 @@ public:
     [[nodiscard]] const vec2d_t& getOldSize() const;
     void setOldSize(const vec2d_t& oldSize);
 
-    [[nodiscard]] const vec2d_t& getSize() const;
+    [[nodiscard]] const vec2d_t& size() const;
     void setSize(const vec2d_t& size);
 
     [[nodiscard]] Type getType() const;
@@ -201,7 +201,7 @@ inline void Event::setOldSize(const vec2d_t& oldSize)
 
 //------------------------------------------------------------------------------
 
-inline const vec2d_t& Event::getSize() const
+inline const vec2d_t& Event::size() const
 {
     return m_size;
 }

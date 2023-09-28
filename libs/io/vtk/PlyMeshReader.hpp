@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,19 +24,19 @@
 
 #include "io/vtk/config.hpp"
 
-#include <core/location/SingleFile.hpp>
+#include <core/location/single_file.hpp>
 
 #include <data/Mesh.hpp>
 
-#include <io/base/reader/GenericObjectReader.hpp>
+#include <io/__/reader/GenericObjectReader.hpp>
 
 #include <filesystem>
 
 namespace sight::core::jobs
 {
 
-class Observer;
-class IJob;
+class observer;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -48,20 +48,20 @@ namespace sight::io::vtk
  */
 
 class IO_VTK_CLASS_API PlyMeshReader :
-    public base::reader::GenericObjectReader<data::Mesh>,
-    public core::location::SingleFile
+    public reader::GenericObjectReader<data::Mesh>,
+    public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         PlyMeshReader,
-        io::base::reader::GenericObjectReader<data::Mesh>,
-        io::base::reader::factory::New<PlyMeshReader>
+        io::reader::GenericObjectReader<data::Mesh>,
+        io::reader::factory::make<PlyMeshReader>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API PlyMeshReader(io::base::reader::IObjectReader::Key key);
+    IO_VTK_API PlyMeshReader();
 
     /// @brief Destructor.
     IO_VTK_API ~PlyMeshReader() override;
@@ -73,12 +73,12 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::IJob) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
 
 private:
 
     ///Internal job
-    SPTR(core::jobs::Observer) m_job;
+    SPTR(core::jobs::observer) m_job;
 };
 
 } // namespace sight::io::vtk

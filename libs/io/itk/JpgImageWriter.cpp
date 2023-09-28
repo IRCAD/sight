@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "io/itk/itk.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <data/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
@@ -34,7 +34,7 @@
 #include <data/Integer.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 #include <itkImageSeriesWriter.h>
 #include <itkIntensityWindowingImageFilter.h>
@@ -48,17 +48,6 @@ SIGHT_REGISTER_IO_WRITER(sight::io::itk::JpgImageWriter);
 
 namespace sight::io::itk
 {
-
-//------------------------------------------------------------------------------
-
-JpgImageWriter::JpgImageWriter(io::base::writer::IObjectWriter::Key /*key*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-JpgImageWriter::~JpgImageWriter()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -82,7 +71,7 @@ struct JpgITKSaverFunctor
     template<class PIXELTYPE>
     void operator()(const Parameter& param)
     {
-        SIGHT_DEBUG("itk::ImageSeriesWriter with PIXELTYPE " << core::Type::get<PIXELTYPE>().name());
+        SIGHT_DEBUG("itk::ImageSeriesWriter with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
         data::Image::csptr image = param.m_dataImage;
 
@@ -129,7 +118,7 @@ struct JpgITKSaverFunctor
         format += "/%04d.jpg";
         nameGenerator->SetSeriesFormat(format.c_str());
         nameGenerator->SetStartIndex(1);
-        nameGenerator->SetEndIndex(image->getSize()[2]);
+        nameGenerator->SetEndIndex(image->size()[2]);
         nameGenerator->SetIncrementIndex(1);
 
         writer->SetFileNames(nameGenerator->GetFileNames());
@@ -149,12 +138,12 @@ void JpgImageWriter::write()
     assert(m_object.lock());
 
     JpgITKSaverFunctor::Parameter saverParam;
-    saverParam.m_directoryPath = this->getFolder().string();
+    saverParam.m_directoryPath = this->get_folder().string();
     saverParam.m_dataImage     = this->getConcreteObject();
-    saverParam.m_fwWriter      = this->getSptr();
+    saverParam.m_fwWriter      = this->get_sptr();
     assert(saverParam.m_dataImage);
 
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, JpgITKSaverFunctor>::invoke(
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, JpgITKSaverFunctor>::invoke(
         saverParam.m_dataImage->getType(),
         saverParam
     );

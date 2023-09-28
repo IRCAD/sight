@@ -25,12 +25,12 @@
 
 #include "io/bitmap/config.hpp"
 
-#include <core/location/SingleFile.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/location/single_file.hpp>
+#include <core/tools/progress_adviser.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 #include <ostream>
 
@@ -65,9 +65,9 @@ namespace sight::io::bitmap
  * On the contrary, nvJPEG2000 is fully lossless and provides a very good compression ratio, but is, of course, slower
  * (still 60 fps guaranteed on nowadays computers).
  */
-class IO_BITMAP_CLASS_API Writer final : public base::writer::GenericObjectWriter<data::Image>,
-                                         public core::location::SingleFile,
-                                         public core::tools::ProgressAdviser
+class IO_BITMAP_CLASS_API Writer final : public io::writer::GenericObjectWriter<data::Image>,
+                                         public core::location::single_file,
+                                         public core::tools::progress_adviser
 {
 public:
 
@@ -79,21 +79,20 @@ public:
 
     SIGHT_DECLARE_CLASS(
         Writer,
-        base::writer::GenericObjectWriter<data::Image>,
-        base::writer::factory::New<Writer>
+        io::writer::GenericObjectWriter<data::Image>,
+        io::writer::factory::make<Writer>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Delete default constructors and assignment operators
-    Writer()                         = delete;
     Writer(const Writer&)            = delete;
     Writer(Writer&&)                 = delete;
     Writer& operator=(const Writer&) = delete;
     Writer& operator=(Writer&&)      = delete;
 
     /// Constructor/Destructor
-    IO_BITMAP_API Writer(io::base::writer::IObjectWriter::Key key);
+    IO_BITMAP_API Writer();
     IO_BITMAP_API ~Writer() override;
 
     /// Main writing method from GenericObjectWriter
@@ -154,7 +153,7 @@ public:
         Mode mode       = Mode::FAST
     );
 
-    /// Return the extension to use, by default, or the one from file set by SingleFile::setFile(), if valid
+    /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid
     /// @return an extension as string
     [[nodiscard]] IO_BITMAP_API std::string extension() const override;
 

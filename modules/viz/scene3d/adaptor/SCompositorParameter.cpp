@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <viz/scene3d/compositor/ChainManager.hpp>
 
@@ -84,13 +84,13 @@ private:
     module::viz::scene3d::adaptor::SCompositorParameter::wptr m_adaptor;
 };
 
-static const core::com::Slots::SlotKeyType s_ADD_LISTENER_SLOT = "addListener";
+static const core::com::slots::key_t ADD_LISTENER_SLOT = "addListener";
 
 //-----------------------------------------------------------------------------
 
 SCompositorParameter::SCompositorParameter() noexcept
 {
-    newSlot(s_ADD_LISTENER_SLOT, &SCompositorParameter::addListener, this);
+    new_slot(ADD_LISTENER_SLOT, &SCompositorParameter::addListener, this);
 }
 
 //------------------------------------------------------------------------------
@@ -116,16 +116,16 @@ void SCompositorParameter::starting()
 
     if(!m_isVisible)
     {
-        this->slot(s_UPDATE_VISIBILITY_SLOT)->asyncRun(m_isVisible);
+        this->slot(UPDATE_VISIBILITY_SLOT)->async_run(m_isVisible);
     }
 
     this->addListener();
 
     m_resizeConnection.connect(
         layer,
-        sight::viz::scene3d::Layer::s_RESIZE_LAYER_SIG,
-        this->getSptr(),
-        s_ADD_LISTENER_SLOT
+        sight::viz::scene3d::Layer::RESIZE_LAYER_SIG,
+        this->get_sptr(),
+        ADD_LISTENER_SLOT
     );
 }
 
@@ -187,7 +187,11 @@ void SCompositorParameter::setVisible(bool _enable)
     if(_enable)
     {
         // Association of a listener attached to this adaptor to the configured compositor
-        m_listener = new CompositorListener(layer->getViewport(), SCompositorParameter::dynamicCast(this->getSptr()));
+        m_listener =
+            new CompositorListener(
+                layer->getViewport(),
+                std::dynamic_pointer_cast<SCompositorParameter>(this->get_sptr())
+            );
         compositor->addListener(m_listener);
     }
 }
@@ -222,7 +226,8 @@ void SCompositorParameter::addListener()
     }
 
     // Association of a listener attached to this adaptor to the configured compositor
-    m_listener = new CompositorListener(layer->getViewport(), SCompositorParameter::dynamicCast(this->getSptr()));
+    m_listener =
+        new CompositorListener(layer->getViewport(), std::dynamic_pointer_cast<SCompositorParameter>(this->get_sptr()));
     compositor->addListener(m_listener);
 }
 

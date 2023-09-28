@@ -4,13 +4,13 @@ add_dependencies(
     Tuto08MesherWithGenericScene
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_viz_scene3d
     module_viz_scene3dQt
     data
     module_service
-    module_ui_base
+    module_ui
     module_ui_flaticons
     module_io_matrix
     module_io_vtk

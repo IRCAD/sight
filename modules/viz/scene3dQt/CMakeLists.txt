@@ -17,4 +17,4 @@ if(MSVC)
 endif()
 add_dependencies(module_viz_scene3dQt module_viz_scene3d module_service module_ui_flaticons)
 
-target_link_libraries(module_viz_scene3dQt PUBLIC core data ui_base ui_qt viz_scene3d)
+target_link_libraries(module_viz_scene3dQt PUBLIC core data ui ui_qt viz_scene3d)

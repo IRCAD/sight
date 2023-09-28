@@ -1,0 +1,153 @@
+/************************************************************************
+ *
+ * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2020 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "ImagePropertiesTest.hpp"
+
+#include <activity/extension/Activity.hpp>
+#include <activity/validator/base.hpp>
+#include <activity/validator/object.hpp>
+
+#include <core/runtime/extension.hpp>
+#include <core/runtime/module.hpp>
+
+#include <data/Activity.hpp>
+#include <data/Composite.hpp>
+#include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
+#include <data/Vector.hpp>
+
+#include <utestData/generator/Image.hpp>
+
+#include <cstdint>
+
+// Registers the fixture into the 'registry'
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::activity::ut::ImagePropertiesTest);
+
+namespace sight::activity::ut
+{
+
+//------------------------------------------------------------------------------
+
+void ImagePropertiesTest::setUp()
+{
+    // Set up context before running a test.
+}
+
+//------------------------------------------------------------------------------
+
+void ImagePropertiesTest::tearDown()
+{
+    // Clean up after the test run.
+}
+
+//------------------------------------------------------------------------------
+
+static data::ImageSeries::sptr imageToImageSeries(const data::Object::sptr& obj)
+{
+    auto img = std::dynamic_pointer_cast<data::Image>(obj);
+    auto res = std::make_shared<data::ImageSeries>();
+    res->resize(img->size(), img->getType(), img->getPixelFormat());
+    res->setSpacing(img->getSpacing());
+    res->setOrigin(img->getOrigin());
+    return res;
+}
+
+//------------------------------------------------------------------------------
+
+void ImagePropertiesTest::propertiesTest()
+{
+    activity::validator::base::sptr validator =
+        activity::validator::factory::make("sight::activity::validator::ImageProperties");
+    CPPUNIT_ASSERT(validator);
+
+    activity::validator::object::sptr objValidator = std::dynamic_pointer_cast<activity::validator::object>(validator);
+    CPPUNIT_ASSERT(objValidator);
+
+    {
+        data::Image::sptr img1 = std::make_shared<data::Image>();
+        data::Image::sptr img2 = std::make_shared<data::Image>();
+        utestData::generator::Image::generateRandomImage(img1, core::type::UINT8);
+        utestData::generator::Image::generateRandomImage(img2, core::type::UINT8);
+
+        data::Vector::sptr vector = std::make_shared<data::Vector>();
+        vector->push_back(img1);
+        vector->push_back(img2);
+
+        activity::validator::return_t validation;
+
+        validation = objValidator->validate(vector);
+        CPPUNIT_ASSERT_EQUAL(false, validation.first);
+
+        data::Composite::sptr composite = std::make_shared<data::Composite>();
+        (*composite)["img1"] = img1;
+        (*composite)["img2"] = img2;
+
+        validation = objValidator->validate(composite);
+        CPPUNIT_ASSERT_EQUAL(false, validation.first);
+
+        auto seriesVector = std::make_shared<data::Vector>();
+        std::ranges::transform(*vector, std::back_inserter(*seriesVector), imageToImageSeries);
+        validation = objValidator->validate(activity::extension::ActivityInfo {}, seriesVector);
+        CPPUNIT_ASSERT_EQUAL(false, validation.first);
+    }
+
+    {
+        data::Image::sptr img1 = std::make_shared<data::Image>();
+        data::Image::sptr img2 = std::make_shared<data::Image>();
+
+        utestData::generator::Image::generateRandomImage(img1, core::type::UINT8);
+
+        utestData::generator::Image::generateImage(
+            img2,
+            img1->size(),
+            img1->getSpacing(),
+            img1->getOrigin(),
+            img1->getType(),
+            data::Image::PixelFormat::GRAY_SCALE
+        );
+
+        data::Vector::sptr vector = std::make_shared<data::Vector>();
+        vector->push_back(img1);
+        vector->push_back(img2);
+
+        activity::validator::return_t validation;
+
+        validation = objValidator->validate(vector);
+        CPPUNIT_ASSERT_EQUAL(true, validation.first);
+
+        data::Composite::sptr composite = std::make_shared<data::Composite>();
+        (*composite)["img1"] = img1;
+        (*composite)["img2"] = img2;
+
+        validation = objValidator->validate(composite);
+        CPPUNIT_ASSERT_EQUAL(true, validation.first);
+
+        auto seriesVector = std::make_shared<data::Vector>();
+        std::ranges::transform(*vector, std::back_inserter(*seriesVector), imageToImageSeries);
+        validation = objValidator->validate(activity::extension::ActivityInfo {}, seriesVector);
+        CPPUNIT_ASSERT_EQUAL(true, validation.first);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace sight::activity::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2022 IRCAD France
+ * Copyright (C) 2015-2023 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/TransferFunction.hpp>
 
-#include <viz/scene3d/IResource.hpp>
+#include <viz/scene3d/resource.hpp>
 
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTexture.h>
@@ -38,9 +38,9 @@ namespace sight::viz::scene3d
  * @brief This binds a sight::data::TransferFunction to a shared Ogre texture. It allows to share the GPU memory from
  * multiple callers that use the same object, and only update the GPU buffer when necessary.
  */
-class VIZ_SCENE3D_CLASS_API TransferFunction : public IResource<data::TransferFunction,
-                                                                Ogre::Texture,
-                                                                TransferFunction>
+class VIZ_SCENE3D_CLASS_API TransferFunction : public resource<data::TransferFunction,
+                                                               Ogre::Texture,
+                                                               TransferFunction>
 {
 public:
 

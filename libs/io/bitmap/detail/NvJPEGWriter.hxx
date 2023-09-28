@@ -130,7 +130,7 @@ public:
         const auto& pixel_type = image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << pixel_type,
-            pixel_type != core::Type::UINT8
+            pixel_type != core::type::UINT8
         );
 
         // Optimize Huffman, normally slower but smaller file size (1)
@@ -145,7 +145,7 @@ public:
 
         // Realloc if GPU buffer is smaller
         // Beware, some images are volume...
-        const auto& sizes = image.getSize();
+        const auto& sizes = image.size();
         const auto num_components = image.numComponents();
         const auto size_in_bytes = sizes[0] * sizes[1] * num_components* pixel_type.size();
         if(m_gpu_buffer_size < size_in_bytes)
@@ -163,7 +163,7 @@ public:
         CHECK_CUDA(
             cudaMemcpy(
                 m_gpu_buffer,
-                image.getBuffer(),
+                image.buffer(),
                 size_in_bytes,
                 cudaMemcpyHostToDevice
             ),

@@ -24,16 +24,16 @@
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
-#include <utestData/Data.hpp>
-
-#include <QLabel>
-
 #include <ui/testCore/helper/Button.hpp>
 #include <ui/testCore/helper/Label.hpp>
 #include <ui/testCore/helper/ListWidget.hpp>
 #include <ui/testCore/helper/PreferencesConfiguration.hpp>
 #include <ui/testCore/helper/VideoControls.hpp>
 #include <ui/testCore/Tester.hpp>
+
+#include <utestData/Data.hpp>
+
+#include <QLabel>
 
 #include <array>
 
@@ -46,7 +46,7 @@ namespace sight::sightcalibrator::test::ui
 
 std::filesystem::path IntrinsicCalibration::getProfilePath()
 {
-    const std::filesystem::path cwd = sight::core::runtime::getWorkingPath();
+    const std::filesystem::path cwd = sight::core::runtime::working_path();
     return cwd / "share/sight/SightCalibrator/profile.xml";
 }
 

@@ -26,9 +26,9 @@
 
 #include <data/ModelSeries.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/Material.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 namespace sight::data
 {
@@ -82,13 +82,13 @@ namespace sight::module::viz::scene3d::adaptor
  *      the visibility is set by the value of this tag.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SModelSeries final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SModelSeries, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SModelSeries, sight::viz::scene3d::adaptor);
 
     /// Initialisa slots.
     MODULE_VIZ_SCENE3D_API SModelSeries() noexcept;
@@ -108,14 +108,14 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::ModelSeries::s_VERTEX_MODIFIED_SIG to IService::slots::s_UPDATE
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to IService::slots::s_UPDATE
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to IService::slots::s_UPDATE
-     * Connect data::ModelSeries::s_ADDED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
-     * Connect data::ModelSeries::s_REMOVED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
-     * Connect data::ModelSeries::s_CHANGED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
+     * Connect data::ModelSeries::VERTEX_MODIFIED_SIG to service::slots::UPDATE
+     * Connect data::ModelSeries::RECONSTRUCTIONS_ADDED_SIG to service::slots::UPDATE
+     * Connect data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG to service::slots::UPDATE
+     * Connect data::ModelSeries::ADDED_FIELDS_SIG to CHANGE_FIELD_SLOT
+     * Connect data::ModelSeries::REMOVED_FIELDS_SIG to CHANGE_FIELD_SLOT
+     * Connect data::ModelSeries::CHANGED_FIELDS_SIG to CHANGE_FIELD_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Redraws all (stops then restarts sub services).
     MODULE_VIZ_SCENE3D_API void updating() final;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "modules/ui/debug/config.hpp"
 
-#include <core/com/Connection.hpp>
-#include <core/memory/BufferManager.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/com/connection.hpp>
+#include <core/memory/buffer_manager.hpp>
+#include <core/tools/failed.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QFutureWatcher>
 #include <QPointer>
@@ -55,13 +55,13 @@ namespace sight::module::ui::debug
  * @brief   Editor to dump or restore selected buffer.
  */
 class MODULE_UI_DEBUG_CLASS_API DumpEditor : public QObject,
-                                             public sight::ui::base::IEditor
+                                             public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(DumpEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(DumpEditor, sight::ui::editor);
 
     /// Constructor. Does nothing.
     MODULE_UI_DEBUG_API DumpEditor() noexcept;
@@ -80,7 +80,7 @@ protected:
     /// Update the choice selection
     void updating() override;
 
-    /// Calls classic IAction methods to configure
+    /// Calls classic action methods to configure
     void configuring() override;
 
     /// Overrides. Does nothing.
@@ -97,13 +97,13 @@ protected Q_SLOTS:
     /// Slot called when user click on button m_refresh, call updating() method
     void onRefreshButton();
 
-    void onBufferInfo();
+    void on_buffer_info();
 
 private:
 
-    typedef core::com::Slot<void ()> UpdateSlotType;
+    typedef core::com::slot<void ()> UpdateSlotType;
 
-    QFutureWatcher<core::memory::BufferManager::BufferInfoMapType> m_watcher;
+    QFutureWatcher<core::memory::buffer_manager::buffer_info_map_t> m_watcher;
 
     // Managed buffers
     std::vector<const void* const*> m_objectsUID;
@@ -123,7 +123,7 @@ private:
     SPTR(UpdateSlotType) m_updateSlot;
 
     /// Manage connection between buffManager updated signal and onUpdate method
-    core::com::Connection m_connection;
+    core::com::connection m_connection;
 
     /// Timer use to call each 300 ms onRefreshButton() slot
     QPointer<QTimer> m_updateTimer;

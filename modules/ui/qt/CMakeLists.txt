@@ -1,6 +1,6 @@
 sight_add_target(module_ui_qt TYPE MODULE)
 
-add_dependencies(module_ui_qt module_ui_base module_data)
+add_dependencies(module_ui_qt module_ui module_data)
 
 find_package(
     Qt5 QUIET
@@ -63,7 +63,7 @@ target_link_libraries(
            core
            data
            geometry_data
-           io_base
+           io
            service
            ui_qt
 )

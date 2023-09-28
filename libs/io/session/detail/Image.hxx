@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ inline static std::filesystem::path get_file_path(const std::string& uuid)
     constexpr auto ext = ".raw";
 #endif
 
-    return std::filesystem::path(uuid + "/" + data::Image::leafClassname() + ext);
+    return std::filesystem::path(uuid + "/" + data::Image::leaf_classname() + ext);
 }
 
 //------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ inline static void write(
     Helper::writeVersion<data::Image>(tree, 1);
 
     // Serialize image
-    const auto& size = image->getSize();
+    const auto& size = image->size();
     boost::property_tree::ptree sizeTree;
     sizeTree.add(s_Width, size[0]);
     sizeTree.add(s_Height, size[1]);
@@ -131,7 +131,7 @@ inline static void write(
 
     // Create the output file inside the archive
     const auto& ostream = archive.openFile(
-        get_file_path(image->getUUID()),
+        get_file_path(image->get_uuid()),
         password,
         sight::io::zip::Method::DEFAULT,
         sight::io::zip::Level::BEST
@@ -158,7 +158,7 @@ inline static void write(
     (*ostream) << vtkWriter->GetOutputString();
 #else
     // Write the image data as raw bytes
-    ostream->write(reinterpret_cast<const char*>(image->getBuffer()), std::streamsize(image->getSizeInBytes()));
+    ostream->write(reinterpret_cast<const char*>(image->buffer()), std::streamsize(image->getSizeInBytes()));
 #endif
 }
 
@@ -187,7 +187,7 @@ inline static data::Image::sptr read(
         sizeTree.get<size_t>(s_Depth)
     };
 
-    core::Type type(tree.get<std::string>(s_Type));
+    core::type type(tree.get<std::string>(s_Type));
 
     const auto format = static_cast<data::Image::PixelFormat>(tree.get<int>(s_PixelFormat));
 
@@ -261,7 +261,7 @@ inline static data::Image::sptr read(
 
 #if !defined(USE_VTK)
     // Read the image data as raw bytes
-    istream->read(reinterpret_cast<char*>(image->getBuffer()), std::streamsize(image->getSizeInBytes()));
+    istream->read(reinterpret_cast<char*>(image->buffer()), std::streamsize(image->getSizeInBytes()));
 #endif
 
     return image;

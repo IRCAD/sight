@@ -41,12 +41,12 @@ void FlipTest::flipAlongXAxisTest()
     const data::Image::Size size          = {{3, 3, 3}};
     const data::Image::Spacing spacing    = {{0.1, 0.4, 1.6}};
     const data::Image::Origin origin      = {{0., 0., 0.}};
-    const core::Type type                 = core::Type::UINT8;
+    const core::type type                 = core::type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes {true, false, false};
 
-    data::Image::sptr imageIn  = data::Image::New();
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageIn  = std::make_shared<data::Image>();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
@@ -77,12 +77,12 @@ void FlipTest::flipAlongYAxisTest()
     const data::Image::Size size          = {{3, 3, 3}};
     const data::Image::Spacing spacing    = {{0.5, 0.5, 0.5}};
     const data::Image::Origin origin      = {{8., 4., 2.}};
-    const core::Type type                 = core::Type::UINT8;
+    const core::type type                 = core::type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes {false, true, false};
 
-    data::Image::sptr imageIn  = data::Image::New();
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageIn  = std::make_shared<data::Image>();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
@@ -113,12 +113,12 @@ void FlipTest::flipAlongZAxisTest()
     const data::Image::Size size          = {{3, 3, 3}};
     const data::Image::Spacing spacing    = {{2.0, 2.0, 2.0}};
     const data::Image::Origin origin      = {{0., 0., 0.}};
-    const core::Type type                 = core::Type::UINT8;
+    const core::type type                 = core::type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes {false, false, true};
 
-    data::Image::sptr imageIn  = data::Image::New();
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageIn  = std::make_shared<data::Image>();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
@@ -150,12 +150,12 @@ void FlipTest::flipAlongMultipleAxesTest()
         const data::Image::Size size          = {{3, 3, 3}};
         const data::Image::Spacing spacing    = {{0.5, 0.5, 0.5}};
         const data::Image::Origin origin      = {{0., 0., 0.}};
-        const core::Type type                 = core::Type::UINT8;
+        const core::type type                 = core::type::UINT8;
         const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes {true, true, false};
 
-        data::Image::sptr imageIn  = data::Image::New();
-        data::Image::sptr imageOut = data::Image::New();
+        data::Image::sptr imageIn  = std::make_shared<data::Image>();
+        data::Image::sptr imageOut = std::make_shared<data::Image>();
 
         utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
@@ -183,12 +183,12 @@ void FlipTest::flipAlongMultipleAxesTest()
         const data::Image::Size size          = {{3, 3, 3}};
         const data::Image::Spacing spacing    = {{0.5, 0.5, 0.5}};
         const data::Image::Origin origin      = {{0., 0., 0.}};
-        const core::Type type                 = core::Type::UINT8;
+        const core::type type                 = core::type::UINT8;
         const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes {true, true, true};
 
-        data::Image::sptr imageIn  = data::Image::New();
-        data::Image::sptr imageOut = data::Image::New();
+        data::Image::sptr imageIn  = std::make_shared<data::Image>();
+        data::Image::sptr imageOut = std::make_shared<data::Image>();
 
         utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
@@ -224,12 +224,12 @@ void FlipTest::flipEmptyImageTest()
     const data::Image::Size size          = {0, 0, 0};
     const data::Image::Spacing spacing    = {0., 0., 0.};
     const data::Image::Origin origin      = {0., 0., 0.};
-    const core::Type type                 = core::Type::UINT8;
+    const core::type type                 = core::type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes {false, true, false};
 
-    data::Image::sptr imageIn  = data::Image::New();
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageIn  = std::make_shared<data::Image>();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
@@ -237,8 +237,8 @@ void FlipTest::flipEmptyImageTest()
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
     const auto outDumpLock = imageOut->dump_lock();
 
-    const data::Image::Size imageSize    = imageIn->getSize();
-    const data::Image::Size imageOutSize = imageOut->getSize();
+    const data::Image::Size imageSize    = imageIn->size();
+    const data::Image::Size imageOutSize = imageOut->size();
 
     CPPUNIT_ASSERT_EQUAL(imageSize[0], imageOutSize[0]);
     CPPUNIT_ASSERT_EQUAL(imageSize[1], imageOutSize[1]);

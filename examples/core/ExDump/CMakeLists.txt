@@ -4,11 +4,11 @@ add_dependencies(
     ExDump
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     data
     module_service
-    module_ui_base
+    module_ui
     module_ui_flaticons
     module_io_itk
     module_io_vtk

@@ -23,13 +23,13 @@
 #pragma once
 
 #include "viz/qt3d/config.hpp"
-#include "viz/qt3d/IWindowInteractor.hpp"
+#include "viz/qt3d/window_interactor.hpp"
 
 #include <service/helper/Config.hpp>
 #include <service/op/Add.hpp>
 #include <service/registry.hpp>
 
-#include <viz/base/IRender.hpp>
+#include <viz/__/render.hpp>
 
 #include <QColor>
 #include <QPointer>
@@ -71,11 +71,11 @@ class GenericScene;
  *    - \b adaptor (optional)
  *      - \b uid (mandatory): the identifier of the adaptor
  */
-class VIZ_QT3D_CLASS_API SRender final : public viz::base::IRender
+class VIZ_QT3D_CLASS_API SRender final : public viz::render
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender);
+    SIGHT_DECLARE_SERVICE(SRender, viz::render);
 
     /// Creates the service.
     VIZ_QT3D_API SRender();

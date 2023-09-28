@@ -22,7 +22,7 @@
 
 #include "modules/filter/image/SLabelImageToBinaryImage.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <data/Integer.hpp>
 #include <data/Vector.hpp>
@@ -114,7 +114,7 @@ void SLabelImageToBinaryImage::updating()
 
     SIGHT_ASSERT(
         "The label image must be a greyscale image with uint8 values.",
-        labelImage->getType() == core::Type::UINT8 && labelImage->numComponents() == 1
+        labelImage->getType() == core::type::UINT8 && labelImage->numComponents() == 1
     );
 
     LambdaFunctor functor;
@@ -138,7 +138,7 @@ void SLabelImageToBinaryImage::updating()
             labels->end(),
             [&labelSet](data::Object::csptr _o)
             {
-                data::Integer::csptr intObj = data::Integer::dynamicConstCast(_o);
+                data::Integer::csptr intObj = std::dynamic_pointer_cast<const data::Integer>(_o);
                 SIGHT_ASSERT("The label vector should only contain integers.", intObj);
                 const int val = int(intObj->value());
                 SIGHT_ASSERT("The integers in the vector must be in the [0, 255] range.", val >= 0 && val <= 255);
@@ -176,11 +176,11 @@ void SLabelImageToBinaryImage::updating()
     typename ImageType::Pointer itkMaskImg = labelToMaskFilter->GetOutput();
 
     io::itk::moveFromItk<ImageType::Pointer>(itkMaskImg, maskImage.get_shared());
-    const auto modifiedSig = maskImage->signal<data::Object::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
+    const auto modifiedSig = maskImage->signal<data::Object::ModifiedSignalType>(data::Image::MODIFIED_SIG);
 
-    modifiedSig->asyncEmit();
+    modifiedSig->async_emit();
 
-    m_sigComputed->asyncEmit();
+    m_sigComputed->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -191,11 +191,11 @@ void SLabelImageToBinaryImage::stopping()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SLabelImageToBinaryImage::getAutoConnections() const
+service::connections_t SLabelImageToBinaryImage::getAutoConnections() const
 {
     return {
-        {s_LABEL_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_LABEL_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE}
+        {s_LABEL_IMAGE_INPUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {s_LABEL_IMAGE_INPUT, data::Image::MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

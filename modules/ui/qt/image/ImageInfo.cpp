@@ -23,19 +23,19 @@
 #include "modules/ui/qt/image/ImageInfo.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -44,11 +44,11 @@
 namespace sight::module::ui::qt::image
 {
 
-static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+static const core::com::slots::key_t GET_INTERACTION_SLOT = "getInteraction";
 
 ImageInfo::ImageInfo() noexcept
 {
-    newSlot(s_GET_INTERACTION_SLOT, &ImageInfo::getInteraction, this);
+    new_slot(GET_INTERACTION_SLOT, &ImageInfo::getInteraction, this);
 }
 
 //------------------------------------------------------------------------------
@@ -60,9 +60,9 @@ ImageInfo::~ImageInfo() noexcept =
 
 void ImageInfo::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* h_layout = new QHBoxLayout();
 
@@ -87,7 +87,7 @@ void ImageInfo::stopping()
 
 void ImageInfo::configuring()
 {
-    this->sight::ui::base::IGuiContainer::initialize();
+    this->sight::ui::service::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ void ImageInfo::getInteraction(data::tools::PickingInfo info)
         if(imageIsValid)
         {
             const std::array<double, 3>& point = info.m_worldPos;
-            const data::Image::Size size       = image->getSize();
+            const data::Image::Size size       = image->size();
 
             if(point[0] < 0 || point[1] < 0 || point[2] < 0)
             {
@@ -168,12 +168,12 @@ void ImageInfo::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
+service::connections_t ImageInfo::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_IMAGE, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE, data::Image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }

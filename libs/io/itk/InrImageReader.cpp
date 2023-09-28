@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,11 +28,11 @@
 #include "io/itk/itk.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/reader/registry/macros.hpp>
+#include <io/__/reader/registry/macros.hpp>
 
 #include <itkImageFileReader.h>
 #include <itkImageIOFactory.h>
@@ -43,17 +43,6 @@ SIGHT_REGISTER_IO_READER(sight::io::itk::InrImageReader);
 
 namespace sight::io::itk
 {
-
-//------------------------------------------------------------------------------
-
-InrImageReader::InrImageReader(io::base::reader::IObjectReader::Key /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-InrImageReader::~InrImageReader()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +62,7 @@ struct InrLoaderFunctor
     {
         SIGHT_INFO(
             "::io::itk::InrImageReader::InrLoaderFunctor with PIXELTYPE "
-            << core::Type::get<PIXELTYPE>().name()
+            << core::type::get<PIXELTYPE>().name()
         );
 
         // Reader IO (*1*)
@@ -100,7 +89,7 @@ struct InrLoaderFunctor
     }
 
     //// get pixel type from Header
-    static const core::Type& getImageType(const std::string& imageFileName)
+    static const core::type& getImageType(const std::string& imageFileName)
     {
         ::itk::ImageIOBase::Pointer imageIO = ::itk::ImageIOFactory::CreateImageIO(
             imageFileName.c_str(),
@@ -125,26 +114,26 @@ struct InrLoaderFunctor
 
 void InrImageReader::read()
 {
-    std::filesystem::path file = getFile();
+    std::filesystem::path file = get_file();
     SIGHT_ASSERT("File: " << file << " doesn't exist", std::filesystem::exists(file));
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    const core::Type type = InrLoaderFunctor::getImageType(file.string());
+    const core::type type = InrLoaderFunctor::getImageType(file.string());
 
     InrLoaderFunctor::Parameter param;
     param.m_filename  = file.string();
     param.m_dataImage = this->getConcreteObject();
-    param.m_fwReader  = this->getSptr();
+    param.m_fwReader  = this->get_sptr();
 
-    core::tools::Dispatcher<core::tools::IntrinsicTypes, InrLoaderFunctor>::invoke(type, param);
+    core::tools::dispatcher<core::tools::intrinsic_types, InrLoaderFunctor>::invoke(type, param);
 
     SIGHT_ASSERT("sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
     // produced
     // Post Condition image with a pixel type
     SIGHT_ASSERT(
         "Image has an unspecified type",
-        getConcreteObject()->getType() != core::Type::NONE
+        getConcreteObject()->getType() != core::type::NONE
     );
 }
 

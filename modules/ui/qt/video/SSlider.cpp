@@ -23,14 +23,14 @@
 #include "SSlider.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Object.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 #include <QString>
@@ -41,10 +41,10 @@
 namespace sight::module::ui::qt::video
 {
 
-const core::com::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
+const core::com::signals::key_t SSlider::POSITION_CHANGED_SIG = "positionChanged";
 
-const core::com::Slots::SlotKeyType SSlider::s_SET_POSITION_SLIDER_SLOT = "setPositionSlider";
-const core::com::Slots::SlotKeyType SSlider::s_SET_DURATION_SLIDER_SLOT = "setDurationSlider";
+const core::com::slots::key_t SSlider::SET_POSITION_SLIDER_SLOT = "setPositionSlider";
+const core::com::slots::key_t SSlider::SET_DURATION_SLIDER_SLOT = "setDurationSlider";
 
 static const char* s_UNKNOWN_TIME = "--:--:--";
 
@@ -68,11 +68,11 @@ QString convertMSecToHHMMSS(int64_t milliseconds)
 SSlider::SSlider() noexcept
 {
     /// Slot to change the position of the slider
-    newSlot(s_SET_POSITION_SLIDER_SLOT, &SSlider::setPosition, this);
+    new_slot(SET_POSITION_SLIDER_SLOT, &SSlider::setPosition, this);
     /// Slot to change the duration of the slider
-    newSlot(s_SET_DURATION_SLIDER_SLOT, &SSlider::setDuration, this);
+    new_slot(SET_DURATION_SLIDER_SLOT, &SSlider::setDuration, this);
 
-    m_sigPositionChanged = newSignal<PositionChangedSignalType>(s_POSITION_CHANGED_SIG);
+    m_sigPositionChanged = new_signal<PositionChangedSignalType>(POSITION_CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -85,9 +85,9 @@ SSlider::~SSlider() noexcept =
 void SSlider::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     layout->setObjectName(serviceID);
@@ -150,7 +150,7 @@ void SSlider::changePosition()
     }
 
     // Notify the new position
-    m_sigPositionChanged->asyncEmit(newPos);
+    m_sigPositionChanged->async_emit(newPos);
 
     m_sliderPressed = false;
 }

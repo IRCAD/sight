@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ MatrixConverter::~MatrixConverter()
 
 ::igtl::MessageBase::Pointer MatrixConverter::fromFwDataObject(data::Object::csptr src) const
 {
-    data::Matrix4::csptr srcMatrix = data::Matrix4::dynamicConstCast(src);
+    data::Matrix4::csptr srcMatrix = std::dynamic_pointer_cast<const data::Matrix4>(src);
     ::igtl::TransformMessage::Pointer msg;
     ::igtl::Matrix4x4 dest;
 
@@ -73,7 +73,7 @@ data::Object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::P
     ::igtl::Matrix4x4 matrix;
     auto* msg                                      = dynamic_cast< ::igtl::TransformMessage*>(src.GetPointer());
     ::igtl::TransformMessage::Pointer srcTransform = ::igtl::TransformMessage::Pointer(msg);
-    data::Matrix4::sptr dest                       = data::Matrix4::New();
+    data::Matrix4::sptr dest                       = std::make_shared<data::Matrix4>();
     srcTransform->GetMatrix(matrix);
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
@@ -88,7 +88,7 @@ data::Object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::P
 
 //-----------------------------------------------------------------------------
 
-IConverter::sptr MatrixConverter::New()
+base::sptr MatrixConverter::New()
 {
     return std::make_shared<MatrixConverter>();
 }

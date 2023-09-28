@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,19 +24,19 @@
 
 #include "io/vtk/config.hpp"
 
-#include <core/location/MultipleFiles.hpp>
+#include <core/location/multiple_files.hpp>
 
 #include <data/Series.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <io/base/reader/GenericObjectReader.hpp>
+#include <io/__/reader/GenericObjectReader.hpp>
 
 #include <filesystem>
 
 namespace sight::core::jobs
 {
 
-class Observer;
+class observer;
 
 }
 
@@ -49,20 +49,20 @@ namespace sight::io::vtk
  * Read VTK Mesh or Image files using the VTK lib, convert to ModelSeries or ImageSeries and push to SeriesSet.
  */
 class IO_VTK_CLASS_API SeriesSetReader :
-    public io::base::reader::GenericObjectReader<data::SeriesSet>,
-    public core::location::MultipleFiles
+    public io::reader::GenericObjectReader<data::SeriesSet>,
+    public core::location::multiple_files
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         SeriesSetReader,
-        io::base::reader::GenericObjectReader<data::SeriesSet>,
-        io::base::reader::factory::New<SeriesSetReader>
+        io::reader::GenericObjectReader<data::SeriesSet>,
+        io::reader::factory::make<SeriesSetReader>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API SeriesSetReader(io::base::reader::IObjectReader::Key key);
+    IO_VTK_API SeriesSetReader();
 
     /// @brief Destructor.
     IO_VTK_API ~SeriesSetReader() override = default;
@@ -81,12 +81,12 @@ public:
     }
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::IJob) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
 
 private:
 
     ///Internal job
-    SPTR(core::jobs::Observer) m_job;
+    SPTR(core::jobs::observer) m_job;
 
     bool m_lazyMode;
 };

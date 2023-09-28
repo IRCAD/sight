@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "SScreenSelector.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <service/macros.hpp>
 
@@ -36,12 +36,12 @@
 namespace sight::module::ui::viz
 {
 
-static const core::com::Signals::SignalKeyType s_SCREEN_SELECTED_SIG = "screenSelected";
+static const core::com::signals::key_t SCREEN_SELECTED_SIG = "screenSelected";
 
 //------------------------------------------------------------------------------
 
 SScreenSelector::SScreenSelector() :
-    m_screenSelectedSig(newSignal<ScreenSelectedSignalType>(s_SCREEN_SELECTED_SIG))
+    m_screenSelectedSig(new_signal<ScreenSelectedSignalType>(SCREEN_SELECTED_SIG))
 {
 }
 
@@ -104,7 +104,7 @@ void SScreenSelector::updating()
 
     if(screenNum >= 0)
     {
-        m_screenSelectedSig->asyncEmit(screenNum);
+        m_screenSelectedSig->async_emit(screenNum);
     }
 }
 

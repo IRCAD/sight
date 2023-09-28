@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,20 @@
 
 #include "SMeshList.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_ADD_SLOT   = "add";
-static const core::com::Slots::SlotKeyType s_CLEAR_SLOT = "clear";
+static const core::com::slots::key_t ADD_SLOT   = "add";
+static const core::com::slots::key_t CLEAR_SLOT = "clear";
 
 //-----------------------------------------------------------------------------
 
 SMeshList::SMeshList() noexcept
 {
-    newSlot(s_ADD_SLOT, &SMeshList::add, this);
-    newSlot(s_CLEAR_SLOT, &SMeshList::clear, this);
+    new_slot(ADD_SLOT, &SMeshList::add, this);
+    new_slot(CLEAR_SLOT, &SMeshList::clear, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -81,15 +81,15 @@ void SMeshList::starting()
         const auto image     = data::Image::copy(imageInput.get_shared());
 
         // Create adaptors configurations
-        const std::string transformID = this->getID() + transform->getID();
-        service::IService::ConfigType config;
+        const std::string transformID = this->get_id() + transform->get_id();
+        service::config_t config;
         config.add("config.<xmlattr>.layer", m_layerID);
         config.add("config.<xmlattr>." + std::string(s_TRANSFORM_INPUT), transformID);
         config.add("config.<xmlattr>.autoresetcamera", "false");
 
         // Create the transform adaptor.
-        const sight::viz::scene3d::IAdaptor::sptr transformAdaptor =
-            this->registerService<sight::viz::scene3d::IAdaptor>(
+        const sight::viz::scene3d::adaptor::sptr transformAdaptor =
+            this->registerService<sight::viz::scene3d::adaptor>(
                 "sight::module::viz::scene3d::adaptor::STransform"
             );
 
@@ -104,11 +104,11 @@ void SMeshList::starting()
         SIGHT_ASSERT("STransform is not started", transformAdaptor->isStarted());
 
         // Create the texture adaptor
-        const sight::viz::scene3d::IAdaptor::sptr textureAdaptor =
-            this->registerService<sight::viz::scene3d::IAdaptor>("sight::module::viz::scene3d::adaptor::STexture");
+        const sight::viz::scene3d::adaptor::sptr textureAdaptor =
+            this->registerService<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::STexture");
 
-        service::IService::ConfigType textureConfig = config;
-        textureConfig.add("config.<xmlattr>.textureName", image->getID());
+        service::config_t textureConfig = config;
+        textureConfig.add("config.<xmlattr>.textureName", image->get_id());
         textureConfig.add("config.<xmlattr>.useAlpha", "true");
 
         textureAdaptor->setLayerID(m_layerID);
@@ -121,11 +121,11 @@ void SMeshList::starting()
         SIGHT_ASSERT("STexture is not started", textureAdaptor->isStarted());
 
         // Creates the mesh adaptor.
-        const sight::viz::scene3d::IAdaptor::sptr meshAdaptor =
-            this->registerService<sight::viz::scene3d::IAdaptor>("sight::module::viz::scene3d::adaptor::SMesh");
+        const sight::viz::scene3d::adaptor::sptr meshAdaptor =
+            this->registerService<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::SMesh");
 
-        service::IService::ConfigType meshConfig = config;
-        meshConfig.add("config.<xmlattr>.textureName", image->getID());
+        service::config_t meshConfig = config;
+        meshConfig.add("config.<xmlattr>.textureName", image->get_id());
 
         meshAdaptor->setLayerID(m_layerID);
         meshAdaptor->setRenderService(this->getRenderService());
@@ -148,10 +148,10 @@ void SMeshList::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SMeshList::getAutoConnections() const
+service::connections_t SMeshList::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, data::Matrix4::s_MODIFIED_SIG, s_ADD_SLOT);
+    service::connections_t connections;
+    connections.push(s_TRANSFORM_INPUT, data::Matrix4::MODIFIED_SIG, ADD_SLOT);
     return connections;
 }
 
@@ -184,7 +184,7 @@ void SMeshList::setVisible(bool _visible)
     {
         if(instance.m_isEnabled)
         {
-            const sight::viz::scene3d::IAdaptor::sptr mesh = instance.m_mesh;
+            const sight::viz::scene3d::adaptor::sptr mesh = instance.m_mesh;
             mesh->updateVisibility(_visible);
         }
     }
@@ -209,12 +209,12 @@ void SMeshList::add()
 
         instance.m_isEnabled = true;
 
-        const sight::viz::scene3d::IAdaptor::sptr textureAdp = instance.m_texture;
+        const sight::viz::scene3d::adaptor::sptr textureAdp = instance.m_texture;
         {
-            const auto image        = textureAdp->getInput<data::Image>("image").lock();
+            const auto image        = textureAdp->input<data::Image>("image").lock();
             const auto textureInput = m_texture.lock();
 
-            if(m_generateAlpha && textureInput->getType() == core::Type::UINT8
+            if(m_generateAlpha && textureInput->getType() == core::type::UINT8
                && (textureInput->getPixelFormat() == data::Image::PixelFormat::GRAY_SCALE
                    || textureInput->numComponents() == 1))
             {
@@ -223,7 +223,7 @@ void SMeshList::add()
                 {
                     instance.m_image->copyInformation(textureInput.get_shared());
                     instance.m_image->resize(
-                        instance.m_image->getSize(),
+                        instance.m_image->size(),
                         instance.m_image->getType(),
                         data::Image::PixelFormat::RGBA
                     );
@@ -241,7 +241,7 @@ void SMeshList::add()
                     itr->a = *inItr;
                 }
             }
-            else if(m_generateAlpha && textureInput->getType() == core::Type::UINT8
+            else if(m_generateAlpha && textureInput->getType() == core::type::UINT8
                     && (textureInput->getPixelFormat() == data::Image::PixelFormat::RGB
                         || textureInput->numComponents() == 3))
             {
@@ -251,7 +251,7 @@ void SMeshList::add()
                 {
                     instance.m_image->copyInformation(textureInput.get_shared());
                     instance.m_image->resize(
-                        instance.m_image->getSize(),
+                        instance.m_image->size(),
                         instance.m_image->getType(),
                         data::Image::PixelFormat::RGBA
                     );
@@ -272,24 +272,24 @@ void SMeshList::add()
             }
             else
             {
-                instance.m_image->deepCopy(textureInput.get_shared());
+                instance.m_image->deep_copy(textureInput.get_shared());
             }
         }
         textureAdp->update();
 
         // update the texture
-        const sight::viz::scene3d::IAdaptor::sptr transformAdp = instance.m_transform;
+        const sight::viz::scene3d::adaptor::sptr transformAdp = instance.m_transform;
         {
             // set current matrix
-            const auto transform = transformAdp->getInOut<data::Matrix4>("transform").lock();
+            const auto transform = transformAdp->inout<data::Matrix4>("transform").lock();
 
             const auto transformInOut = m_transform.lock();
-            transform->deepCopy(transformInOut.get_shared());
+            transform->deep_copy(transformInOut.get_shared());
         }
         transformAdp->update();
 
         // update mesh adaptor visibility
-        const sight::viz::scene3d::IAdaptor::sptr meshAdp = instance.m_mesh;
+        const sight::viz::scene3d::adaptor::sptr meshAdp = instance.m_mesh;
         meshAdp->updateVisibility(m_isVisible);
     }
 

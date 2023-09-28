@@ -178,15 +178,15 @@ public:
 
                 if(prec <= 8)
                 {
-                    return std::make_tuple(width, height, sgnd ? core::Type::INT8 : core::Type::UINT8);
+                    return std::make_tuple(width, height, sgnd ? core::type::INT8 : core::type::UINT8);
                 }
                 else if(prec <= 16)
                 {
-                    return std::make_tuple(width, height, sgnd ? core::Type::INT16 : core::Type::UINT16);
+                    return std::make_tuple(width, height, sgnd ? core::type::INT16 : core::type::UINT16);
                 }
                 else if(prec <= 32)
                 {
-                    return std::make_tuple(width, height, sgnd ? core::Type::INT32 : core::Type::UINT32);
+                    return std::make_tuple(width, height, sgnd ? core::type::INT32 : core::type::UINT32);
                 }
                 else
                 {
@@ -263,27 +263,27 @@ public:
         // Convert Sight interlaced pixels to planar openJPEG pixels
         switch(type)
         {
-            case core::Type::INT8:
+            case core::type::INT8:
                 toSight<std::int8_t>(*keeper.m_image, image);
                 break;
 
-            case core::Type::UINT8:
+            case core::type::UINT8:
                 toSight<std::uint8_t>(*keeper.m_image, image);
                 break;
 
-            case core::Type::INT16:
+            case core::type::INT16:
                 toSight<std::int16_t>(*keeper.m_image, image);
                 break;
 
-            case core::Type::UINT16:
+            case core::type::UINT16:
                 toSight<std::uint16_t>(*keeper.m_image, image);
                 break;
 
-            case core::Type::INT32:
+            case core::type::INT32:
                 toSight<std::int32_t>(*keeper.m_image, image);
                 break;
 
-            case core::Type::UINT32:
+            case core::type::UINT32:
                 toSight<std::uint32_t>(*keeper.m_image, image);
                 break;
 
@@ -469,7 +469,7 @@ private:
     template<typename P>
     inline static void toSightPixels(const opj_image_t& opj_image, data::Image& image)
     {
-        const auto& sizes = image.getSize();
+        const auto& sizes = image.size();
 
         auto pixel_it        = image.begin<P>();
         const auto pixel_end = image.end<P>();

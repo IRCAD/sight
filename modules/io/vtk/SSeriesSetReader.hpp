@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -41,7 +41,7 @@ class SeriesSet;
 namespace sight::core::jobs
 {
 
-class IJob;
+class base;
 
 }
 
@@ -55,7 +55,7 @@ namespace sight::module::io::vtk
  * Accepted extensions: *.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is loading (it should be
+ * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is loading (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -74,11 +74,11 @@ namespace sight::module::io::vtk
  * - \b file (optional): path of the files to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API SSeriesSetReader : public sight::io::base::service::IReader
+class MODULE_IO_VTK_CLASS_API SSeriesSetReader : public sight::io::service::reader
 {
 public:
 
-    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
 
     /**
      * @brief Constructor. Do nothing.
@@ -89,7 +89,7 @@ public:
     {
     }
 
-    SIGHT_DECLARE_SERVICE(SSeriesSetReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SSeriesSetReader, sight::io::service::reader);
 
     /**
      * @brief Configure the vtk file path.
@@ -101,7 +101,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

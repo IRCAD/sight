@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,21 +70,21 @@ data::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::Message
 
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::Pointer(msg);
 
-    data::Composite::sptr composite = data::Composite::New();
+    data::Composite::sptr composite = std::make_shared<data::Composite>();
     {
-        data::Boolean::sptr status = data::Boolean::New();
+        data::Boolean::sptr status = std::make_shared<data::Boolean>();
         (*composite)[s_statusKey] = status;
 
         status->setValue(true);
     }
     {
-        data::Integer::sptr resolution = data::Integer::New();
+        data::Integer::sptr resolution = std::make_shared<data::Integer>();
         (*composite)[s_resolutionKey] = resolution;
 
         resolution->setValue(trackingMsg->GetResolution());
     }
     {
-        data::String::sptr coordinateName = data::String::New();
+        data::String::sptr coordinateName = std::make_shared<data::String>();
         (*composite)[s_coordinateNameKey] = coordinateName;
 
         coordinateName->setValue(trackingMsg->GetCoordinateName());
@@ -95,7 +95,7 @@ data::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::Message
 
 //-----------------------------------------------------------------------------
 
-IConverter::sptr TrackingStartConverter::New()
+base::sptr TrackingStartConverter::New()
 {
     return std::make_shared<TrackingStartConverter>();
 }

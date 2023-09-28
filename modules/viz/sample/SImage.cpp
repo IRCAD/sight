@@ -22,10 +22,10 @@
 
 #include "modules/viz/sample/SImage.hpp"
 
-#include <service/op/Add.hpp>
+#include <service/op.hpp>
 
-#include <ui/base/GuiRegistry.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/registry.hpp>
+#include <ui/qt/container/widget.hpp>
 
 namespace sight::module::viz::sample
 {
@@ -46,57 +46,57 @@ SImage::~SImage() noexcept =
 
 void SImage::configuring()
 {
-    this->sight::ui::base::IGuiContainer::initialize();
+    this->sight::ui::service::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SImage::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
-    const auto genericSceneId = this->getID() + "-genericScene";
-    sight::ui::base::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
+    const auto genericSceneId = this->get_id() + "-genericScene";
+    sight::ui::registry::registerSIDContainer(genericSceneId, qtContainer);
 
     // create and register the render service
-    service::IService::ConfigType renderConfig;
+    service::config_t renderConfig;
     renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
     renderConfig.put("scene.layer.<xmlattr>.id", "default");
     renderConfig.put("scene.layer.<xmlattr>.order", "1");
     renderConfig.put("scene.layer.<xmlattr>.transparency", "");
 
-    service::IService::ConfigType interactorCfg;
-    interactorCfg.put("<xmlattr>.uid", this->getID() + "interactorAdaptor");
-    service::IService::ConfigType negatoCfg;
-    negatoCfg.put("<xmlattr>.uid", this->getID() + "negato3DAdaptor");
+    service::config_t interactorCfg;
+    interactorCfg.put("<xmlattr>.uid", this->get_id() + "interactorAdaptor");
+    service::config_t negatoCfg;
+    negatoCfg.put("<xmlattr>.uid", this->get_id() + "negato3DAdaptor");
 
     renderConfig.add_child("scene.layer.adaptor", interactorCfg);
     renderConfig.add_child("scene.layer.adaptor", negatoCfg);
 
-    m_renderSrv = service::add("sight::viz::scene3d::SRender");
+    m_renderSrv = sight::service::add("sight::viz::scene3d::SRender");
     m_renderSrv->setConfiguration(renderConfig);
-    m_renderSrv->setID(genericSceneId);
+    m_renderSrv->set_id(genericSceneId);
 
     m_renderSrv->configure();
 
-    m_interactorSrv = service::add("sight::module::viz::scene3d::adaptor::STrackballCamera");
-    m_interactorSrv->setID(this->getID() + "interactorAdaptor");
+    m_interactorSrv = sight::service::add("sight::module::viz::scene3d::adaptor::STrackballCamera");
+    m_interactorSrv->set_id(this->get_id() + "interactorAdaptor");
     m_interactorSrv->configure();
 
     // Create default transfer function
     m_tf = data::TransferFunction::createDefaultTF();
 
     auto image = m_image.lock();
-    service::IService::ConfigType negatoConfig;
+    service::config_t negatoConfig;
     negatoConfig.put("config.<xmlattr>.interactive", "true");
-    m_negatoSrv = service::add("sight::module::viz::scene3d::adaptor::SNegato3D");
+    m_negatoSrv = sight::service::add("sight::module::viz::scene3d::adaptor::SNegato3D");
     m_negatoSrv->setConfiguration(negatoConfig);
     m_negatoSrv->setInput(image.get_shared(), "image", true);
     m_negatoSrv->setInOut(m_tf, "tf", true);
-    m_negatoSrv->setID(this->getID() + "negato3DAdaptor");
+    m_negatoSrv->set_id(this->get_id() + "negato3DAdaptor");
     m_negatoSrv->configure();
 
     m_renderSrv->start().wait();
@@ -106,12 +106,12 @@ void SImage::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SImage::getAutoConnections() const
+service::connections_t SImage::getAutoConnections() const
 {
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_IMAGE_INPUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -130,11 +130,11 @@ void SImage::stopping()
     m_interactorSrv->stop().wait();
     m_renderSrv->stop().wait();
 
-    sight::ui::base::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
+    sight::ui::registry::unregisterSIDContainer(this->get_id() + "-genericScene");
 
-    service::unregisterService(m_negatoSrv);
-    service::unregisterService(m_interactorSrv);
-    service::unregisterService(m_renderSrv);
+    sight::service::remove(m_negatoSrv);
+    sight::service::remove(m_interactorSrv);
+    sight::service::remove(m_renderSrv);
 
     m_negatoSrv.reset();
     m_interactorSrv.reset();

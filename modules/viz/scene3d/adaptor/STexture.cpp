@@ -22,9 +22,9 @@
 
 #include "modules/viz/scene3d/adaptor/STexture.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
-#include <core/Type.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
+#include <core/type.hpp>
 
 #include <data/Image.hpp>
 #include <data/Material.hpp>
@@ -40,13 +40,13 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::Signals::SignalKeyType STexture::s_TEXTURE_SWAPPED_SIG = "textureSwapped";
+const core::com::signals::key_t STexture::TEXTURE_SWAPPED_SIG = "textureSwapped";
 
 //------------------------------------------------------------------------------
 
 STexture::STexture() noexcept
 {
-    m_sigTextureSwapped = newSignal<TextureSwappedSignalType>(s_TEXTURE_SWAPPED_SIG);
+    m_sigTextureSwapped = new_signal<TextureSwappedSignalType>(TEXTURE_SWAPPED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void STexture::configuring()
 
     // Choose a default name if not provided, this is very important otherwise
     // the texture may be lost if it is unloaded (which is very likely to happen when playing with techniques)
-    m_textureName = config.get<std::string>(s_TEXTURE_NAME_CONFIG, this->getID());
+    m_textureName = config.get<std::string>(s_TEXTURE_NAME_CONFIG, this->get_id());
 
     m_filtering = config.get<std::string>(s_FILTERING_CONFIG, m_filtering);
     m_wrapping  = config.get<std::string>(s_WRAPPING_CONFIG, m_wrapping);
@@ -92,11 +92,11 @@ void STexture::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap STexture::getAutoConnections() const
+service::connections_t STexture::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_TEXTURE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_TEXTURE_INOUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_TEXTURE_INOUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_TEXTURE_INOUT, data::Image::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -113,7 +113,7 @@ void STexture::updating()
         this->getRenderService()->makeCurrent();
         m_texture->update();
 
-        m_sigTextureSwapped->asyncEmit();
+        m_sigTextureSwapped->async_emit();
     }
 }
 

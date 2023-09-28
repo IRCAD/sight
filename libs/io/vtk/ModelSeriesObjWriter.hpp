@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "io/vtk/config.hpp"
 
-#include <core/location/SingleFolder.hpp>
+#include <core/location/single_folder.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 #include <filesystem>
 
@@ -47,7 +47,7 @@ class ModelSeries;
 namespace sight::core::jobs
 {
 
-class Observer;
+class observer;
 
 } // namespace sight::core::jobs
 
@@ -59,21 +59,21 @@ namespace sight::io::vtk
  *
  * Write a data::Reconstruction as .obj file using the VTK lib and the obj format.
  */
-class ModelSeriesObjWriter : public io::base::writer::GenericObjectWriter<data::ModelSeries>,
-                             public core::location::SingleFolder
+class ModelSeriesObjWriter : public io::writer::GenericObjectWriter<data::ModelSeries>,
+                             public core::location::single_folder
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         ModelSeriesObjWriter,
-        io::base::writer::GenericObjectWriter<data::ModelSeries>,
-        io::base::writer::factory::New<ModelSeriesObjWriter>
+        io::writer::GenericObjectWriter<data::ModelSeries>,
+        io::writer::factory::make<ModelSeriesObjWriter>
     )
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Constructor.
-    IO_VTK_API ModelSeriesObjWriter(io::base::writer::IObjectWriter::Key key);
+    IO_VTK_API ModelSeriesObjWriter();
 
     /// Destructor.
     IO_VTK_API ~ModelSeriesObjWriter() override;
@@ -87,12 +87,12 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::IJob) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
 
 private:
 
     ///Internal job
-    SPTR(core::jobs::Observer) m_job;
+    SPTR(core::jobs::observer) m_job;
 };
 
 } // namespace sight::io::vtk

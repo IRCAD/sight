@@ -26,7 +26,7 @@
 
 #include <data/String.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QPointer>
 
@@ -63,12 +63,12 @@ namespace sight::module::ui::qt
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
  */
 class MODULE_UI_QT_CLASS_API STextStatus final : public QObject,
-                                                 public sight::ui::base::IEditor
+                                                 public sight::ui::editor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STextStatus, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(STextStatus, sight::ui::editor);
 
     /// Initializes slots and member.
     MODULE_UI_QT_API STextStatus();
@@ -94,9 +94,9 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Object::s_MODIFIED_SIG of s_STRING_INPUT to IService::slots::s_UPDATE
+     * Connect data::Object::MODIFIED_SIG of s_STRING_INPUT to service::slots::UPDATE
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
     /// Sets the interger to display.
     void setIntParameter(int _val);

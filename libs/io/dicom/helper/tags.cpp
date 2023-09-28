@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "io/dicom/helper/tags.hpp"
 
-#include "io/base/reader/CsvReader.hpp"
+#include "io/__/reader/CsvReader.hpp"
 #include "io/dicom/exception/InvalidTag.hpp"
 
 #include <core/exceptionmacros.hpp>
@@ -94,8 +94,8 @@ PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath)
     );
 
     PrivateTagVecType privateTags;
-    io::base::reader::CsvReader reader(tagsPath);
-    io::base::reader::CsvReader::TokenContainerType tag = reader.getLine();
+    io::reader::CsvReader reader(tagsPath);
+    io::reader::CsvReader::TokenContainerType tag = reader.getLine();
 
     while(!tag.empty())
     {

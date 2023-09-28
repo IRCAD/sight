@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/CameraSet.hpp>
 #include <data/FrameTL.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 #include <string_view>
 
@@ -61,11 +61,11 @@ namespace sight::module::filter::vision
  * @subsection In-Out In-Out
  * - \b scaledDepthTL [sight::data::FrameTL]: timeline containing the scaled depth maps.
  */
-class MODULE_FILTER_VISION_CLASS_API STransformDepthTL2mm : public service::IFilter
+class MODULE_FILTER_VISION_CLASS_API STransformDepthTL2mm : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(STransformDepthTL2mm, service::IFilter);
+    SIGHT_DECLARE_SERVICE(STransformDepthTL2mm, service::filter);
 
     /**
      * @brief STransformDepthTL2mm constructor.
@@ -92,15 +92,15 @@ protected:
     MODULE_FILTER_VISION_API void updating() override;
 
     /// Defines the auto-connection between the depth timeline and the 'compute' slot
-    MODULE_FILTER_VISION_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_VISION_API service::connections_t getAutoConnections() const override;
 
 private:
 
     /// Apply the scale on the depth map
-    void compute(core::HiResClock::HiResClockType timestamp);
+    void compute(core::hires_clock::type timestamp);
 
     /// timestamp of the last process
-    core::HiResClock::HiResClockType m_lastTimestamp {0};
+    core::hires_clock::type m_lastTimestamp {0};
 
     static constexpr std::string_view s_CAMERA_SET_INPUT      = "cameraSet";
     static constexpr std::string_view s_ORIGIN_FRAME_TL_INPUT = "originDepthTL";

@@ -22,7 +22,7 @@
 
 #include "modules/ui/qt/reconstruction/RepresentationEditor.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/Mesh.hpp>
@@ -30,7 +30,7 @@
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QAbstractButton>
 #include <QButtonGroup>
@@ -57,11 +57,9 @@ void RepresentationEditor::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
-        this->getContainer()
-    );
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     qtContainer->getQtContainer()->setObjectName(serviceID);
 
     auto* layout = new QVBoxLayout();
@@ -186,7 +184,7 @@ void RepresentationEditor::configuring()
 
 void RepresentationEditor::updating()
 {
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     QWidget* const container = qtContainer->getQtContainer();
@@ -358,9 +356,9 @@ void RepresentationEditor::onShowNormals(int state)
 
     // In VTK backend the normals is handled by the mesh and not by the material
     auto sig = reconstruction->signal<data::Reconstruction::MeshChangedSignalType>(
-        data::Reconstruction::s_MESH_CHANGED_SIG
+        data::Reconstruction::MESH_CHANGED_SIG
     );
-    sig->asyncEmit(reconstruction->getMesh());
+    sig->async_emit(reconstruction->getMesh());
 }
 
 //------------------------------------------------------------------------------
@@ -372,17 +370,17 @@ void RepresentationEditor::notifyMaterial()
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(
-        data::Object::s_MODIFIED_SIG
+        data::Object::MODIFIED_SIG
     );
-    sig->asyncEmit();
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap RepresentationEditor::getAutoConnections() const
+service::connections_t RepresentationEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_RECONSTRUCTION, data::Object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

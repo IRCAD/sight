@@ -23,16 +23,16 @@
 
 #include "io/session/detail/core/SessionDeserializer.hpp"
 
-#include <core/crypto/PasswordKeeper.hpp>
+#include <core/crypto/password_keeper.hpp>
 
-#include <io/base/reader/registry/macros.hpp>
+#include <io/__/reader/registry/macros.hpp>
 
 SIGHT_REGISTER_IO_READER(sight::io::session::SessionReader);
 
 namespace sight::io::session
 {
 
-using core::crypto::PasswordKeeper;
+using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::Archive;
 
@@ -50,8 +50,8 @@ public:
     /// Constructor
     inline explicit SessionReaderImpl(SessionReader* const sessionReader) :
         m_sessionReader(sessionReader),
-        m_password(std::make_unique<PasswordKeeper>()),
-        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::PASSWORD),
+        m_password(std::make_unique<password_keeper>()),
+        m_encryptionPolicy(password_keeper::encryption_policy::PASSWORD),
         m_archiveFormat(Archive::ArchiveFormat::DEFAULT)
     {
     }
@@ -64,7 +64,7 @@ public:
     {
         // Deserialize the root object
         m_object = m_sessionDeserializer.deserialize(
-            m_sessionReader->getFile(),
+            m_sessionReader->get_file(),
             m_archiveFormat,
             m_password->get_password(),
             m_encryptionPolicy
@@ -75,22 +75,22 @@ public:
     detail::SessionDeserializer m_sessionDeserializer;
 
     /// Use a shared_ptr to keep the object alive as it is the read() return value
-    core::tools::Object::sptr m_object;
+    core::tools::object::sptr m_object;
 
     /// Pointer to the public interface
     SessionReader* const m_sessionReader;
 
     /// Keep the password in a vault
-    const std::unique_ptr<PasswordKeeper> m_password;
+    const std::unique_ptr<password_keeper> m_password;
 
     /// The encryption policy
-    PasswordKeeper::EncryptionPolicy m_encryptionPolicy;
+    password_keeper::encryption_policy m_encryptionPolicy;
 
     /// Archive format to use
     Archive::ArchiveFormat m_archiveFormat;
 };
 
-SessionReader::SessionReader(base::reader::IObjectReader::Key /*unused*/) :
+SessionReader::SessionReader() :
     m_pimpl(std::make_unique<SessionReaderImpl>(this))
 {
 }
@@ -124,7 +124,7 @@ void SessionReader::setPassword(const secure_string& password)
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setEncryptionPolicy(const PasswordKeeper::EncryptionPolicy policy)
+void SessionReader::setEncryptionPolicy(const password_keeper::encryption_policy policy)
 {
     m_pimpl->m_encryptionPolicy = policy;
 }

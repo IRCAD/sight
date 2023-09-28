@@ -16,10 +16,10 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
                 <toolBar />
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Export camera set" icon="sight::module::ui::flaticons/BlueSave.svg" />
@@ -58,9 +58,9 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="sight::module::ui::base::SView">
+        <service uid="camerasView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -72,9 +72,9 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="sight::module::ui::base::SView">
+        <service uid="cameraInfoView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view caption="camera 1" />
                     <view caption="camera 2" />
@@ -90,9 +90,9 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="sight::module::ui::base::SAction"/>
+        <service uid="writeCalibrationAct" type="sight::module::ui::SAction"/>
 
-        <service uid="exportAct" type="sight::module::ui::base::SExportSet" autoConnect="true">
+        <service uid="exportAct" type="sight::module::ui::SExportSet" autoConnect="true">
             <inout key="container" uid="${dataSet}" />
             <inout key="data" uid="newCameraSet" />
         </service>
@@ -101,10 +101,10 @@
             <in key="data" uid="newCameraSet" />
         </service>
 
-        <service uid="startVideoAct" type="sight::module::ui::base::SAction"/>
-        <service uid="stopVideoAct" type="sight::module::ui::base::SAction"/>
-        <service uid="pauseVideoAct" type="sight::module::ui::base::SAction"/>
-        <service uid="loopVideoAct" type="sight::module::ui::base::SAction"/>
+        <service uid="startVideoAct" type="sight::module::ui::SAction"/>
+        <service uid="stopVideoAct" type="sight::module::ui::SAction"/>
+        <service uid="pauseVideoAct" type="sight::module::ui::SAction"/>
+        <service uid="loopVideoAct" type="sight::module::ui::SAction"/>
 
         <!-- ************************ Configuration launchers ********************************* -->
 

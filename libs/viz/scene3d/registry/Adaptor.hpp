@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 namespace sight::viz::scene3d
 {
 
-class IAdaptor;
+class adaptor;
 
 namespace registry
 {

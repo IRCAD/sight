@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <viz/scene2d/IAdaptor.hpp>
+#include <viz/scene2d/adaptor.hpp>
 
 namespace s2d = sight::viz::scene2d;
 
@@ -81,11 +81,11 @@ namespace sight::module::viz::scene2d::adaptor
  *
  * @pre This adaptor is intended to be used with a module::viz::scene2d::adaptor::ViewportUpdater adaptor.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SViewportRangeSelector : public sight::viz::scene2d::IAdaptor
+class MODULE_VIZ_SCENE2D_CLASS_API SViewportRangeSelector : public sight::viz::scene2d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SViewportRangeSelector, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SViewportRangeSelector, sight::viz::scene2d::adaptor);
 
     SViewportRangeSelector();
 
@@ -99,10 +99,10 @@ public:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
-     * module::viz::scene2d::adaptor::SViewportRangeSelector::IService::slots::s_UPDATE.
+     * Connect sight::viz::scene2d::data::Viewport::MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * module::viz::scene2d::adaptor::SViewportRangeSelector::service::slots::UPDATE.
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
     /// Does nothing.
     void updating() override;

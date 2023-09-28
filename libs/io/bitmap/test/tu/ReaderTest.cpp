@@ -23,7 +23,7 @@
 #include "helper.hxx"
 
 #include <io/bitmap/Reader.hpp>
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <utest/Filter.hpp>
 #include <utest/profiling.hpp>
@@ -50,7 +50,7 @@ inline static void testBackend(
     data::Image::sptr expected_image = data::Image::sptr()
 )
 {
-    core::os::TempDir temp_dir;
+    core::os::temp_dir temp_dir;
     std::filesystem::path filepath;
 
     if(expected_image)
@@ -80,19 +80,19 @@ inline static void testBackend(
         CPPUNIT_FAIL("File not found: " + file.string());
     }
 
-    auto actual_image = data::Image::New();
+    auto actual_image = std::make_shared<data::Image>();
 
     // Read the image from disk
     {
-        auto reader = Reader::New();
+        auto reader = std::make_shared<Reader>();
         reader->setObject(actual_image);
-        reader->setFile(filepath);
+        reader->set_file(filepath);
 
         CPPUNIT_ASSERT_NO_THROW(reader->read(backend));
     }
 
-    const auto& expected_sizes = expected_image->getSize();
-    const auto& actual_sizes   = actual_image->getSize();
+    const auto& expected_sizes = expected_image->size();
+    const auto& actual_sizes   = actual_image->size();
 
     CPPUNIT_ASSERT_EQUAL(expected_sizes[0], actual_sizes[0]);
     CPPUNIT_ASSERT_EQUAL(expected_sizes[1], actual_sizes[1]);
@@ -113,34 +113,34 @@ inline static void testBackend(
     {
         constexpr auto path = "<<[{:}]>>";
 
-        auto reader = Reader::New();
+        auto reader = std::make_shared<Reader>();
         reader->setObject(actual_image);
-        reader->setFile(path);
+        reader->set_file(path);
 
-        CPPUNIT_ASSERT_THROW(reader->read(backend), core::Exception);
+        CPPUNIT_ASSERT_THROW(reader->read(backend), core::exception);
     }
 
     // test existing corrupted file
     {
-        core::os::TempFile corrupted_file(std::ios_base::out);
+        core::os::temp_file corrupted_file(std::ios_base::out);
         corrupted_file << "This is a corrupted file";
         corrupted_file.stream().close();
 
-        auto reader = Reader::New();
+        auto reader = std::make_shared<Reader>();
         reader->setObject(actual_image);
-        reader->setFile(corrupted_file);
+        reader->set_file(corrupted_file);
 
-        CPPUNIT_ASSERT_THROW(reader->read(backend), core::Exception);
+        CPPUNIT_ASSERT_THROW(reader->read(backend), core::exception);
     }
 
     // test file with bad extension
     if(std::filesystem::exists(filepath))
     {
-        auto reader = Reader::New();
+        auto reader = std::make_shared<Reader>();
         reader->setObject(actual_image);
-        reader->setFile(filepath.replace_extension(".bad"));
+        reader->set_file(filepath.replace_extension(".bad"));
 
-        CPPUNIT_ASSERT_THROW(reader->read(backend), core::Exception);
+        CPPUNIT_ASSERT_THROW(reader->read(backend), core::exception);
     }
 }
 
@@ -151,14 +151,14 @@ inline static void profileReader(
     Backend backend
 )
 {
-    auto reader = Reader::New();
+    auto reader = std::make_shared<Reader>();
 
-    auto actual_image = data::Image::New();
+    auto actual_image = std::make_shared<data::Image>();
     reader->setObject(actual_image);
 
     const auto& filename = "wild" + extensions(backend).front();
     const auto& filepath = utestData::Data::dir() / "sight" / "image" / "bitmap" / filename;
-    reader->setFile(filepath);
+    reader->set_file(filepath);
 
     const std::string backend_name =
         [&]
@@ -235,7 +235,7 @@ void ReaderTest::tearDown()
 
 void ReaderTest::basicTest()
 {
-    auto reader = Reader::New();
+    auto reader = std::make_shared<Reader>();
 
     CPPUNIT_ASSERT_EQUAL(io::bitmap::extensions(Backend::LIBTIFF).front(), reader->extension());
 }
@@ -364,7 +364,7 @@ void ReaderTest::libPNGTest()
     testBackend(
         "libPNG_RGBA_UINT8.png",
         Backend::LIBPNG,
-        getSyntheticImage(1, core::Type::UINT8, data::Image::PixelFormat::RGBA)
+        getSyntheticImage(1, core::type::UINT8, data::Image::PixelFormat::RGBA)
     );
 }
 
@@ -396,13 +396,13 @@ void ReaderTest::libTIFFTest()
     testBackend(
         "libTIFF_RGBA_UINT16.tiff",
         Backend::LIBTIFF,
-        getSyntheticImage(1, core::Type::UINT16, data::Image::PixelFormat::RGBA)
+        getSyntheticImage(1, core::type::UINT16, data::Image::PixelFormat::RGBA)
     );
 
     testBackend(
         "libTIFF_GRAYSCALE_DOUBLE.tiff",
         Backend::LIBTIFF,
-        getSyntheticImage(2, core::Type::DOUBLE, data::Image::PixelFormat::GRAY_SCALE)
+        getSyntheticImage(2, core::type::DOUBLE, data::Image::PixelFormat::GRAY_SCALE)
     );
 }
 

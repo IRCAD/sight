@@ -22,14 +22,14 @@
 
 #include "SServerSender.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/Preferences.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <functional>
 
@@ -52,7 +52,7 @@ SServerSender::~SServerSender()
 
 void SServerSender::configuring()
 {
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     m_portConfig = config.get("port", "4242");
 
@@ -66,8 +66,8 @@ void SServerSender::configuring()
     const auto keyCfg = configIn.equal_range("key");
     for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
     {
-        const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName              = attr.get("deviceName", "Sight");
+        const service::config_t& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string deviceName  = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(deviceName);
     }
 }
@@ -78,25 +78,25 @@ void SServerSender::starting()
 {
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
         const auto port = preferences.delimited_get<std::uint16_t>(m_portConfig);
 
         m_server->start(port);
 
         m_serverFuture = std::async(std::launch::async, [this](auto&& ...){m_server->runServer();});
-        m_sigConnected->asyncEmit();
+        m_sigConnected->async_emit();
     }
-    catch(core::Exception& e)
+    catch(core::exception& e)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Error",
             "Cannot start the server: "
             + std::string(e.what()),
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
         // Only report the error on console (this normally happens only if we have requested the disconnection)
         SIGHT_ERROR(e.what());
-        this->slot(IService::slots::s_STOP)->asyncRun();
+        this->slot(service::slots::STOP)->async_run();
     }
 }
 
@@ -112,11 +112,11 @@ void SServerSender::stopping()
         }
 
         m_serverFuture.wait();
-        m_sigDisconnected->asyncEmit();
+        m_sigDisconnected->async_emit();
     }
-    catch(core::Exception& e)
+    catch(core::exception& e)
     {
-        sight::ui::base::dialog::MessageDialog::show("Error", e.what());
+        sight::ui::dialog::message::show("Error", e.what());
     }
     catch(std::future_error&)
     {

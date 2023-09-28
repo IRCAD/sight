@@ -22,13 +22,13 @@
 
 #include "SOpenvslam.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/Profiling.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/profiling.hpp>
 #include <core/runtime/path.hpp>
-#include <core/tools/Os.hpp>
+#include <core/tools/os.hpp>
 
 #include <io/http/Download.hpp>
 #include <io/opencv/FrameTL.hpp>
@@ -37,8 +37,8 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -56,85 +56,85 @@
 namespace sight::module::navigation::openvslam
 {
 
-static const core::com::Slots::SlotKeyType s_ENABLE_LOCALIZATION_SLOT   = "enableLocalization";
-static const core::com::Slots::SlotKeyType s_ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
+static const core::com::slots::key_t ENABLE_LOCALIZATION_SLOT   = "enableLocalization";
+static const core::com::slots::key_t ACTIVATE_LOCALIZATION_SLOT = "activateLocalization";
 
-static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT   = "setEnumParameter";
+static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "setIntParameter";
+static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT   = "setEnumParameter";
 
-static const core::com::Slots::SlotKeyType s_RESET_POINTCLOUD_SLOT = "resetPointCloud";
+static const core::com::slots::key_t RESET_POINTCLOUD_SLOT = "resetPointCloud";
 
-static const core::com::Slots::SlotKeyType s_SAVE_MAP_SLOT = "saveMap";
-static const core::com::Slots::SlotKeyType s_LOAD_MAP_SLOT = "loadMap";
+static const core::com::slots::key_t SAVE_MAP_SLOT = "saveMap";
+static const core::com::slots::key_t LOAD_MAP_SLOT = "loadMap";
 
-static const core::com::Slots::SlotKeyType s_SAVE_TRAJECTORIES_SLOT = "saveTrajectories";
+static const core::com::slots::key_t SAVE_TRAJECTORIES_SLOT = "saveTrajectories";
 
-static const core::com::Slots::SlotKeyType s_PAUSE_TRACKER_SLOT = "pauseTracker";
+static const core::com::slots::key_t PAUSE_TRACKER_SLOT = "pauseTracker";
 
-static const core::com::Signals::SignalKeyType s_TRACKING_INITIALIZED_SIG     = "trackingInitialized";
-static const core::com::Signals::SignalKeyType s_TRACKING_NOT_INITIALIZED_SIG = "trackingNotInitialized";
-static const core::com::Signals::SignalKeyType s_TRACKED_SIG                  = "tracked";
-static const core::com::Signals::SignalKeyType s_TRACKING_LOST_SIG            = "trackingLost";
+static const core::com::signals::key_t TRACKING_INITIALIZED_SIG     = "trackingInitialized";
+static const core::com::signals::key_t TRACKING_NOT_INITIALIZED_SIG = "trackingNotInitialized";
+static const core::com::signals::key_t TRACKED_SIG                  = "tracked";
+static const core::com::signals::key_t TRACKING_LOST_SIG            = "trackingLost";
 
-static const core::com::Signals::SignalKeyType s_VOCFILE_UNLOADED_SIG        = "vocFileUnloaded";
-static const core::com::Signals::SignalKeyType s_VOCFILE_LOADING_STARTED_SIG = "vocFileLoadingStarted";
-static const core::com::Signals::SignalKeyType s_VOCFILE_LOADED_SIG          = "vocFileLoaded";
+static const core::com::signals::key_t VOCFILE_UNLOADED_SIG        = "vocFileUnloaded";
+static const core::com::signals::key_t VOCFILE_LOADING_STARTED_SIG = "vocFileLoadingStarted";
+static const core::com::signals::key_t VOCFILE_LOADED_SIG          = "vocFileLoaded";
 
-static const core::com::Signals::SignalKeyType s_MAP_LOADED_SIG = "mapLoaded";
+static const core::com::signals::key_t MAP_LOADED_SIG = "mapLoaded";
 
 static const std::string s_DOWNSAMPLE_CONFIG = "downsampleWidth";
 static const std::string s_MODE_CONFIG       = "mode";
 
 static std::string s_windowName;
 
-const core::com::Slots::SlotKeyType s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT = "InternalDownloadVocFile";
+const core::com::slots::key_t INTERNAL_DOWNLOAD_VOC_FILE_SLOT = "InternalDownloadVocFile";
 
 //------------------------------------------------------------------------------
 
 SOpenvslam::SOpenvslam() noexcept :
-    INotifier(m_signals),
-    m_sigTrackingInitialized(newSignal<SignalType>(s_TRACKING_INITIALIZED_SIG)),
-    m_sigTrackingNotInitialized(newSignal<SignalType>(s_TRACKING_NOT_INITIALIZED_SIG)),
-    m_sigTracked(newSignal<SignalType>(s_TRACKED_SIG)),
-    m_sigTrackingLost(newSignal<SignalType>(s_TRACKING_LOST_SIG)),
-    m_sigVocFileUnloaded(newSignal<SignalType>(s_VOCFILE_UNLOADED_SIG)),
-    m_sigVocFileLoadingStarted(newSignal<SignalType>(s_VOCFILE_LOADING_STARTED_SIG)),
-    m_sigVocFileLoaded(newSignal<SignalType>(s_VOCFILE_LOADED_SIG)),
-    m_sigMapLoaded(newSignal<SignalType>(s_MAP_LOADED_SIG))
+    notifier(m_signals),
+    m_sigTrackingInitialized(new_signal<SignalType>(TRACKING_INITIALIZED_SIG)),
+    m_sigTrackingNotInitialized(new_signal<SignalType>(TRACKING_NOT_INITIALIZED_SIG)),
+    m_sigTracked(new_signal<SignalType>(TRACKED_SIG)),
+    m_sigTrackingLost(new_signal<SignalType>(TRACKING_LOST_SIG)),
+    m_sigVocFileUnloaded(new_signal<SignalType>(VOCFILE_UNLOADED_SIG)),
+    m_sigVocFileLoadingStarted(new_signal<SignalType>(VOCFILE_LOADING_STARTED_SIG)),
+    m_sigVocFileLoaded(new_signal<SignalType>(VOCFILE_LOADED_SIG)),
+    m_sigMapLoaded(new_signal<SignalType>(MAP_LOADED_SIG))
 {
-    newSlot(s_ENABLE_LOCALIZATION_SLOT, &SOpenvslam::enableLocalization, this);
-    newSlot(s_ACTIVATE_LOCALIZATION_SLOT, &SOpenvslam::activateLocalization, this);
+    new_slot(ENABLE_LOCALIZATION_SLOT, &SOpenvslam::enableLocalization, this);
+    new_slot(ACTIVATE_LOCALIZATION_SLOT, &SOpenvslam::activateLocalization, this);
 
-    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SOpenvslam::setDoubleParameter, this);
-    newSlot(s_SET_INT_PARAMETER_SLOT, &SOpenvslam::setIntParameter, this);
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SOpenvslam::setBoolParameter, this);
-    newSlot(s_SET_ENUM_PARAMETER_SLOT, &SOpenvslam::setEnumParameter, this);
+    new_slot(SET_DOUBLE_PARAMETER_SLOT, &SOpenvslam::setDoubleParameter, this);
+    new_slot(SET_INT_PARAMETER_SLOT, &SOpenvslam::setIntParameter, this);
+    new_slot(SET_BOOL_PARAMETER_SLOT, &SOpenvslam::setBoolParameter, this);
+    new_slot(SET_ENUM_PARAMETER_SLOT, &SOpenvslam::setEnumParameter, this);
 
-    newSlot(s_RESET_POINTCLOUD_SLOT, &SOpenvslam::resetPointCloud, this);
+    new_slot(RESET_POINTCLOUD_SLOT, &SOpenvslam::resetPointCloud, this);
 
-    newSlot(s_SAVE_MAP_SLOT, &SOpenvslam::saveMap, this);
-    newSlot(s_LOAD_MAP_SLOT, &SOpenvslam::loadMap, this);
+    new_slot(SAVE_MAP_SLOT, &SOpenvslam::saveMap, this);
+    new_slot(LOAD_MAP_SLOT, &SOpenvslam::loadMap, this);
 
-    newSlot(s_SAVE_TRAJECTORIES_SLOT, &SOpenvslam::saveTrajectories, this);
+    new_slot(SAVE_TRAJECTORIES_SLOT, &SOpenvslam::saveTrajectories, this);
 
-    newSlot(s_PAUSE_TRACKER_SLOT, &SOpenvslam::pause, this);
+    new_slot(PAUSE_TRACKER_SLOT, &SOpenvslam::pause, this);
 
-    newSlot(
-        s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT,
+    new_slot(
+        INTERNAL_DOWNLOAD_VOC_FILE_SLOT,
         [this]()
         {
             SIGHT_INFO("Downloading orb_vocab.dbow2...");
 
-            this->INotifier::info("Downloading Vocabulary");
-            m_sigVocFileLoadingStarted->asyncEmit();
+            this->notifier::info("Downloading Vocabulary");
+            m_sigVocFileLoadingStarted->async_emit();
 
             try
             {
                 std::string url;
                 // Check first if the ENV SIGHT_OPENVSLAM_VOC_URL is set.
-                const std::string env_download_url = core::tools::os::getEnv("SIGHT_OPENVSLAM_VOC_URL");
+                const std::string env_download_url = core::tools::os::get_env("SIGHT_OPENVSLAM_VOC_URL");
 
                 if(env_download_url.empty())
                 {
@@ -146,15 +146,15 @@ SOpenvslam::SOpenvslam() noexcept :
                 }
 
                 io::http::downloadFile(url, m_vocabularyPath);
-                m_sigVocFileLoaded->asyncEmit();
+                m_sigVocFileLoaded->async_emit();
             }
-            catch(core::Exception& _e)
+            catch(core::exception& _e)
             {
                 SIGHT_FATAL("orb_vocab.dbow2 file hasn't been downloaded: " + std::string(_e.what()));
-                m_sigVocFileUnloaded->asyncEmit();
+                m_sigVocFileUnloaded->async_emit();
             }
 
-            this->INotifier::success("Vocabulary downloaded");
+            this->notifier::success("Vocabulary downloaded");
         });
 }
 
@@ -172,7 +172,7 @@ SOpenvslam::~SOpenvslam() noexcept
 
 void SOpenvslam::configuring()
 {
-    this->service::ITracker::configuring();
+    this->service::tracker::configuring();
     const ConfigType cfg = this->getConfiguration();
 
     m_downSampleWidth = cfg.get<std::size_t>(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);
@@ -203,15 +203,15 @@ void SOpenvslam::configuring()
 
 void SOpenvslam::starting()
 {
-    const auto& user_path = core::tools::os::getUserConfigDir("openvslam");
+    const auto& user_path = core::tools::os::get_user_config_dir("openvslam");
     m_vocabularyPath = std::filesystem::path(user_path) / "orb_vocab.dbow2";
 
     if(!std::filesystem::exists(m_vocabularyPath))
     {
-        this->slot(s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT)->asyncRun();
+        this->slot(INTERNAL_DOWNLOAD_VOC_FILE_SLOT)->async_run();
     }
 
-    m_sigVocFileLoaded->asyncEmit();
+    m_sigVocFileLoaded->async_emit();
 
     // input parameters
     const auto frameTL = m_timeline.lock();
@@ -227,7 +227,7 @@ void SOpenvslam::starting()
         cameraMatrixTL->initPoolSize(50);
     }
 
-    auto pointcloud = data::Mesh::New();
+    auto pointcloud = std::make_shared<data::Mesh>();
     m_pointCloud = pointcloud;
 
     if(m_trackingMode != TrackingMode::MONO)
@@ -236,11 +236,11 @@ void SOpenvslam::starting()
         SIGHT_ASSERT("The input " << s_TIMELINE2_INPUT << " is not valid.", frameTL2);
     }
 
-    m_pointcloudWorker = core::thread::Worker::New();
+    m_pointcloudWorker = core::thread::worker::make();
 
-    m_timer = m_pointcloudWorker->createTimer();
-    m_timer->setFunction([this](){updatePointCloud();});
-    m_timer->setDuration(std::chrono::milliseconds(1000)); // update pointcloud every seconds.
+    m_timer = m_pointcloudWorker->create_timer();
+    m_timer->set_function([this](){updatePointCloud();});
+    m_timer->set_duration(std::chrono::milliseconds(1000)); // update pointcloud every seconds.
 }
 
 //------------------------------------------------------------------------------
@@ -258,7 +258,7 @@ void SOpenvslam::stopping()
 
     m_pointcloudWorker->stop();
     m_pointcloudWorker.reset();
-    m_sigVocFileUnloaded->asyncEmit();
+    m_sigVocFileUnloaded->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -306,7 +306,7 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
         }
 
         // Launch the pointcloud thread.
-        if(!m_timer->isRunning())
+        if(!m_timer->is_running())
         {
             m_timer->start();
         }
@@ -321,9 +321,9 @@ void SOpenvslam::stopTracking()
 {
     const std::unique_lock<std::mutex> lock(m_slamLock);
 
-    if(m_timer->isRunning())
+    if(m_timer->is_running())
     {
-        m_timer->setOneShot(false);
+        m_timer->set_one_shot(false);
         m_timer->stop();
     }
 
@@ -340,9 +340,9 @@ void SOpenvslam::stopTracking()
         // Save trajectories at stop.
         if(m_trajectoriesSavePath)
         {
-            const std::string folder       = m_trajectoriesSavePath->getFile().remove_filename().string();
+            const std::string folder       = m_trajectoriesSavePath->get_file().remove_filename().string();
             const std::string baseFilename =
-                m_trajectoriesSavePath->getFile().filename().replace_extension("").string();
+                m_trajectoriesSavePath->get_file().filename().replace_extension("").string();
 
             m_slamSystem->save_frame_trajectory(
                 std::string(folder) + "/" + baseFilename + "_frames_traj.txt",
@@ -365,8 +365,8 @@ void SOpenvslam::stopTracking()
         m_slamSystem->request_terminate();
         m_slamSystem->shutdown();
         m_slamSystem.reset();
-        m_sigTrackingNotInitialized->asyncEmit();
-        m_sigTrackingLost->asyncEmit();
+        m_sigTrackingNotInitialized->async_emit();
+        m_sigTrackingLost->async_emit();
         m_isTracking   = false;
         m_localization = false;
 
@@ -527,24 +527,24 @@ void SOpenvslam::setEnumParameter(std::string _val, std::string _key)
 
 void SOpenvslam::loadMap()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle("Select openvslam map file");
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("openvlsam map files", "*.map");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setOption(ui::dialog::location::READ);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
 
     if(result)
     {
-        m_sigMapLoaded->asyncEmit();
+        m_sigMapLoaded->async_emit();
 
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
         this->stopTracking();
-        const std::string mapFile = result->getFile().string();
+        const std::string mapFile = result->get_file().string();
         this->startTracking(mapFile);
     }
 }
@@ -553,23 +553,23 @@ void SOpenvslam::loadMap()
 
 void SOpenvslam::saveMap()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle("Choose a file to save Openvslam map");
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("openvslam files", "*.map");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::dialog::location::WRITE);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(!result)
     {
         return;
     }
 
-    defaultDirectory->setFolder(result->getFile().parent_path());
+    defaultDirectory->set_folder(result->get_file().parent_path());
     dialogFile.saveDefaultLocation(defaultDirectory);
-    m_saveMapPath = result->getFile().string();
+    m_saveMapPath = result->get_file().string();
 
     const std::unique_lock<std::mutex> lock(m_slamLock);
 
@@ -580,19 +580,19 @@ void SOpenvslam::saveMap()
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog warning;
-        warning.setIcon(ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::dialog::message warning;
+        warning.setIcon(ui::dialog::message::WARNING);
         warning.setTitle("Save Map offline");
         warning.setMessage(
             "OpenVSLAM is currently offline, map cannot be saved now.\
         file path can be stored and map will be automatically saved at next openvlsam stop (start/stop). "
         );
-        warning.addButton(ui::base::dialog::IMessageDialog::Buttons::NO);
-        warning.addButton(ui::base::dialog::IMessageDialog::Buttons::YES);
-        warning.setDefaultButton(ui::base::dialog::IMessageDialog::Buttons::NO);
+        warning.addButton(ui::dialog::message::Buttons::NO);
+        warning.addButton(ui::dialog::message::Buttons::YES);
+        warning.setDefaultButton(ui::dialog::message::Buttons::NO);
         const auto answer = warning.show();
 
-        if(answer == sight::ui::base::dialog::IMessageDialog::Buttons::NO)
+        if(answer == sight::ui::dialog::message::Buttons::NO)
         {
             m_saveMapPath.clear();
         }
@@ -603,21 +603,21 @@ void SOpenvslam::saveMap()
 
 void SOpenvslam::saveTrajectories()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFolder;
+    sight::ui::dialog::location dialogFolder;
     dialogFolder.setTitle("Choose a folder & name to save trajectories files.");
 
     // Use SINGLE_FILE type, so we can use filters, only the basename of files will be used.
-    dialogFolder.setType(ui::base::dialog::LocationDialog::SINGLE_FILE);
+    dialogFolder.setType(ui::dialog::location::SINGLE_FILE);
     dialogFolder.setDefaultLocation(defaultDirectory);
-    dialogFolder.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFolder.setOption(ui::dialog::location::WRITE);
 
     // Use filter to store the format (matrix or vector & quaternions).
     dialogFolder.addFilter("Matrix Format", " KITTI");
     dialogFolder.addFilter("Vector & Quat Format", " TUM");
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFolder.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFolder.show());
 
     if(!result)
     {
@@ -625,11 +625,11 @@ void SOpenvslam::saveTrajectories()
     }
 
     m_trajectoriesSavePath = result;
-    defaultDirectory->setFolder(result->getFile().remove_filename());
+    defaultDirectory->set_folder(result->get_file().remove_filename());
     dialogFolder.saveDefaultLocation(defaultDirectory);
-    const std::string trajectories_folder   = result->getFile().remove_filename().string();
-    const std::string trajectories_filename = result->getFile().filename().replace_extension("").string(); // keep only
-                                                                                                           // the
+    const std::string trajectories_folder   = result->get_file().remove_filename().string();
+    const std::string trajectories_filename = result->get_file().filename().replace_extension("").string(); // keep only
+                                                                                                            // the
     // base filename.
     m_trajectoriesFormat = dialogFolder.getSelectedExtensions().front();
 
@@ -653,18 +653,18 @@ void SOpenvslam::saveTrajectories()
     // If Openvslam is offline we cannot save trajectories anymore.
     else
     {
-        sight::ui::base::dialog::MessageDialog warning;
-        warning.setIcon(ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::dialog::message warning;
+        warning.setIcon(ui::dialog::message::WARNING);
         warning.setTitle("Openvslam is offline");
         warning.setMessage(
             "OpenVSLAM is currently offline, trajectories cannot be saved now.\
         filenames can be stored and trajectories will be automatically saved at next openvlsam stop (start/stop). "
         );
-        warning.addButton(ui::base::dialog::IMessageDialog::Buttons::NO);
-        warning.addButton(ui::base::dialog::IMessageDialog::Buttons::YES);
-        warning.setDefaultButton(ui::base::dialog::IMessageDialog::Buttons::NO);
+        warning.addButton(ui::dialog::message::Buttons::NO);
+        warning.addButton(ui::dialog::message::Buttons::YES);
+        warning.setDefaultButton(ui::dialog::message::Buttons::NO);
         const auto answer = warning.show();
-        if(answer == sight::ui::base::dialog::IMessageDialog::Buttons::NO)
+        if(answer == sight::ui::dialog::message::Buttons::NO)
         {
             m_trajectoriesSavePath.reset();
             m_trajectoriesFormat = "KITTI"; // Default format.
@@ -696,7 +696,7 @@ void SOpenvslam::pause()
 
 void SOpenvslam::resetPointCloud()
 {
-    if(m_timer->isRunning())
+    if(m_timer->is_running())
     {
         m_timer->stop();
     }
@@ -706,8 +706,8 @@ void SOpenvslam::resetPointCloud()
     // Clear Sight mesh
     pointcloud->clear();
     auto sigMesh = pointcloud->signal<data::Object::ModifiedSignalType>
-                       (data::Object::s_MODIFIED_SIG);
-    sigMesh->asyncEmit();
+                       (data::Object::MODIFIED_SIG);
+    sigMesh->async_emit();
 
     const std::unique_lock<std::mutex> lock(m_slamLock);
 
@@ -716,8 +716,8 @@ void SOpenvslam::resetPointCloud()
     {
         m_slamSystem->request_reset();
 
-        m_sigTrackingLost->asyncEmit();
-        m_sigTrackingNotInitialized->asyncEmit();
+        m_sigTrackingLost->async_emit();
+        m_sigTrackingNotInitialized->async_emit();
     }
 
     m_timer->start();
@@ -725,7 +725,7 @@ void SOpenvslam::resetPointCloud()
 
 //------------------------------------------------------------------------------
 
-void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
+void SOpenvslam::tracking(core::hires_clock::type& timestamp)
 {
     const std::unique_lock<std::mutex> lock(m_slamLock);
     if(m_slamSystem && !m_isPaused)
@@ -798,7 +798,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
             if(m_showFeatures)
             {
                 const auto im = m_ovsFramePublisher->draw_frame();
-                s_windowName = this->getID() + " Openvslam internal frame";
+                s_windowName = this->get_id() + " Openvslam internal frame";
                 cv::namedWindow(s_windowName);
                 cv::imshow(s_windowName, im);
                 //cv::waitKey(1); // FIXME: Linux cannot call cv::waitKey() if this isn't on UI thread.
@@ -852,16 +852,16 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
 
                 data::TimeLine::ObjectPushedSignalType::sptr sig;
                 sig = cameraMatrixTL->signal<data::TimeLine::ObjectPushedSignalType>(
-                    data::TimeLine::s_OBJECT_PUSHED_SIG
+                    data::TimeLine::OBJECT_PUSHED_SIG
                 );
 
-                sig->asyncEmit(timestamp);
+                sig->async_emit(timestamp);
             }
         }
         else
         {
             // not yet initialized
-            m_sigTrackingLost->asyncEmit();
+            m_sigTrackingLost->async_emit();
         }
     }
 }
@@ -893,7 +893,7 @@ void SOpenvslam::updatePointCloud()
         // Do not update if number of landmarks hasn't changed, of if isn't any landmarks in the map.
         if(m_numberOfLandmarks == nblandmarks || nblandmarks == 0)
         {
-            m_sigTrackingLost->asyncEmit();
+            m_sigTrackingLost->async_emit();
             return;
         }
 
@@ -946,11 +946,11 @@ void SOpenvslam::updatePointCloud()
             }
         }
 
-        m_sigTrackingInitialized->asyncEmit();
-        m_sigTracked->asyncEmit();
+        m_sigTrackingInitialized->async_emit();
+        m_sigTracked->async_emit();
         auto sigMesh = pointcloud->signal<data::Object::ModifiedSignalType>
-                           (data::Object::s_MODIFIED_SIG);
-        sigMesh->asyncEmit();
+                           (data::Object::MODIFIED_SIG);
+        sigMesh->async_emit();
     }
 }
 

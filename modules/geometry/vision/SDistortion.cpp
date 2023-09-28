@@ -25,15 +25,15 @@
 #include <io/opencv/Camera.hpp>
 #include <io/opencv/Image.hpp>
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #define FW_PROFILING_DISABLED
-#include <core/Profiling.hpp>
+#include <core/profiling.hpp>
 
 #include <data/Array.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
@@ -42,16 +42,16 @@ namespace sight::module::geometry::vision
 {
 
 // Public slot
-const core::com::Slots::SlotKeyType SDistortion::s_CHANGE_STATE_SLOT = "changeState";
+const core::com::slots::key_t SDistortion::CHANGE_STATE_SLOT = "changeState";
 
 // Private slot
-static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
+static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
 SDistortion::SDistortion() noexcept
 {
-    newSlot(s_CHANGE_STATE_SLOT, &SDistortion::changeState, this);
-    newSlot(s_CALIBRATE_SLOT, &SDistortion::calibrate, this);
+    new_slot(CHANGE_STATE_SLOT, &SDistortion::changeState, this);
+    new_slot(CALIBRATE_SLOT, &SDistortion::calibrate, this);
 }
 
 //------------------------------------------------------------------------------
@@ -61,13 +61,13 @@ SDistortion::~SDistortion() noexcept =
 
 // ----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
+service::connections_t SDistortion::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_CAMERA_INPUT, data::Camera::MODIFIED_SIG, CALIBRATE_SLOT);
+    connections.push(s_CAMERA_INPUT, data::Camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE_INPUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -113,7 +113,7 @@ void SDistortion::updating()
 
     if(inputImage && m_calibrationMismatch)
     {
-        const auto inputSize = inputImage->getSize();
+        const auto inputSize = inputImage->size();
         if(inputSize != m_prevImageSize)
         {
             // Reset the error detection boolean
@@ -133,7 +133,7 @@ void SDistortion::updating()
         }
         else
         {
-            SIGHT_WARN("Unable to distort/undistort the image: camera '" + camera->getID() + "' is not calibrated.");
+            SIGHT_WARN("Unable to distort/undistort the image: camera '" + camera->get_id() + "' is not calibrated.");
         }
     }
     else
@@ -150,26 +150,26 @@ void SDistortion::updating()
             // we have to notify the output image pointer has changed if it was not shared yet before
             bool reallocated = false;
             {
-                reallocated = inputImage->getBuffer() != outputImage->getBuffer();
+                reallocated = inputImage->buffer() != outputImage->buffer();
             }
 
             // Shallow copy the image is faster
             // We only have to take care about reallocating a new buffer when we perform the distortion
-            outputImage->shallowCopy(inputImage.get_shared());
+            outputImage->shallow_copy(inputImage.get_shared());
 
             if(reallocated)
             {
-                auto sig = outputImage->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                auto sig = outputImage->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
                 {
-                    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                    sig->asyncEmit();
+                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                    sig->async_emit();
                 }
             }
 
-            auto sig = outputImage->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+            auto sig = outputImage->signal<data::Image::BufferModifiedSignalType>(data::Image::BUFFER_MODIFIED_SIG);
             {
-                core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                sig->asyncEmit();
+                core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                sig->async_emit();
             }
         }
     }
@@ -191,12 +191,12 @@ void SDistortion::remap()
 
     FW_PROFILE_AVG("distort", 5);
 
-    auto sig = inputImage->signal<data::Object::ModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+    auto sig = inputImage->signal<data::Object::ModifiedSignalType>(data::Image::BUFFER_MODIFIED_SIG);
 
     // Blocking signals early allows to discard any event while we are updating
-    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
+    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
 
-    const auto inputSize = inputImage->getSize();
+    const auto inputSize = inputImage->size();
 
     if(inputImage->getSizeInBytes() == 0 || inputImage->numDimensions() < 2)
     {
@@ -214,10 +214,10 @@ void SDistortion::remap()
         << camera->getWidth() << "x" << camera->getHeight() << "] does not match the input image size ["
         << inputSize[0] << "x" << inputSize[1] << "]";
 
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Error",
             msg.str(),
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
 
         m_calibrationMismatch = true;
@@ -225,13 +225,13 @@ void SDistortion::remap()
         return;
     }
 
-    const auto prevSize = outputImage->getSize();
+    const auto prevSize = outputImage->size();
 
     // Since we shallow copy the input image when no remap is done
     // We have to reallocate the output image if it still shares the buffer
     bool realloc = false;
     {
-        realloc = inputImage->getBuffer() == outputImage->getBuffer();
+        realloc = inputImage->buffer() == outputImage->buffer();
     }
     if(prevSize != inputSize || realloc)
     {
@@ -239,8 +239,8 @@ void SDistortion::remap()
 
         // Since we may have shared the pointer on the input image, we can't use data::Image::allocate
         // Because it will not give us a new buffer and will thus make us modify both input and output images
-        data::Image::sptr tmpImage = data::Image::New();
-        outputImage->shallowCopy(tmpImage);
+        data::Image::sptr tmpImage = std::make_shared<data::Image>();
+        outputImage->shallow_copy(tmpImage);
         outputImage->resize(size, inputImage->getType(), inputImage->getPixelFormat());
 
         const data::Image::Origin origin = {0., 0., 0.};
@@ -252,7 +252,7 @@ void SDistortion::remap()
         outputImage->setWindowCenter({0});
     }
 
-    const auto newSize = outputImage->getSize();
+    const auto newSize = outputImage->size();
 
     // Get cv::Mat from data::Image
     cv::Mat img = io::opencv::Image::moveToCv(inputImage.get_shared());
@@ -290,26 +290,26 @@ void SDistortion::remap()
             // this call should copy the undistorted image to the video's
             // frameBuffer.
             undistortedImage.copyTo(img);
-            SIGHT_ASSERT("OpenCV did something wrong.", img.data == inputImage->getBuffer());
+            SIGHT_ASSERT("OpenCV did something wrong.", img.data == inputImage->buffer());
         }
         else
         {
-            SIGHT_ASSERT("OpenCV did something wrong.", undistortedImage.data == outputImage->getBuffer());
+            SIGHT_ASSERT("OpenCV did something wrong.", undistortedImage.data == outputImage->buffer());
         }
 #endif // OPENCV_CUDA_SUPPORT
     }
 
     if(prevSize != newSize)
     {
-        auto sigModified = outputImage->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
+        auto sigModified = outputImage->signal<data::Image::ModifiedSignalType>(data::Image::MODIFIED_SIG);
         {
-            core::com::Connection::Blocker anotherBlock(sigModified->getConnection(slot(IService::slots::s_UPDATE)));
-            sigModified->asyncEmit();
+            core::com::connection::blocker anotherBlock(sigModified->get_connection(slot(service::slots::UPDATE)));
+            sigModified->async_emit();
         }
     }
 
-    auto sigOut = outputImage->signal<data::Object::ModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
-    sigOut->asyncEmit();
+    auto sigOut = outputImage->signal<data::Object::ModifiedSignalType>(data::Image::BUFFER_MODIFIED_SIG);
+    sigOut->async_emit();
 }
 
 // ----------------------------------------------------------------------------
@@ -405,8 +405,8 @@ void SDistortion::calibrate()
 
         io::opencv::Image::copyFromCv(*map, cvMap);
 
-        auto sigModified = map->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
-        sigModified->asyncEmit();
+        auto sigModified = map->signal<data::Image::ModifiedSignalType>(data::Image::MODIFIED_SIG);
+        sigModified->async_emit();
     }
     else
     {

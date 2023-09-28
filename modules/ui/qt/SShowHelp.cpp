@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include <core/base.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <QApplication>
 #include <QDialog>
@@ -86,7 +86,7 @@ void SShowHelp::configuring()
      * .qhcp/.qhc (source/binary): Contains information that is used to customize
      *                             the appearance and available features of Qt Assistant.
      */
-    this->sight::ui::base::IAction::initialize();
+    this->sight::ui::action::initialize();
 
     const auto configuration = this->getConfiguration();
     const auto filename      = configuration.get<std::string>("filename.<xmlattr>.id");
@@ -107,11 +107,11 @@ void SShowHelp::updating()
     if(!helpEngine->setupData())
     {
         SIGHT_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Warning");
         messageBox.setMessage("Help file is missing or not correct.");
-        messageBox.setIcon(sight::ui::base::dialog::IMessageDialog::WARNING);
-        messageBox.addButton(sight::ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(sight::ui::dialog::message::WARNING);
+        messageBox.addButton(sight::ui::dialog::message::OK);
         messageBox.show();
         // Setup help engine information failed.
         // qhc (Qt Help Collection) or qch (Qt Compressed Help) file is not correct.
@@ -142,14 +142,14 @@ void SShowHelp::updating()
 
 void SShowHelp::starting()
 {
-    this->sight::ui::base::IAction::actionServiceStarting();
+    this->sight::ui::action::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SShowHelp::stopping()
 {
-    this->sight::ui::base::IAction::actionServiceStopping();
+    this->sight::ui::action::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ struct CommandInfo
 
 using CommandLog = std::vector<CommandInfo>;
 
-class BogusCommand : public ICommand
+class BogusCommand : public command
 {
 public:
 
@@ -63,7 +63,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] std::size_t getSize() const override
+    [[nodiscard]] std::size_t size() const override
     {
         return m_size;
     }
@@ -72,7 +72,7 @@ public:
 
     bool redo() override
     {
-        m_cmdLog.push_back(CommandInfo(m_description, "redo"));
+        m_cmdLog.emplace_back(m_description, "redo");
 
         return true;
     }
@@ -81,7 +81,7 @@ public:
 
     bool undo() override
     {
-        m_cmdLog.push_back(CommandInfo(m_description, "undo"));
+        m_cmdLog.emplace_back(m_description, "undo");
 
         return true;
     }

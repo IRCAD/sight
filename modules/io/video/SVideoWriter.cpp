@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,17 +24,17 @@
 
 #include "SVideoWriter.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -43,11 +43,11 @@
 namespace sight::module::io::video
 {
 
-static const core::com::Slots::SlotKeyType s_SAVE_FRAME       = "saveFrame";
-static const core::com::Slots::SlotKeyType s_START_RECORD     = "startRecord";
-static const core::com::Slots::SlotKeyType s_STOP_RECORD      = "stopRecord";
-static const core::com::Slots::SlotKeyType s_RECORD           = "record";
-static const core::com::Slots::SlotKeyType s_TOGGLE_RECORDING = "toggleRecording";
+static const core::com::slots::key_t SAVE_FRAME       = "saveFrame";
+static const core::com::slots::key_t START_RECORD     = "startRecord";
+static const core::com::slots::key_t STOP_RECORD      = "stopRecord";
+static const core::com::slots::key_t RECORD           = "record";
+static const core::com::slots::key_t TOGGLE_RECORDING = "toggleRecording";
 
 const std::string SVideoWriter::s_MP4_EXTENSION = ".mp4";
 const std::string SVideoWriter::s_AVC1_CODEC    = "avc1";
@@ -56,11 +56,11 @@ const std::string SVideoWriter::s_AVC1_CODEC    = "avc1";
 
 SVideoWriter::SVideoWriter() noexcept
 {
-    newSlot(s_SAVE_FRAME, &SVideoWriter::saveFrame, this);
-    newSlot(s_START_RECORD, &SVideoWriter::startRecord, this);
-    newSlot(s_STOP_RECORD, &SVideoWriter::stopRecord, this);
-    newSlot(s_RECORD, &SVideoWriter::record, this);
-    newSlot(s_TOGGLE_RECORDING, &SVideoWriter::toggleRecording, this);
+    new_slot(SAVE_FRAME, &SVideoWriter::saveFrame, this);
+    new_slot(START_RECORD, &SVideoWriter::startRecord, this);
+    new_slot(STOP_RECORD, &SVideoWriter::stopRecord, this);
+    new_slot(RECORD, &SVideoWriter::record, this);
+    new_slot(TOGGLE_RECORDING, &SVideoWriter::toggleRecording, this);
 }
 
 //------------------------------------------------------------------------------
@@ -70,16 +70,16 @@ SVideoWriter::~SVideoWriter() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SVideoWriter::getIOPathType() const
+sight::io::service::IOPathType SVideoWriter::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SVideoWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -92,20 +92,20 @@ void SVideoWriter::starting()
 
 void SVideoWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save the video" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("mp4", "*.mp4");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::dialog::location::WRITE);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
         m_selectedExtension = dialogFile.getSelectedExtensions().front();
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
-        this->setFile(result->getFile());
+        this->set_file(result->get_file());
     }
     else
     {
@@ -170,7 +170,7 @@ void SVideoWriter::writeBuffer(int width, int height, CSPTR(data::FrameTL::Buffe
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
+void SVideoWriter::saveFrame(core::hires_clock::type timestamp)
 {
     if(m_isRecording)
     {
@@ -182,7 +182,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
             "The object is not a '"
             + data::FrameTL::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             frameTL
         );
@@ -207,7 +207,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
                                    / (m_timestamps.back() - m_timestamps.front());
                 const int width                     = static_cast<int>(frameTL->getWidth());
                 const int height                    = static_cast<int>(frameTL->getHeight());
-                std::filesystem::path path          = this->getFile();
+                std::filesystem::path path          = this->get_file();
                 const std::string providedExtension = path.extension().string();
                 std::string extensionToUse;
                 std::string codec;
@@ -230,7 +230,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
                 }
                 else
                 {
-                    sight::ui::base::dialog::MessageDialog::show(
+                    sight::ui::dialog::message::show(
                         "Video recording",
                         "The extension " + extensionToUse + " is not supported. Unable to write the file: "
                         + path.string()
@@ -255,7 +255,7 @@ void SVideoWriter::saveFrame(core::HiResClock::HiResClockType timestamp)
 
                 if(!m_writer->isOpened())
                 {
-                    sight::ui::base::dialog::MessageDialog::show(
+                    sight::ui::dialog::message::show(
                         "Video recording",
                         "Unable to write the video in the file: " + path.string()
                     );
@@ -296,15 +296,15 @@ void SVideoWriter::startRecord()
         const auto data    = m_data.lock();
         const auto frameTL = std::dynamic_pointer_cast<const data::FrameTL>(data.get_shared());
 
-        if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 3)
+        if(frameTL->getType() == core::type::UINT8 && frameTL->numComponents() == 3)
         {
             m_imageType = CV_8UC3;
         }
-        else if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 4)
+        else if(frameTL->getType() == core::type::UINT8 && frameTL->numComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
-        else if(frameTL->getType() == core::Type::UINT16 && frameTL->numComponents() == 1)
+        else if(frameTL->getType() == core::type::UINT16 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_16UC1;
         }
@@ -318,7 +318,7 @@ void SVideoWriter::startRecord()
         }
 
         // Make sure the parent path exists
-        const std::filesystem::path dirname = this->getFile().parent_path();
+        const std::filesystem::path dirname = this->get_file().parent_path();
         if(!std::filesystem::exists(dirname))
         {
             std::filesystem::create_directories(dirname);
@@ -372,10 +372,10 @@ void SVideoWriter::toggleRecording()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SVideoWriter::getAutoConnections() const
+service::connections_t SVideoWriter::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(sight::io::base::service::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
+    service::connections_t connections;
+    connections.push(sight::io::service::s_DATA_KEY, data::FrameTL::OBJECT_PUSHED_SIG, SAVE_FRAME);
     return connections;
 }
 

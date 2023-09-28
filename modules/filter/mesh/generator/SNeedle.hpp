@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <service/IGenerator.hpp>
+#include <service/generator.hpp>
 
 #include <vtkAlgorithmOutput.h>
 #include <vtkPolyData.h>
@@ -70,12 +70,12 @@ namespace sight::module::filter::mesh::generator
  * @subsection In-Out In-Out:
  * - \b mesh [sight::data::Mesh]: generated mesh.
  */
-class MODULE_FILTER_MESH_CLASS_API SNeedle final : public sight::service::IGenerator
+class MODULE_FILTER_MESH_CLASS_API SNeedle final : public sight::service::generator
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SNeedle, sight::service::IGenerator);
+    SIGHT_DECLARE_SERVICE(SNeedle, sight::service::generator);
 
     /// Initializes slots.
     MODULE_FILTER_MESH_API SNeedle() noexcept;

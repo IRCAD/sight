@@ -28,7 +28,7 @@
 #include "io/dimse/exceptions/RequestFailure.hpp"
 #include "io/dimse/exceptions/TagMissing.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
@@ -50,7 +50,7 @@
 namespace sight::io::dimse
 {
 
-const core::com::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT = "CGetProgressCallback";
+const core::com::slots::key_t SeriesEnquirer::PROGRESS_CALLBACK_SLOT = "CGetProgressCallback";
 
 //------------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ void SeriesEnquirer::initialize(
     m_progressCallback = _progressCallback;
 
     // Creating folder.
-    m_path = core::os::TempDir::sharedDirectory() / "dicom/";
+    m_path = core::os::temp_dir::shared_directory() / "dicom/";
     if(!m_path.empty() && !std::filesystem::exists(m_path))
     {
         std::filesystem::create_directories(m_path);
@@ -924,7 +924,7 @@ void SeriesEnquirer::pushSeries(const InstancePathContainer& _pathContainer)
         // Notify callback.
         if(m_progressCallback)
         {
-            m_progressCallback->asyncRun("", ++m_instanceIndex, path.string());
+            m_progressCallback->async_run("", ++m_instanceIndex, path.string());
         }
     }
 }
@@ -954,7 +954,7 @@ void SeriesEnquirer::pushSeries(const DatasetContainer& _datasetContainer)
         // Notify callback.
         if(m_progressCallback)
         {
-            m_progressCallback->asyncRun("", ++m_instanceIndex, "");
+            m_progressCallback->async_run("", ++m_instanceIndex, "");
         }
     }
 }
@@ -1032,7 +1032,7 @@ OFCondition SeriesEnquirer::handleSTORERequest(
         // Notify callback.
         if(m_progressCallback)
         {
-            m_progressCallback->asyncRun(seriesID.c_str(), ++m_instanceIndex, filePath);
+            m_progressCallback->async_run(seriesID.c_str(), ++m_instanceIndex, filePath);
         }
     }
 

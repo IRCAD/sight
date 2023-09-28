@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/ModelSeries.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 #include <filesystem>
 
@@ -37,7 +37,7 @@ namespace sight::io::dicom::writer
 
 //------------------------------------------------------------------------------
 
-SeriesSet::SeriesSet(io::base::writer::IObjectWriter::Key /*unused*/) :
+SeriesSet::SeriesSet() :
     m_fiducialsExportMode(io::dicom::writer::Series::SPATIAL_FIDUCIALS)
 {
 }
@@ -52,7 +52,7 @@ void SeriesSet::write()
     auto series_set = this->getConcreteObject();
     SIGHT_ASSERT("SeriesSet not instanced", series_set);
 
-    auto writer = io::dicom::writer::Series::New();
+    auto writer = std::make_shared<io::dicom::writer::Series>();
     writer->setFiducialsExportMode(m_fiducialsExportMode);
 
     // Copy and sort container in order to write ImageSeries before ModelSeries
@@ -62,27 +62,30 @@ void SeriesSet::write()
         series_set->cend(),
         seriesContainer.begin(),
         seriesContainer.end(),
-        [](const data::Series::csptr& lhs, const data::Series::csptr& rhs)
+        [](const data::Series::csptr& lhs,
+           const data::Series::csptr& rhs)
         {
-            return data::ModelSeries::dynamicCast(lhs) && !data::ModelSeries::dynamicCast(rhs);
+            return std::dynamic_pointer_cast<const data::ModelSeries>(
+                lhs
+            ) && !std::dynamic_pointer_cast<const data::ModelSeries>(rhs);
         });
 
     // Write all patients
     for(const auto& series : seriesContainer)
     {
         // Create a new directory
-        const std::filesystem::path& seriesPath = this->getFolder() / series->getSeriesInstanceUID();
+        const std::filesystem::path& seriesPath = this->get_folder() / series->getSeriesInstanceUID();
         std::filesystem::create_directories(seriesPath);
         writer->setObject(series);
-        writer->setFolder(seriesPath);
+        writer->set_folder(seriesPath);
 
         // Forward event progress to its parents
-        core::tools::ProgressAdviser::ProgessHandler handler =
+        core::tools::progress_adviser::progress_handler handler =
             [this](auto&& PH1, auto&& PH2, auto&& ...)
             {
-                notifyProgress(std::forward<decltype(PH1)>(PH1), std::forward<decltype(PH2)>(PH2));
+                notify_progress(std::forward<decltype(PH1)>(PH1), std::forward<decltype(PH2)>(PH2));
             };
-        writer->addHandler(handler);
+        writer->add_handler(handler);
 
         // Write a series
         writer->write();

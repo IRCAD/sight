@@ -21,7 +21,7 @@
 
 #include "Reader.hpp"
 
-#include "core/jobs/Job.hpp"
+#include "core/jobs/job.hpp"
 
 #include <core/macros.hpp>
 #include <core/tools/compare.hpp>
@@ -147,7 +147,7 @@ inline static data::SeriesSet::sptr scanGDCMFiles(
     std::map<std::string, data::Series::sptr> unique_series;
 
     // The final list of series, with some attributes filled to allow sorting
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     // Convert to our own format
     for(const auto& file : files)
@@ -224,7 +224,7 @@ inline static data::SeriesSet::sptr scanGDCMFiles(
             // If the series is not found, we create it
             if(!series)
             {
-                series = data::Series::New();
+                series = std::make_shared<data::Series>();
             }
 
             for(const auto& tag : REQUESTED_TAGS)
@@ -241,7 +241,7 @@ inline static data::SeriesSet::sptr scanGDCMFiles(
             }
 
             // Add the file to the series
-            series->setFile(file, instance);
+            series->set_file(file, instance);
 
             // Add the series to the set
             series_set->push_back(series);
@@ -338,7 +338,7 @@ inline static data::Image::Size computeSize(const data::Series& source, const gd
 
 //------------------------------------------------------------------------------
 
-inline static core::Type computeType(
+inline static core::type computeType(
     const gdcm::Image& gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& gdcm_rescaler
 )
@@ -348,7 +348,7 @@ inline static core::Type computeType(
     if(gdcm_pixel_format == gdcm::PixelFormat::SINGLEBIT)
     {
         // In all cases, Sight reads single bit per pixel images as uint8
-        return core::Type::UINT8;
+        return core::type::UINT8;
     }
 
     // Let the target type be guessed by GDCM
@@ -360,37 +360,37 @@ inline static core::Type computeType(
     switch(gdcm_rescaled_pixel_type)
     {
         case gdcm::PixelFormat::UINT8:
-            return core::Type::UINT8;
+            return core::type::UINT8;
 
         case gdcm::PixelFormat::INT8:
-            return core::Type::INT8;
+            return core::type::INT8;
 
         case gdcm::PixelFormat::UINT16:
-            return core::Type::UINT16;
+            return core::type::UINT16;
 
         case gdcm::PixelFormat::INT16:
-            return core::Type::INT16;
+            return core::type::INT16;
 
         case gdcm::PixelFormat::UINT32:
-            return core::Type::UINT32;
+            return core::type::UINT32;
 
         case gdcm::PixelFormat::INT32:
-            return core::Type::INT32;
+            return core::type::INT32;
 
         case gdcm::PixelFormat::UINT64:
-            return core::Type::UINT64;
+            return core::type::UINT64;
 
         case gdcm::PixelFormat::INT64:
-            return core::Type::INT64;
+            return core::type::INT64;
 
         case gdcm::PixelFormat::FLOAT32:
-            return core::Type::FLOAT;
+            return core::type::FLOAT;
 
         case gdcm::PixelFormat::FLOAT64:
-            return core::Type::DOUBLE;
+            return core::type::DOUBLE;
 
         default:
-            return core::Type::NONE;
+            return core::type::NONE;
     }
 }
 
@@ -451,7 +451,7 @@ inline static std::optional<double> computeFramePosition(const data::Series& ser
     {
         // Fallback to gdcm::ImageReader if the position is not available
         // This is of course slower...
-        const auto& file = series.getFile(instance);
+        const auto& file = series.get_file(instance);
 
         if(file.empty() || !std::filesystem::exists(file) || std::filesystem::is_directory(file))
         {
@@ -592,7 +592,7 @@ inline static data::Image::Spacing computeSpacing(
 
 inline static data::ImageSeries::sptr newImageSeries(
     const data::Series& source,
-    const core::jobs::Job::sptr& job,
+    const core::jobs::job::sptr& job,
     const gdcm::Image& gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& gdcm_rescaler,
     const std::string& filename
@@ -600,24 +600,24 @@ inline static data::ImageSeries::sptr newImageSeries(
 {
     // Create a new series and set the common dataset
     /// @note Window center / width is directly read from dataset, nothing to set here
-    auto image_series = data::ImageSeries::New();
+    auto image_series = std::make_shared<data::ImageSeries>();
 
     // Retrieve the image information
     // Target sizes (that's easy)
     const auto& size = computeSize(source, gdcm_image);
 
     // Target type, a bit more complicated
-    const core::Type& type = computeType(gdcm_image, gdcm_rescaler);
+    const core::type& type = computeType(gdcm_image, gdcm_rescaler);
 
     // Target PixelFormat, even more complicated
     const data::Image::PixelFormat& format = computeFormat(gdcm_image, filename);
 
     SIGHT_THROW_IF(
         "Cannot guess the target pixel format to use while reading DICOM file '" << filename << "'.",
-        type == core::Type::NONE || format == data::Image::PixelFormat::UNDEFINED
+        type == core::type::NONE || format == data::Image::PixelFormat::UNDEFINED
     );
 
-    if(job && job->cancelRequested())
+    if(job && job->cancel_requested())
     {
         return nullptr;
     }
@@ -671,7 +671,7 @@ inline static const char* readGDCMBuffer(
 //------------------------------------------------------------------------------
 
 inline static bool readBuffer(
-    const core::jobs::Job::sptr& job,
+    const core::jobs::job::sptr& job,
     const gdcm::Image& gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& gdcm_rescaler,
     std::unique_ptr<std::vector<char> >& gdcm_instance_buffer,
@@ -680,7 +680,7 @@ inline static bool readBuffer(
     const std::string& filename
 )
 {
-    if(job && job->cancelRequested())
+    if(job && job->cancel_requested())
     {
         return false;
     }
@@ -697,7 +697,7 @@ inline static bool readBuffer(
     {
         SIGHT_ASSERT("Instance Buffer size must large enough.", instance_buffer_size == gdcm_buffer_size * 8);
 
-        if(job && job->cancelRequested())
+        if(job && job->cancel_requested())
         {
             return false;
         }
@@ -705,7 +705,7 @@ inline static bool readBuffer(
         // Read the buffer. Use the buffer from the image series object
         readGDCMBuffer(gdcm_image, instance_buffer, filename);
 
-        if(job && job->cancelRequested())
+        if(job && job->cancel_requested())
         {
             return false;
         }
@@ -744,7 +744,7 @@ inline static bool readBuffer(
             )
         );
 
-        if(job && job->cancelRequested())
+        if(job && job->cancel_requested())
         {
             return false;
         }
@@ -762,7 +762,7 @@ inline static bool readBuffer(
         // Read raw input buffer
         const char* const gdcm_buffer = readGDCMBuffer(gdcm_image, gdcm_instance_buffer->data(), filename);
 
-        if(job && job->cancelRequested())
+        if(job && job->cancel_requested())
         {
             return false;
         }
@@ -784,7 +784,7 @@ inline static bool readBuffer(
             instance_buffer_size >= gdcm_buffer_size
         );
 
-        if(job && job->cancelRequested())
+        if(job && job->cancel_requested())
         {
             return false;
         }
@@ -848,20 +848,20 @@ inline static std::vector<double> tuneDirections(const double* const gdcm_direct
 
 inline static data::SeriesSet::sptr readImageInstance(
     const data::Series& source,
-    const core::jobs::Job::sptr& job,
+    const core::jobs::job::sptr& job,
     std::unique_ptr<std::vector<char> >& gdcm_instance_buffer,
     std::size_t instance                  = 0,
     data::SeriesSet::sptr splitted_series = nullptr
 )
 {
-    if(job && job->cancelRequested())
+    if(job && job->cancel_requested())
     {
         return nullptr;
     }
 
     // Read the DICOM file using GDCM ImageReader
     gdcm::ImageReader gdcm_reader;
-    const std::string& filename = source.getFile(instance).string();
+    const std::string& filename = source.get_file(instance).string();
     gdcm_reader.SetFileName(filename.c_str());
 
     SIGHT_INFO("Reading DICOM file '" << filename << "'.");
@@ -929,7 +929,7 @@ inline static data::SeriesSet::sptr readImageInstance(
     const bool split = gdcm_image.GetNumberOfDimensions() >= 3 && source.numInstances() > 1;
     if(!splitted_series || split)
     {
-        if(job && job->cancelRequested())
+        if(job && job->cancel_requested())
         {
             return nullptr;
         }
@@ -943,7 +943,7 @@ inline static data::SeriesSet::sptr readImageInstance(
             image_series->setDataSet(gdcm_dataset);
 
             // Also save the file path. It could be useful to keep a link to the original file.
-            image_series->setFile(filename);
+            image_series->set_file(filename);
 
             if(!image_series->isMultiFrame())
             {
@@ -957,14 +957,14 @@ inline static data::SeriesSet::sptr readImageInstance(
             // Add the series to a new dataset
             if(!splitted_series)
             {
-                splitted_series = data::SeriesSet::New();
+                splitted_series = std::make_shared<data::SeriesSet>();
             }
 
             splitted_series->push_back(image_series);
         }
     }
 
-    if(job && job->cancelRequested())
+    if(job && job->cancel_requested())
     {
         return nullptr;
     }
@@ -977,7 +977,7 @@ inline static data::SeriesSet::sptr readImageInstance(
     image_series->setDataSet(gdcm_dataset, instance);
 
     // Also save the file path. It could be useful to keep a link to the original file.
-    image_series->setFile(filename, instance);
+    image_series->set_file(filename, instance);
 
     // Get the output buffer (as char* since gdcm takes char* as input)
     // If the series will be splitted by instance, we keep 0 as instance number
@@ -1009,9 +1009,9 @@ inline static data::SeriesSet::sptr readImageInstance(
 
 //------------------------------------------------------------------------------
 
-inline static data::SeriesSet::sptr readImage(const data::Series& source, const core::jobs::Job::sptr& job)
+inline static data::SeriesSet::sptr readImage(const data::Series& source, const core::jobs::job::sptr& job)
 {
-    if(job && job->cancelRequested())
+    if(job && job->cancel_requested())
     {
         return nullptr;
     }
@@ -1030,7 +1030,7 @@ inline static data::SeriesSet::sptr readImage(const data::Series& source, const 
     // Read the other instances if necessary
     for(std::size_t instance = 1, end = source.numInstances() ; instance < end ; ++instance)
     {
-        if(job && job->cancelRequested())
+        if(job && job->cancel_requested())
         {
             return nullptr;
         }
@@ -1055,7 +1055,7 @@ inline static data::SeriesSet::sptr readImage(const data::Series& source, const 
 
 //------------------------------------------------------------------------------
 
-inline static data::SeriesSet::sptr readModel(const data::Series& /*unused*/, const core::jobs::Job::sptr& /*unused*/)
+inline static data::SeriesSet::sptr readModel(const data::Series& /*unused*/, const core::jobs::job::sptr& /*unused*/)
 {
     data::SeriesSet::sptr splitted_series;
 
@@ -1069,9 +1069,9 @@ inline static data::SeriesSet::sptr readModel(const data::Series& /*unused*/, co
 inline static std::vector<FiducialSetWithMetadata> readFiducialSets(const data::Series& series)
 {
     gdcm::Reader reader;
-    reader.SetFileName(series.getFile().string().c_str());
+    reader.SetFileName(series.get_file().string().c_str());
     reader.Read();
-    auto fiducialsSeries = data::FiducialsSeries::New();
+    auto fiducialsSeries = std::make_shared<data::FiducialsSeries>();
     fiducialsSeries->setDataSet(reader.GetFile().GetDataSet());
     std::vector<FiducialSetWithMetadata> res;
     std::ranges::transform(
@@ -1115,7 +1115,7 @@ public:
     /// Pointer to the public interface
     Reader* const m_reader;
 
-    /// Returns a list of DICOM series by scanning files using getFiles()
+    /// Returns a list of DICOM series by scanning files using get_files()
     /// The files are NOT sorted!
     /// @return data::SeriesSet::sptr: A set of series, with their associated files
     /// @throw std::runtime_error if the root directory is not an existing folder
@@ -1153,7 +1153,7 @@ public:
 
         for(const auto& series : *m_scanned)
         {
-            if(cancelRequested())
+            if(cancel_requested())
             {
                 return nullptr;
             }
@@ -1364,7 +1364,7 @@ public:
 
         for(std::size_t instance = 0, end = series->numInstances() ; instance < end ; ++instance)
         {
-            const auto& value = series->getFile(instance);
+            const auto& value = series->get_file(instance);
 
             if(value.empty())
             {
@@ -1399,14 +1399,14 @@ public:
         );
 
         // Instantiate or reuse the output series set
-        if(const auto& object = data::SeriesSet::dynamicCast(m_reader->m_object.lock()); object)
+        if(const auto& object = std::dynamic_pointer_cast<data::SeriesSet>(m_reader->m_object.lock()); object)
         {
             m_read = object;
             m_read->clear();
         }
         else
         {
-            m_read = data::SeriesSet::New();
+            m_read = std::make_shared<data::SeriesSet>();
             m_reader->setObject(m_read);
         }
 
@@ -1415,7 +1415,7 @@ public:
         // Start reading selected series
         for(const auto& source : *m_sorted)
         {
-            if(cancelRequested())
+            if(cancel_requested())
             {
                 clear();
                 return;
@@ -1523,9 +1523,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool cancelRequested() const noexcept
+    [[nodiscard]] inline bool cancel_requested() const noexcept
     {
-        return m_job && m_job->cancelRequested();
+        return m_job && m_job->cancel_requested();
     }
 
     //------------------------------------------------------------------------------
@@ -1534,7 +1534,7 @@ public:
     {
         if(m_job)
         {
-            m_job->doneWork(units);
+            m_job->done_work(units);
         }
     }
 
@@ -1562,12 +1562,12 @@ public:
     data::SeriesSet::sptr m_read;
 
     /// The default job. Allows to watch for cancellation and report progress.
-    core::jobs::Job::sptr m_job;
+    core::jobs::job::sptr m_job;
 };
 
-Reader::Reader(io::base::reader::IObjectReader::Key /*unused*/) :
-    core::location::SingleFolder(),
-    core::location::MultipleFiles(),
+Reader::Reader() :
+    core::location::single_folder(),
+    core::location::multiple_files(),
     m_pimpl(std::make_unique<ReaderImpl>(this))
 {
 }
@@ -1579,11 +1579,11 @@ Reader::~Reader() noexcept = default;
 
 data::SeriesSet::sptr Reader::scan()
 {
-    auto files = getFiles();
+    auto files = get_files();
 
     if(files.empty())
     {
-        const auto& root = getFolder();
+        const auto& root = get_folder();
 
         SIGHT_THROW_IF(
             "The DICOM root directory is not set.",
@@ -1609,7 +1609,7 @@ data::SeriesSet::sptr Reader::scan()
         std::transform(filenames.cbegin(), filenames.cend(), std::back_inserter(files), [](const auto& v){return v;});
     }
 
-    if(m_pimpl->cancelRequested())
+    if(m_pimpl->cancel_requested())
     {
         m_pimpl->clear();
         return nullptr;
@@ -1632,7 +1632,7 @@ data::SeriesSet::sptr Reader::sort()
         scan();
     }
 
-    if(m_pimpl->cancelRequested())
+    if(m_pimpl->cancel_requested())
     {
         m_pimpl->clear();
         return nullptr;
@@ -1655,7 +1655,7 @@ void Reader::read()
         sort();
     }
 
-    if(m_pimpl->cancelRequested())
+    if(m_pimpl->cancel_requested())
     {
         m_pimpl->clear();
         return;
@@ -1695,19 +1695,19 @@ void Reader::setSorted(const data::SeriesSet::sptr& sorted)
 
 //------------------------------------------------------------------------------
 
-core::jobs::IJob::sptr Reader::getJob() const
+core::jobs::base::sptr Reader::getJob() const
 {
     return m_pimpl->m_job;
 }
 
 //------------------------------------------------------------------------------
 
-void Reader::setJob(core::jobs::Job::sptr job)
+void Reader::setJob(core::jobs::job::sptr job)
 {
-    SIGHT_ASSERT("Some work have already be reported.", job->getDoneWorkUnits() == 0);
+    SIGHT_ASSERT("Some work have already be reported.", job->get_done_work_units() == 0);
     m_pimpl->m_job = job;
-    m_pimpl->m_job->setTotalWorkUnits(100);
-    m_pimpl->m_job->doneWork(10);
+    m_pimpl->m_job->set_total_work_units(100);
+    m_pimpl->m_job->done_work(10);
 }
 
 } // namespace sight::io::dicom

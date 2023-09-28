@@ -24,7 +24,7 @@
 #include "viz/scene3d/Layer.hpp"
 #include "viz/scene3d/registry/macros.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreCamera.h>
@@ -37,7 +37,7 @@ namespace sight::viz::scene3d::interactor
 // ----------------------------------------------------------------------------
 
 TrackballInteractor::TrackballInteractor(Layer::sptr _layer, bool _layerOrderDependant) :
-    IInteractor(_layer, _layerOrderDependant)
+    base(_layer, _layerOrderDependant)
 {
 }
 
@@ -82,7 +82,7 @@ void TrackballInteractor::mouseMoveEvent(MouseButton button, Modifier /*_mods*/,
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::buttonPressEvent(IInteractor::MouseButton /*_button*/, Modifier /*_mods*/, int _x, int _y)
+void TrackballInteractor::buttonPressEvent(base::MouseButton /*_button*/, Modifier /*_mods*/, int _x, int _y)
 {
     if(auto layer = m_layer.lock())
     {
@@ -94,7 +94,7 @@ void TrackballInteractor::buttonPressEvent(IInteractor::MouseButton /*_button*/,
 // ----------------------------------------------------------------------------
 
 void TrackballInteractor::buttonReleaseEvent(
-    IInteractor::MouseButton /*_button*/,
+    base::MouseButton /*_button*/,
     Modifier /*_mods*/,
     int /*_x*/,
     int /*_y*/
@@ -185,16 +185,16 @@ void TrackballInteractor::keyPressEvent(int key, Modifier /*_mods*/, int _mouseX
                 {
                     // We use a timer on the main thread instead of a separate thread.
                     // OpenGL commands need to be sent from the same thread as the one on which the context is created.
-                    const auto worker = core::thread::getDefaultWorker();
-                    m_timer = worker->createTimer();
+                    const auto worker = core::thread::get_default_worker();
+                    m_timer = worker->create_timer();
 
-                    m_timer->setFunction(
+                    m_timer->set_function(
                         [this, layer]()
                         {
                             this->cameraRotate(10, 0);
                             layer->requestRender();
                         });
-                    m_timer->setDuration(std::chrono::milliseconds(33));
+                    m_timer->set_duration(std::chrono::milliseconds(33));
                     m_timer->start();
                 }
             }

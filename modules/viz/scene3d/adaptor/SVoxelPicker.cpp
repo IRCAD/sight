@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "modules/viz/scene3d/adaptor/SVoxelPicker.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -34,17 +34,17 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT = "sliceType";
+const core::com::slots::key_t SLICETYPE_SLOT = "sliceType";
 
-static const core::com::Signals::SignalKeyType s_PICKED_SIG = "picked";
+static const core::com::signals::key_t PICKED_SIG = "picked";
 
 //-----------------------------------------------------------------------------
 
 SVoxelPicker::SVoxelPicker() noexcept
 {
-    newSlot(s_SLICETYPE_SLOT, &SVoxelPicker::changeSliceType, this);
+    new_slot(SLICETYPE_SLOT, &SVoxelPicker::changeSliceType, this);
 
-    m_pickedSig = newSignal<core::com::Signal<void(data::tools::PickingInfo)> >(s_PICKED_SIG);
+    m_pickedSig = new_signal<core::com::signal<void(data::tools::PickingInfo)> >(PICKED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,16 +95,16 @@ void SVoxelPicker::starting()
 {
     this->initialize();
 
-    const auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+    const auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     this->getLayer()->addInteractor(interactor, m_priority);
 }
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SVoxelPicker::getAutoConnections() const
+service::connections_t SVoxelPicker::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT);
+    service::connections_t connections;
+    connections.push(s_IMAGE_INPUT, data::Image::SLICE_TYPE_MODIFIED_SIG, SLICETYPE_SLOT);
 
     return connections;
 }
@@ -119,7 +119,7 @@ void SVoxelPicker::updating() noexcept
 
 void SVoxelPicker::stopping()
 {
-    const auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+    const auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     this->getLayer()->removeInteractor(interactor);
 }
 
@@ -209,9 +209,9 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
                     const int frontalIdx  = static_cast<int>((info.m_worldPos[1] - origin[1]) / spacing[1]);
                     const int axialIdx    = static_cast<int>((info.m_worldPos[2] - origin[2]) / spacing[2]);
                     const auto sig        = image->signal<data::Image::SliceIndexModifiedSignalType>(
-                        data::Image::s_SLICE_INDEX_MODIFIED_SIG
+                        data::Image::SLICE_INDEX_MODIFIED_SIG
                     );
-                    sig->asyncEmit(axialIdx, frontalIdx, sagittalIdx);
+                    sig->async_emit(axialIdx, frontalIdx, sagittalIdx);
                 }
             }
 
@@ -221,7 +221,7 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
             }
 
             // Emit the picking info.
-            m_pickedSig->asyncEmit(info);
+            m_pickedSig->async_emit(info);
 
             // Cancel further interactors on the same layer.
             this->getLayer()->cancelFurtherInteraction();
@@ -258,7 +258,7 @@ std::pair<bool, Ogre::Vector3> SVoxelPicker::computeRayImageIntersection(
     const auto frontalIndex  = static_cast<Ogre::Real>(frontalIdx);
     const auto sagittalIndex = static_cast<Ogre::Real>(sagittalIdx);
 
-    const auto size = _image->getSize();
+    const auto size = _image->size();
 
     // Function to check if an intersection is inside an image.
     std::function<bool(OrientationMode, Ogre::Vector3)> isInsideImage =

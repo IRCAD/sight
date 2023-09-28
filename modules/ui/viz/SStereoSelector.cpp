@@ -22,14 +22,14 @@
 
 #include "SStereoSelector.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Composite.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/SRender.hpp>
 
@@ -59,7 +59,7 @@ void SStereoSelector::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
@@ -135,11 +135,11 @@ void SStereoSelector::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    const auto renderers = service::getServices("sight::viz::scene3d::SRender");
+    const auto renderers = sight::service::getServices("sight::viz::scene3d::SRender");
 
     for(const auto& srv : renderers)
     {
-        auto render = sight::viz::scene3d::SRender::dynamicCast(srv);
+        auto render = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(srv);
 
         for(auto& layerMap : render->getLayers())
         {

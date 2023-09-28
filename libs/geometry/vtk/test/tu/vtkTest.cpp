@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ void vtkTest::tearDown()
 
 void vtkTest::computeCenterOfMass()
 {
-    sight::data::Mesh::sptr mesh             = sight::data::Mesh::New();
+    sight::data::Mesh::sptr mesh             = std::make_shared<sight::data::Mesh>();
     const auto dumpLock                      = mesh->dump_lock();
     const std::array<double, 3> centerOfMass = {0.5, 1.5, 2.5};
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "SSelectionMenuButton.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -42,18 +42,18 @@
 namespace sight::module::ui::qt
 {
 
-static const core::com::Signals::SignalKeyType s_SELECTED_SIG = "selected";
+static const core::com::signals::key_t SELECTED_SIG = "selected";
 
-static const core::com::Slots::SlotKeyType s_SET_ENABLED_SIG = "setEnabled";
-static const core::com::Slots::SlotKeyType s_SENABLE_SIG     = "enable";
-static const core::com::Slots::SlotKeyType s_DISABLE_SIG     = "disable";
+static const core::com::slots::key_t SET_ENABLED_SIG = "setEnabled";
+static const core::com::slots::key_t SENABLE_SIG     = "enable";
+static const core::com::slots::key_t DISABLE_SIG     = "disable";
 
 SSelectionMenuButton::SSelectionMenuButton() noexcept :
-    m_sigSelected(newSignal<SelectedSignalType>(s_SELECTED_SIG))
+    m_sigSelected(new_signal<SelectedSignalType>(SELECTED_SIG))
 {
-    newSlot(s_SET_ENABLED_SIG, &SSelectionMenuButton::setEnabled, this);
-    newSlot(s_SENABLE_SIG, &SSelectionMenuButton::enable, this);
-    newSlot(s_DISABLE_SIG, &SSelectionMenuButton::disable, this);
+    new_slot(SET_ENABLED_SIG, &SSelectionMenuButton::setEnabled, this);
+    new_slot(SENABLE_SIG, &SSelectionMenuButton::enable, this);
+    new_slot(DISABLE_SIG, &SSelectionMenuButton::disable, this);
 }
 
 //------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ void SSelectionMenuButton::configuring()
     {
         const auto txt  = elem.second.get<std::string>("<xmlattr>.text");
         const int value = elem.second.get<int>("<xmlattr>.value");
-        m_items.push_back(std::make_pair(value, txt));
+        m_items.emplace_back(value, txt);
     }
 }
 
@@ -83,7 +83,7 @@ void SSelectionMenuButton::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     m_dropDownButton = new QPushButton(QString::fromStdString(m_text));
     m_dropDownButton->setToolTip(QString::fromStdString(m_toolTip));
@@ -148,7 +148,7 @@ void SSelectionMenuButton::onSelection(QAction* action)
     if(action->isChecked())
     {
         int value = action->data().toInt();
-        m_sigSelected->asyncEmit(value);
+        m_sigSelected->async_emit(value);
         return;
     }
 }

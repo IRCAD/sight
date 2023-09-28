@@ -22,10 +22,10 @@
 #pragma once
 
 #include "io/session/config.hpp"
-#include "io/session/detail/ISession.hpp"
+#include "io/session/detail/session.hpp"
 #include "io/session/SessionWriter.hpp"
 
-#include <core/crypto/PasswordKeeper.hpp>
+#include <core/crypto/password_keeper.hpp>
 
 #include <io/zip/Archive.hpp>
 
@@ -35,11 +35,11 @@ namespace sight::io::session::detail
 {
 
 /// Class to define a location that holds what is needed to deserialize a session.
-class SessionSerializer final : public ISession
+class SessionSerializer final : public session
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SessionSerializer, ISession);
+    SIGHT_DECLARE_CLASS(SessionSerializer, session);
 
     /// Delete default constructors and assignment operators
     SessionSerializer(const SessionSerializer&)            = delete;
@@ -58,13 +58,13 @@ public:
     /// @param object root object to serialize
     /// @param archiveFormat how files are stored in the archive @see sight::io::zip::Archive::ArchiveFormat
     /// @param password password to use for optional encryption. Empty password means no encryption
-    /// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
+    /// @param encryptionPolicy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
     void serialize(
         const std::filesystem::path& archivePath,
         sight::data::Object::csptr object,
-        io::zip::Archive::ArchiveFormat archiveFormat                   = io::zip::Archive::ArchiveFormat::DEFAULT,
-        const core::crypto::secure_string& password                     = "",
-        core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy = core::crypto::PasswordKeeper::EncryptionPolicy::PASSWORD
+        io::zip::Archive::ArchiveFormat archiveFormat                     = io::zip::Archive::ArchiveFormat::DEFAULT,
+        const core::crypto::secure_string& password                       = "",
+        core::crypto::password_keeper::encryption_policy encryptionPolicy = core::crypto::password_keeper::encryption_policy::PASSWORD
     ) const;
 
     /// Set a serialization function for an object
@@ -97,14 +97,14 @@ private:
     /// @param tree property tree used to store object index
     /// @param object root object to serialize
     /// @param password password to use for optional encryption. Empty password means no encryption
-    /// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
+    /// @param encryptionPolicy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
     void deepSerialize(
         std::set<std::string>& cache,
         zip::ArchiveWriter& archive,
         boost::property_tree::ptree& tree,
         data::Object::csptr object,
         const core::crypto::secure_string& password,
-        core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy
+        core::crypto::password_keeper::encryption_policy encryptionPolicy
     ) const;
 };
 

@@ -9,20 +9,19 @@ _Definition from : https://en.wikipedia.org/wiki/QML_
 
 - **App**: defines a QML application.
 - **IQmlAppManager**: defines the base class for AppManager managing Qml services.
-- **IQmlEditor**: defines the base class for service editing an object associated to a qml UI.
+- **editor**: defines the base class for service editing an object associated to a qml UI.
 - **QmlEngine**: allows to manage the QQmlEngine.
 
 ### _dialog_
 
-- **InputDialog**: defines an Input dialog.
-- **LocationDialog**: defines the generic file/folder dialog.
-- **LoggerDialog**: allows choosing an element among several (selections).
-- **MessageDialog**: defines the generic message box.
-- **MultiSelectorDialog**: allows choosing an element among several (selections).
-- **NotificationDialog**: defines a notification popup.
-- **ProgressDialog**: allows to select an acquisition in a patient database.
-- **PulseProgressDialog**: Allows to show a pulse progress bar.
-- **SelectorDialog**: allows choosing an element among several (selections).
+- **input**: defines an Input dialog.
+- **location**: defines the generic file/folder dialog.
+- **logger**: allows choosing an element among several (selections).
+- **message**: defines the generic message box.
+- **notification**: defines a notification popup.
+- **progress**: allows to select an acquisition in a patient database.
+- **pulse_progress**: Allows to show a pulse progress bar.
+- **selector**: allows choosing an element among several (selections).
 - **StandardButton**: defines an enum to setup the button mask for StandardButtons.
 
 ### _model_

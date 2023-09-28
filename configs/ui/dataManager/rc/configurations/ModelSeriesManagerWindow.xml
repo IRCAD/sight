@@ -30,7 +30,7 @@ With:
         <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::ModelSeries" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="organManagerFrame" type="sight::module::ui::base::SFrame">
+        <service uid="organManagerFrame" type="sight::module::ui::SFrame">
             <window onclose="notify" />
             <gui>
                 <frame>

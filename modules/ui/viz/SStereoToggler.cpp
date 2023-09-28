@@ -28,12 +28,12 @@
 namespace sight::module::ui::viz
 {
 
-static const core::com::Signals::SignalKeyType s_STEREO_ACTIVE_SIG = "stereoActive";
+static const core::com::signals::key_t STEREO_ACTIVE_SIG = "stereoActive";
 
 //------------------------------------------------------------------------------
 
 SStereoToggler::SStereoToggler() :
-    m_stereoActiveSig(newSignal<StereoActiveSigType>(s_STEREO_ACTIVE_SIG))
+    m_stereoActiveSig(new_signal<StereoActiveSigType>(STEREO_ACTIVE_SIG))
 {
 }
 
@@ -86,14 +86,14 @@ void SStereoToggler::updating()
 {
     if(this->confirmAction())
     {
-        const auto renderers = service::getServices("sight::viz::scene3d::SRender");
+        const auto renderers = sight::service::getServices("sight::viz::scene3d::SRender");
 
         const bool enableStereo = this->checked() && this->enabled();
         const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;
 
         for(const auto& srv : renderers)
         {
-            auto renderSrv = sight::viz::scene3d::SRender::dynamicCast(srv);
+            auto renderSrv = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(srv);
             auto layerMap  = renderSrv->getLayers();
 
             auto layerIt = layerMap.find(m_layerId);
@@ -106,11 +106,11 @@ void SStereoToggler::updating()
             }
             else
             {
-                SIGHT_WARN("No layer named '" + m_layerId + "' in render service '" + renderSrv->getID() + "'.");
+                SIGHT_WARN("No layer named '" + m_layerId + "' in render service '" + renderSrv->get_id() + "'.");
             }
         }
 
-        m_stereoActiveSig->asyncEmit(enableStereo);
+        m_stereoActiveSig->async_emit(enableStereo);
     }
 }
 

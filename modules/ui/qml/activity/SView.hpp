@@ -24,11 +24,11 @@
 
 #include "modules/ui/qml/config.hpp"
 
-#include <activity/IActivityLauncher.hpp>
+#include <activity/launcher.hpp>
 
 #include <data/Activity.hpp>
 
-#include <ui/qml/IQmlEditor.hpp>
+#include <ui/qml/editor.hpp>
 
 #include <QUrl>
 #include <QVariantMap>
@@ -74,7 +74,7 @@ namespace sight::module::ui::qml::activity
  *
  * @subsection Cpp C++ Configuration
  * @code{.cpp}
-    service::IService::ConfigType parameterViewConfig;
+    service::config_t parameterViewConfig;
     parameterViewConfig.add("<xmlattr>.replace", "nameToReplace");
     parameterViewConfig.add("<xmlattr>.by", this->getInputID("value"));
     m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);
@@ -95,14 +95,14 @@ namespace sight::module::ui::qml::activity
  * - \n activityIdsList: identifiers of the activities to launch
  * - \n activityNameList: name of the activities to launch, that will be displays in the stepper
  */
-class MODULE_UI_QML_CLASS_API SView : public sight::ui::qml::IQmlEditor,
-                                      public sight::activity::IActivityLauncher
+class MODULE_UI_QML_CLASS_API SView : public sight::ui::qml::editor,
+                                      public sight::activity::launcher
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SView, sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SView, sight::ui::qml::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SView();
@@ -112,7 +112,7 @@ public:
     MODULE_UI_QML_API ~SView() override = default;
 
     /// Signal emited when the activity is launched
-    typedef core::com::Signal<void ()> ActivityLaunchedSignalType;
+    typedef core::com::signal<void ()> ActivityLaunchedSignalType;
 
 Q_SIGNALS:
 

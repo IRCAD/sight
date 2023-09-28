@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/IText.hpp>
 
 #include <OGRE/OgreColourValue.h>
@@ -52,12 +52,12 @@ class PostWindowRenderListener;
  * - \b color (optional, hexadecimal, default=#FFFFFF): stats' text color
  * - \b fontSize (optional, unsigned int, default=12): stats font size in points.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SRenderStats final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API SRenderStats final : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SRenderStats, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SRenderStats, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SRenderStats() noexcept;

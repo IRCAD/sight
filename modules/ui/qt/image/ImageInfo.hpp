@@ -24,13 +24,13 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Image.hpp>
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -59,13 +59,13 @@ namespace sight::module::ui::qt::image
  * - \b image [sight::data::Image]: image used to retrieve the pixel value.
  */
 class MODULE_UI_QT_CLASS_API ImageInfo : public QObject,
-                                         public sight::ui::base::IEditor
+                                         public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(ImageInfo, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(ImageInfo, sight::ui::editor);
 
     MODULE_UI_QT_API ImageInfo() noexcept;
 
@@ -91,10 +91,10 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect Image::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect Image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
 private:
 

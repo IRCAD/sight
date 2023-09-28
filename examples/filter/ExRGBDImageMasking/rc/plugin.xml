@@ -4,7 +4,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExRGBDImageMasking_AppCfg</id>
@@ -36,7 +36,7 @@
             <!-- ******************************* UI declaration *********************************** -->
 
             <!-- declaration of the views, menu and toolbar -->
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>ExRGBDImageMasking</name>
@@ -52,7 +52,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -63,7 +63,7 @@
                 </registry>
             </service>
 
-            <service uid="menuView" type="sight::module::ui::base::SMenu">
+            <service uid="menuView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Load transformation" shortcut="Ctrl+T" />
@@ -80,7 +80,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <editor />
@@ -110,9 +110,9 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::base::SView">
+            <service uid="mainView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="0" backgroundColor="#36393E" visible="false" />
                         <view proportion="1" />
@@ -124,9 +124,9 @@
                 </registry>
             </service>
 
-            <service uid="settingsView" type="sight::module::ui::base::SView">
+            <service uid="settingsView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -142,40 +142,40 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::SQuit" />
 
-            <service uid="loadTransformationAct" type="sight::module::ui::base::SAction" />
+            <service uid="loadTransformationAct" type="sight::module::ui::SAction" />
 
-            <service uid="loadMeshAct" type="sight::module::ui::base::SAction" />
+            <service uid="loadMeshAct" type="sight::module::ui::SAction" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="startVideoAct" type="sight::module::ui::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="pauseVideoAct" type="sight::module::ui::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="resumeVideoAct" type="sight::module::ui::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="stopVideoAct" type="sight::module::ui::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="loopVideoAct" type="sight::module::ui::SAction">
                 <state enabled="false" />
             </service>
 
-            <service uid="learnBackgroundAct" type="sight::module::ui::base::SAction"></service>
+            <service uid="learnBackgroundAct" type="sight::module::ui::SAction"></service>
 
-            <service uid="organManagerAct" type="sight::module::ui::base::SConfigLauncher">
+            <service uid="organManagerAct" type="sight::module::ui::SConfigLauncher">
                 <appConfig id="ModelSeriesManagerWindow" />
                 <inout group="data">
                     <key name="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
@@ -183,7 +183,7 @@
                 <parameter replace="ICON_PATH" by="ExRGBDImageMasking/app.ico" />
             </service>
 
-            <service uid="showSettingsAct" type="sight::module::ui::base::SAction" />
+            <service uid="showSettingsAct" type="sight::module::ui::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -299,7 +299,7 @@
 
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to staticaly register the model onto the video -->
-            <service uid="transformReaderSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="transformReaderSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="registrationMatrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
@@ -307,7 +307,7 @@
             </service>
 
             <!-- Reader to open SeriesSet data -->
-            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="seriesSet" />
             </service>
 
@@ -342,7 +342,7 @@
             </service>
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->
-            <service uid="concatenateSrv" type="sight::module::geometry::base::SConcatenateMatrices">
+            <service uid="concatenateSrv" type="sight::module::geometry::SConcatenateMatrices">
                 <in group="matrix">
                     <key uid="registrationMatrix" autoConnect="true" inverse="true" />
                     <key uid="extrinsic" autoConnect="true" inverse="true" />

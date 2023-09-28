@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,12 +39,7 @@ class VIZ_SCENE2D_CLASS_API Viewport : public sight::data::Object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Viewport, sight::data::Object, sight::data::factory::New<Viewport>);
-
-    Viewport() = default;
-    Viewport(sight::data::Object::Key /*unused*/)
-    {
-    }
+    SIGHT_DECLARE_CLASS(Viewport, sight::data::Object);
 
     double x() const;
     double y() const;
@@ -77,13 +72,13 @@ public:
     /// Defines shallow copy
     /// @throws data::Exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    VIZ_SCENE2D_API void shallowCopy(const sight::data::Object::csptr& source) override;
+    VIZ_SCENE2D_API void shallow_copy(const sight::data::Object::csptr& source) override;
 
     /// Defines deep copy
     /// @throws data::Exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
-    VIZ_SCENE2D_API void deepCopy(
+    VIZ_SCENE2D_API void deep_copy(
         const sight::data::Object::csptr& source,
         const std::unique_ptr<sight::data::Object::DeepCopyCacheType>& cache = std::make_unique<sight::data::Object::DeepCopyCacheType>()
     )

@@ -21,19 +21,19 @@
 
 #include "SEvent.hpp"
 
-#include <core/com/SignalBase.hpp>
-#include <core/com/Signals.hpp>
+#include <core/com/signal_base.hpp>
+#include <core/com/signals.hpp>
 
-#include <viz/scene3d/IWindowInteractor.hpp>
+#include <viz/scene3d/window_interactor.hpp>
 
 #include <boost/algorithm/string.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::Signals::SignalKeyType SEvent::s_TRIGGERED = "triggered";
+const core::com::signals::key_t SEvent::TRIGGERED = "triggered";
 
-using InteractionInfo = sight::viz::scene3d::IWindowInteractor::InteractionInfo;
+using InteractionInfo = sight::viz::scene3d::window_interactor::InteractionInfo;
 
 enum class MouseButtons : std::uint8_t
 {
@@ -59,7 +59,7 @@ std::uint8_t operator&(std::uint8_t a, MouseButtons b)
 
 SEvent::SEvent()
 {
-    newSignal<TriggeredSignal>(s_TRIGGERED);
+    new_signal<TriggeredSignal>(TRIGGERED);
 }
 
 //------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ void SEvent::mouseMoveEvent(MouseButton button, Modifier mods, int x, int y, int
         info.y               = y;
         info.dx              = dx;
         info.dy              = dy;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -153,7 +153,7 @@ void SEvent::wheelEvent(Modifier mods, double angleDelta, int x, int y)
         info.delta           = angleDelta;
         info.x               = x;
         info.y               = y;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -170,7 +170,7 @@ void SEvent::buttonReleaseEvent(MouseButton button, Modifier mods, int x, int y)
         info.modifiers       = mods;
         info.x               = x;
         info.y               = y;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -187,7 +187,7 @@ void SEvent::buttonPressEvent(MouseButton button, Modifier mods, int x, int y)
         info.modifiers       = mods;
         info.x               = x;
         info.y               = y;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -204,7 +204,7 @@ void SEvent::buttonDoublePressEvent(MouseButton button, Modifier mods, int x, in
         info.modifiers       = mods;
         info.x               = x;
         info.y               = y;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -221,7 +221,7 @@ void SEvent::keyPressEvent(int key, Modifier mods, int mouseX, int mouseY)
         info.modifiers       = mods;
         info.x               = mouseX;
         info.y               = mouseY;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -238,7 +238,7 @@ void SEvent::keyReleaseEvent(int key, Modifier mods, int mouseX, int mouseY)
         info.modifiers       = mods;
         info.x               = mouseX;
         info.y               = mouseY;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -253,7 +253,7 @@ void SEvent::resizeEvent(int width, int height)
         info.interactionType = interactionType;
         info.x               = width;
         info.y               = height;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -269,7 +269,7 @@ void SEvent::pinchGestureEvent(double scaleFactor, int centerX, int centerY)
         info.delta           = scaleFactor;
         info.x               = centerX;
         info.y               = centerY;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -286,7 +286,7 @@ void SEvent::panGestureMoveEvent(int x, int y, int dx, int dy)
         info.y               = y;
         info.dx              = dx;
         info.dy              = dy;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -303,7 +303,7 @@ void SEvent::panGestureReleaseEvent(int x, int y, int dx, int dy)
         info.y               = y;
         info.dx              = dx;
         info.dy              = dy;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -318,7 +318,7 @@ void SEvent::longTapGestureEvent(int x, int y)
         info.interactionType = interactionType;
         info.x               = x;
         info.y               = y;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
+        signal<TriggeredSignal>(TRIGGERED)->async_emit(info);
     }
 }
 
@@ -481,7 +481,7 @@ void SEvent::starting()
     this->initialize();
     this->getRenderService()->makeCurrent();
 
-    auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+    auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     this->getLayer()->addInteractor(interactor);
 }
 
@@ -495,7 +495,7 @@ void SEvent::updating()
 
 void SEvent::stopping()
 {
-    auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+    auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     this->getLayer()->removeInteractor(interactor);
 }
 

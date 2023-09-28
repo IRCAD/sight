@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 namespace sight::data
 {
@@ -61,28 +61,28 @@ namespace sight::module::io::dimse
  * - \b pacsConfig [sight::io::dimse::data::PacsConfiguration]: PACS configuration data.
  * - \b selectedSeries [sight::data::Vector]: List of DICOM series to push to the PACS.
  */
-class MODULE_IO_DIMSE_CLASS_API SSeriesPusher : public service::IController
+class MODULE_IO_DIMSE_CLASS_API SSeriesPusher : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesPusher, service::IController);
+    SIGHT_DECLARE_SERVICE(SSeriesPusher, service::controller);
 
     typedef std::vector<CSPTR(data::Series)> DicomSeriesContainerType;
 
-    MODULE_IO_DIMSE_API static const core::com::Slots::SlotKeyType s_DISPLAY_SLOT;
-    typedef core::com::Slot<void (const std::string&, bool)> DisplayMessageSlotType;
+    MODULE_IO_DIMSE_API static const core::com::slots::key_t DISPLAY_SLOT;
+    typedef core::com::slot<void (const std::string&, bool)> DisplayMessageSlotType;
 
     /// Signal to start the progress (bar id)
-    typedef core::com::Signal<void (std::string)> StartedProgressSignalType;
+    typedef core::com::signal<void (std::string)> StartedProgressSignalType;
     /// Signal to update the progress (bar id, percentage, message)
-    typedef core::com::Signal<void (std::string, float, std::string)> ProgressedSignalType;
+    typedef core::com::signal<void (std::string, float, std::string)> ProgressedSignalType;
     /// Signal to stop the progress (bar id)
-    typedef core::com::Signal<void (std::string)> StoppedProgressSignalType;
+    typedef core::com::signal<void (std::string)> StoppedProgressSignalType;
 
     /// Key in m_signals map of signal m_sigProgressed
-    static const core::com::Signals::SignalKeyType s_PROGRESSED_SIG;
-    static const core::com::Signals::SignalKeyType s_STARTED_PROGRESS_SIG;
-    static const core::com::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG;
+    static const core::com::signals::key_t PROGRESSED_SIG;
+    static const core::com::signals::key_t STARTED_PROGRESS_SIG;
+    static const core::com::signals::key_t STOPPED_PROGRESS_SIG;
 
     /**
      * @brief Constructor
@@ -135,7 +135,7 @@ protected:
      * @param[in] instanceNumber Instance number
      * @param[in] filePath File path
      */
-    MODULE_IO_DIMSE_API void progressCallback(
+    MODULE_IO_DIMSE_API void progress_callback(
         const std::string& seriesInstanceUID,
         unsigned int instanceNumber,
         const std::string& filePath
@@ -144,7 +144,7 @@ protected:
     /// Slot to call displayMessage method;
     DisplayMessageSlotType::sptr m_slotDisplayMessage;
 
-    /// Slot to call progressCallback method
+    /// Slot to call progress_callback method
     sight::io::dimse::SeriesEnquirer::ProgressCallbackSlotType::sptr m_slotProgressCallback;
 
     /// Signal emitted when the bar is progressing
@@ -163,7 +163,7 @@ protected:
     sight::io::dimse::SeriesEnquirer::sptr m_seriesEnquirer;
 
     /// Push Worker
-    core::thread::Worker::sptr m_pushSeriesWorker;
+    core::thread::worker::sptr m_pushSeriesWorker;
 
     /// Is pushing is set to true when we are pushing series
     bool m_isPushing {false};

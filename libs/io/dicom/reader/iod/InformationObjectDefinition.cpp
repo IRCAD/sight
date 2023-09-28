@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace sight::io::dicom::reader::iod
 InformationObjectDefinition::InformationObjectDefinition(
     data::DicomSeries::csptr dicomSeries,
     SPTR(io::dicom::container::DicomInstance)instance,
-    core::log::Logger::sptr logger,
+    core::log::logger::sptr logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :

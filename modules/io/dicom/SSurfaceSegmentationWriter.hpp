@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <data/Object.hpp>
 #include <data/Series.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 #include <io/dicom/writer/Series.hpp>
 
 #include <filesystem>
@@ -58,11 +58,11 @@ namespace sight::module::io::dicom
  * @subsection Input Input
  * - \b data [sight::data::ModelSeries]: ModelSeries to save in Dicom.
  */
-class MODULE_IO_DICOM_CLASS_API SSurfaceSegmentationWriter : public sight::io::base::service::IWriter
+class MODULE_IO_DICOM_CLASS_API SSurfaceSegmentationWriter : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSurfaceSegmentationWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SSurfaceSegmentationWriter, sight::io::service::writer);
 
     /**
      * @brief Constructor
@@ -92,7 +92,7 @@ protected:
     MODULE_IO_DICOM_API void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::service::IOPathType getIOPathType() const override;
 
 private:
 

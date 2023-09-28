@@ -47,14 +47,14 @@ void SOrganMaterialEditor::configuring()
 
 void SOrganMaterialEditor::starting()
 {
-    sight::ui::qml::IQmlEditor::starting();
+    sight::ui::qml::editor::starting();
 }
 
 //------------------------------------------------------------------------------
 
 void SOrganMaterialEditor::stopping()
 {
-    sight::ui::qml::IQmlEditor::stopping();
+    sight::ui::qml::editor::stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -108,17 +108,17 @@ void SOrganMaterialEditor::materialNotification()
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(
-        data::Object::s_MODIFIED_SIG
+        data::Object::MODIFIED_SIG
     );
-    sig->asyncEmit();
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
+service::connections_t SOrganMaterialEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_RECONSTRUCTION_INOUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

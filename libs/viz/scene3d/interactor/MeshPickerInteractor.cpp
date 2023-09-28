@@ -22,9 +22,9 @@
 
 #include "viz/scene3d/interactor/MeshPickerInteractor.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
-#include <viz/scene3d/interactor/IInteractor.hpp>
+#include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/Layer.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::viz::scene3d::interactor
 {
 
 MeshPickerInteractor::MeshPickerInteractor(Layer::sptr _layer, bool _layerOrderDependant) noexcept :
-    IInteractor(_layer, _layerOrderDependant)
+    base(_layer, _layerOrderDependant)
 {
 }
 
@@ -108,7 +108,7 @@ void MeshPickerInteractor::pick(MouseButton _button, Modifier _mod, int _x, int 
 
             if(m_pointClickedSig)
             {
-                m_pointClickedSig->asyncEmit(info);
+                m_pointClickedSig->async_emit(info);
             }
             else
             {

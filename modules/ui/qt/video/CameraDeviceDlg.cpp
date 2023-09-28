@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 
 #include <data/Camera.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/Preferences.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <QCamera>
 #include <QHBoxLayout>
@@ -197,7 +197,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
             iter = pixelFormatTranslator.left.find(settings.pixelFormat());
             try
             {
-                sight::ui::base::Preferences resolutionPreference;
+                sight::ui::Preferences resolutionPreference;
                 const auto prefValue = std::to_string(settings.resolution().width()) + "x" + std::to_string(
                     settings.resolution().height()
                 );
@@ -382,7 +382,7 @@ QSize CameraDeviceDlg::getResolution(const std::string& resolutionXMLOption, con
     {
         try
         {
-            sight::ui::base::Preferences resolutionPreference;
+            sight::ui::Preferences resolutionPreference;
             auto resolutionPreferenceStr = resolutionPreference.get<std::string>(SCamera::s_RESOLUTION_PREF_KEY);
             std::regex resPattern("(\\d*)[Xx](\\d*)");
             std::smatch match;

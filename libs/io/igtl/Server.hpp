@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "io/igtl/Client.hpp"
 #include "io/igtl/config.hpp"
-#include "io/igtl/INetwork.hpp"
+#include "io/igtl/network.hpp"
 // Patched header.
 #include "io/igtl/patch/igtlSocket.h"
 
-#include <core/Exception.hpp>
+#include <core/exception.hpp>
 #include <core/mt/types.hpp>
 
 #include <igtlServerSocket.h>
@@ -45,7 +45,7 @@ namespace sight::io::igtl
  *
  * @brief a network server class use igtl::ServerSocket
  */
-class IO_IGTL_CLASS_API Server : public io::igtl::INetwork
+class IO_IGTL_CLASS_API Server : public io::igtl::network
 {
 public:
 
@@ -160,7 +160,7 @@ private:
     ::igtl::ServerSocket::Pointer m_serverSocket;
 
     ///mutex
-    mutable core::mt::Mutex m_mutex;
+    mutable core::mt::mutex m_mutex;
 
     /// state of server
     bool m_isStarted {false};

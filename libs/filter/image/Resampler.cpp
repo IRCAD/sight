@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "Resampler.hpp"
 
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <io/itk/helper/Transform.hpp>
 #include <io/itk/itk.hpp>
@@ -146,8 +146,8 @@ void Resampler::resample(
     params.i_trf        = transf.GetPointer();
     params.i_parameters = parameters;
 
-    const core::Type type = _inImage->getType();
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, Resampling>::invoke(type, params);
+    const core::type type = _inImage->getType();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, Resampling>::invoke(type, params);
 }
 
 //-----------------------------------------------------------------------------
@@ -162,7 +162,7 @@ data::Image::sptr Resampler::resample(
     using VectorContainerType = itk::VectorContainer<int, PointType>;
     using BoundingBoxType     = itk::BoundingBox<int, 3, double, VectorContainerType>;
 
-    const auto& inputSize    = _img->getSize();
+    const auto& inputSize    = _img->size();
     const auto& inputOrigin  = _img->getOrigin();
     const auto& inputSpacing = _img->getSpacing();
 
@@ -207,7 +207,7 @@ data::Image::sptr Resampler::resample(
     outputBB->ComputeBoundingBox();
 
     // Compute output size and origin.
-    data::Image::sptr output = data::Image::New();
+    data::Image::sptr output = std::make_shared<data::Image>();
     data::Image::Origin outputOrigin;
     data::Image::Size outputSize;
 

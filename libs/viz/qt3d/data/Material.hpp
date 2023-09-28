@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ namespace sight::viz::qt3d::data
 /**
  * @brief Manages a qt3d material.
  */
-class VIZ_QT3D_CLASS_QT_API Material : public Qt3DRender::QMaterial
+class VIZ_QT3D_CLASS_API_QT Material : public Qt3DRender::QMaterial
 {
 Q_OBJECT
 
@@ -58,58 +58,58 @@ Q_PROPERTY(float shininess READ getShininess WRITE setShininess NOTIFY shininess
 public:
 
     /// Constructs a Qt3D Material.
-    VIZ_QT3D_QT_API Material(Qt3DCore::QNode* _parent = nullptr);
+    VIZ_QT3D_API_QT Material(Qt3DCore::QNode* _parent = nullptr);
 
     /// Destroys the material.
-    VIZ_QT3D_QT_API ~Material() override;
+    VIZ_QT3D_API_QT ~Material() override;
 
     /// @returns ambient color.
-    VIZ_QT3D_QT_API QColor getAmbient();
+    VIZ_QT3D_API_QT QColor getAmbient();
 
     /// @returns diffuse color.
-    VIZ_QT3D_QT_API QColor getDiffuse();
+    VIZ_QT3D_API_QT QColor getDiffuse();
 
     /// @returns specular color.
-    VIZ_QT3D_QT_API QVector3D getSpecular();
+    VIZ_QT3D_API_QT QVector3D getSpecular();
 
     /// @returns shininess.
-    VIZ_QT3D_QT_API float getShininess();
+    VIZ_QT3D_API_QT float getShininess();
 
     /// Updates ambient color.
-    VIZ_QT3D_QT_API void setAmbient(QColor _ambient);
+    VIZ_QT3D_API_QT void setAmbient(QColor _ambient);
 
     /// Updates diffuse color.
-    VIZ_QT3D_QT_API void setDiffuse(QColor _diffuse);
+    VIZ_QT3D_API_QT void setDiffuse(QColor _diffuse);
 
     /// Updates specular color.
-    VIZ_QT3D_QT_API void setSpecular(QVector3D _specular);
+    VIZ_QT3D_API_QT void setSpecular(QVector3D _specular);
 
     /// Updates shininess.
-    VIZ_QT3D_QT_API void setShininess(float _shininess);
+    VIZ_QT3D_API_QT void setShininess(float _shininess);
 
     /// Adds a new technique to the material.
-    VIZ_QT3D_QT_API void addTechnique(Qt3DRender::QTechnique* _technique);
+    VIZ_QT3D_API_QT void addTechnique(Qt3DRender::QTechnique* _technique);
 
     /// Removes a technique from the material.
-    VIZ_QT3D_QT_API void removeTechnique(Qt3DRender::QTechnique* _technique);
+    VIZ_QT3D_API_QT void removeTechnique(Qt3DRender::QTechnique* _technique);
 
     /// Adds a new parameter to the material.
-    VIZ_QT3D_QT_API void addParameter(Qt3DRender::QParameter* _parameter);
+    VIZ_QT3D_API_QT void addParameter(Qt3DRender::QParameter* _parameter);
 
     /// Removes a parameter from the material.
-    VIZ_QT3D_QT_API void removeParameter(Qt3DRender::QParameter* _parameter);
+    VIZ_QT3D_API_QT void removeParameter(Qt3DRender::QParameter* _parameter);
 
     /// Updates material options mode (standard or point normals).
-    VIZ_QT3D_QT_API Q_INVOKABLE void updateOptionsMode(int _optionsMode);
+    VIZ_QT3D_API_QT Q_INVOKABLE void updateOptionsMode(int _optionsMode);
 
     /// Updates material polygon mode (surface, point, wireframe or edge).
-    VIZ_QT3D_QT_API Q_INVOKABLE void updatePolygonMode(int _polygonMode);
+    VIZ_QT3D_API_QT Q_INVOKABLE void updatePolygonMode(int _polygonMode);
 
     /// Updates material shading mode (ambient/flat/phong).
-    VIZ_QT3D_QT_API Q_INVOKABLE void updateShadingMode(int _shadingMode);
+    VIZ_QT3D_API_QT Q_INVOKABLE void updateShadingMode(int _shadingMode);
 
     /// Updates material color.
-    VIZ_QT3D_QT_API Q_INVOKABLE void updateRGBAMode(sight::data::Material::sptr _sightMaterial);
+    VIZ_QT3D_API_QT Q_INVOKABLE void updateRGBAMode(sight::data::Material::sptr _sightMaterial);
 
 Q_SIGNALS:
 

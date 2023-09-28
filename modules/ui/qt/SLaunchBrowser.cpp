@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ void SLaunchBrowser::info(std::ostream& _sstream)
 
 void SLaunchBrowser::configuring()
 {
-    this->sight::ui::base::IAction::initialize();
+    this->sight::ui::action::initialize();
 
     const auto& config = this->getConfiguration();
     m_url = config.get<std::string>("url", m_url);
@@ -89,14 +89,14 @@ void SLaunchBrowser::updating()
 
 void SLaunchBrowser::starting()
 {
-    this->sight::ui::base::IAction::actionServiceStarting();
+    this->sight::ui::action::actionServiceStarting();
 }
 
 //------------------------------------------------------------------------------
 
 void SLaunchBrowser::stopping()
 {
-    this->sight::ui::base::IAction::actionServiceStopping();
+    this->sight::ui::action::actionServiceStopping();
 }
 
 //------------------------------------------------------------------------------

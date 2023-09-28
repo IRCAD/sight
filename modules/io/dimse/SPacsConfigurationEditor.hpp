@@ -24,14 +24,14 @@
 
 #include "modules/io/dimse/config.hpp"
 
-#include <core/thread/Worker.hpp>
+#include <core/thread/worker.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
 
-#include <service/INotifier.hpp>
+#include <service/notifier.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -65,15 +65,15 @@ namespace sight::module::io::dimse
  *                                                 notification.
  */
 class MODULE_IO_DIMSE_CLASS_API SPacsConfigurationEditor : public QObject,
-                                                           public sight::ui::base::IEditor,
-                                                           private sight::service::INotifier
+                                                           public sight::ui::editor,
+                                                           private sight::service::notifier
 {
 Q_OBJECT;
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPacsConfigurationEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SPacsConfigurationEditor, sight::ui::editor);
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SPacsConfigurationEditor() noexcept;
@@ -142,13 +142,13 @@ private:
     QPointer<QPushButton> m_pingPacsButtonWidget;
 
     /// Contains the worker of the series enquire thread.
-    core::thread::Worker::sptr m_requestWorker;
+    core::thread::worker::sptr m_requestWorker;
 
     /// Defines whether or not the dialog message should be displayed for the ping result.
     bool m_showDialog {true};
 
     /// Contains the slot to show a dialog in the main thread.
-    core::com::Slot<void(const std::string, const std::string)>::sptr m_slotShowDialog {nullptr};
+    core::com::slot<void(const std::string, const std::string)>::sptr m_slotShowDialog {nullptr};
 
 private Q_SLOTS:
 

@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/adaptor/STransform.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/tools/Color.hpp>
 
@@ -39,13 +39,13 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
+static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "updateLength";
 
 //-----------------------------------------------------------------------------
 
 SLine::SLine() noexcept
 {
-    newSlot(s_UPDATE_LENGTH_SLOT, &SLine::updateLength, this);
+    new_slot(UPDATE_LENGTH_SLOT, &SLine::updateLength, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,8 +64,8 @@ void SLine::configuring()
     // parsing transform or create an "empty" one
     this->setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            this->getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            this->get_id() + "_transform"
         )
     );
 
@@ -97,20 +97,20 @@ void SLine::starting()
 
     Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
-    m_line = sceneMgr->createManualObject(this->getID() + "_line");
+    m_line = sceneMgr->createManualObject(this->get_id() + "_line");
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
 
     // Set the material
-    m_material = data::Material::New();
+    m_material = std::make_shared<data::Material>();
 
     m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->configure(
-        this->getID() + m_materialAdaptor->getID(),
-        this->getID() + m_materialAdaptor->getID(),
+        this->get_id() + m_materialAdaptor->get_id(),
+        this->get_id() + m_materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID,
         "ambient"

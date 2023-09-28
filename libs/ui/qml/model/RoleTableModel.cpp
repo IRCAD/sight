@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/qml/model/RoleTableModel.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 namespace sight::ui::qml::model
 {

@@ -10,7 +10,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto12Scene2D</name>
@@ -23,9 +23,9 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::base::SView" >
+            <service uid="mainView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="1" backgroundColor="#36393E" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -37,9 +37,9 @@
                 </registry>
             </service>
 
-            <service uid="editorView" type="sight::module::ui::base::SView" >
+            <service uid="editorView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />

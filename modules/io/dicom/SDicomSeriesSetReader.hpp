@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/dicom/config.hpp"
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -32,7 +32,7 @@
 namespace sight::core::jobs
 {
 
-class IJob;
+class base;
 
 }
 
@@ -51,7 +51,7 @@ namespace sight::module::io::dicom
  * @brief GDCM Reader (DicomSeries)
  *
  * @section Signals Signals
- * - \b jobCreated( SPTR(core::jobs::IJob) ) : Emitted when a job is created.
+ * - \b jobCreated( SPTR(core::jobs::base) ) : Emitted when a job is created.
  *
  * @section XML XML Configuration
  *
@@ -72,13 +72,13 @@ namespace sight::module::io::dicom
  *    - user_selection (let the user decide whether using the DicomDir or not)
  *  - \b showLogDialog (optional) : Show log dialog. should be true or false
  */
-class MODULE_IO_DICOM_CLASS_API SDicomSeriesSetReader : public sight::io::base::service::IReader
+class MODULE_IO_DICOM_CLASS_API SDicomSeriesSetReader : public sight::io::service::reader
 {
 public:
 
-    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignal;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignal;
 
-    SIGHT_DECLARE_SERVICE(SDicomSeriesSetReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SDicomSeriesSetReader, sight::io::service::reader);
 
     /**
      * @brief   constructor
@@ -123,7 +123,7 @@ protected:
     MODULE_IO_DICOM_API void openLocationDialog() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_DICOM_API sight::io::service::IOPathType getIOPathType() const override;
 
 private:
 

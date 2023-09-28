@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -55,11 +55,11 @@ namespace sight::module::filter::image
  * @subsection In-Out In-Out
  * - \b imageOut [sight::data::Image]: New resampled image.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SResampler : public service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SResampler : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SResampler, service::IFilter);
+    SIGHT_DECLARE_SERVICE(SResampler, service::filter);
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SResampler();
@@ -88,7 +88,7 @@ protected:
      * - Update service when the transform matrix is modified.
      * - Update service when the target image is modified.
      */
-    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API connections_t getAutoConnections() const override;
 
 private:
 

@@ -66,7 +66,7 @@ void SImageCenter::updating()
     geometry::data::identity(*matrix);
 
     //compute the center
-    const data::Image::Size size       = image->getSize();
+    const data::Image::Size size       = image->size();
     const data::Image::Spacing spacing = image->getSpacing();
     const data::Image::Origin origin   = image->getOrigin();
 
@@ -91,11 +91,11 @@ void SImageCenter::updating()
     // output the translation matrix
 
     auto sig = matrix->signal<data::Matrix4::ModifiedSignalType>
-                   (data::Matrix4::s_MODIFIED_SIG);
+                   (data::Matrix4::MODIFIED_SIG);
 
-    sig->asyncEmit();
+    sig->async_emit();
 
-    m_sigComputed->asyncEmit();
+    m_sigComputed->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -106,9 +106,9 @@ void SImageCenter::stopping()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
+service::connections_t SImageCenter::getAutoConnections() const
 {
-    return {{s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE}};
+    return {{s_IMAGE_IN, data::Image::MODIFIED_SIG, service::slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------

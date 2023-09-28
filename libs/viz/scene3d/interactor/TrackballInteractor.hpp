@@ -23,9 +23,9 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/interactor/IInteractor.hpp"
+#include "viz/scene3d/interactor/base.hpp"
 
-#include <core/thread/Timer.hpp>
+#include <core/thread/timer.hpp>
 
 namespace sight::viz::scene3d::interactor
 {
@@ -37,7 +37,7 @@ namespace sight::viz::scene3d::interactor
  *
  * @todo make the class final once VRWidgetInteractor is deleted.
  */
-class VIZ_SCENE3D_CLASS_API TrackballInteractor final : public sight::viz::scene3d::interactor::IInteractor
+class VIZ_SCENE3D_CLASS_API TrackballInteractor final : public sight::viz::scene3d::interactor::base
 {
 public:
 
@@ -154,7 +154,7 @@ private:
     bool m_mouseMove {false};
 
     /// Timer used to animate the camera.
-    core::thread::Timer::sptr m_timer;
+    core::thread::timer::sptr m_timer;
 };
 
 } // namespace sight::viz::scene3d::interactor

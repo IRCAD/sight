@@ -127,16 +127,16 @@ public:
                 switch(bit_depth)
                 {
                     case 8:
-                        return core::Type::UINT8;
+                        return core::type::UINT8;
 
                     case 16:
-                        return core::Type::UINT16;
+                        return core::type::UINT16;
 
                     case 32:
-                        return core::Type::UINT32;
+                        return core::type::UINT32;
 
                     case 64:
-                        return core::Type::UINT64;
+                        return core::type::UINT64;
 
                     default:
                         SIGHT_THROW("Unsupported bit depth: " << bit_depth);

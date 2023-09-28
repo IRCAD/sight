@@ -23,16 +23,16 @@
 
 #pragma once
 
-#include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/profile/profile.hpp>
+
+#include <ui/testCore/test.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <ui/testCore/ITest.hpp>
 
 namespace sight::examples::ui::exsparameters::test::ui
 {
 
-class Synchronization : public sight::ui::testCore::ITest
+class Synchronization : public sight::ui::testCore::test
 {
 CPPUNIT_TEST_SUITE(Synchronization);
 CPPUNIT_TEST(test);

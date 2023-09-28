@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,9 +42,9 @@ static cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
 
     const auto dumpLock = _image->dump_lock();
 
-    SIGHT_ASSERT("Empty image buffer", _image->getBuffer());
+    SIGHT_ASSERT("Empty image buffer", _image->buffer());
 
-    const auto imageSize = _image->getSize();
+    const auto imageSize = _image->size();
     std::vector<int> cvSize;
     for(std::size_t i = 0 ; i < _image->numDimensions() ; ++i)
     {
@@ -64,13 +64,13 @@ static cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
     if(_copy)
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        cv::Mat mat = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
+        cv::Mat mat = cv::Mat(cvSize, cvType, const_cast<void*>(_image->buffer()));
         cvImage = mat.clone();
     }
     else
     {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        cvImage = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
+        cvImage = cv::Mat(cvSize, cvType, const_cast<void*>(_image->buffer()));
     }
 
     return cvImage;
@@ -127,7 +127,7 @@ void Image::copyFromCv(data::Image& _image, const cv::Mat& _cvImage)
         imageSize[2] = std::size_t(_cvImage.size[0]);
     }
 
-    const auto prevImageSize = _image.getSize();
+    const auto prevImageSize = _image.size();
     if(prevImageComp != imageComp || prevImageType != imageType || imageSize != prevImageSize)
     {
         data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;

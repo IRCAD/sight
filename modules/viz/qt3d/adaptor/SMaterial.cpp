@@ -80,10 +80,10 @@ void SMaterial::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
+service::connections_t SMaterial::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_MATERIAL_INOUT, data::Material::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

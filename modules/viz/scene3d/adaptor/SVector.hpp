@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Slot.hpp>
+#include <core/com/slot.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <Ogre.h>
 
@@ -67,13 +67,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, bool, default=true): visibility of the vector.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SVector final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SVector, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SVector, sight::viz::scene3d::adaptor);
 
     /// Initialise slots.
     MODULE_VIZ_SCENE3D_API SVector() noexcept;

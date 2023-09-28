@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene3d/adaptor/SFrustumList.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
@@ -36,15 +36,15 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_CLEAR_SLOT       = "clear";
-static const core::com::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT = "addFrustum";
+static const core::com::slots::key_t CLEAR_SLOT       = "clear";
+static const core::com::slots::key_t ADD_FRUSTUM_SLOT = "addFrustum";
 
 //-----------------------------------------------------------------------------
 
 SFrustumList::SFrustumList() noexcept
 {
-    newSlot(s_CLEAR_SLOT, &SFrustumList::clear, this);
-    newSlot(s_ADD_FRUSTUM_SLOT, &SFrustumList::addFrustum, this);
+    new_slot(CLEAR_SLOT, &SFrustumList::clear, this);
+    new_slot(ADD_FRUSTUM_SLOT, &SFrustumList::addFrustum, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -62,8 +62,8 @@ void SFrustumList::configuring()
 
     this->setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            this->getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            this->get_id() + "_transform"
         )
     );
 
@@ -87,7 +87,7 @@ void SFrustumList::starting()
     m_frustumList.set_capacity(m_capacity);
 
     // Create material
-    m_material = data::Material::New();
+    m_material = std::make_shared<data::Material>();
     m_material->diffuse()->setRGBA(m_color);
 
     m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
@@ -95,8 +95,8 @@ void SFrustumList::starting()
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->configure(
-        this->getID() + "_" + m_materialAdaptor->getID(),
-        this->getID() + "_" + m_materialAdaptor->getID(),
+        this->get_id() + "_" + m_materialAdaptor->get_id(),
+        this->get_id() + "_" + m_materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID,
         "ambient"
@@ -107,10 +107,10 @@ void SFrustumList::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SFrustumList::getAutoConnections() const
+service::connections_t SFrustumList::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, data::Matrix4::s_MODIFIED_SIG, s_ADD_FRUSTUM_SLOT);
+    service::connections_t connections;
+    connections.push(s_TRANSFORM_INPUT, data::Matrix4::MODIFIED_SIG, ADD_FRUSTUM_SLOT);
     return connections;
 }
 
@@ -151,7 +151,7 @@ void SFrustumList::addFrustum()
     Ogre::Camera* ogreCamera =
         this->getSceneManager()->createCamera(
             Ogre::String(
-                this->getID() + "_camera" + std::to_string(
+                this->get_id() + "_camera" + std::to_string(
                     m_currentCamIndex
                 )
             )
@@ -191,7 +191,7 @@ void SFrustumList::addFrustum()
         }
 
         auto* const frustum = this->getSceneManager()->createManualObject(
-            this->getID() + "_frustum" + std::to_string(
+            this->get_id() + "_frustum" + std::to_string(
                 m_currentCamIndex
             )
         );

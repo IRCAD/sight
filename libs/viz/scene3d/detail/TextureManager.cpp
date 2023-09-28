@@ -24,9 +24,16 @@
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/Utils.hpp"
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <OgreHardwarePixelBuffer.h>
+
+// Usual nolint comment does not work for an unknown reason (clang 17)
+// cspell:ignore Wunknown
+#ifdef __clang_analyzer__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
 
 namespace sight::viz::scene3d::detail
 {
@@ -43,7 +50,7 @@ void copyUnsignedImage(Ogre::Texture* _texture, const data::Image& _image)
     pixelBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
     const Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
 
-    using signedType = typename std::make_signed<DST_TYPE>::type;
+    using signedType = std::make_signed_t<DST_TYPE>;
     auto pDest = reinterpret_cast<DST_TYPE*>(pixelBox.data);
 
     const auto lowBound = []
@@ -60,8 +67,9 @@ void copyUnsignedImage(Ogre::Texture* _texture, const data::Image& _image)
 
     const auto size = static_cast<Ogre::int32>(_texture->getWidth() * _texture->getHeight() * _texture->getDepth());
 
-    auto srcBuffer = static_cast<const SRC_TYPE*>(_image.getBuffer());
+    auto srcBuffer = static_cast<const SRC_TYPE*>(_image.buffer());
 
+// NOLINTNEXTLINE(clang-diagnostic-unknown-pragmas)
 #pragma omp parallel for shared(pDest, srcBuffer)
     for(Ogre::int32 i = 0 ; i < size ; ++i)
     {
@@ -81,7 +89,7 @@ TextureLoader::return_t TextureLoader::load(const sight::data::Image& _image, Og
     const auto numDim = _image.numDimensions();
     SIGHT_ASSERT("Only handle 2D and 3D textures", numDim >= 2 && numDim <= 3);
 
-    const data::Image::Size size = _image.getSize();
+    const data::Image::Size size = _image.size();
 
     const auto width  = static_cast<uint32_t>(size[0]);
     const auto height = numDim >= 2 ? static_cast<uint32_t>(size[1]) : 1;
@@ -115,21 +123,21 @@ TextureLoader::return_t TextureLoader::load(const sight::data::Image& _image, Og
     // Thus, we translate the values from [MIN;MAX] to [MIN+(MAX-MIN)/2;MAX+(MAX-MIN)/2]
     const auto srcType = _image.getType();
 
-    if(srcType == core::Type::INT8)
+    if(srcType == core::type::INT8)
     {
         copyUnsignedImage<std::int8_t, std::uint8_t>(_texture, _image);
     }
-    else if(srcType == core::Type::INT16)
+    else if(srcType == core::type::INT16)
     {
         copyUnsignedImage<std::int16_t, std::uint16_t>(_texture, _image);
     }
     // 32 bits are not well handled in our TF approach. However, most 32bits images fits in 16 bits.
     // So for now, we cast them and assert if the values do not fit.
-    else if(srcType == core::Type::INT32)
+    else if(srcType == core::type::INT32)
     {
         copyUnsignedImage<std::int32_t, std::uint16_t>(_texture, _image);
     }
-    else if(srcType == core::Type::UINT32)
+    else if(srcType == core::type::UINT32)
     {
         copyUnsignedImage<std::uint32_t, std::uint16_t>(_texture, _image);
     }
@@ -137,7 +145,7 @@ TextureLoader::return_t TextureLoader::load(const sight::data::Image& _image, Og
     {
         Ogre::Image ogreImage;
         ogreImage.loadDynamicImage(
-            static_cast<uint8_t*>(const_cast<void*>(_image.getBuffer())), // NOLINT(cppcoreguidelines-pro-type-const-cast)
+            static_cast<uint8_t*>(const_cast<void*>(_image.buffer())), // NOLINT(cppcoreguidelines-pro-type-const-cast)
             width,
             height,
             depth,
@@ -154,3 +162,7 @@ TextureLoader::return_t TextureLoader::load(const sight::data::Image& _image, Og
 // ----------------------------------------------------------------------------
 
 } // namespace sight::viz::scene3d::detail
+
+#ifdef __clang_analyzer__
+#pragma clang diagnostic pop
+#endif

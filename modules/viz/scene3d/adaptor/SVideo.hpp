@@ -26,7 +26,7 @@
 
 #include <data/PointList.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
 
@@ -80,12 +80,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SVideo final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API SVideo final : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SVideo, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SVideo, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor an initialize slots.
     MODULE_VIZ_SCENE3D_API SVideo() noexcept;
@@ -105,13 +105,13 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE
-     * Connect data::TransferFunction::s_MODIFIED_SIG of s_TF_INPUT to :s_UPDATE_TF_SLOT
-     * Connect data::TransferFunction::s_POINTS_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
-     * Connect data::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
+     * Connect data::Image::MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE
+     * Connect data::Image::BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE
+     * Connect data::TransferFunction::MODIFIED_SIG of s_TF_INPUT to :UPDATE_TF_SLOT
+     * Connect data::TransferFunction::POINTS_MODIFIED_SIG of s_TF_INPUT to UPDATE_TF_SLOT
+     * Connect data::TransferFunction::WINDOWING_MODIFIED_SIG of s_TF_INPUT to UPDATE_TF_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Updates the frame from the current Image.
     MODULE_VIZ_SCENE3D_API void updating() final;
@@ -197,13 +197,13 @@ private:
     int m_previousViewportHeight {0};
 
     /// Defines the previous image type.
-    core::Type m_previousType;
+    core::type m_previousType;
 
     /// Contains the pointlist in the video space coordinates.
     data::PointList::sptr m_pointList {nullptr};
 
     /// Contains the adaptor used to display the 2D pointlist.
-    sight::viz::scene3d::IAdaptor::sptr m_pointListAdaptor {nullptr};
+    sight::viz::scene3d::adaptor::sptr m_pointListAdaptor {nullptr};
 
     /// Defines material's name used by the point list.
     std::string m_materialTemplateName;

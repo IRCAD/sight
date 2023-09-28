@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ void CameraTest::tearDown()
 
 void CameraTest::copyToCv()
 {
-    data::Camera::sptr sightCam = data::Camera::New();
+    data::Camera::sptr sightCam = std::make_shared<data::Camera>();
 
     sightCam->setCx(666.);
     sightCam->setCy(777.);

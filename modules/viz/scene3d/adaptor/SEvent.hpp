@@ -23,7 +23,7 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -32,7 +32,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor echoes the input events its scene got. The input events may be filtered in the configuration.
  *
  * @section Signals Signals
- * - \b triggered(sight::viz::scene3d::IWindowInteractor::InteractionInfo): An event was triggered
+ * - \b triggered(sight::viz::scene3d::window_interactor::InteractionInfo): An event was triggered
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -59,12 +59,12 @@ namespace sight::module::viz::scene3d::adaptor
  *             types "keyPress" and "keyRelease". @see https://doc.qt.io/qt-5/qt.html#Key-enum
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SEvent final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::interactor::IInteractor
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::interactor::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SEvent, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SEvent, sight::viz::scene3d::adaptor);
 
     SEvent();
 
@@ -81,21 +81,21 @@ public:
     MODULE_VIZ_SCENE3D_API void panGestureReleaseEvent(int x, int y, int dx, int dy) final;
     MODULE_VIZ_SCENE3D_API void longTapGestureEvent(int x, int y) final;
 
-    MODULE_VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_TRIGGERED;
-    typedef core::com::Signal<void (sight::viz::scene3d::IWindowInteractor::InteractionInfo)> TriggeredSignal;
+    MODULE_VIZ_SCENE3D_API static const core::com::signals::key_t TRIGGERED;
+    typedef core::com::signal<void (sight::viz::scene3d::window_interactor::InteractionInfo)> TriggeredSignal;
 
 private:
 
     struct Filter
     {
-        std::vector<sight::viz::scene3d::IWindowInteractor::InteractionInfo::InteractionEnum> type;
+        std::vector<sight::viz::scene3d::window_interactor::InteractionInfo::InteractionEnum> type;
         std::uint8_t buttons = 0;
         std::optional<Modifier> modifiers;
         std::vector<int> keys;
     };
 
     bool check(
-        sight::viz::scene3d::IWindowInteractor::InteractionInfo::InteractionEnum type,
+        sight::viz::scene3d::window_interactor::InteractionInfo::InteractionEnum type,
         std::optional<MouseButton> button,
         std::optional<Modifier> modifiers,
         std::optional<int> key

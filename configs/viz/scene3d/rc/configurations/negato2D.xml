@@ -23,9 +23,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::OverlayLayoutManager">
+                <layout type="sight::ui::layout::overlay">
                     <view />
                     <view x="0" y="0" width="72" height="64" minHeight="0" minWidth="0" />
                 </layout>
@@ -37,9 +37,9 @@
             </registry>
         </service>
 
-        <service uid="sceneView" type="sight::module::ui::base::SView">
+        <service uid="sceneView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" backgroundColor="#36393E" spacing="0" />
@@ -51,10 +51,10 @@
             </registry>
         </service>
 
-        <service uid="toolbarView" type="sight::module::ui::base::SView">
+        <service uid="toolbarView" type="sight::module::ui::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                 </layout>
             </gui>
@@ -63,7 +63,7 @@
             </registry>
         </service>
 
-        <service uid="toolbar" type="sight::module::ui::base::SToolBar">
+        <service uid="toolbar" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Maximize" icon="sight::module::ui::flaticons/YellowMaximize.svg" />
@@ -77,11 +77,11 @@
             </registry>
         </service>
 
-        <service uid="maximizeAct" type="sight::module::ui::base::SAction">
+        <service uid="maximizeAct" type="sight::module::ui::SAction">
             <state visible="true" />
         </service>
 
-        <service uid="minimizeAct" type="sight::module::ui::base::SAction">
+        <service uid="minimizeAct" type="sight::module::ui::SAction">
             <state visible="false" />
         </service>
 

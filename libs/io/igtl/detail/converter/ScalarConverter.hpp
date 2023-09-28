@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "io/igtl/detail/converter/IConverter.hpp"
+#include "io/igtl/detail/converter/base.hpp"
 #include "io/igtl/detail/exception/Conversion.hpp"
 #include "io/igtl/detail/helper/ScalarToBytes.hpp"
 #include "io/igtl/detail/RawMessage.hpp"
@@ -44,7 +44,7 @@ namespace sight::io::igtl::detail::converter
  * @brief class to manage conversion between data::Integer of Float and igtl::RawMessage
  */
 template<typename ScalarType, typename FwDataObjectType>
-class IO_IGTL_CLASS_API ScalarConverter : public IConverter
+class IO_IGTL_CLASS_API ScalarConverter : public base
 {
 public:
 
@@ -71,7 +71,7 @@ public:
      */
     [[nodiscard]] data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const override
     {
-        typename FwDataObjectType::sptr obj = FwDataObjectType::New();
+        auto obj = std::make_shared<FwDataObjectType>();
 
         RawMessage::Pointer msg = RawMessage::Pointer(dynamic_cast<RawMessage*>(src.GetPointer()));
         const ScalarType scalar = helper::ScalarToBytes<ScalarType>::fromBytes(msg->getMessage().data());
@@ -88,7 +88,7 @@ public:
     [[nodiscard]] ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override
     {
         RawMessage::Pointer msg;
-        typename FwDataObjectType::csptr obj = FwDataObjectType::dynamicConstCast(src);
+        typename FwDataObjectType::csptr obj = std::dynamic_pointer_cast<const FwDataObjectType>(src);
 
         msg = RawMessage::New(m_igtlType);
         RawMessage::RawDataType content = helper::ScalarToBytes<ScalarType>::toBytes(ScalarType(obj->getValue()));
@@ -101,7 +101,7 @@ public:
      *
      * @return a smart pointer to an ScalarConverter
      */
-    static IConverter::sptr New(std::string const& igtlScalarType)
+    static base::sptr New(std::string const& igtlScalarType)
     {
         return std::make_shared<ScalarConverter<ScalarType, FwDataObjectType> >(igtlScalarType);
     }
@@ -153,7 +153,7 @@ public:
      *
      * @return a smart pointer to an IntConverter
      */
-    static IConverter::sptr New()
+    static base::sptr New()
     {
         return std::make_shared<IntConverter>();
     }
@@ -180,7 +180,7 @@ public:
      *
      * @return a smart pointer to an FloatConverter
      */
-    static IConverter::sptr New()
+    static base::sptr New()
     {
         return std::make_shared<FloatConverter>();
     }

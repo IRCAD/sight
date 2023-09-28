@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene3d/adaptor/SReconstruction.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Mesh.hpp>
 
@@ -33,15 +33,15 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_CHANGE_MESH_SLOT = "changeMesh";
-static const core::com::Slots::SlotKeyType s_VISIBILITY_SLOT  = "modifyVisibility";
+static const core::com::slots::key_t CHANGE_MESH_SLOT = "changeMesh";
+static const core::com::slots::key_t VISIBILITY_SLOT  = "modifyVisibility";
 
 //------------------------------------------------------------------------------
 
 SReconstruction::SReconstruction() noexcept
 {
-    newSlot(s_CHANGE_MESH_SLOT, &SReconstruction::changeMesh, this);
-    newSlot(s_VISIBILITY_SLOT, &SReconstruction::modifyVisibility, this);
+    new_slot(CHANGE_MESH_SLOT, &SReconstruction::changeMesh, this);
+    new_slot(VISIBILITY_SLOT, &SReconstruction::modifyVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -54,8 +54,8 @@ void SReconstruction::configuring()
 
     this->setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            this->getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            this->get_id() + "_transform"
         )
     );
     m_autoResetCamera = config.get<bool>(s_CONFIG + "autoresetcamera", true);
@@ -84,11 +84,11 @@ void SReconstruction::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap module::viz::scene3d::adaptor::SReconstruction::getAutoConnections() const
+service::connections_t module::viz::scene3d::adaptor::SReconstruction::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::s_MESH_CHANGED_SIG, s_CHANGE_MESH_SLOT);
-    connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::s_VISIBILITY_MODIFIED_SIG, s_VISIBILITY_SLOT);
+    service::connections_t connections;
+    connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::MESH_CHANGED_SIG, CHANGE_MESH_SLOT);
+    connections.push(s_RECONSTRUCTION_INPUT, data::Reconstruction::VISIBILITY_MODIFIED_SIG, VISIBILITY_SLOT);
     return connections;
 }
 
@@ -103,7 +103,7 @@ void SReconstruction::updating()
         module::viz::scene3d::adaptor::SMesh::sptr meshAdaptor = this->getMeshAdaptor();
 
         // Do nothing if the mesh is identical
-        auto mesh = meshAdaptor->getInput<sight::data::Mesh>("mesh").lock();
+        auto mesh = meshAdaptor->input<sight::data::Mesh>("mesh").lock();
         if(mesh.get_shared() != reconstruction->getMesh())
         {
             // Updates the mesh adaptor according to the reconstruction
@@ -140,7 +140,7 @@ void SReconstruction::createMeshService()
         );
         meshAdaptor->setInput(mesh, "mesh", true);
 
-        meshAdaptor->setID(this->getID() + meshAdaptor->getID());
+        meshAdaptor->set_id(this->get_id() + meshAdaptor->get_id());
         meshAdaptor->setLayerID(m_layerID);
         meshAdaptor->setRenderService(this->getRenderService());
 
@@ -201,7 +201,7 @@ adaptor::SMesh::sptr SReconstruction::getMeshAdaptor()
 {
     // Retrieves the associated mesh adaptor
     auto adaptor     = m_meshAdaptor.lock();
-    auto meshAdaptor = module::viz::scene3d::adaptor::SMesh::dynamicCast(adaptor);
+    auto meshAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::SMesh>(adaptor);
 
     return meshAdaptor;
 }

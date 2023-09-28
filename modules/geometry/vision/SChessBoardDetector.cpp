@@ -22,8 +22,8 @@
 
 #include "SChessBoardDetector.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -31,7 +31,7 @@
 
 #include <io/opencv/Image.hpp>
 
-#include <ui/base/Preferences.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
@@ -41,20 +41,20 @@
 namespace sight::module::geometry::vision
 {
 
-static const core::com::Slots::SlotKeyType s_RECORD_POINTS_SLOT          = "recordPoints";
-static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::slots::key_t RECORD_POINTS_SLOT          = "recordPoints";
+static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
-static const core::com::Signals::SignalKeyType s_CHESSBOARD_DETECTED_SIG = "chessboardDetected";
-static const core::com::Signals::SignalKeyType s_CHESSBOARD_FOUND_SIG    = "chessboardFound";
+static const core::com::signals::key_t CHESSBOARD_DETECTED_SIG = "chessboardDetected";
+static const core::com::signals::key_t CHESSBOARD_FOUND_SIG    = "chessboardFound";
 
 // ----------------------------------------------------------------------------
 
 SChessBoardDetector::SChessBoardDetector() noexcept :
-    m_sigChessboardDetected(newSignal<ChessboardDetectedSignalType>(s_CHESSBOARD_DETECTED_SIG)),
-    m_sigChessboardFound(newSignal<ChessboardFoundSignalType>(s_CHESSBOARD_FOUND_SIG))
+    m_sigChessboardDetected(new_signal<ChessboardDetectedSignalType>(CHESSBOARD_DETECTED_SIG)),
+    m_sigChessboardFound(new_signal<ChessboardFoundSignalType>(CHESSBOARD_FOUND_SIG))
 {
-    newSlot(s_RECORD_POINTS_SLOT, &SChessBoardDetector::recordPoints, this);
-    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessBoardDetector::updateChessboardSize, this);
+    new_slot(RECORD_POINTS_SLOT, &SChessBoardDetector::recordPoints, this);
+    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &SChessBoardDetector::updateChessboardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -116,11 +116,11 @@ void SChessBoardDetector::updating()
 
     const bool allDetected = (std::count(m_images.begin(), m_images.end(), nullptr) == 0);
 
-    m_sigChessboardDetected->asyncEmit(allDetected);
+    m_sigChessboardDetected->async_emit(allDetected);
 
     if(allDetected)
     {
-        m_sigChessboardFound->asyncEmit();
+        m_sigChessboardFound->async_emit();
     }
 }
 
@@ -134,11 +134,11 @@ void SChessBoardDetector::stopping()
 
 // ----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SChessBoardDetector::getAutoConnections() const
+service::connections_t SChessBoardDetector::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_IMAGE_INPUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE_INPUT, data::Image::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -164,14 +164,14 @@ void SChessBoardDetector::recordPoints()
 
                 // Notify
                 auto sig = calInfo->signal<data::CalibrationInfo::AddedRecordSignalType>(
-                    data::CalibrationInfo::s_ADDED_RECORD_SIG
+                    data::CalibrationInfo::ADDED_RECORD_SIG
                 );
 
-                sig->asyncEmit();
+                sig->async_emit();
             }
             else
             {
-                calInfo->addRecord(m_images[i], data::PointList::New());
+                calInfo->addRecord(m_images[i], std::make_shared<data::PointList>());
             }
         }
     }
@@ -183,7 +183,7 @@ void SChessBoardDetector::updateChessboardSize()
 {
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
         m_width  = preferences.get(m_widthKey, m_width);
         m_height = preferences.get(m_heightKey, m_height);
         m_scale  = preferences.get(m_scaleKey, m_scale);
@@ -194,7 +194,7 @@ void SChessBoardDetector::updateChessboardSize()
             SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
         }
     }
-    catch(const ui::base::PreferencesDisabled&)
+    catch(const ui::PreferencesDisabled&)
     {
         // Nothing to do..
     }
@@ -218,8 +218,8 @@ void SChessBoardDetector::doDetection(std::size_t _imageIndex)
 
         if(m_pointLists[_imageIndex] != nullptr)
         {
-            m_images[_imageIndex] = data::Image::New();
-            m_images[_imageIndex]->deepCopy(img.get_shared());
+            m_images[_imageIndex] = std::make_shared<data::Image>();
+            m_images[_imageIndex]->deep_copy(img.get_shared());
         }
         else
         {
@@ -233,15 +233,15 @@ void SChessBoardDetector::doDetection(std::size_t _imageIndex)
 
             if(m_pointLists[_imageIndex] != nullptr)
             {
-                outPl->deepCopy(m_pointLists[_imageIndex]);
+                outPl->deep_copy(m_pointLists[_imageIndex]);
             }
             else
             {
                 outPl->getPoints().clear();
             }
 
-            auto sig = outPl->signal<data::PointList::ModifiedSignalType>(data::PointList::s_MODIFIED_SIG);
-            sig->asyncEmit();
+            auto sig = outPl->signal<data::PointList::ModifiedSignalType>(data::PointList::MODIFIED_SIG);
+            sig->async_emit();
         }
     }
 }

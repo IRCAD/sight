@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "SeriesSetTest.hpp"
 
-#include <core/memory/BufferManager.hpp>
-#include <core/memory/BufferObject.hpp>
+#include <core/memory/buffer_manager.hpp>
+#include <core/memory/buffer_object.hpp>
 
 #include <data/Array.hpp>
 #include <data/Image.hpp>
@@ -62,7 +62,7 @@ void SeriesSetTest::tearDown()
 
 void SeriesSetTest::testImportSeriesSet()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::filesystem::path imagePath(utestData::Data::dir() / "sight/image/vtk/img.vtk");
     const std::filesystem::path meshPath(utestData::Data::dir() / "sight/mesh/vtk/sphere.vtk");
@@ -75,17 +75,17 @@ void SeriesSetTest::testImportSeriesSet()
     paths.push_back(meshPath);
     paths.push_back(meshPath);
 
-    io::vtk::SeriesSetReader::sptr reader = io::vtk::SeriesSetReader::New();
+    io::vtk::SeriesSetReader::sptr reader = std::make_shared<io::vtk::SeriesSetReader>();
     reader->setObject(series_set);
-    reader->setFiles(paths);
+    reader->set_files(paths);
     reader->read();
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
-    data::ImageSeries::sptr imgSeries = data::ImageSeries::dynamicCast(series_set->at(0));
+    data::ImageSeries::sptr imgSeries = std::dynamic_pointer_cast<data::ImageSeries>(series_set->at(0));
     CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imgSeries);
 
-    data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(series_set->at(1));
+    data::ModelSeries::sptr modelSeries = std::dynamic_pointer_cast<data::ModelSeries>(series_set->at(1));
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
     data::ModelSeries::ReconstructionVectorType recVect = modelSeries->getReconstructionDB();
@@ -108,14 +108,14 @@ void SeriesSetTest::testImportSeriesSet()
 
 //------------------------------------------------------------------------------
 
-bool isLoaded(core::memory::BufferObject::sptr bo)
+bool isLoaded(core::memory::buffer_object::sptr bo)
 {
-    core::memory::BufferManager::csptr manager                    = core::memory::BufferManager::getDefault();
-    const core::memory::BufferManager::BufferInfoMapType mapInfos = manager->getBufferInfos().get();
+    core::memory::buffer_manager::csptr manager                    = core::memory::buffer_manager::get();
+    const core::memory::buffer_manager::buffer_info_map_t mapInfos = manager->get_buffer_infos().get();
 
-    auto iter = mapInfos.find(bo->getBufferPointer());
-    CPPUNIT_ASSERT_MESSAGE("BufferInfo not found.", iter != mapInfos.end());
-    const core::memory::BufferInfo& info = iter->second;
+    auto iter = mapInfos.find(bo->get_buffer_pointer());
+    CPPUNIT_ASSERT_MESSAGE("buffer_info not found.", iter != mapInfos.end());
+    const core::memory::buffer_info& info = iter->second;
 
     return info.loaded;
 }

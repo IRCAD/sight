@@ -23,13 +23,13 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/IWindowInteractor.hpp"
 #include "viz/scene3d/Layer.hpp"
 #include "viz/scene3d/Utils.hpp"
+#include "viz/scene3d/window_interactor.hpp"
 
 #include <data/Image.hpp>
 
-#include <viz/base/IRender.hpp>
+#include <viz/__/render.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
@@ -39,7 +39,7 @@
 namespace sight::viz::scene3d
 {
 
-class IAdaptor;
+class adaptor;
 class Layer;
 
 /**
@@ -123,12 +123,12 @@ class Layer;
  *    - \b adaptor
  *      - \b uid (mandatory): the identifier of the adaptor.
  */
-class VIZ_SCENE3D_CLASS_API SRender final : public viz::base::IRender
+class VIZ_SCENE3D_CLASS_API SRender final : public viz::render
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender);
+    SIGHT_DECLARE_SERVICE(SRender, viz::render);
 
     /// Represents all possible render modes.
     enum class RenderMode : std::uint8_t
@@ -139,9 +139,9 @@ public:
 
     struct signals
     {
-        using key_t                      = sight::core::com::Signals::SignalKeyType;
-        using void_signal_t              = sight::core::com::Signal<void ()>;
-        using compositorUpdated_signal_t = core::com::Signal<void (std::string, bool, viz::scene3d::Layer::sptr)>;
+        using key_t                      = sight::core::com::signals::key_t;
+        using void_signal_t              = sight::core::com::signal<void ()>;
+        using compositorUpdated_signal_t = core::com::signal<void (std::string, bool, viz::scene3d::Layer::sptr)>;
 
         static inline const key_t FULLSCREEN_SET     = "fullscreenSet";
         static inline const key_t FULLSCREEN_UNSET   = "fullscreenUnset";
@@ -161,28 +161,28 @@ public:
     typedef std::map<SceneIdType, SPTR(viz::scene3d::Layer)> LayerMapType;
 
     /// Contains the slot name that computes the parameters to reset the camera.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t COMPUTE_CAMERA_ORIG_SLOT;
 
     /// Contains the slot name that resets all layers camera.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_RESET_CAMERAS_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t RESET_CAMERAS_SLOT;
 
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t DO_RAY_CAST_SLOT;
 
     /// Contains the slot name that requests a rendering.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_REQUEST_RENDER_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t REQUEST_RENDER_SLOT;
 
     /// Contains the slot name that disables fullscreen rendering if it was enabled.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_DISABLE_FULLSCREEN;
+    VIZ_SCENE3D_API static const core::com::slots::key_t DISABLE_FULLSCREEN;
 
     /// Contains the slot name that enables fullscreen rendering on a specific screen.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_ENABLE_FULLSCREEN;
+    VIZ_SCENE3D_API static const core::com::slots::key_t ENABLE_FULLSCREEN;
 
     /// Contains the slot name that enables the manual rendering mode.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_MANUAL_MODE;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_MANUAL_MODE;
 
     /// Contains the slot name that enables the automatic rendering mode.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_AUTO_MODE;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_AUTO_MODE;
 
     /// Defines the layer ID of the background.
     VIZ_SCENE3D_API static const std::string s_OGREBACKGROUNDID;
@@ -212,7 +212,7 @@ public:
     VIZ_SCENE3D_API LayerMapType getLayers();
 
     /// @returns m_interactorManager.
-    VIZ_SCENE3D_API viz::scene3d::IWindowInteractor::sptr getInteractorManager() const;
+    VIZ_SCENE3D_API viz::scene3d::window_interactor::sptr getInteractorManager() const;
 
     /// Resets camera parameters with the actual global bounding box.
     VIZ_SCENE3D_API void resetCameraCoordinates(const std::string& _layerId);
@@ -252,7 +252,7 @@ private:
     void configureLayer(const ConfigType& _cfg);
 
     /// Retrieves the viewport parameters from the configuration.
-    static Layer::ViewportConfigType configureLayerViewport(const service::IService::ConfigType& _cfg);
+    static Layer::ViewportConfigType configureLayerViewport(const service::config_t& _cfg);
 
     /**
      * @brief Renders the scene in fullscreen on the screen with the given index.
@@ -267,7 +267,7 @@ private:
     LayerMapType m_layers;
 
     /// Contains the Ogre window interactor manager.
-    viz::scene3d::IWindowInteractor::sptr m_interactorManager;
+    viz::scene3d::window_interactor::sptr m_interactorManager;
 
     /// Contains the Ogre root.
     Ogre::Root* m_ogreRoot {nullptr};
@@ -300,15 +300,15 @@ private:
 template<class T>
 std::vector<SPTR(T)> SRender::getAdaptors() const
 {
-    auto servicesVector = service::getServices("sight::viz::scene3d::IAdaptor");
+    auto servicesVector = sight::service::getServices("sight::viz::scene3d::adaptor");
     std::vector<SPTR(T)> resultVector;
 
     for(const auto& sceneAdaptor : servicesVector)
     {
-        SPTR(T) adaptor = T::dynamicCast(sceneAdaptor);
+        SPTR(T) adaptor = std::dynamic_pointer_cast<T>(sceneAdaptor);
         if(adaptor)
         {
-            if(adaptor->getRenderService() == this->getConstSptr())
+            if(adaptor->getRenderService() == this->get_const_sptr())
             {
                 resultVector.push_back(adaptor);
             }

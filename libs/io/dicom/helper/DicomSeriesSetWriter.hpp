@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "io/dicom/config.hpp"
 
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 #include <string>
 
@@ -41,7 +41,7 @@ class SeriesSet;
 namespace sight::core::jobs
 {
 
-class Aggregator;
+class aggregator;
 
 }
 
@@ -54,31 +54,31 @@ namespace helper
 class DicomAnonymizer;
 
 class IO_DICOM_CLASS_API DicomSeriesSetWriter :
-    public io::base::writer::GenericObjectWriter<data::SeriesSet>,
-    public core::location::SingleFolder,
-    public core::location::SingleFile
+    public io::writer::GenericObjectWriter<data::SeriesSet>,
+    public core::location::single_folder,
+    public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         DicomSeriesSetWriter,
-        io::base::writer::GenericObjectWriter<data::SeriesSet>,
-        io::base::writer::factory::New<DicomSeriesSetWriter>
+        io::writer::GenericObjectWriter<data::SeriesSet>,
+        io::writer::factory::make<DicomSeriesSetWriter>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
      * @brief Constructor/Destructor
      * @{ */
-    IO_DICOM_API DicomSeriesSetWriter(io::base::writer::IObjectWriter::Key key);
+    IO_DICOM_API DicomSeriesSetWriter();
     IO_DICOM_API ~DicomSeriesSetWriter() override = default;
     /**  @} */
 
     /// Return an empty string
     IO_DICOM_API std::string extension() const override;
 
-    /// Get job Aggregator
-    IO_DICOM_API SPTR(core::jobs::Aggregator) getAggregator();
+    /// Get job aggregator
+    IO_DICOM_API SPTR(core::jobs::aggregator) getAggregator();
 
     /// Set anonymizer (if anonymization required)
     IO_DICOM_API void setAnonymizer(const SPTR(helper::DicomAnonymizer)& anonymizer);
@@ -92,7 +92,7 @@ public:
 private:
 
     /// Job observer
-    SPTR(core::jobs::Aggregator) m_aggregator;
+    SPTR(core::jobs::aggregator) m_aggregator;
 
     /// Optional anonymiser
     SPTR(DicomAnonymizer) m_anonymizer;

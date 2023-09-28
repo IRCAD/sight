@@ -24,7 +24,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -52,7 +52,7 @@ SMatrixViewer::~SMatrixViewer() noexcept =
 
 void SMatrixViewer::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 
     m_title = this->getConfiguration().get<std::string>("title", "matrix");
 }
@@ -61,8 +61,8 @@ void SMatrixViewer::configuring()
 
 void SMatrixViewer::starting()
 {
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -133,10 +133,10 @@ void SMatrixViewer::clearLabels()
 
 // ------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
+service::connections_t SMatrixViewer::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_MATRIX, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

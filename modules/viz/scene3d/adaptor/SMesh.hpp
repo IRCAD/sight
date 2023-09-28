@@ -29,9 +29,9 @@
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/Mesh.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <OGRE/OgreEntity.h>
 
@@ -109,13 +109,13 @@ namespace sight::module::viz::scene3d::adaptor
  *       match the flag.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SMesh final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMesh, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SMesh, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SMesh() noexcept;
@@ -205,13 +205,13 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Mesh::s_VERTEX_MODIFIED_SIG to s_MODIFY_VERTICES_SLOT
-     * Connect data::Mesh::s_POINT_COLORS_MODIFIED_SIG to s_MODIFY_COLORS_SLOT
-     * Connect data::Mesh::s_CELL_COLORS_MODIFIED_SIG to s_MODIFY_COLORS_SLOT
-     * Connect data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG to s_MODIFY_POINT_TEX_COORDS_SLOT
-     * Connect data::Mesh::s_MODIFIED_SIG to IService::slots::s_UPDATE
+     * Connect data::Mesh::VERTEX_MODIFIED_SIG to MODIFY_VERTICES_SLOT
+     * Connect data::Mesh::POINT_COLORS_MODIFIED_SIG to MODIFY_COLORS_SLOT
+     * Connect data::Mesh::CELL_COLORS_MODIFIED_SIG to MODIFY_COLORS_SLOT
+     * Connect data::Mesh::POINT_TEX_COORDS_MODIFIED_SIG to MODIFY_POINT_TEX_COORDS_SLOT
+     * Connect data::Mesh::MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
     MODULE_VIZ_SCENE3D_API void stopping() override;

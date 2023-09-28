@@ -23,10 +23,10 @@
 
 #include "modules/io/zip/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/jobs/IJob.hpp>
+#include <core/com/signal.hpp>
+#include <core/jobs/base.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 namespace sight::module::io::zip
 {
@@ -38,7 +38,7 @@ namespace sight::module::io::zip
  * so, a popup will ask the user for the password.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -46,17 +46,17 @@ namespace sight::module::io::zip
     <service type="sight::module::io::zip::SExtract" />
    @endcode
  *
- * @see sight::io::base::service::IReader
+ * @see sight::io::service::reader
  * @see sight::io::zip::ArchiveReader
  */
 
-class MODULE_IO_ZIP_CLASS_API SExtract final : public sight::io::base::service::IReader
+class MODULE_IO_ZIP_CLASS_API SExtract final : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SExtract, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SExtract, sight::io::service::reader);
 
-    using JobCreatedSignal = core::com::Signal<void (core::jobs::IJob::sptr)>;
+    using JobCreatedSignal = core::com::signal<void (core::jobs::base::sptr)>;
 
     MODULE_IO_ZIP_API SExtract() noexcept;
 
@@ -80,9 +80,9 @@ protected:
     MODULE_IO_ZIP_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_ZIP_API sight::io::base::service::IOPathType getIOPathType() const override
+    MODULE_IO_ZIP_API sight::io::service::IOPathType getIOPathType() const override
     {
-        return sight::io::base::service::FILE;
+        return sight::io::service::FILE;
     }
 
 private:

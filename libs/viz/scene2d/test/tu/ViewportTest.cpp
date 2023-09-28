@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ViewportTest.hpp"
 
-#include <service/base.hpp>
+#include <service/op.hpp>
 
 #include <viz/scene2d/data/parser/Viewport.hpp>
 #include <viz/scene2d/data/Viewport.hpp>
@@ -53,7 +53,7 @@ void ViewportTest::tearDown()
 
 void ViewportTest::testParser()
 {
-    service::IService::ConfigType config;
+    service::config_t config;
 
     std::stringstream config_string(R"(<config x="-700" y="0.1" width="100" height="1.3"/>)");
     boost::property_tree::read_xml(config_string, config);
@@ -61,7 +61,7 @@ void ViewportTest::testParser()
     auto parser = sight::service::add<data::parser::Viewport>("sight::viz::scene2d::data::parser::Viewport");
     parser->setObjectConfig(config);
 
-    auto viewport = sight::viz::scene2d::data::Viewport::New();
+    auto viewport = std::make_shared<sight::viz::scene2d::data::Viewport>();
     parser->createConfig(viewport);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-700., viewport->x(), 0.00001);

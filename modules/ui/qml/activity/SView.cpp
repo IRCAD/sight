@@ -24,8 +24,8 @@
 
 #include <activity/extension/Activity.hpp>
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
@@ -33,21 +33,21 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 namespace sight::module::ui::qml::activity
 {
 
-static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+static const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
-static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT = "launchActivity";
+static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT = "launchActivity";
 
 //------------------------------------------------------------------------------
 
 SView::SView() :
-    m_sigActivityLaunched(newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG))
+    m_sigActivityLaunched(new_signal<ActivityLaunchedSignalType>(ACTIVITY_LAUNCHED_SIG))
 {
-    newSlot(s_LAUNCH_ACTIVITY_SLOT, &SView::launchActivity, this);
+    new_slot(LAUNCH_ACTIVITY_SLOT, &SView::launchActivity, this);
 }
 
 //------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ void SView::configuring()
 {
     const ConfigType config = this->getConfiguration();
 
-    sight::activity::IActivityLauncher::InOutMapType inoutMap;
+    sight::activity::launcher::InOutMapType inoutMap;
     std::for_each(
         m_data.begin(),
         m_data.end(),
@@ -65,7 +65,7 @@ void SView::configuring()
             const auto obj = p.second->lock();
             if(obj != nullptr)
             {
-                inoutMap.push_back(obj->getID());
+                inoutMap.push_back(obj->get_id());
             }
         });
     this->parseConfiguration(config, inoutMap);
@@ -93,7 +93,7 @@ void SView::updating()
 
 void SView::notifyActivityCreation()
 {
-    m_sigActivityLaunched->asyncEmit();
+    m_sigActivityLaunched->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -113,10 +113,10 @@ void SView::launchActivity(data::Activity::sptr activity)
             m_parameters
         );
 
-        core::runtime::startModule(info.bundleId);
+        core::runtime::start_module(info.bundleId);
 
         // get Activity path, it allows to retrieve the associated Qml file
-        const auto path = core::runtime::getModuleResourceFilePath(info.bundleId, info.appConfig.id + ".qml");
+        const auto path = core::runtime::get_module_resource_file_path(info.bundleId, info.appConfig.id + ".qml");
 
         // convert the replaceMap to Qt Map to send it to Qml(only QVariantMap type is implemented in Qml)
         QVariantMap variantMap;
@@ -133,11 +133,7 @@ void SView::launchActivity(data::Activity::sptr activity)
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog::show(
-            "Activity launch",
-            message,
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
-        );
+        sight::ui::dialog::message::show("Activity launch", message, sight::ui::dialog::message::CRITICAL);
     }
 }
 

@@ -4,7 +4,7 @@
 -->
 <plugin id="Tuto07GenericScene">
 
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -24,7 +24,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>Tuto07GenericScene</name>
@@ -38,12 +38,12 @@
             </service>
 
             <!-- Status bar used to display the progress bar for reading -->
-            <service uid="progressBarView" type="sight::module::ui::base::SJobBar" />
+            <service uid="progressBarView" type="sight::module::ui::SJobBar" />
 
             <!-- main view -->
-            <service uid="containerView" type="sight::module::ui::base::SView">
+            <service uid="containerView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::OverlayLayoutManager">
+                    <layout type="sight::ui::layout::overlay">
                         <view />
                         <view x="0" y="0" width="50" height="50" />
                     </layout>
@@ -54,9 +54,9 @@
                 </registry>
             </service>
 
-            <service uid="containerBackgroundView" type="sight::module::ui::base::SView">
+            <service uid="containerBackgroundView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" resizable="false" backgroundColor="#3E4453" />
@@ -78,9 +78,9 @@
             </service>
 
             <!-- View for editors to update image visualization -->
-            <service uid="editorsView" type="sight::module::ui::base::SView">
+            <service uid="editorsView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
@@ -143,34 +143,34 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Actions to call readers -->
-            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="openImageAct" type="sight::module::ui::com::SStarter">
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="openMeshAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="openMeshAct" type="sight::module::ui::com::SStarter">
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="openTextureAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="openTextureAct" type="sight::module::ui::com::SStarter">
                 <start uid="textureReaderSrv" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Image displayed in the scene -->
-            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="imageReaderSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
             <!-- Mesh reader -->
-            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
             <!-- texture reader -->
-            <service uid="textureReaderSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="textureReaderSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="texture" />
                 <type mode="reader" />
             </service>

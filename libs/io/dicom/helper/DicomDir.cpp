@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "io/dicom/helper/DicomDataReader.hxx"
 
 #include <core/exceptionmacros.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
-#include <core/log/Logger.hpp>
-#include <core/spyLog.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
+#include <core/log/logger.hpp>
+#include <core/spy_log.hpp>
 
 #include <data/DicomSeries.hpp>
 
@@ -76,7 +76,7 @@ void processDirInformation(
     const std::filesystem::path& rootDicomDirPath,
     data::DicomSeries::sptr currentSeries,
     std::map<std::string, data::DicomSeries::sptr>& dicomSeriesMap,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     std::function<void(std::uint64_t)>& progress,
     std::function<bool()>& cancel,
     double& p,
@@ -181,7 +181,7 @@ void processDirInformation(
                             io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000e>(item.GetNestedDataSet());
                         if(dicomSeriesMap.find(seriesUID) == dicomSeriesMap.end())
                         {
-                            data::DicomSeries::sptr series = data::DicomSeries::New();
+                            data::DicomSeries::sptr series = std::make_shared<data::DicomSeries>();
                             series->setSeriesInstanceUID(seriesUID);
                             dicomSeriesMap[seriesUID] = series;
                         }
@@ -226,7 +226,7 @@ void processDirInformation(
 void DicomDir::retrieveDicomSeries(
     const std::filesystem::path& dicomdir,
     std::vector<SPTR(data::DicomSeries)>& series_set,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     std::function<void(std::uint64_t)> progress,
     std::function<bool()> cancel
 )

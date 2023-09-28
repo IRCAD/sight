@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "service/IHasServices.hpp"
+#include "service/has_services.hpp"
 
 #include "viz/scene3d/config.hpp"
 
@@ -50,7 +50,7 @@ namespace compositor
  * @brief   Manages the compositors in a layer view.
  */
 class VIZ_SCENE3D_CLASS_API ChainManager : boost::noncopyable,
-                                           public service::IHasServices
+                                           public service::has_services
 {
 public:
 

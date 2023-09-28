@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,8 +40,8 @@ void ImageDiff::addDiff(const ImageDiff& diff)
 {
     SIGHT_ASSERT("Diff elements must be the same size.", m_eltSize == diff.m_eltSize);
 
-    const std::size_t oldSize = this->getSize();
-    const std::size_t newSize = oldSize + diff.getSize();
+    const std::size_t oldSize = this->size();
+    const std::size_t newSize = oldSize + diff.size();
 
     m_buffer.reserve(newSize);
     std::copy(diff.m_buffer.begin(), diff.m_buffer.end(), std::back_inserter(m_buffer));
@@ -55,7 +55,7 @@ void ImageDiff::addDiff(
     const data::Image::BufferType* newValue
 )
 {
-    const std::size_t oldSize = this->getSize();
+    const std::size_t oldSize = this->size();
     const std::size_t newSize = oldSize + m_eltSize;
 
     m_buffer.reserve(newSize);
@@ -90,7 +90,7 @@ void ImageDiff::revertDiff(const data::Image::sptr& img) const
 
 //------------------------------------------------------------------------------
 
-std::size_t ImageDiff::getSize() const
+std::size_t ImageDiff::size() const
 {
     return m_buffer.size();
 }
@@ -99,7 +99,7 @@ std::size_t ImageDiff::getSize() const
 
 std::size_t ImageDiff::numElements() const
 {
-    return getSize() / m_eltSize;
+    return size() / m_eltSize;
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,25 +35,25 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-using PixelTypeConversionMapType = std::map<core::Type, gdcm::PixelFormat::ScalarType>;
+using PixelTypeConversionMapType = std::map<core::type, gdcm::PixelFormat::ScalarType>;
 
 static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
-    {core::Type::UINT8, gdcm::PixelFormat::UINT8},
-    {core::Type::INT8, gdcm::PixelFormat::INT8},
-    // {core::Type::XXX    , gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
-    // {core::Type::XXX    , gdcm::PixelFormat::INT12}   , // Unsupported by VTK Render
-    {core::Type::UINT16, gdcm::PixelFormat::UINT16},
-    {core::Type::INT16, gdcm::PixelFormat::INT16},
-    {core::Type::UINT32, gdcm::PixelFormat::UINT32},
-    {core::Type::INT32, gdcm::PixelFormat::INT32},
-    // { core::Type::XXX   , gdcm::PixelFormat::FLOAT16} , // Unsupported by VTK Render
-    {core::Type::FLOAT, gdcm::PixelFormat::FLOAT32},
-    {core::Type::DOUBLE, gdcm::PixelFormat::FLOAT64}
+    {core::type::UINT8, gdcm::PixelFormat::UINT8},
+    {core::type::INT8, gdcm::PixelFormat::INT8},
+    // {core::type::XXX    , gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
+    // {core::type::XXX    , gdcm::PixelFormat::INT12}   , // Unsupported by VTK Render
+    {core::type::UINT16, gdcm::PixelFormat::UINT16},
+    {core::type::INT16, gdcm::PixelFormat::INT16},
+    {core::type::UINT32, gdcm::PixelFormat::UINT32},
+    {core::type::INT32, gdcm::PixelFormat::INT32},
+    // { core::type::XXX   , gdcm::PixelFormat::FLOAT16} , // Unsupported by VTK Render
+    {core::type::FLOAT, gdcm::PixelFormat::FLOAT32},
+    {core::type::DOUBLE, gdcm::PixelFormat::FLOAT64}
 };
 
 //------------------------------------------------------------------------------
 
-gdcm::PixelFormat DicomDataTools::getPixelType(const core::Type& type)
+gdcm::PixelFormat DicomDataTools::getPixelType(const core::type& type)
 {
     auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(type);
     if(it != s_PIXEL_TYPE_CONVERSION_MAP.end())
@@ -161,7 +161,7 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
     const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed("Coordinates out of image bounds."),
-        frameNumber<1 || frameNumber> image->getSize()[2]
+        frameNumber<1 || frameNumber> image->size()[2]
     );
 
     return frameNumber;
@@ -184,7 +184,7 @@ double DicomDataTools::convertFrameNumberToZCoordinate(
     const std::size_t frameIndex = (frameNumber - 1);
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed("Coordinates out of image bounds."),
-        frameIndex >= image->getSize()[2]
+        frameIndex >= image->size()[2]
     );
     const double zCoordinate = zOrigin + static_cast<double>(frameIndex) * zSpacing;
 

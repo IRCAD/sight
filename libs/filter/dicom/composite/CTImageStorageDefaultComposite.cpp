@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,26 +44,26 @@ const std::string CTImageStorageDefaultComposite::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-CTImageStorageDefaultComposite::CTImageStorageDefaultComposite(filter::dicom::IFilter::Key /*unused*/)
+CTImageStorageDefaultComposite::CTImageStorageDefaultComposite()
 {
     // Split according to image type
-    this->addChild(filter::dicom::splitter::ImageTypeSplitter::New());
+    this->addChild(std::make_shared<sight::filter::dicom::splitter::ImageTypeSplitter>());
     // Split according to acquisition number
-    this->addChild(filter::dicom::splitter::AcquisitionNumberSplitter::New());
+    this->addChild(std::make_shared<sight::filter::dicom::splitter::AcquisitionNumberSplitter>());
     // Split according to temporal position (MR)
-    this->addChild(filter::dicom::splitter::TemporalPositionSplitter::New());
+    this->addChild(std::make_shared<sight::filter::dicom::splitter::TemporalPositionSplitter>());
     // Split according to image dimensions
-    this->addChild(filter::dicom::splitter::ImageDimensionsSplitter::New());
+    this->addChild(std::make_shared<sight::filter::dicom::splitter::ImageDimensionsSplitter>());
     // Sort according to instance number
-    this->addChild(filter::dicom::sorter::InstanceNumberSorter::New());
+    this->addChild(std::make_shared<sight::filter::dicom::sorter::InstanceNumberSorter>());
     // Sort according to image position
-    this->addChild(filter::dicom::sorter::ImagePositionPatientSorter::New());
+    this->addChild(std::make_shared<sight::filter::dicom::sorter::ImagePositionPatientSorter>());
     // Split if gaps are found in image positions
-    this->addChild(filter::dicom::splitter::ImagePositionPatientSplitter::New());
+    this->addChild(std::make_shared<sight::filter::dicom::splitter::ImagePositionPatientSplitter>());
     // Sort according to image position to get correct orientation
-    this->addChild(filter::dicom::sorter::ImagePositionPatientSorter::New());
+    this->addChild(std::make_shared<sight::filter::dicom::sorter::ImagePositionPatientSorter>());
     // Correct slice thickness if needed
-    this->addChild(filter::dicom::modifier::SliceThicknessModifier::New());
+    this->addChild(std::make_shared<sight::filter::dicom::modifier::SliceThicknessModifier>());
 }
 
 //-----------------------------------------------------------------------------

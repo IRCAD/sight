@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 
 #include <OGRE/OgreCompositionTechnique.h>
 
@@ -57,13 +57,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b flip (optional): flip result images, default: false.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SFragmentsInfo final :
-    public sight::viz::scene3d::IAdaptor,
+    public sight::viz::scene3d::adaptor,
     public Ogre::RenderTargetListener
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SFragmentsInfo, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SFragmentsInfo, sight::viz::scene3d::adaptor);
 
     /// Initializes the adaptor.
     MODULE_VIZ_SCENE3D_API SFragmentsInfo() noexcept;
@@ -130,7 +130,7 @@ private:
     bool m_flipImage {false};
 
     /// Handles connection with the layer.
-    core::com::helper::SigSlotConnection m_resizeConnection;
+    core::com::helper::sig_slot_connection m_resizeConnection;
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT};

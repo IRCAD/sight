@@ -21,15 +21,15 @@
 
 #include "SWriter.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/System.hpp>
+#include <core/com/signal.hxx>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/system.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -70,18 +70,18 @@ sight::io::bitmap::Backend SWriter::findBackend(const std::string& extension) co
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SWriter::getIOPathType() const
+sight::io::service::IOPathType SWriter::getIOPathType() const
 {
-    return sight::io::base::service::IOPathType::FILE;
+    return sight::io::service::IOPathType::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SWriter::openLocationDialog()
 {
-    static auto defaultLocation = std::make_shared<core::location::SingleFolder>();
+    static auto defaultLocation = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog locationDialog;
+    sight::ui::dialog::location locationDialog;
 
     // Set window title
     if(!m_windowTitle.empty())
@@ -94,8 +94,8 @@ void SWriter::openLocationDialog()
     }
 
     locationDialog.setDefaultLocation(defaultLocation);
-    locationDialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
-    locationDialog.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
+    locationDialog.setOption(ui::dialog::location::WRITE);
+    locationDialog.setType(ui::dialog::location::SINGLE_FILE);
 
     // Will be used later to check if "All supported images" is selected
     std::string all_wildcards;
@@ -125,12 +125,12 @@ void SWriter::openLocationDialog()
     }
 
     // Show the dialog
-    const auto result = std::dynamic_pointer_cast<core::location::SingleFile>(locationDialog.show());
+    const auto result = std::dynamic_pointer_cast<core::location::single_file>(locationDialog.show());
 
     if(result)
     {
-        const auto& file_path = result->getFile();
-        setFile(file_path);
+        const auto& file_path = result->get_file();
+        set_file(file_path);
 
         // Get the selected filter
         const auto& current_selection = boost::trim_copy(locationDialog.getCurrentSelection());
@@ -156,7 +156,7 @@ void SWriter::openLocationDialog()
         }
 
         // Save default location for later use
-        defaultLocation->setFolder(file_path.parent_path());
+        defaultLocation->set_folder(file_path.parent_path());
         locationDialog.saveDefaultLocation(defaultLocation);
 
         m_dialog_shown = true;
@@ -183,7 +183,7 @@ void SWriter::stopping()
 
 void SWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 
     if(hasLocationDefined())
     {
@@ -398,7 +398,7 @@ void SWriter::updating()
     }
 
     // Check if we must add an extension or not
-    auto file_path                = getFile();
+    auto file_path                = get_file();
     const auto& current_extension = file_path.extension().string();
 
     try
@@ -447,15 +447,15 @@ void SWriter::updating()
 
         if(m_dialog_policy != DialogPolicy::NEVER || m_dialog_policy == DialogPolicy::ALWAYS)
         {
-            ui::base::dialog::MessageDialog critical_dialog;
-            critical_dialog.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
+            ui::dialog::message critical_dialog;
+            critical_dialog.setIcon(ui::dialog::message::CRITICAL);
             critical_dialog.setTitle("Missing or Wrong file extension");
             critical_dialog.setMessage(message + "\n\nWould you like to continue ?");
-            critical_dialog.addButton(ui::base::dialog::IMessageDialog::OK);
-            critical_dialog.addButton(ui::base::dialog::IMessageDialog::CANCEL);
-            critical_dialog.setDefaultButton(ui::base::dialog::IMessageDialog::CANCEL);
+            critical_dialog.addButton(ui::dialog::message::OK);
+            critical_dialog.addButton(ui::dialog::message::CANCEL);
+            critical_dialog.setDefaultButton(ui::dialog::message::CANCEL);
 
-            if(critical_dialog.show() == ui::base::dialog::IMessageDialog::CANCEL)
+            if(critical_dialog.show() == ui::dialog::message::CANCEL)
             {
                 return;
             }
@@ -471,23 +471,23 @@ void SWriter::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto write_job = core::jobs::Job::New(
+    const auto write_job = std::make_shared<core::jobs::job>(
         "Writing '" + file_path.string() + "' file",
-        [&](core::jobs::Job& running_job)
+        [&](core::jobs::job& running_job)
         {
-            running_job.doneWork(10);
+            running_job.done_work(10);
 
             // Create the session writer
-            auto writer = Writer::New();
+            auto writer = std::make_shared<Writer>();
             {
                 // The object must be unlocked since it will be locked again when writing
                 auto data = m_data.lock();
                 writer->setObject(data.get_shared());
-                writer->setFile(file_path);
+                writer->set_file(file_path);
             }
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::base::BusyCursor busyCursor;
+            const sight::ui::BusyCursor busyCursor;
 
             // Write the file
             writer->write(m_selected_backend, m_mode_by_backend.at(m_selected_backend));
@@ -497,9 +497,9 @@ void SWriter::updating()
         this->worker()
     );
 
-    core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(file_path.string() + " writer");
+    core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(file_path.string() + " writer");
     jobs->add(write_job);
-    jobs->setCancelable(false);
+    jobs->set_cancelable(false);
 
     m_job_created_signal->emit(jobs);
 
@@ -512,19 +512,19 @@ void SWriter::updating()
     {
         // Handle the error.
         SIGHT_ERROR(_e.what());
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Bitmap writer failed",
             _e.what(),
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
     }
     catch(...)
     {
         // Handle the error.
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Bitmap writer aborted",
             "Writing process aborted",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
 

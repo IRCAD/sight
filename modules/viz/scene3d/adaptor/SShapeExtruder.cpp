@@ -22,8 +22,8 @@
 
 #include "modules/viz/scene3d/adaptor/SShapeExtruder.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
@@ -38,13 +38,13 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_ENABLE_TOOL_SLOT       = "enableTool";
-static const core::com::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT  = "deleteLastMesh";
-static const core::com::Slots::SlotKeyType s_CANCEL_LAST_CLICK_SLOT = "cancelLastClick";
-static const core::com::Slots::SlotKeyType s_RESET_SLOT             = "reset";
-static const core::com::Slots::SlotKeyType s_VALIDATE_SLOT          = "validate";
+static const core::com::slots::key_t s_ENABLE_TOOL_SLOT       = "enableTool";
+static const core::com::slots::key_t s_DELETE_LAST_MESH_SLOT  = "deleteLastMesh";
+static const core::com::slots::key_t s_CANCEL_LAST_CLICK_SLOT = "cancelLastClick";
+static const core::com::slots::key_t s_RESET_SLOT             = "reset";
+static const core::com::slots::key_t s_VALIDATE_SLOT          = "validate";
 
-static const core::com::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
+static const core::com::slots::key_t TOOL_DISABLED_SIG = "toolDisabled";
 
 SShapeExtruder::Triangle2D::Triangle2D(
     const Ogre::Vector2& _a,
@@ -143,15 +143,15 @@ Ogre::Vector3 SShapeExtruder::getCamDirection(const Ogre::Camera* const _cam)
 //-----------------------------------------------------------------------------
 
 SShapeExtruder::SShapeExtruder() noexcept :
-    service::INotifier(m_signals)
+    service::notifier(m_signals)
 {
-    newSlot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
-    newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
-    newSlot(s_CANCEL_LAST_CLICK_SLOT, &SShapeExtruder::cancelLastClick, this);
-    newSlot(s_RESET_SLOT, &SShapeExtruder::reset, this);
-    newSlot(s_VALIDATE_SLOT, &SShapeExtruder::validate, this);
+    new_slot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
+    new_slot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
+    new_slot(s_CANCEL_LAST_CLICK_SLOT, &SShapeExtruder::cancelLastClick, this);
+    new_slot(s_RESET_SLOT, &SShapeExtruder::reset, this);
+    new_slot(s_VALIDATE_SLOT, &SShapeExtruder::validate, this);
 
-    m_toolDisabledSig = this->newSignal<core::com::Signal<void()> >(s_TOOL_DISABLED_SIG);
+    m_toolDisabledSig = this->new_signal<core::com::signal<void()> >(TOOL_DISABLED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -192,38 +192,38 @@ void SShapeExtruder::configuring()
 
 void SShapeExtruder::starting()
 {
-    this->IAdaptor::initialize();
+    this->adaptor::initialize();
 
     this->getRenderService()->makeCurrent();
 
     // Add the interactor to the layer.
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
-    const sight::viz::scene3d::interactor::IInteractor::sptr interactor =
-        std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+    const sight::viz::scene3d::interactor::base::sptr interactor =
+        std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     layer->addInteractor(interactor, m_priority);
 
     // Create entities.
     Ogre::SceneManager* const sceneMng = this->getSceneManager();
 
-    m_lassoNode = sceneMng->getRootSceneNode()->createChildSceneNode(this->getID() + "_lassoNode");
+    m_lassoNode = sceneMng->getRootSceneNode()->createChildSceneNode(this->get_id() + "_lassoNode");
 
-    m_lasso         = sceneMng->createManualObject(this->getID() + "_lasso");
-    m_lastLassoLine = sceneMng->createManualObject(this->getID() + "_lastLassoLine");
+    m_lasso         = sceneMng->createManualObject(this->get_id() + "_lasso");
+    m_lastLassoLine = sceneMng->createManualObject(this->get_id() + "_lastLassoLine");
 
     m_lassoNode->attachObject(m_lasso);
     m_lassoNode->attachObject(m_lastLassoLine);
 
     // Create the material.
-    m_material = data::Material::New();
+    m_material = std::make_shared<data::Material>();
 
     m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->configure(
-        this->getID() + m_materialAdaptor->getID(),
-        this->getID() + m_materialAdaptor->getID(),
+        this->get_id() + m_materialAdaptor->get_id(),
+        this->get_id() + m_materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID,
         "ambient"
@@ -260,8 +260,8 @@ void SShapeExtruder::stopping()
     // Remove the interactor from the layer.
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
-    const sight::viz::scene3d::interactor::IInteractor::sptr interactor =
-        std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+    const sight::viz::scene3d::interactor::base::sptr interactor =
+        std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     layer->removeInteractor(interactor);
 }
 
@@ -303,17 +303,17 @@ void SShapeExtruder::deleteLastMesh()
         extrudedMeshes->setReconstructionDB(reconstructions);
 
         // Send notification
-        this->INotifier::info("Last extrusion deleted.");
+        this->notifier::info("Last extrusion deleted.");
 
         // Send the signal.
         auto sig = extrudedMeshes->signal<data::ModelSeries::ReconstructionsRemovedSignalType>(
-            data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG
+            data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG
         );
-        sig->asyncEmit(data::ModelSeries::ReconstructionVectorType {reconstructions});
+        sig->async_emit(data::ModelSeries::ReconstructionVectorType {reconstructions});
     }
     else
     {
-        this->INotifier::failure("No extrusion to delete.");
+        this->notifier::failure("No extrusion to delete.");
     }
 }
 
@@ -339,8 +339,8 @@ void SShapeExtruder::reset()
         extrudedMeshes->setReconstructionDB(reconstructions);
 
         // Send the signal.
-        auto sig = extrudedMeshes->signal<data::ModelSeries::ModifiedSignalType>(data::ModelSeries::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        auto sig = extrudedMeshes->signal<data::ModelSeries::ModifiedSignalType>(data::ModelSeries::MODIFIED_SIG);
+        sig->async_emit();
     }
 }
 
@@ -528,7 +528,7 @@ void SShapeExtruder::validate()
     this->triangulatePoints();
 
     this->enableTool(false);
-    m_toolDisabledSig->asyncEmit();
+    m_toolDisabledSig->async_emit();
 
     // Send a render request.
     this->requestRender();
@@ -772,7 +772,7 @@ void SShapeExtruder::triangulatePoints() const
 void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triangulation) const
 {
     // Creates the mesh from a list a 3D triangles.
-    const data::Mesh::sptr mesh = data::Mesh::New();
+    const data::Mesh::sptr mesh = std::make_shared<data::Mesh>();
     {
         const auto lock = mesh->dump_lock();
 
@@ -828,7 +828,7 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
     data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 
     // Creates the reconstruction.
-    const data::Reconstruction::sptr reconstruction = data::Reconstruction::New();
+    const data::Reconstruction::sptr reconstruction = std::make_shared<data::Reconstruction>();
     reconstruction->setMesh(mesh);
     reconstruction->setOrganName("ExtrudedMesh_" + std::to_string(reconstructions.size()));
 
@@ -838,9 +838,9 @@ void SShapeExtruder::generateExtrudedMesh(const std::vector<Triangle3D>& _triang
 
     // Send the signal.
     auto sig = extrudedMeshes->signal<data::ModelSeries::ReconstructionsAddedSignalType>(
-        data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG
+        data::ModelSeries::RECONSTRUCTIONS_ADDED_SIG
     );
-    sig->asyncEmit(data::ModelSeries::ReconstructionVectorType {reconstruction});
+    sig->async_emit(data::ModelSeries::ReconstructionVectorType {reconstruction});
 }
 
 //------------------------------------------------------------------------------

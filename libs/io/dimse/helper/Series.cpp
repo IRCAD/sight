@@ -26,7 +26,7 @@
 
 #include "io/dimse/exceptions/TagMissing.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/ImageSeries.hpp>
@@ -61,7 +61,7 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList<QRResponse*> _responses)
             OFString data;
 
             // Create series and get informations.
-            sight::data::DicomSeries::sptr series = sight::data::DicomSeries::New();
+            sight::data::DicomSeries::sptr series = std::make_shared<sight::data::DicomSeries>();
 
             // Series
             if(_response->m_dataset->findAndGetOFStringArray(DCM_Modality, data).good() && !data.empty())

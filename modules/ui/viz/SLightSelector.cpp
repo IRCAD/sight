@@ -24,8 +24,8 @@
 
 #include "modules/ui/viz/helper/Utils.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Color.hpp>
 #include <data/Composite.hpp>
@@ -34,7 +34,7 @@
 #include <service/macros.hpp>
 #include <service/registry.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/SRender.hpp>
 
@@ -55,15 +55,15 @@ using sight::viz::scene3d::Layer;
 
 //------------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType s_LIGHT_SELECTED_SIG = "lightSelected";
-const core::com::Slots::SlotKeyType s_INIT_LIGHT_LIST_SLOT   = "initLightList";
+const core::com::signals::key_t LIGHT_SELECTED_SIG = "lightSelected";
+const core::com::slots::key_t INIT_LIGHT_LIST_SLOT = "initLightList";
 
 //------------------------------------------------------------------------------
 
 SLightSelector::SLightSelector() noexcept
 {
-    newSignal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
-    newSlot(s_INIT_LIGHT_LIST_SLOT, &SLightSelector::initLightList, this);
+    new_signal<LightSelectedSignalType>(LIGHT_SELECTED_SIG);
+    new_slot(INIT_LIGHT_LIST_SLOT, &SLightSelector::initLightList, this);
 }
 
 //------------------------------------------------------------------------------
@@ -84,9 +84,9 @@ void SLightSelector::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     qtContainer->getQtContainer()->setObjectName(serviceID);
@@ -180,8 +180,8 @@ void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem
     {
         m_currentLight = this->retrieveLightAdaptor(_item->text().toStdString());
 
-        auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
-        sig->asyncEmit(m_currentLight);
+        auto sig = this->signal<LightSelectedSignalType>(LIGHT_SELECTED_SIG);
+        sig->async_emit(m_currentLight);
 
         m_removeLightBtn->setEnabled(true);
     }
@@ -201,7 +201,7 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 
 void SLightSelector::onAddLight(bool /*unused*/)
 {
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     QWidget* const container = qtContainer->getQtContainer();
@@ -266,8 +266,8 @@ void SLightSelector::onRemoveLight(bool /*unused*/)
 
         m_removeLightBtn->setEnabled(false);
 
-        auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
-        sig->asyncEmit(nullptr);
+        auto sig = this->signal<LightSelectedSignalType>(LIGHT_SELECTED_SIG);
+        sig->async_emit(nullptr);
 
         currentLayer->requestRender();
     }
@@ -277,7 +277,7 @@ void SLightSelector::onRemoveLight(bool /*unused*/)
 
 void SLightSelector::onEditAmbientColor(bool /*unused*/)
 {
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     QWidget* const container = qtContainer->getQtContainer();
@@ -315,25 +315,25 @@ void SLightSelector::refreshLayers()
 {
     m_layersBox->clear();
 
-    const auto renderers = service::getServices("sight::viz::scene3d::SRender");
+    const auto renderers = sight::service::getServices("sight::viz::scene3d::SRender");
 
     // Fills layer combo box with all enabled layers of each render services
     for(const auto& srv : renderers)
     {
-        auto render = sight::viz::scene3d::SRender::dynamicCast(srv);
+        auto render = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(srv);
 
         for(auto& layerMap : render->getLayers())
         {
             const std::string id = layerMap.first;
-            std::string renderID = render->getID();
+            std::string renderID = render->get_id();
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
             m_connections.connect(
                 layerMap.second,
-                Layer::s_INIT_LAYER_SIG,
-                this->getSptr(),
-                s_INIT_LIGHT_LIST_SLOT
+                Layer::INIT_LAYER_SIG,
+                this->get_sptr(),
+                INIT_LIGHT_LIST_SLOT
             );
         }
     }
@@ -372,8 +372,8 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
 
     if(currentLayer)
     {
-        data::Color::sptr lightDiffuseColor  = data::Color::New();
-        data::Color::sptr lightSpecularColor = data::Color::New();
+        data::Color::sptr lightDiffuseColor  = std::make_shared<data::Color>();
+        data::Color::sptr lightSpecularColor = std::make_shared<data::Color>();
 
         ILight::sptr lightAdaptor = ILight::createLightAdaptor(
             lightDiffuseColor,
@@ -382,8 +382,8 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         lightAdaptor->setType(Ogre::Light::LT_DIRECTIONAL);
         lightAdaptor->setLayerID(currentLayer->getLayerID());
         lightAdaptor->setRenderService(currentLayer->getRenderService());
-        service::IService::ConfigType config;
-        config.add("config.<xmlattr>.name", this->getID() + "_light");
+        service::config_t config;
+        config.add("config.<xmlattr>.name", this->get_id() + "_light");
         config.add("config.<xmlattr>.layer", currentLayer->getLayerID());
         lightAdaptor->setConfiguration(config);
         lightAdaptor->configure();
@@ -394,11 +394,11 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         m_lightAdaptors = currentLayer->getLightAdaptors();
         this->updateLightsList();
 
-        const auto materialServices = service::getServices("sight::module::viz::scene3d::adaptor::SMaterial");
+        const auto materialServices = sight::service::getServices("sight::module::viz::scene3d::adaptor::SMaterial");
 
         for(const auto& srv : materialServices)
         {
-            auto materialAdaptor = sight::viz::scene3d::IAdaptor::dynamicCast(srv);
+            auto materialAdaptor = std::dynamic_pointer_cast<sight::viz::scene3d::adaptor>(srv);
 
             if(materialAdaptor->getLayerID() == currentLayer->getLayerID())
             {

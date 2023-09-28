@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <core/macros.hpp>
 
 #include <io/zip/exception/Read.hpp>
-#include <io/zip/IReadArchive.hpp>
+#include <io/zip/read_archive.hpp>
 
 #include <archive.h>
 
@@ -46,7 +46,7 @@ typedef CSPTR(std::vector<char>) BufferCSPtr;
  *
  * @brief MemoryReadArchive is a memory archive reader
  */
-class IO_IGTL_CLASS_API MemoryReadArchive : public io::zip::IReadArchive
+class IO_IGTL_CLASS_API MemoryReadArchive : public io::zip::read_archive
 {
 public:
 
@@ -66,7 +66,7 @@ public:
      * @throw io::zip::exception::Read if file doesn't exist in archive.
      * @throw io::zip::exception::Read if cannot retrieve file in archive.
      */
-    IO_IGTL_API SPTR(std::istream) getFile(const std::filesystem::path& path) override;
+    IO_IGTL_API SPTR(std::istream) get_file(const std::filesystem::path& path) override;
 
     /**
      * @brief Returns archive path.
@@ -80,7 +80,7 @@ public:
      *
      * @return cloned instance
      */
-    [[nodiscard]] IReadArchive::sptr clone() const override
+    [[nodiscard]] read_archive::sptr clone() const override
     {
         return SPTR(MemoryReadArchive)(new MemoryReadArchive(m_BUFFER, m_SIZE));
     }

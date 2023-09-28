@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
-#include <ui/base/IAction.hpp>
+#include <ui/__/action.hpp>
 
 namespace sight::module::ui::qt
 {
@@ -34,11 +34,11 @@ namespace sight::module::ui::qt
 /**
  * @brief   This action launch a browser on the url given in configuration.
  */
-class MODULE_UI_QT_CLASS_API SLaunchBrowser : public sight::ui::base::IAction
+class MODULE_UI_QT_CLASS_API SLaunchBrowser : public sight::ui::action
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SLaunchBrowser, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SLaunchBrowser, sight::ui::action);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SLaunchBrowser() noexcept;
@@ -51,7 +51,7 @@ protected:
     /**
      * @brief configure the action.
      * @code{.xml}
-       <service type="ui::base::IAction" impl="sight::module::ui::qt::SLaunchBrowser"
+       <service type="ui::action" impl="sight::module::ui::qt::SLaunchBrowser"
      * autoConnect="false">
         <url>http://www.ircad.fr</url>
        </service>

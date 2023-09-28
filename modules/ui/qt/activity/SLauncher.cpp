@@ -24,21 +24,21 @@
 
 #include "SLauncher.hpp"
 
-#include <activity/IActivityValidator.hpp>
-#include <activity/IBuilder.hpp>
-#include <activity/IValidator.hpp>
+#include <activity/builder/base.hpp>
+#include <activity/validator/activity.hpp>
+#include <activity/validator/base.hpp>
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/runtime.hpp>
 
 #include <data/Activity.hpp>
 
+#include <service/app_config_manager.hpp>
 #include <service/extension/AppConfig.hpp>
-#include <service/IAppConfigManager.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/SelectorDialog.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/selector.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -57,26 +57,26 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SLauncher::s_LAUNCH_SERIES_SLOT        = "launchSeries";
-const core::com::Slots::SlotKeyType SLauncher::s_LAUNCH_ACTIVITY_SLOT      = "launchActivity";
-const core::com::Slots::SlotKeyType SLauncher::s_UPDATE_STATE_SLOT         = "updateState";
-const core::com::Signals::SignalKeyType SLauncher::s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+const core::com::slots::key_t SLauncher::LAUNCH_SERIES_SLOT      = "launchSeries";
+const core::com::slots::key_t SLauncher::LAUNCH_ACTIVITY_SLOT    = "launchActivity";
+const core::com::slots::key_t SLauncher::UPDATE_STATE_SLOT       = "updateState";
+const core::com::signals::key_t SLauncher::ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
 using sight::activity::extension::Activity;
 using sight::activity::extension::ActivityInfo;
-using sight::activity::ActivityMsg;
-using sight::activity::IValidator;
-using sight::activity::IValidator;
+using sight::activity::message;
+using sight::activity::validator::base;
+using sight::activity::validator::base;
 
 //------------------------------------------------------------------------------
 
 SLauncher::SLauncher() noexcept :
-    m_sigActivityLaunched(newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG)),
+    m_sigActivityLaunched(new_signal<ActivityLaunchedSignalType>(ACTIVITY_LAUNCHED_SIG)),
     m_mode("message")
 {
-    newSlot(s_LAUNCH_SERIES_SLOT, &SLauncher::launchSeries, this);
-    newSlot(s_LAUNCH_ACTIVITY_SLOT, &SLauncher::launchActivity, this);
-    newSlot(s_UPDATE_STATE_SLOT, &SLauncher::updateState, this);
+    new_slot(LAUNCH_SERIES_SLOT, &SLauncher::launchSeries, this);
+    new_slot(LAUNCH_ACTIVITY_SLOT, &SLauncher::launchActivity, this);
+    new_slot(UPDATE_STATE_SLOT, &SLauncher::updateState, this);
 }
 
 //------------------------------------------------------------------------------
@@ -103,8 +103,8 @@ void SLauncher::stopping()
 
 void SLauncher::configuring()
 {
-    this->sight::ui::base::IAction::initialize();
-    using ConfigType = service::IService::ConfigType;
+    this->sight::ui::action::initialize();
+    using ConfigType = service::config_t;
 
     m_parameters.clear();
     if(this->getConfiguration().count("config") > 0)
@@ -114,8 +114,8 @@ void SLauncher::configuring()
             this->getConfiguration().count("config") == 1
         );
 
-        const service::IService::ConfigType srvconfig = this->getConfiguration();
-        const service::IService::ConfigType& config   = srvconfig.get_child("config");
+        const service::config_t srvconfig = this->getConfiguration();
+        const service::config_t& config   = srvconfig.get_child("config");
 
         m_mode = config.get_optional<std::string>("mode").get_value_or("message");
         SIGHT_ASSERT(
@@ -125,7 +125,7 @@ void SLauncher::configuring()
 
         if(config.count("parameters") == 1)
         {
-            const service::IService::ConfigType& configParameters = config.get_child("parameters");
+            const service::config_t& configParameters = config.get_child("parameters");
             // NOLINTNEXTLINE(bugprone-branch-clone)
             BOOST_FOREACH(const ConfigType::value_type& v, configParameters.equal_range("parameter"))
             {
@@ -138,7 +138,7 @@ void SLauncher::configuring()
 
         if(config.count("filter") == 1)
         {
-            const service::IService::ConfigType& configFilter = config.get_child("filter");
+            const service::config_t& configFilter = config.get_child("filter");
             SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
             const auto mode = configFilter.get<std::string>("mode");
@@ -160,12 +160,12 @@ void SLauncher::configuring()
         if(config.count("quickLaunch") == 1)
         {
             m_quickLaunch.clear();
-            const service::IService::ConfigType& configQuickLaunch = config.get_child("quickLaunch");
+            const service::config_t& configQuickLaunch = config.get_child("quickLaunch");
             // NOLINTNEXTLINE(bugprone-branch-clone)
             BOOST_FOREACH(const ConfigType::value_type& v, configQuickLaunch.equal_range("association"))
             {
-                const service::IService::ConfigType& association = v.second;
-                const service::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
+                const service::config_t& association = v.second;
+                const service::config_t xmlattr      = association.get_child("<xmlattr>");
 
                 SIGHT_FATAL_IF("The attribute \"type\" is missing", xmlattr.count("type") != 1);
                 SIGHT_FATAL_IF("The attribute \"id\" is missing", xmlattr.count("id") != 1);
@@ -308,10 +308,10 @@ void SLauncher::updating()
         }
         else
         {
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Activity launcher",
                 "Not available activity for the current selection.",
-                sight::ui::base::dialog::MessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
     }
@@ -326,9 +326,9 @@ void SLauncher::updateState()
 
     bool isEnabled = false;
 
-    if(selection->size() == 1 && data::Activity::dynamicCast((*selection)[0]))
+    if(selection->size() == 1 && std::dynamic_pointer_cast<data::Activity>((*selection)[0]))
     {
-        data::Activity::sptr as = data::Activity::dynamicCast((*selection)[0]);
+        data::Activity::sptr as = std::dynamic_pointer_cast<data::Activity>((*selection)[0]);
 
         if(m_filterMode == "include" || m_filterMode == "exclude")
         {
@@ -356,7 +356,7 @@ void SLauncher::updateState()
         if(m_filterMode.empty() && dataCount.size() == 1)
         {
             data::Object::sptr obj = selection->front();
-            if(data::Activity::dynamicCast(obj))
+            if(std::dynamic_pointer_cast<data::Activity>(obj))
             {
                 isEnabled = true;
             }
@@ -378,7 +378,7 @@ void SLauncher::buildActivity(
     const data::Vector::csptr& selection
 )
 {
-    auto builder = sight::activity::builder::factory::New(info.builderImpl);
+    auto builder = sight::activity::builder::factory::make(info.builderImpl);
     SIGHT_ASSERT(info.builderImpl << " instantiation failed", builder);
 
     auto activity = builder->buildData(info, selection);
@@ -387,10 +387,10 @@ void SLauncher::buildActivity(
     {
         const std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl
                                 + "> failed.";
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Activity can not be launched",
             msg,
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         SIGHT_ERROR(msg);
         return;
@@ -402,21 +402,20 @@ void SLauncher::buildActivity(
         for(const std::string& validatorImpl : info.validatorsImpl)
         {
             /// Process activity validator
-            IValidator::sptr validator = sight::activity::validator::factory::New(validatorImpl);
+            auto validator = sight::activity::validator::factory::make(validatorImpl);
 
-            auto activityValidator = sight::activity::IActivityValidator::dynamicCast(validator);
+            auto activityValidator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
 
             if(activityValidator)
             {
-                IValidator::ValidationType validation = activityValidator->validate(activity);
-                if(!validation.first)
+                auto ret = activityValidator->validate(activity);
+                if(!ret.first)
                 {
-                    const std::string message = "The activity '" + info.title + "' can not be launched:\n"
-                                                + validation.second;
-                    sight::ui::base::dialog::MessageDialog::show(
+                    const std::string message = "The activity '" + info.title + "' can not be launched:\n" + ret.second;
+                    sight::ui::dialog::message::show(
                         "Activity launch",
                         message,
-                        sight::ui::base::dialog::IMessageDialog::CRITICAL
+                        sight::ui::dialog::message::CRITICAL
                     );
                     return;
                 }
@@ -424,21 +423,21 @@ void SLauncher::buildActivity(
         }
     }
 
-    const ActivityMsg msg(activity, info, m_parameters);
+    const message msg(activity, info, m_parameters);
 
     if(m_mode == "message")
     {
-        m_sigActivityLaunched->asyncEmit(msg);
+        m_sigActivityLaunched->async_emit(msg);
     }
     else
     {
-        sight::ui::base::LockAction lock(this->getSptr());
+        sight::ui::LockAction lock(this->get_sptr());
 
         const std::string& viewConfigID = msg.getAppConfigID();
         auto replacementMap             = msg.getReplacementMap();
         replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier();
 
-        auto helper = service::IAppConfigManager::New();
+        auto helper = service::app_config_manager::make();
         helper->setConfig(viewConfigID, replacementMap);
         helper->launch();
         helper->stopAndDestroy();
@@ -450,20 +449,20 @@ void SLauncher::buildActivity(
 void SLauncher::sendConfig(const ActivityInfo& info)
 {
     // Start module containing the activity if it is not started
-    core::runtime::startModule(info.bundleId);
+    core::runtime::start_module(info.bundleId);
 
     const auto selection = m_series.lock();
     SIGHT_ASSERT("The input key '" << s_SERIES << "' is not correctly set.", selection);
 
-    IValidator::ValidationType validation;
+    sight::activity::validator::return_t validation;
     validation.first = true;
 
     for(auto const& validatorImpl : info.validatorsImpl)
     {
-        IValidator::sptr validator = sight::activity::validator::factory::New(validatorImpl);
+        auto validator = sight::activity::validator::factory::make(validatorImpl);
         SIGHT_ASSERT(validatorImpl << " instantiation failed", validator);
 
-        IValidator::ValidationType valid = validator->validate(info, selection.get_shared());
+        auto valid = validator->validate(info, selection.get_shared());
         validation.first &= valid.first;
         if(!valid.first)
         {
@@ -473,10 +472,10 @@ void SLauncher::sendConfig(const ActivityInfo& info)
 
     if(!validation.first)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Activity can not be launched",
             "The activity " + info.title + " can't be launched. Reason : " + validation.second,
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
     else
@@ -496,7 +495,7 @@ bool SLauncher::launchAS(const data::Vector::csptr& selection)
     {
         for(const data::Object::sptr& obj : *selection)
         {
-            data::Activity::sptr as = data::Activity::dynamicCast(obj);
+            data::Activity::sptr as = std::dynamic_pointer_cast<data::Activity>(obj);
             if(!as)
             {
                 launchAS = false;
@@ -515,13 +514,13 @@ bool SLauncher::launchAS(const data::Vector::csptr& selection)
 
 void SLauncher::launchSeries(data::Series::sptr series)
 {
-    auto selection = data::Vector::New();
+    auto selection = std::make_shared<data::Vector>();
     selection->push_back(series);
     ActivityInfoContainer infos = Activity::getDefault()->getInfos(selection);
 
-    if(m_quickLaunch.find(series->getClassname()) != m_quickLaunch.end())
+    if(m_quickLaunch.find(series->get_classname()) != m_quickLaunch.end())
     {
-        std::string activityId = m_quickLaunch[series->getClassname()];
+        std::string activityId = m_quickLaunch[series->get_classname()];
         SIGHT_ASSERT(
             "Activity information not found for" + activityId,
             Activity::getDefault()->hasInfo(activityId)
@@ -534,10 +533,10 @@ void SLauncher::launchSeries(data::Series::sptr series)
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Activity launcher",
             "Not available activity for the current selection.",
-            sight::ui::base::dialog::MessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
 }
@@ -555,21 +554,19 @@ void SLauncher::launchActivity(data::Activity::sptr activity)
         for(const std::string& validatorImpl : info.validatorsImpl)
         {
             /// Process activity validator
-            IValidator::sptr validator = sight::activity::validator::factory::New(validatorImpl);
-
-            auto activityValidator = sight::activity::IActivityValidator::dynamicCast(validator);
+            auto validator         = sight::activity::validator::factory::make(validatorImpl);
+            auto activityValidator = std::dynamic_pointer_cast<sight::activity::validator::activity>(validator);
 
             if(activityValidator)
             {
-                IValidator::ValidationType validation = activityValidator->validate(activity);
-                if(!validation.first)
+                auto ret = activityValidator->validate(activity);
+                if(!ret.first)
                 {
-                    const std::string message = "The activity '" + info.title + "' can not be launched:\n"
-                                                + validation.second;
-                    sight::ui::base::dialog::MessageDialog::show(
+                    const std::string message = "The activity '" + info.title + "' can not be launched:\n" + ret.second;
+                    sight::ui::dialog::message::show(
                         "Activity launch",
                         message,
-                        sight::ui::base::dialog::IMessageDialog::CRITICAL
+                        sight::ui::dialog::message::CRITICAL
                     );
                     return;
                 }
@@ -577,17 +574,17 @@ void SLauncher::launchActivity(data::Activity::sptr activity)
         }
     }
 
-    m_sigActivityLaunched->asyncEmit(ActivityMsg(activity, info, m_parameters));
+    m_sigActivityLaunched->async_emit(message(activity, info, m_parameters));
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SLauncher::getAutoConnections() const
+service::connections_t SLauncher::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_SERIES, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT);
-    connections.push(s_SERIES, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT);
+    connections.push(s_SERIES, data::Vector::ADDED_OBJECTS_SIG, UPDATE_STATE_SLOT);
+    connections.push(s_SERIES, data::Vector::REMOVED_OBJECTS_SIG, UPDATE_STATE_SLOT);
 
     return connections;
 }

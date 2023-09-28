@@ -7,12 +7,12 @@ This library links with `Ogre3d` and `OpenGL`.
 
 ### Interfaces
 
-- **IAdaptor**: provides behaviour of Ogre adaptor services.
+- **adaptor**: provides behaviour of Ogre adaptor services.
 - **IGraphicsWorker**: interface to run gpu resource handling tasks in parallel.
 - **ILight**: interface to manage the light adaptor.
 - **IParameter**: contains common code to upload shader parameters from Sight data.
-- **ITransformable**: provides behavior for all classes containing a transformation matrix.
-- **IWindowInteractor**: manages ogreRenderWindowInteractor in a window.
+- **transformable**: provides behavior for all classes containing a transformation matrix.
+- **window_interactor**: manages ogreRenderwindow_interactor in a window.
 
 ### Base
 
@@ -75,7 +75,7 @@ Contains helpers classes and functions.
 Contains interface and classes for interactions, clippingBox, trackball interactor and mesh picking.
 
 - **ClippingBoxInteractor**: Picks volume rendering widgets and updates clipping cube.
-- **IInteractor**: interface implementation for all the interaction with the mouse
+- **base**: interface implementation for all the interaction with the mouse
 - **MeshPickerInteractor**: runs picking queries when the user clicks in the scene.
 - **TrackballInteractor**: trackball camera interactions. Lets the user move the camera around a point of interest when moving the mouse.
 
@@ -105,7 +105,7 @@ Contains classes related to volume rendering processes.
 
 - **GridProxyGeometry**: proxy geometry used for volume ray tracing.
 - **IllumAmbientOcclusionSAT**: computes the illumination volume for extinction based shading.
-- **IVolumeRenderer**: interface for volume renderers.
+- **volume_renderer**: interface for volume renderers.
 - **PreIntegrationTable**: computes the table for pre-integrated rendering.
 - **RayEntryCompositor**: creates a compositor to compute volume ray entry points.
 - **RayTracingVolumeRenderer**: implements a simple GPU ray-tracing renderer.

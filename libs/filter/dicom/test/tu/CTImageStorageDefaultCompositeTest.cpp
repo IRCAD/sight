@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,8 @@
 #include "CTImageStorageDefaultCompositeTest.hpp"
 
 #include <filter/dicom/factory/new.hpp>
+#include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/Filter.hpp>
-#include <filter/dicom/IFilter.hpp>
 
 #include <io/dicom/reader/SeriesSet.hpp>
 
@@ -56,7 +56,7 @@ void CTImageStorageDefaultCompositeTest::tearDown()
 
 void CTImageStorageDefaultCompositeTest::simpleApplication()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -67,16 +67,16 @@ void CTImageStorageDefaultCompositeTest::simpleApplication()
     );
 
     // Read DicomSeries
-    auto reader = io::dicom::reader::SeriesSet::New();
+    auto reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeriesA = data::DicomSeries::dynamicCast((*series_set)[0]);
-    data::DicomSeries::sptr dicomSeriesB = data::DicomSeries::New();
-    dicomSeriesB->deepCopy(dicomSeriesA);
+    data::DicomSeries::sptr dicomSeriesA = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
+    data::DicomSeries::sptr dicomSeriesB = std::make_shared<data::DicomSeries>();
+    dicomSeriesB->deep_copy(dicomSeriesA);
     CPPUNIT_ASSERT(dicomSeriesA);
     CPPUNIT_ASSERT(dicomSeriesB);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainerA;
@@ -85,31 +85,31 @@ void CTImageStorageDefaultCompositeTest::simpleApplication()
     dicomSeriesContainerB.push_back(dicomSeriesB);
 
     // Apply composite filter on the first DicomSeries
-    filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(
+    sight::filter::dicom::filter::sptr filter = sight::filter::dicom::factory::make(
         "sight::filter::dicom::composite::CTImageStorageDefaultComposite"
     );
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerA, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerA, filter, true);
 
     // Apply other filters on the second DicomSeries
-    filter = filter::dicom::factory::New("sight::filter::dicom::splitter::AcquisitionNumberSplitter");
+    filter = sight::filter::dicom::factory::make("sight::filter::dicom::splitter::AcquisitionNumberSplitter");
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("sight::filter::dicom::sorter::InstanceNumberSorter");
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    filter = sight::filter::dicom::factory::make("sight::filter::dicom::sorter::InstanceNumberSorter");
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("sight::filter::dicom::sorter::ImagePositionPatientSorter");
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    filter = sight::filter::dicom::factory::make("sight::filter::dicom::sorter::ImagePositionPatientSorter");
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    filter = sight::filter::dicom::factory::make("sight::filter::dicom::splitter::ImagePositionPatientSplitter");
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("sight::filter::dicom::sorter::ImagePositionPatientSorter");
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    filter = sight::filter::dicom::factory::make("sight::filter::dicom::sorter::ImagePositionPatientSorter");
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
-    filter = filter::dicom::factory::New("sight::filter::dicom::modifier::SliceThicknessModifier");
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    filter = sight::filter::dicom::factory::make("sight::filter::dicom::modifier::SliceThicknessModifier");
     CPPUNIT_ASSERT(filter);
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainerB, filter, true);
 
     // Compare the two series
     CPPUNIT_ASSERT_EQUAL(dicomSeriesContainerA.size(), dicomSeriesContainerB.size());
@@ -119,9 +119,9 @@ void CTImageStorageDefaultCompositeTest::simpleApplication()
         {
             CPPUNIT_ASSERT(
                 std::memcmp(
-                    dicomSeriesContainerA[j]->getDicomContainer().at(i)->getBuffer(),
-                    dicomSeriesContainerB[j]->getDicomContainer().at(i)->getBuffer(),
-                    dicomSeriesContainerA[j]->getDicomContainer().at(i)->getSize()
+                    dicomSeriesContainerA[j]->getDicomContainer().at(i)->buffer(),
+                    dicomSeriesContainerB[j]->getDicomContainer().at(i)->buffer(),
+                    dicomSeriesContainerA[j]->getDicomContainer().at(i)->size()
                 ) == 0
             );
         }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/itk/config.hpp"
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 #include <filesystem>
 
@@ -55,11 +55,11 @@ namespace sight::module::io::itk
  * - \b file (optional): path of the file to save, if it not defined, 'openLocationDialog()' should be called to define
  * the path.
  */
-class MODULE_IO_ITK_CLASS_API SImageWriter : public sight::io::base::service::IWriter
+class MODULE_IO_ITK_CLASS_API SImageWriter : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SImageWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SImageWriter, sight::io::service::writer);
 
     MODULE_IO_ITK_API SImageWriter() noexcept;
 
@@ -88,7 +88,7 @@ protected:
     MODULE_IO_ITK_API void openLocationDialog() override;
 
     /// Return managed file type, here FILE
-    MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_ITK_API sight::io::service::IOPathType getIOPathType() const override;
 };
 
 } // namespace sight::module::io::itk

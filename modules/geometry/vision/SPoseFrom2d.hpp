@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 #include "modules/geometry/vision/config.hpp"
 
-#include <core/HiResClock.hpp>
+#include <core/hires_clock.hpp>
 #include <core/mt/types.hpp>
 
 #include <data/Camera.hpp>
@@ -32,7 +32,7 @@
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 
-#include <service/IRegisterer.hpp>
+#include <service/registerer.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -43,7 +43,7 @@ namespace sight::module::geometry::vision
  * @brief   SPoseFrom2d Class used to compute the 3d pose of a object using 2d points.
  *
  * @section Slots Slots
- * - \b computeRegistration(core::HiResClock::HiResClockType timestamp) : computes the registration.
+ * - \b computeRegistration(core::hires_clock::type timestamp) : computes the registration.
  *
  * @section XML XML Configuration
  *
@@ -78,19 +78,19 @@ namespace sight::module::geometry::vision
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SPoseFrom2d : public service::IRegisterer
+class MODULE_GEOMETRY_VISION_CLASS_API SPoseFrom2d : public service::registerer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SPoseFrom2d, service::IRegisterer);
+    SIGHT_DECLARE_SERVICE(SPoseFrom2d, service::registerer);
 
     typedef std::vector<std::string> VectKeyType;
 
     MODULE_GEOMETRY_VISION_API SPoseFrom2d() noexcept;
     MODULE_GEOMETRY_VISION_API ~SPoseFrom2d() noexcept override = default;
 
-    /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
-    service::IService::KeyConnectionsMap getAutoConnections() const override;
+    /// Connect MarkerTL::OBJECT_PUSHED_SIG to REGISTER_SLOT
+    service::connections_t getAutoConnections() const override;
 
 protected:
 
@@ -115,7 +115,7 @@ protected:
     MODULE_GEOMETRY_VISION_API void stopping() override;
 
     /// Register matrix slot
-    void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
+    void computeRegistration(core::hires_clock::type timestamp) override;
 
 private:
 
@@ -164,7 +164,7 @@ private:
     cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
 
     /// Last timestamp
-    core::HiResClock::HiResClockType m_lastTimestamp {0};
+    core::hires_clock::type m_lastTimestamp {0};
 
     /// Marker pattern width.
     double m_patternWidth {80};

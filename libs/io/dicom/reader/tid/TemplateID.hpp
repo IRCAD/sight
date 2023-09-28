@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/container/DicomInstance.hpp"
 
-#include <core/log/Logger.hpp>
+#include <core/log/logger.hpp>
 
 #include <data/Object.hpp>
 
@@ -55,7 +55,7 @@ public:
         SPTR(gdcm::Reader)reader,
         SPTR(io::dicom::container::DicomInstance)instance,
         SPTR(DATATYPE)object,
-        core::log::Logger::sptr logger
+        core::log::logger::sptr logger
     );
 
     /// Destructor
@@ -76,7 +76,7 @@ protected:
     SPTR(DATATYPE) m_object;
 
     ///Logger
-    core::log::Logger::sptr m_logger;
+    core::log::logger::sptr m_logger;
 };
 
 //------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ TemplateID<DATATYPE>::TemplateID(
     SPTR(gdcm::Reader)reader,
     SPTR(io::dicom::container::DicomInstance)instance,
     SPTR(DATATYPE)object,
-    core::log::Logger::sptr logger
+    core::log::logger::sptr logger
 ) :
     m_dicomSeries(std::move(dicomSeries)),
     m_reader(std::move(reader)),

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ namespace sight::io::dicom::reader::iod
 CTMRImageIOD::CTMRImageIOD(
     const data::DicomSeries::csptr& dicomSeries,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -62,15 +62,15 @@ CTMRImageIOD::~CTMRImageIOD()
 void CTMRImageIOD::read(data::Series::sptr series)
 {
     // Retrieve image series
-    data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
+    data::ImageSeries::sptr imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
     SPTR(gdcm::ImageReader) reader = std::make_shared<gdcm::ImageReader>();
 
     // Read the first file
-    const core::memory::BufferObject::sptr bufferObj         = m_dicomSeries->getDicomContainer().begin()->second;
-    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::buffer_object::sptr bufferObj          = m_dicomSeries->getDicomContainer().begin()->second;
+    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
 
@@ -78,7 +78,7 @@ void CTMRImageIOD::read(data::Series::sptr series)
     SIGHT_THROW_EXCEPTION_IF(
         io::dicom::exception::Failed(
             "Unable to read the DICOM instance \""
-            + bufferObj->getStreamInfo().fsFile.string()
+            + bufferObj->get_stream_info().fs_file.string()
             + "\" using the GDCM Reader."
         ),
         !success

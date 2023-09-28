@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ LineConverter::~LineConverter()
     std::array<float, 4> direction {};
 
     ::igtl::PositionMessage::Pointer dest;
-    data::Line::csptr srcLine = data::Line::dynamicConstCast(src);
+    data::Line::csptr srcLine = std::dynamic_pointer_cast<const data::Line>(src);
 
     dest = ::igtl::PositionMessage::New();
     std::transform(
@@ -85,11 +85,11 @@ data::Object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     // four-element array.
     std::array<float, 4> igtlDirection {};
 
-    data::Line::sptr dest                    = data::Line::New();
+    data::Line::sptr dest                    = std::make_shared<data::Line>();
     auto* msg                                = dynamic_cast< ::igtl::PositionMessage*>(src.GetPointer());
     ::igtl::PositionMessage::Pointer srcLine = ::igtl::PositionMessage::Pointer(msg);
-    dest->setPosition(data::Point::New());
-    dest->setDirection(data::Point::New());
+    dest->setPosition(std::make_shared<data::Point>());
+    dest->setDirection(std::make_shared<data::Point>());
     srcLine->GetPosition(igtlPos.data());
     srcLine->GetQuaternion(igtlDirection.data());
     std::transform(
@@ -110,7 +110,7 @@ data::Object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
 
 //-----------------------------------------------------------------------------
 
-IConverter::sptr LineConverter::New()
+base::sptr LineConverter::New()
 {
     return std::make_shared<LineConverter>();
 }

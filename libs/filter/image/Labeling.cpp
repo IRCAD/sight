@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "filter/image/filters.hpp"
 #include "filter/image/filters.hxx"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/tools/Dispatcher.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <data/Boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
@@ -72,20 +72,20 @@ struct LabelingFilter
 
 data::Image::sptr labeling(data::Image::sptr image, unsigned int numLabels)
 {
-    data::Image::sptr outputImage = data::Image::New();
+    data::Image::sptr outputImage = std::make_shared<data::Image>();
 
     LabelingFilter::Parameters params;
     params.m_inputImage  = image;
     params.m_outputImage = outputImage;
     params.m_numLabels   = numLabels;
 
-    const core::Type type = image->getType();
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, LabelingFilter>::invoke(type, params);
+    const core::type type = image->getType();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, LabelingFilter>::invoke(type, params);
 
     // Notify image
     data::Object::ModifiedSignalType::sptr sig;
-    sig = outputImage->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    sig = outputImage->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+    sig->async_emit();
 
     return outputImage;
 }
@@ -158,7 +158,7 @@ struct LabelImageFilter
                     // append to landmark
                     const typename ShapeLabelObjectType::CentroidType centroid = labelObject->GetCentroid();
 
-                    newPoint = data::Point::New(centroid[0], centroid[1], centroid[2]);
+                    newPoint = std::make_shared<data::Point>(centroid[0], centroid[1], centroid[2]);
 
                     for(std::size_t findPlane : findPlanes)
                     {
@@ -168,7 +168,7 @@ struct LabelImageFilter
                         // append to point the label
                         std::stringstream labelName;
                         labelName << n;
-                        data::String::sptr label = data::String::New(labelName.str());
+                        data::String::sptr label = std::make_shared<data::String>(labelName.str());
 
                         planePointList->getPoints().push_back(newPoint);
                     }
@@ -193,7 +193,7 @@ struct LabelImageFilter
                 // append to landmark
                 const typename ShapeLabelObjectType::CentroidType centroid = labelObject->GetCentroid();
 
-                newPoint = data::Point::New(centroid[0], centroid[1], centroid[2]);
+                newPoint = std::make_shared<data::Point>(centroid[0], centroid[1], centroid[2]);
                 landmarks->getPoints().push_back(newPoint);
 
                 // append to point the label
@@ -226,8 +226,8 @@ void computeCentroids(
     }
 
     // Call the ITK operator
-    const core::Type type = image->getType();
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, LabelImageFilter>::invoke(type, params);
+    const core::type type = image->getType();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, LabelImageFilter>::invoke(type, params);
 }
 
 } // namespace sight::filter::image.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
         }
 
         float percent = po->GetProgress();
-        m_adviser->notifyProgress(percent, m_msg);
+        m_adviser->notify_progress(percent, m_msg);
     }
 
     //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ public:
     }
 
     std::string m_msg;
-    SPTR(core::tools::ProgressAdviser) m_adviser;
+    SPTR(core::tools::progress_adviser) m_adviser;
 };
 
 //------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ public:
 template<typename OBSERVEE>
 ProgressItkToFw<OBSERVEE>::ProgressItkToFw(
     OBSERVEE observee,
-    SPTR(core::tools::ProgressAdviser)observer,
+    SPTR(core::tools::progress_adviser)observer,
     std::string msg
 ) :
     m_observee(observee),

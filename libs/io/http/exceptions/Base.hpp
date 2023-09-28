@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "io/http/config.hpp"
 
-#include <core/Exception.hpp>
+#include <core/exception.hpp>
 
 namespace sight::io::http::exceptions
 {
@@ -32,7 +32,7 @@ namespace sight::io::http::exceptions
 /**
  * @brief Base class of fwNetworkIO Exception
  */
-class IO_HTTP_CLASS_API Base : public core::Exception
+class IO_HTTP_CLASS_API Base : public core::exception
 {
 public:
 

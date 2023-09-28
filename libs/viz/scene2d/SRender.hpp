@@ -30,7 +30,7 @@
 
 #include <service/helper/Config.hpp>
 
-#include <viz/base/IRender.hpp>
+#include <viz/__/render.hpp>
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -46,7 +46,7 @@ namespace sight::viz::scene2d
 class Scene2DGraphicsView;
 
 // Not declared in the #include because of mutual inclusion.
-class IAdaptor;
+class adaptor;
 
 /**
  * @brief Qt scene rendering class.
@@ -87,11 +87,11 @@ class IAdaptor;
  *   - \b uid: set the adaptor uid
  *
  */
-class VIZ_SCENE2D_CLASS_API SRender : public viz::base::IRender
+class VIZ_SCENE2D_CLASS_API SRender : public viz::render
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender);
+    SIGHT_DECLARE_SERVICE(SRender, viz::render);
 
     /// A string type representing adaptors id.
     typedef std::string AdaptorIDType;
@@ -143,7 +143,7 @@ protected:
     VIZ_SCENE2D_API void configuring() override;
 
     /// Call startContext to set the scene, the viewport and the view,
-    /// and add'em to the QtContainer and start the adaptors
+    /// and add'em to the widget and start the adaptors
     /// contained in the adaptors id vector of the ObjectsID2AdaptorIDVector map.
     VIZ_SCENE2D_API void starting() override;
 
@@ -157,7 +157,7 @@ protected:
 
 private:
 
-    /// Create the QtContainer, the scene, the viewport, the view.
+    /// Create the widget, the scene, the viewport, the view.
     void startContext();
 
     /// Delete m_scene and m_view;

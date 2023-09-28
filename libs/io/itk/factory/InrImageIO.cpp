@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "InrImageIO.hpp"
 
-#include <core/Exception.hpp>
-#include <core/spyLog.hpp>
+#include <core/exception.hpp>
+#include <core/spy_log.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -403,7 +403,7 @@ void InrImageIO::Read(void* buffer)
                 );
         }
     }
-    catch(sight::core::Exception& /*e*/) // catch progress bar cancel exception
+    catch(sight::core::exception& /*e*/) // catch progress bar cancel exception
     {
         gzclose(file);
         throw;
@@ -790,7 +790,7 @@ void InrImageIO::Write(const void* buffer)
                     );
             }
         }
-        catch(sight::core::Exception& /*e*/) // catch progress bar cancel exception
+        catch(sight::core::exception& /*e*/) // catch progress bar cancel exception
         {
             gzclose(outputFile);
             throw;
@@ -835,7 +835,7 @@ void InrImageIO::Write(const void* buffer)
                     ));
             }
         }
-        catch(sight::core::Exception& /*e*/) // catch progress bar cancel exception
+        catch(sight::core::exception& /*e*/) // catch progress bar cancel exception
         {
             std::ignore = fclose(outputFile);
             throw;

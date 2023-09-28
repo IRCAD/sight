@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,20 +23,20 @@
 #include "modules/ui/qt/viz/PointEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
 #include <geometry/data/IntrasecTypes.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QDoubleValidator>
 #include <QHBoxLayout>
@@ -50,11 +50,11 @@
 namespace sight::module::ui::qt::viz
 {
 
-static const core::com::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+static const core::com::slots::key_t GET_INTERACTION_SLOT = "getInteraction";
 
 PointEditor::PointEditor() noexcept
 {
-    newSlot(s_GET_INTERACTION_SLOT, &PointEditor::getInteraction, this);
+    new_slot(GET_INTERACTION_SLOT, &PointEditor::getInteraction, this);
 }
 
 //------------------------------------------------------------------------------
@@ -66,9 +66,9 @@ PointEditor::~PointEditor() noexcept =
 
 void PointEditor::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
@@ -110,7 +110,7 @@ void PointEditor::stopping()
 
 void PointEditor::configuring()
 {
-    this->sight::ui::base::IGuiContainer::initialize();
+    this->sight::ui::service::initialize();
 }
 
 //------------------------------------------------------------------------------

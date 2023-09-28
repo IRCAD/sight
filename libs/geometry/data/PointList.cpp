@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "geometry/data/PointList.hpp"
 
-#include <core/data/Point.hpp>
-#include <core/data/PointList.hpp>
+#include <data/Point.hpp>
+#include <data/PointList.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 
@@ -59,8 +59,8 @@ sight::data::Array::sptr PointList::computeDistance(
     const sight::data::PointList::PointListContainer points2 = _pointList2->getPoints();
     const std::size_t size                                   = points1.size();
 
-    sight::data::Array::sptr outputArray = sight::data::Array::New();
-    outputArray->resize({size}, sight::core::Type::DOUBLE);
+    sight::data::Array::sptr outputArray = std::make_shared<sight::data::Array>();
+    outputArray->resize({size}, sight::core::type::DOUBLE);
     const auto dumpLock   = outputArray->dump_lock();
     auto distanceArrayItr = outputArray->begin<double>();
 

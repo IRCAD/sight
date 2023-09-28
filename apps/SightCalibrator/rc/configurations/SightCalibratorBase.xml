@@ -14,7 +14,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+        <service uid="mainFrame" type="sight::module::ui::SFrame" >
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>
@@ -30,7 +30,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+        <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -43,7 +43,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+        <service uid="menuFileView" type="sight::module::ui::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Open data set..." shortcut="Ctrl+O" />
@@ -62,7 +62,7 @@
             </registry>
         </service>
 
-        <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
+        <service uid="menuPreferencesView" type="sight::module::ui::SMenu" >
             <gui>
                 <layout>
                     <menuItem name="Video directory" />
@@ -74,9 +74,9 @@
         </service>
 
 
-        <service uid="mainview" type="sight::module::ui::base::SView" >
+        <service uid="mainview" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
                 </layout>
             </gui>
@@ -110,41 +110,41 @@
             </preference>
         </service>
 
-        <service uid="openDataSetAct" type="sight::module::ui::base::com::SStarter">
+        <service uid="openDataSetAct" type="sight::module::ui::com::SStarter">
             <start uid="dataSetReaderSrv" />
         </service>
 
-        <service uid="openActivityAct" type="sight::module::ui::base::com::SStarter">
+        <service uid="openActivityAct" type="sight::module::ui::com::SStarter">
             <start uid="activitySetReaderSrv" />
         </service>
 
         <!-- Actions to save all type of series (jsonz, json, ...). -->
-        <service uid="saveAct" type="sight::module::ui::base::com::SStarter">
+        <service uid="saveAct" type="sight::module::ui::com::SStarter">
             <start uid="dataSetWriterSrv" />
         </service>
 
         <!-- Save current activity. -->
-        <service uid="saveActivityAct" type="sight::module::ui::base::com::SStarter">
+        <service uid="saveActivityAct" type="sight::module::ui::com::SStarter">
             <start uid="activitySetWriterSrv" />
         </service>
 
-        <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+        <service uid="quitAct" type="sight::module::ui::SQuit" />
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="dataSetReaderSrv" type="sight::module::ui::base::io::SSelector" config="SDBSessionReaderIOSelectorConfig" >
+        <service uid="dataSetReaderSrv" type="sight::module::ui::io::SSelector" config="SDBSessionReaderIOSelectorConfig" >
             <inout key="data" uid="dataSet" />
         </service>
 
-        <service uid="dataSetWriterSrv" type="sight::module::ui::base::io::SSelector" config="SDBSessionWriterIOSelectorConfig" >
+        <service uid="dataSetWriterSrv" type="sight::module::ui::io::SSelector" config="SDBSessionWriterIOSelectorConfig" >
             <inout key="data" uid="dataSet" />
         </service>
 
-        <service uid="activitySetReaderSrv" type="sight::module::ui::base::io::SSelector" config="ActivityReaderConfig" >
+        <service uid="activitySetReaderSrv" type="sight::module::ui::io::SSelector" config="ActivityReaderConfig" >
             <inout key="data" uid="activitySet" />
         </service>
 
-        <service uid="activitySetWriterSrv" type="sight::module::ui::base::io::SSelector" config="ActivityWriterConfig" >
+        <service uid="activitySetWriterSrv" type="sight::module::ui::io::SSelector" config="ActivityWriterConfig" >
             <inout key="data" uid="activitySet" />
         </service>
 

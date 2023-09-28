@@ -26,8 +26,8 @@
 
 #include "viz/scene3d/ogre.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/String.hpp>
 
@@ -52,7 +52,7 @@ namespace sight::module::viz::scene3d::adaptor
 
 SPointList::SPointList() noexcept
 {
-    m_material = data::Material::New();
+    m_material = std::make_shared<data::Material>();
 }
 
 //-----------------------------------------------------------------------------
@@ -129,8 +129,8 @@ void SPointList::configuring()
 
     this->setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            this->getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            this->get_id() + "_transform"
         )
     );
 
@@ -153,7 +153,7 @@ void SPointList::configuring()
     m_displayLabel = config.get(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
 
     const std::string labelColor = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");
-    m_labelColor = data::Color::New();
+    m_labelColor = std::make_shared<data::Color>();
     m_labelColor->setRGBA(labelColor);
 }
 
@@ -165,7 +165,7 @@ void SPointList::starting()
 
     this->getRenderService()->makeCurrent();
 
-    m_meshGeometry = std::make_shared<sight::viz::scene3d::Mesh>(this->getID());
+    m_meshGeometry = std::make_shared<sight::viz::scene3d::Mesh>(this->get_id());
     m_meshGeometry->setDynamic(true);
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     m_sceneNode = this->getOrCreateTransformNode(rootSceneNode);
@@ -196,15 +196,15 @@ void SPointList::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SPointList::getAutoConnections() const
+service::connections_t SPointList::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_ADDED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_REMOVED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_POINTLIST_INPUT, data::PointList::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_POINTLIST_INPUT, data::PointList::POINT_ADDED_SIG, service::slots::UPDATE);
+    connections.push(s_POINTLIST_INPUT, data::PointList::POINT_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(s_POINTLIST_INPUT, data::PointList::MODIFIED_SIG, service::slots::UPDATE);
 
-    connections.push(s_MESH_INPUT, data::Mesh::s_VERTEX_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_MESH_INPUT, data::Mesh::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MESH_INPUT, data::Mesh::VERTEX_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_MESH_INPUT, data::Mesh::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -283,7 +283,7 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
             labelNumber = std::to_string(i);
         }
 
-        m_labels.push_back(sight::viz::scene3d::IText::New(this->getLayer()));
+        m_labels.push_back(sight::viz::scene3d::IText::make(this->getLayer()));
         m_labels[i]->setFontSize(m_fontSize);
         m_labels[i]->setText(labelNumber);
         m_labels[i]->setTextColor(
@@ -293,7 +293,7 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
                 m_labelColor->blue()
             )
         );
-        m_nodes.push_back(m_sceneNode->createChildSceneNode(this->getID() + labelNumber));
+        m_nodes.push_back(m_sceneNode->createChildSceneNode(this->get_id() + labelNumber));
         m_labels[i]->attachToNode(m_nodes[i], this->getLayer()->getDefaultCamera());
         data::Point::PointCoordArrayType coord = point->getCoord();
         m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
@@ -359,7 +359,7 @@ void SPointList::updateMesh(const data::PointList::csptr& _pointList)
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->updateMaterialAdaptor(_pointList->getID());
+    this->updateMaterialAdaptor(_pointList->get_id());
 
     this->attachNode(m_entity);
 
@@ -414,7 +414,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->updateMaterialAdaptor(_mesh->getID());
+    this->updateMaterialAdaptor(_mesh->get_id());
 
     this->attachNode(m_entity);
 
@@ -440,8 +440,8 @@ scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::s
         DEFAULT_MATERIAL_TEMPLATE_NAME;
 
     materialAdaptor->configure(
-        this->getID() + "_" + materialAdaptor->getID(),
-        _meshId + "_" + materialAdaptor->getID(),
+        this->get_id() + "_" + materialAdaptor->get_id(),
+        _meshId + "_" + materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID,
         "",
@@ -488,7 +488,7 @@ void SPointList::updateMaterialAdaptor(const std::string& _meshId)
             m_materialAdaptor->update();
         }
     }
-    else if(m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock()
+    else if(m_materialAdaptor->inout<data::Material>(SMaterial::s_MATERIAL_INOUT).lock()
             != m_material)
     {
         auto* materialFw = m_materialAdaptor->getMaterialFw();
@@ -503,7 +503,7 @@ void SPointList::updateMaterialAdaptor(const std::string& _meshId)
 
         m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
 
-        m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->run();
+        m_materialAdaptor->slot(service::slots::UPDATE)->run();
     }
 }
 

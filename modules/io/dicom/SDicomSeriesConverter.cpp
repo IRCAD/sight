@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,27 +22,27 @@
 
 #include "SDicomSeriesConverter.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/com/signal.hxx>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
 
 #include <data/SeriesSet.hpp>
 
 #include <io/dicom/reader/SeriesSet.hpp>
 
-#include <ui/base/dialog/LoggerDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/dialog/logger.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::dicom
 {
 
-static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesConverter::SDicomSeriesConverter() noexcept :
-    m_sigJobCreated(newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
+    m_sigJobCreated(new_signal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
 {
 }
 
@@ -85,29 +85,29 @@ void SDicomSeriesConverter::updating()
     SIGHT_ASSERT("The 'target' key doesn't exist.", dest_series_set);
 
     const auto dicom_series_set = m_source.lock();
-    data::SeriesSet::sptr dummy = data::SeriesSet::New();
+    data::SeriesSet::sptr dummy = std::make_shared<data::SeriesSet>();
 
     if(dicom_series_set->empty())
     {
-        sight::ui::base::dialog::MessageDialog messageBox;
-        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+        sight::ui::dialog::message messageBox;
+        messageBox.setIcon(ui::dialog::message::INFO);
+        messageBox.addButton(ui::dialog::message::OK);
         messageBox.setTitle("Read DICOM series");
         messageBox.setMessage("There is no DICOM series that can be read.");
         messageBox.show();
     }
     else
     {
-        auto reader = sight::io::dicom::reader::SeriesSet::New();
+        auto reader = std::make_shared<sight::io::dicom::reader::SeriesSet>();
         reader->setObject(dummy);
         auto job = reader->getJob();
         m_sigJobCreated->emit(job);
 
         try
         {
-            reader->readFromDicomSeriesSet(dicom_series_set.get_shared(), this->getSptr());
+            reader->readFromDicomSeriesSet(dicom_series_set.get_shared(), this->get_sptr());
 
-            core::log::Logger::sptr logger = reader->getLogger();
+            core::log::logger::sptr logger = reader->getLogger();
             logger->sort();
 
             std::stringstream ss;
@@ -116,9 +116,9 @@ void SDicomSeriesConverter::updating()
             << "<br>Please verify the log report to be informed of the potential errors.";
 
             bool result = false;
-            if(!job->cancelRequested())
+            if(!job->cancel_requested())
             {
-                result = sight::ui::base::dialog::LoggerDialog::showLoggerDialog(
+                result = sight::ui::dialog::logger::showLoggerDialog(
                     "Reading process over",
                     ss.str(),
                     logger
@@ -126,7 +126,7 @@ void SDicomSeriesConverter::updating()
             }
 
             // If the user cancel the reading process we delete the loaded series
-            if(!result || job->cancelRequested())
+            if(!result || job->cancel_requested())
             {
                 dummy->clear();
             }
@@ -140,18 +140,18 @@ void SDicomSeriesConverter::updating()
         {
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Warning",
                 ss.str(),
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
         catch(...)
         {
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Warning",
                 "Warning during loading",
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
     }

@@ -22,8 +22,8 @@
 
 #include "modules/viz/scene3d/adaptor/SFragmentsInfo.hpp"
 
-#include <core/com/Signals.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signals.hpp>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
@@ -81,20 +81,20 @@ struct FragmentsInfoMaterialListener final : public Ogre::MaterialManager::Liste
 };
 
 static std::unique_ptr<FragmentsInfoMaterialListener> s_MATERIAL_LISTENER = nullptr;
-static const core::com::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT         = "resizeViewport";
+static const core::com::slots::key_t RESIZE_VIEWPORT_SLOT                 = "resizeViewport";
 
 //-----------------------------------------------------------------------------
 
 SFragmentsInfo::SFragmentsInfo() noexcept
 {
-    newSlot(s_RESIZE_VIEWPORT_SLOT, &SFragmentsInfo::resizeViewport, this);
+    new_slot(RESIZE_VIEWPORT_SLOT, &SFragmentsInfo::resizeViewport, this);
 }
 
 //-----------------------------------------------------------------------------
 
 void SFragmentsInfo::configuring()
 {
-    // IAdaptor handles the layerID.
+    // adaptor handles the layerID.
     this->configureParams();
 
     const ConfigType config = this->getConfiguration();
@@ -115,9 +115,9 @@ void SFragmentsInfo::starting()
 {
     this->initialize();
 
-    m_compositorName        = this->getID() + "_Snapshot_C";
-    m_targetName            = this->getID() + "_global_RTT";
-    m_targetPrimitiveIDName = this->getID() + "_primitiveID_RTT";
+    m_compositorName        = this->get_id() + "_Snapshot_C";
+    m_targetName            = this->get_id() + "_global_RTT";
+    m_targetPrimitiveIDName = this->get_id() + "_primitiveID_RTT";
 
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
     layer->getRenderTarget()->addListener(this);
@@ -145,9 +145,9 @@ void SFragmentsInfo::starting()
 
         m_resizeConnection.connect(
             this->getLayer(),
-            sight::viz::scene3d::Layer::s_RESIZE_LAYER_SIG,
-            this->getSptr(),
-            s_RESIZE_VIEWPORT_SLOT
+            sight::viz::scene3d::Layer::RESIZE_LAYER_SIG,
+            this->get_sptr(),
+            RESIZE_VIEWPORT_SLOT
         );
     }
 }
@@ -164,8 +164,8 @@ void SFragmentsInfo::updating() noexcept
             sight::viz::scene3d::Utils::convertFromOgreTexture(text, image.get_shared(), m_flipImage);
 
             const auto sig =
-                image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-            sig->asyncEmit();
+                image->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+            sig->async_emit();
         }
     }
 
@@ -177,8 +177,8 @@ void SFragmentsInfo::updating() noexcept
             sight::viz::scene3d::Utils::convertFromOgreTexture(depthText, depth.get_shared(), m_flipImage);
 
             const auto depthSig =
-                depth->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-            depthSig->asyncEmit();
+                depth->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+            depthSig->async_emit();
         }
     }
 
@@ -190,8 +190,8 @@ void SFragmentsInfo::updating() noexcept
             sight::viz::scene3d::Utils::convertFromOgreTexture(primitiveIDText, primitiveID.get_shared(), m_flipImage);
 
             const auto primitiveIDSig =
-                primitiveID->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-            primitiveIDSig->asyncEmit();
+                primitiveID->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+            primitiveIDSig->async_emit();
         }
     }
 }

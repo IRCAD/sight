@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "modules/io/igtl/config.hpp"
-#include "modules/io/igtl/INetworkSender.hpp"
+#include "modules/io/igtl/network_sender.hpp"
 
 #include <data/Object.hpp>
 
@@ -57,11 +57,11 @@ namespace sight::module::io::igtl
  * They must have an attribute 'deviceName' to know the device-name used for this specific data.
  **/
 
-class MODULE_IO_IGTL_CLASS_API SServerSender : public module::io::igtl::INetworkSender
+class MODULE_IO_IGTL_CLASS_API SServerSender : public module::io::igtl::network_sender
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SServerSender, module::io::igtl::INetworkSender);
+    SIGHT_DECLARE_SERVICE(SServerSender, module::io::igtl::network_sender);
 
     /// Constructor
     MODULE_IO_IGTL_API SServerSender();

@@ -22,8 +22,8 @@
 
 #include "modules/viz/scene3d/adaptor/SRenderStats.hpp"
 
-#include <viz/scene3d/IWindowInteractor.hpp>
 #include <viz/scene3d/SRender.hpp>
+#include <viz/scene3d/window_interactor.hpp>
 
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTargetListener.h>
@@ -86,7 +86,7 @@ void SRenderStats::configuring()
     static const std::string s_FONT_SIZE_CONFIG = s_CONFIG + "fontSize";
 
     const std::string color      = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
-    data::Color::sptr sightColor = data::Color::New();
+    data::Color::sptr sightColor = std::make_shared<data::Color>();
     sightColor->setRGBA(color);
 
     m_textColor = Ogre::ColourValue(sightColor->red(), sightColor->green(), sightColor->blue());
@@ -103,7 +103,7 @@ void SRenderStats::starting()
     sight::viz::scene3d::SRender::sptr renderSrv = this->getRenderService();
     renderSrv->makeCurrent();
 
-    m_statsText = sight::viz::scene3d::IText::New(this->getLayer());
+    m_statsText = sight::viz::scene3d::IText::make(this->getLayer());
     m_statsText->setFontSize(m_fontSize);
     m_statsText->setPosition(0.01F, 0.01F);
     m_statsText->setTextColor(m_textColor);

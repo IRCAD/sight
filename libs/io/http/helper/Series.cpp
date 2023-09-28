@@ -22,7 +22,7 @@
 
 #include "io/http/helper/Series.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/ImageSeries.hpp>
@@ -38,7 +38,7 @@ Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& seriesJson)
     DicomSeriesContainer seriesContainer;
 
     // Create series
-    data::DicomSeries::sptr series = data::DicomSeries::New();
+    data::DicomSeries::sptr series = std::make_shared<data::DicomSeries>();
 
     // ==================================
     // Series

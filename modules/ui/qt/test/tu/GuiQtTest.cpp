@@ -57,15 +57,15 @@ void GuiQtTest::tearDown()
 
 void GuiQtTest::testDefaultFrame()
 {
-    data::String::sptr object = data::String::New();
+    data::String::sptr object = std::make_shared<data::String>();
 
-    service::IService::ConfigType frameConfig;
+    service::config_t frameConfig;
 
     frameConfig.put("gui.frame.name", "guiQtUnitTest");
     frameConfig.put("gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 
-    service::IService::sptr srv = service::add("sight::module::ui::base::SFrame");
+    service::base::sptr srv = service::add("sight::module::ui::SFrame");
     ASSERT_NOT_NULL(srv);
 
     srv->setConfiguration(frameConfig);

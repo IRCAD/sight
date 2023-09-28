@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,13 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/writer/Series.hpp"
 
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/progress_adviser.hpp>
 
 #include <data/Series.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 namespace sight::io::dicom
 {
@@ -42,20 +42,20 @@ namespace writer
 /**
  * @brief   This class manages patient writing, in DICOM file format.
  */
-class IO_DICOM_CLASS_API SeriesSet : public io::base::writer::GenericObjectWriter<data::SeriesSet>,
-                                     public core::location::SingleFolder,
-                                     public core::tools::ProgressAdviser
+class IO_DICOM_CLASS_API SeriesSet : public io::writer::GenericObjectWriter<data::SeriesSet>,
+                                     public core::location::single_folder,
+                                     public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         SeriesSet,
-        io::base::writer::GenericObjectWriter<data::SeriesSet>,
-        io::base::writer::factory::New<SeriesSet>
+        io::writer::GenericObjectWriter<data::SeriesSet>,
+        io::writer::factory::make<SeriesSet>
     );
 
     /// Constructor
-    IO_DICOM_API SeriesSet(io::base::writer::IObjectWriter::Key key);
+    IO_DICOM_API SeriesSet();
 
     /// Destructor
     IO_DICOM_API ~SeriesSet() override = default;

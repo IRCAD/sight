@@ -8,9 +8,9 @@
         <object uid="${objectID}" type="sight::data::DicomSeries" src="ref" />
         <object uid="image" type="sight::data::Image" src="deferred" />
         <object uid="tf" type="sight::data::TransferFunction" />
-        <service uid="mainview" type="sight::module::ui::base::SView">
+        <service uid="mainview" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
                     <view align="bottom" minWidth="200" minHeight="40" resizable="false" />
                 </layout>

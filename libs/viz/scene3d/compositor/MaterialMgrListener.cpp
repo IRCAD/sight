@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "viz/scene3d/helper/Shading.hpp"
 #include "viz/scene3d/helper/Technique.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
@@ -436,31 +436,31 @@ Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(
     // Set specific shader according to the algo and the pass
     if(_algoName == "DepthPeeling" || _algoName == "CelShadingDepthPeeling")
     {
-        parameters.push_back({"preprocessor_defines", "DEPTH_PEELING=1"});
+        parameters.emplace_back("preprocessor_defines", "DEPTH_PEELING=1");
     }
     else if(_algoName == "DualDepthPeeling")
     {
-        parameters.push_back({"preprocessor_defines", "DUAL_DEPTH_PEELING=1"});
+        parameters.emplace_back("preprocessor_defines", "DUAL_DEPTH_PEELING=1");
     }
     else if(_algoName == "HybridTransparency")
     {
         if(_algoPassName == "peel" || _algoPassName == "peelInit")
         {
-            parameters.push_back({"preprocessor_defines", "DEPTH_PEELING=1"});
+            parameters.emplace_back("preprocessor_defines", "DEPTH_PEELING=1");
         }
         else
         {
             if(_algoPassName == "transmittanceBlend")
             {
-                parameters.push_back({"preprocessor_defines", "HYBRID=1,WBOIT_TRANSMIT=1"});
+                parameters.emplace_back("preprocessor_defines", "HYBRID=1,WBOIT_TRANSMIT=1");
             }
             else if(_algoPassName == "occlusionMap")
             {
-                parameters.push_back({"preprocessor_defines", "HYBRID=1,WBOIT_OCCLUSION=1"});
+                parameters.emplace_back("preprocessor_defines", "HYBRID=1,WBOIT_OCCLUSION=1");
             }
             else
             {
-                parameters.push_back({"preprocessor_defines", "HYBRID=1,WBOIT=1"});
+                parameters.emplace_back("preprocessor_defines", "HYBRID=1,WBOIT=1");
             }
         }
     }
@@ -468,15 +468,15 @@ Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(
     {
         if(_algoPassName == "transmittanceBlend")
         {
-            parameters.push_back({"preprocessor_defines", "WBOIT_TRANSMIT=1"});
+            parameters.emplace_back("preprocessor_defines", "WBOIT_TRANSMIT=1");
         }
         else if(_algoPassName == "occlusionMap")
         {
-            parameters.push_back({"preprocessor_defines", "WBOIT_OCCLUSION=1"});
+            parameters.emplace_back("preprocessor_defines", "WBOIT_OCCLUSION=1");
         }
         else
         {
-            parameters.push_back({"preprocessor_defines", "WBOIT=1"});
+            parameters.emplace_back("preprocessor_defines", "WBOIT=1");
         }
     }
     else

@@ -10,8 +10,8 @@ target_link_libraries(
     PUBLIC core
            data
            service
-           ui_base
-           io_base
+           ui
+           io
            io_opencv
            geometry_vision
 )

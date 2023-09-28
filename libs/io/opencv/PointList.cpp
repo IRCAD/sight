@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ void PointList::copyFromCv(const std::vector<cv::Point2d>& _src, const data::Poi
     _dst->getPoints().clear();
     for(const auto& cvPoint : _src)
     {
-        _dst->getPoints().push_back(data::Point::New(cvPoint.x, cvPoint.y, 0.));
+        _dst->getPoints().push_back(std::make_shared<data::Point>(cvPoint.x, cvPoint.y, 0.));
     }
 }
 

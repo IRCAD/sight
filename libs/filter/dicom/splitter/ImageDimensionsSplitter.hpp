@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "filter/dicom/config.hpp"
-#include "filter/dicom/splitter/ISplitter.hpp"
+#include "filter/dicom/splitter/base.hpp"
 
 #include <data/DicomSeries.hpp>
 
@@ -33,22 +33,26 @@ namespace sight::filter::dicom::splitter
 /**
  * @brief Filter that uses the image dimensions to split the instances
  */
-class FILTER_DICOM_CLASS_API ImageDimensionsSplitter : public ISplitter
+class FILTER_DICOM_CLASS_API ImageDimensionsSplitter : public base
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ImageDimensionsSplitter, ISplitter, filter::dicom::factory::New<ImageDimensionsSplitter>);
+    SIGHT_DECLARE_CLASS(
+        ImageDimensionsSplitter,
+        base,
+        sight::filter::dicom::factory::make<ImageDimensionsSplitter>
+    );
 
     /// Constructor
-    FILTER_DICOM_API ImageDimensionsSplitter(filter::dicom::IFilter::Key key);
+    FILTER_DICOM_API ImageDimensionsSplitter() = default;
 
     /// Destructor
-    FILTER_DICOM_API ~ImageDimensionsSplitter() override;
+    FILTER_DICOM_API ~ImageDimensionsSplitter() override = default;
 
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
         const data::DicomSeries::sptr& series,
-        const core::log::Logger::sptr& logger
+        const core::log::logger::sptr& logger
     ) const override;
 
     /// Return the name of the filter

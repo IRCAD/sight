@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "io/dicom/helper/DicomSearch.hpp"
 
-#include <core/thread/Worker.hpp>
+#include <core/thread/worker.hpp>
 
 #include <io/dimse/helper/Series.hpp>
 
-#include <utest/Exception.hpp>
+#include <utest/exception.hpp>
 
 #include <utestData/Data.hpp>
 
@@ -87,7 +87,7 @@ void SeriesEnquirerTest::tearDown()
 void SeriesEnquirerTest::initializeConnection()
 {
     // Create the series enquirer
-    m_seriesEnquirer = io::dimse::SeriesEnquirer::New();
+    m_seriesEnquirer = std::make_shared<io::dimse::SeriesEnquirer>();
 
     // Initialize the enquirer
     m_seriesEnquirer->initialize(
@@ -122,7 +122,7 @@ void SeriesEnquirerTest::initializeConnection()
 void SeriesEnquirerTest::pushSeries()
 {
     // Create the series enquirer
-    m_seriesEnquirer = io::dimse::SeriesEnquirer::New();
+    m_seriesEnquirer = std::make_shared<io::dimse::SeriesEnquirer>();
     m_seriesEnquirer->initialize(
         m_localApplicationTitle,
         m_pacsHostName,
@@ -165,13 +165,13 @@ void SeriesEnquirerTest::pushSeries()
 void SeriesEnquirerTest::pullSeriesUsingMoveRetrieveMethod()
 {
     // Create the retriever
-    m_seriesRetriever = io::dimse::SeriesRetriever::New();
+    m_seriesRetriever = std::make_shared<io::dimse::SeriesRetriever>();
     m_seriesRetriever->initialize(m_moveApplicationTitle, m_moveApplicationPort);
-    core::thread::Worker::sptr worker = core::thread::Worker::New();
+    core::thread::worker::sptr worker = core::thread::worker::make();
     worker->post([this](auto&& ...){m_seriesRetriever->start();});
 
     // Create the series enquirer
-    m_seriesEnquirer = io::dimse::SeriesEnquirer::New();
+    m_seriesEnquirer = std::make_shared<io::dimse::SeriesEnquirer>();
     m_seriesEnquirer->initialize(
         m_localApplicationTitle,
         m_pacsHostName,
@@ -204,7 +204,7 @@ void SeriesEnquirerTest::pullSeriesUsingMoveRetrieveMethod()
 void SeriesEnquirerTest::pullSeriesUsingGetRetrieveMethod()
 {
     // Create the series enquirer
-    m_seriesEnquirer = io::dimse::SeriesEnquirer::New();
+    m_seriesEnquirer = std::make_shared<io::dimse::SeriesEnquirer>();
     m_seriesEnquirer->initialize(
         m_localApplicationTitle,
         m_pacsHostName,
@@ -231,13 +231,13 @@ void SeriesEnquirerTest::pullSeriesUsingGetRetrieveMethod()
 void SeriesEnquirerTest::pullInstanceUsingMoveRetrieveMethod()
 {
     // Create the receiver
-    m_seriesRetriever = io::dimse::SeriesRetriever::New();
+    m_seriesRetriever = std::make_shared<io::dimse::SeriesRetriever>();
     m_seriesRetriever->initialize(m_moveApplicationTitle, m_moveApplicationPort);
-    core::thread::Worker::sptr worker = core::thread::Worker::New();
+    core::thread::worker::sptr worker = core::thread::worker::make();
     worker->post([this](auto&& ...){m_seriesRetriever->start();});
 
     // Create the series enquirer
-    m_seriesEnquirer = io::dimse::SeriesEnquirer::New();
+    m_seriesEnquirer = std::make_shared<io::dimse::SeriesEnquirer>();
     m_seriesEnquirer->initialize(
         m_localApplicationTitle,
         m_pacsHostName,
@@ -272,7 +272,7 @@ void SeriesEnquirerTest::pullInstanceUsingMoveRetrieveMethod()
 void SeriesEnquirerTest::pullInstanceUsingGetRetrieveMethod()
 {
     // Create the series enquirer
-    m_seriesEnquirer = io::dimse::SeriesEnquirer::New();
+    m_seriesEnquirer = std::make_shared<io::dimse::SeriesEnquirer>();
     m_seriesEnquirer->initialize(
         m_localApplicationTitle,
         m_pacsHostName,

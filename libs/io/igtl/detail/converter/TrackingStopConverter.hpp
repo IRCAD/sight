@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/igtl/detail/converter/IConverter.hpp"
+#include "io/igtl/detail/converter/base.hpp"
 #include "io/igtl/detail/exception/Conversion.hpp"
 
 namespace sight::io::igtl::detail::converter
@@ -32,7 +32,7 @@ namespace sight::io::igtl::detail::converter
  *
  * @brief class to manage conversion between data::Composite and STP_TDATA in igtl::TrackingDataMessage
  */
-class IO_IGTL_CLASS_API TrackingStopConverter : public IConverter
+class IO_IGTL_CLASS_API TrackingStopConverter : public base
 {
 public:
 
@@ -55,7 +55,7 @@ public:
      * @brief create new TrackingStopConverter
      * @return a smart pointer to a TrackingStopConverter
      */
-    IO_IGTL_API static IConverter::sptr New();
+    IO_IGTL_API static base::sptr New();
 
     /**
      * @brief get the igtlType supported for conversion

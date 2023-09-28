@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <viz/scene3d/IResource.hpp>
+#include <viz/scene3d/resource.hpp>
 
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTexture.h>
@@ -39,9 +39,9 @@ namespace sight::viz::scene3d
  * @brief This binds a sight::data::Image to a shared Ogre texture. It allows to share the GPU memory from multiple
  * callers that use the same image, and only update the GPU buffer when necessary.
  */
-class VIZ_SCENE3D_CLASS_API Texture : public IResource<data::Image,
-                                                       Ogre::Texture,
-                                                       Texture>
+class VIZ_SCENE3D_CLASS_API Texture : public resource<data::Image,
+                                                      Ogre::Texture,
+                                                      Texture>
 {
 public:
 

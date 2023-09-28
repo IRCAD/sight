@@ -4,7 +4,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExFrameByFrame_AppCfg</id>
@@ -20,7 +20,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>ExFrameByFrame</name>
@@ -34,7 +34,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <editor />
@@ -58,11 +58,11 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="startVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="previousImageAct" type="sight::module::ui::base::SAction" />
-            <service uid="nextImageAct" type="sight::module::ui::base::SAction" />
+            <service uid="startVideoAct" type="sight::module::ui::SAction" />
+            <service uid="stopVideoAct" type="sight::module::ui::SAction" />
+            <service uid="pauseVideoAct" type="sight::module::ui::SAction" />
+            <service uid="previousImageAct" type="sight::module::ui::SAction" />
+            <service uid="nextImageAct" type="sight::module::ui::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ ImageConverter::~ImageConverter()
 
 ::igtl::MessageBase::Pointer ImageConverter::fromFwDataObject(data::Object::csptr src) const
 {
-    data::Image::csptr srcImg = data::Image::dynamicCast(src);
+    data::Image::csptr srcImg = std::dynamic_pointer_cast<const data::Image>(src);
     ::igtl::Matrix4x4 matrix;
 
     const auto dumpLock = srcImg->dump_lock();
@@ -70,9 +70,9 @@ ImageConverter::~ImageConverter()
     dest->SetSpacing(float(srcImg->getSpacing()[0]), float(srcImg->getSpacing()[1]), float(srcImg->getSpacing()[2]));
     dest->SetNumComponents(static_cast<int>(srcImg->numComponents()));
     dest->SetDimensions(
-        static_cast<int>(srcImg->getSize()[0]),
-        static_cast<int>(srcImg->getSize()[1]),
-        static_cast<int>(srcImg->getSize()[2])
+        static_cast<int>(srcImg->size()[0]),
+        static_cast<int>(srcImg->size()[1]),
+        static_cast<int>(srcImg->size()[2])
     );
     dest->AllocateScalars();
     char* igtlImgBuffer = reinterpret_cast<char*>(dest->GetScalarPointer());
@@ -86,7 +86,7 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
 {
     ::igtl::ImageMessage::Pointer srcImg;
     char* igtlImageBuffer     = nullptr;
-    data::Image::sptr destImg = data::Image::New();
+    data::Image::sptr destImg = std::make_shared<data::Image>();
     const auto dumpLock       = destImg->dump_lock();
     std::array<float, 3> igtlSpacing {};
     std::array<float, 3> igtlOrigins {};
@@ -138,7 +138,7 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
 
 //-----------------------------------------------------------------------------
 
-IConverter::sptr ImageConverter::New()
+base::sptr ImageConverter::New()
 {
     return std::make_shared<ImageConverter>();
 }

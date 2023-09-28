@@ -95,36 +95,36 @@ public:
     QWidget* widget;
 };
 
-class UI_QT_CLASS_QT_API QfwToolBox : public QFrame
+class UI_QT_CLASS_API_QT QfwToolBox : public QFrame
 {
 Q_OBJECT
 
 public:
 
-    UI_QT_QT_API QfwToolBox(QWidget* parent = nullptr);
-    UI_QT_QT_API ~QfwToolBox() override;
+    UI_QT_API_QT QfwToolBox(QWidget* parent = nullptr);
+    UI_QT_API_QT ~QfwToolBox() override;
 
-    UI_QT_QT_API int addItem(QWidget* widget, const QString& text);
-    UI_QT_QT_API int insertItem(int index, QWidget* widget, const QString& text);
+    UI_QT_API_QT int addItem(QWidget* widget, const QString& text);
+    UI_QT_API_QT int insertItem(int index, QWidget* widget, const QString& text);
 
-    UI_QT_QT_API void removeItem(int index);
+    UI_QT_API_QT void removeItem(int index);
 
-    UI_QT_QT_API void setItemEnabled(int index, bool enabled);
-    [[nodiscard]] UI_QT_QT_API bool isItemEnabled(int index) const;
+    UI_QT_API_QT void setItemEnabled(int index, bool enabled);
+    [[nodiscard]] UI_QT_API_QT bool isItemEnabled(int index) const;
 
-    UI_QT_QT_API void setItemText(int index, const QString& text);
-    [[nodiscard]] UI_QT_QT_API QString itemText(int index) const;
+    UI_QT_API_QT void setItemText(int index, const QString& text);
+    [[nodiscard]] UI_QT_API_QT QString itemText(int index) const;
 
-    UI_QT_QT_API void setItemToolTip(int index, const QString& toolTip);
-    [[nodiscard]] UI_QT_QT_API QString itemToolTip(int index) const;
+    UI_QT_API_QT void setItemToolTip(int index, const QString& toolTip);
+    [[nodiscard]] UI_QT_API_QT QString itemToolTip(int index) const;
 
-    [[nodiscard]] UI_QT_QT_API QWidget* widget(int index) const;
+    [[nodiscard]] UI_QT_API_QT QWidget* widget(int index) const;
 
-    UI_QT_QT_API int indexOf(QWidget* widget) const;
-    [[nodiscard]] UI_QT_QT_API int count() const;
+    UI_QT_API_QT int indexOf(QWidget* widget) const;
+    [[nodiscard]] UI_QT_API_QT int count() const;
 
-    UI_QT_QT_API void collapseItem(int index);
-    UI_QT_QT_API void expandItem(int index);
+    UI_QT_API_QT void collapseItem(int index);
+    UI_QT_API_QT void expandItem(int index);
 
 protected:
 

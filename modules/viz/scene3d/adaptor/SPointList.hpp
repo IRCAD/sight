@@ -29,10 +29,10 @@
 #include <data/Material.hpp>
 #include <data/PointList.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/IText.hpp>
-#include <viz/scene3d/ITransformable.hpp>
 #include <viz/scene3d/Mesh.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <OGRE/OgreEntity.h>
 
@@ -99,13 +99,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SPointList final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SPointList, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SPointList, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor, sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SPointList() noexcept;
@@ -125,13 +125,13 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::PointList::s_POINT_ADDED_SIG of s_POINTLIST_INPUT to IService::slots::s_UPDATE
-     * Connect data::PointList::s_POINT_REMOVED_SIG of s_POINTLIST_INPUT to IService::slots::s_UPDATE
-     * Connect data::PointList::s_MODIFIED_SIG of s_POINTLIST_INPUT to IService::slots::s_UPDATE
-     * Connect data::Mesh::s_VERTEX_MODIFIED_SIG of s_MESH_INPUT to IService::slots::s_UPDATE
-     * Connect data::Mesh::s_MODIFIED_SIG of s_MESH_INPUT to IService::slots::s_UPDATE
+     * Connect data::PointList::POINT_ADDED_SIG of s_POINTLIST_INPUT to service::slots::UPDATE
+     * Connect data::PointList::POINT_REMOVED_SIG of s_POINTLIST_INPUT to service::slots::UPDATE
+     * Connect data::PointList::MODIFIED_SIG of s_POINTLIST_INPUT to service::slots::UPDATE
+     * Connect data::Mesh::VERTEX_MODIFIED_SIG of s_MESH_INPUT to service::slots::UPDATE
+     * Connect data::Mesh::MODIFIED_SIG of s_MESH_INPUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Updates the generated mesh.
     MODULE_VIZ_SCENE3D_API void updating() final;

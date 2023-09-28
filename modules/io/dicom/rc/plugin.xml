@@ -3,55 +3,55 @@
      <requirement id="sight::module::ui::dicom" />
 
      <extension implements="sight::service::extension::Factory">
-          <type>sight::service::IController</type>
+          <type>sight::service::controller</type>
           <service>sight::module::io::dicom::SDicomSeriesAnonymizer</service>
           <desc>Service to anonymize a DicomSeries.</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
-          <type>sight::ui::base::IAction</type>
+          <type>sight::ui::action</type>
           <service>sight::module::io::dicom::SDicomSeriesConverter</service>
           <object>sight::data::SeriesSet</object>
           <desc>This service is used to convert DicomSeries from source SeriesSet</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
-          <type>sight::io::base::service::IReader</type>
+          <type>sight::io::service::reader</type>
           <service>sight::module::io::dicom::SDicomSeriesSetReader</service>
           <object>sight::data::SeriesSet</object>
           <desc>GDCM Reader (DicomSeries)</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
-          <type>sight::io::base::service::IWriter</type>
+          <type>sight::io::service::writer</type>
           <service>sight::module::io::dicom::SDicomSeriesWriter</service>
           <object>sight::data::DicomSeries</object>
           <desc>DICOM Writer (DicomSeries)</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
-          <type>sight::io::base::service::IReader</type>
+          <type>sight::io::service::reader</type>
           <service>sight::module::io::dicom::SSeriesSetReader</service>
           <object>sight::data::SeriesSet</object>
           <desc>GDCM Reader (ImageSeries/ModelSeries)</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
-          <type>sight::io::base::service::IReader</type>
+          <type>sight::io::service::reader</type>
           <service>sight::module::io::dicom::SReader</service>
           <object>sight::data::SeriesSet</object>
           <desc>DICOM Reader</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
-          <type>sight::io::base::service::IWriter</type>
+          <type>sight::io::service::writer</type>
           <service>sight::module::io::dicom::SSeriesSetWriter</service>
           <object>sight::data::Vector</object>
           <desc>DICOM Writer (ImageSeries/ModelSeries)</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
-          <type>sight::io::base::service::IWriter</type>
+          <type>sight::io::service::writer</type>
           <service>sight::module::io::dicom::SSurfaceSegmentationWriter</service>
           <object>sight::data::ModelSeries</object>
           <desc>DICOM 3D Writer (ModelSeries)</desc>

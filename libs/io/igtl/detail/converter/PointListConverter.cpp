@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ PointListConverter::~PointListConverter()
 {
     std::array<float, 3> pos {};
     ::igtl::PointElement::Pointer elem;
-    data::PointList::csptr srcPoints = data::PointList::dynamicConstCast(src);
+    data::PointList::csptr srcPoints = std::dynamic_pointer_cast<const data::PointList>(src);
 
     ::igtl::PointMessage::Pointer dest = ::igtl::PointMessage::New();
     for(data::Point::sptr const& srcPoint : srcPoints->getPoints())
@@ -84,10 +84,10 @@ data::Object::sptr PointListConverter::fromIgtlMessage(const ::igtl::MessageBase
 
     auto* msg                               = dynamic_cast< ::igtl::PointMessage*>(src.GetPointer());
     ::igtl::PointMessage::Pointer srcPoints = ::igtl::PointMessage::Pointer(msg);
-    data::PointList::sptr dest              = data::PointList::New();
+    data::PointList::sptr dest              = std::make_shared<data::PointList>();
     for(int i = 0 ; i < srcPoints->GetNumberOfPointElement() ; ++i)
     {
-        fwPoint = data::Point::New();
+        fwPoint = std::make_shared<data::Point>();
         srcPoints->GetPointElement(i, elem);
         elem->GetPosition(igtlPos.data());
         std::transform(
@@ -106,7 +106,7 @@ data::Object::sptr PointListConverter::fromIgtlMessage(const ::igtl::MessageBase
 
 //-----------------------------------------------------------------------------
 
-IConverter::sptr PointListConverter::New()
+base::sptr PointListConverter::New()
 {
     return std::make_shared<PointListConverter>();
 }

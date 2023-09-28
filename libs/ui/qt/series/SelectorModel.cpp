@@ -23,7 +23,7 @@
 #include "ui/qt/series/SelectorModel.hpp"
 
 #include <core/runtime/path.hpp>
-#include <core/tools/fwID.hpp>
+#include <core/tools/id.hpp>
 
 #include <data/dicom/Sop.hpp>
 #include <data/Image.hpp>
@@ -173,7 +173,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
                 return new QStandardItem(QString::fromStdString(seriesInstanceUID));
             }
 
-            return new QStandardItem(QString::fromStdString(series->getID()));
+            return new QStandardItem(QString::fromStdString(series->get_id()));
         }
      }
     },
@@ -199,7 +199,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
                 return new QStandardItem(QString::fromStdString(seriesInstanceUID));
             }
 
-            return new QStandardItem(QString::fromStdString(series->getID()));
+            return new QStandardItem(QString::fromStdString(series->get_id()));
         }
      }
     },
@@ -545,7 +545,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
                 removeButton,
                 &QPushButton::clicked,
                 this,
-                [ =, this]()
+                [studyInstanceUID, this]()
                 {
                     Q_EMIT removeStudyInstanceUID(studyInstanceUID);
                 });
@@ -556,7 +556,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
         m_items[studyInstanceUID] = studyRootItem;
     }
 
-    const std::string& seriesID = _series->getID();
+    const std::string& seriesID = _series->get_id();
 
     const int nbRow = studyRootItem->rowCount();
 
@@ -594,7 +594,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
             removeButton,
             &QPushButton::clicked,
             this,
-            [ =, this]()
+            [seriesID, this]()
             {
                 Q_EMIT removeSeriesID(seriesID);
             });
@@ -628,7 +628,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
 
 void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _item)
 {
-    auto iter = m_seriesIcons.find(_series->getClassname());
+    auto iter = m_seriesIcons.find(_series->get_classname());
     if(iter != m_seriesIcons.end())
     {
         _item->setIcon(QIcon(QString::fromStdString(iter->second)));
@@ -639,11 +639,11 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
 
         if(const auto& type = _series->getDicomType(); type == data::Series::DicomType::IMAGE)
         {
-            icon_path = core::runtime::getModuleResourceFilePath("sight::module::ui::icons", "ImageSeries.svg");
+            icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "ImageSeries.svg");
         }
         else if(type == data::Series::DicomType::MODEL)
         {
-            icon_path = core::runtime::getModuleResourceFilePath("sight::module::ui::icons", "ModelSeries.svg");
+            icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "ModelSeries.svg");
         }
 
         if(!icon_path.empty())
@@ -762,7 +762,7 @@ QStandardItem* SelectorModel::findSeriesItem(data::Series::sptr _series)
         {
             QStandardItem* child = studyItem->child(row, 0);
             std::string seriesId = child->data(Role::UID).toString().toStdString();
-            if(seriesId == _series->getID())
+            if(seriesId == _series->get_id())
             {
                 seriesItem = child;
                 break;

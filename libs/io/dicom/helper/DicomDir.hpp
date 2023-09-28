@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,14 +40,14 @@ class DicomSeries;
 namespace sight::core::jobs
 {
 
-class Observer;
+class observer;
 
 } // namespace sight::core::jobs
 
 namespace sight::core::log
 {
 
-class Logger;
+class logger;
 
 } // namespace sight::core::log
 
@@ -76,7 +76,7 @@ public:
     IO_DICOM_API static void retrieveDicomSeries(
         const std::filesystem::path& dicomdir,
         std::vector<SPTR(data::DicomSeries)>& series_set,
-        const SPTR(core::log::Logger)& logger,
+        const SPTR(core::log::logger)& logger,
         std::function<void(std::uint64_t)> progress = nullptr,
         std::function<bool()> cancel                = nullptr
     );

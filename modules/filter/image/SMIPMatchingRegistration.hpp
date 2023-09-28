@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 
-#include <service/IRegisterer.hpp>
+#include <service/registerer.hpp>
 
 namespace sight::module::filter::image
 {
@@ -59,11 +59,11 @@ namespace sight::module::filter::image
  * - \b transform [sight::data::Matrix4]: initial registration. The computed registration will be
  *   concatenated to the initial registration matrix.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SMIPMatchingRegistration : public service::IRegisterer
+class MODULE_FILTER_IMAGE_CLASS_API SMIPMatchingRegistration : public service::registerer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMIPMatchingRegistration, service::IRegisterer);
+    SIGHT_DECLARE_SERVICE(SMIPMatchingRegistration, service::registerer);
 
     /**
      * @brief Constructor
@@ -79,35 +79,35 @@ protected:
     /**
      * @brief Starts the service.
      *
-     * @throw core::tools::Failed
+     * @throw core::tools::failed
      */
     MODULE_FILTER_IMAGE_API void starting() override;
 
     /**
      * @brief Stops the service.
      *
-     * @throw core::tools::Failed
+     * @throw core::tools::failed
      */
     MODULE_FILTER_IMAGE_API void stopping() override;
 
     /**
      * @brief Configures the service.
      *
-     * @throw core::tools::Failed
+     * @throw core::tools::failed
      */
     MODULE_FILTER_IMAGE_API void configuring() override;
 
     /**
      * @brief Compute the registration.
      *
-     * @throw core::tools::Failed
+     * @throw core::tools::failed
      */
     MODULE_FILTER_IMAGE_API void updating() override;
 
     /**
      * @brief Compute the registration by calling the `update` slot. The timestamp parameter is discarded.
      */
-    MODULE_FILTER_IMAGE_API void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
+    MODULE_FILTER_IMAGE_API void computeRegistration(core::hires_clock::type timestamp) override;
 
 private:
 

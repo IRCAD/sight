@@ -24,13 +24,13 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
 
 #include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 #include <ui/qt/series/Selector.hpp>
 
 #include <QAbstractItemView>
@@ -76,14 +76,14 @@ namespace sight::module::ui::qt::series
  */
 class MODULE_UI_QT_CLASS_API SSelector final :
     public QObject,
-    public sight::ui::base::IEditor
+    public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SSelector, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSelector, sight::ui::editor);
 
     /// Creates the signal and slots.
     MODULE_UI_QT_API SSelector();
@@ -103,10 +103,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::SeriesSet::s_ADDED_OBJECTS_SIG of s_SERIES_SET_INOUT to s_ADD_SERIES_SLOT
-     * Connect data::SeriesSet::s_REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to s_REMOVE_SERIES_SLOT
+     * Connect data::SeriesSet::ADDED_OBJECTS_SIG of s_SERIES_SET_INOUT to ADD_SERIES_SLOT
+     * Connect data::SeriesSet::REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to REMOVE_SERIES_SLOT
      */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
     /// Fills selector with the series contained in SeriesSet.
     MODULE_UI_QT_API void updating() override;
@@ -141,9 +141,9 @@ protected Q_SLOTS:
 
 private:
 
-    typedef core::com::Slot<void (data::SeriesSet::container_type)> RemoveSeriesSlotType;
+    typedef core::com::slot<void (data::SeriesSet::container_type)> RemoveSeriesSlotType;
 
-    typedef core::com::Signal<void (SPTR(data::Series))> SeriesDoubleClickedSignalType;
+    typedef core::com::signal<void (SPTR(data::Series))> SeriesDoubleClickedSignalType;
 
     /// SLOT: adds series into the selector.
     void addSeries(data::SeriesSet::container_type addedSeries);

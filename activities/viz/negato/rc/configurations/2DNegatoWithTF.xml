@@ -16,9 +16,9 @@
         <object uid="snapshot" type="sight::data::Image" />
         <object uid="${transferFunctionDeferred}" type="sight::data::TransferFunction" src="deferred" />
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" minHeight="30" />
@@ -31,10 +31,10 @@
             </registry>
         </service>
 
-        <service uid="multiView_negato_bottom" type="sight::module::ui::base::SView">
+        <service uid="multiView_negato_bottom" type="sight::module::ui::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
                     <view proportion="1" />
@@ -48,7 +48,7 @@
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="sight::module::ui::base::SToolBar">
+        <service uid="topToolbarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Snapshot" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="CTRL+S" />
@@ -60,7 +60,7 @@
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="sight::module::ui::base::SAction" />
+        <service uid="snapshotAct" type="sight::module::ui::SAction" />
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->

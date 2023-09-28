@@ -23,15 +23,15 @@
 #include "SModelSeriesList.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
-#include <core/tools/fwID.hpp>
+#include <core/tools/id.hpp>
 
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
@@ -40,11 +40,11 @@
 #include <data/Reconstruction.hpp>
 #include <data/String.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 #include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <boost/format.hpp>
 
@@ -63,18 +63,18 @@ namespace sight::module::ui::qt::model
 
 //------------------------------------------------------------------------------
 
-static const core::com::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
-static const core::com::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
-static const core::com::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT       = "showReconstructions";
+static const core::com::signals::key_t RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
+static const core::com::signals::key_t EMPTIED_SELECTION_SIG       = "emptiedSelection";
+static const core::com::slots::key_t SHOW_RECONSTRUCTIONS_SLOT     = "showReconstructions";
 
 //------------------------------------------------------------------------------
 
 SModelSeriesList::SModelSeriesList() noexcept
 {
-    m_sigReconstructionSelected = newSignal<ReconstructionSelectedSignalType>(s_RECONSTRUCTION_SELECTED_SIG);
-    m_sigEmptiedSelection       = newSignal<EmptiedSelectionSignalType>(s_EMPTIED_SELECTION_SIG);
+    m_sigReconstructionSelected = new_signal<ReconstructionSelectedSignalType>(RECONSTRUCTION_SELECTED_SIG);
+    m_sigEmptiedSelection       = new_signal<EmptiedSelectionSignalType>(EMPTIED_SELECTION_SIG);
 
-    newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
+    new_slot(SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -105,9 +105,9 @@ void SModelSeriesList::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     qtContainer->getQtContainer()->setObjectName(serviceID);
 
     auto* layout       = new QVBoxLayout;
@@ -181,12 +181,12 @@ void SModelSeriesList::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
+service::connections_t SModelSeriesList::getAutoConnections() const
 {
     return {
-        {s_MODEL_SERIES, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, IService::slots::s_UPDATE},
-        {s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE}
+        {s_MODEL_SERIES, data::ModelSeries::MODIFIED_SIG, service::slots::UPDATE},
+        {s_MODEL_SERIES, data::ModelSeries::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE},
+        {s_MODEL_SERIES, data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE}
     };
 }
 
@@ -245,7 +245,7 @@ void SModelSeriesList::stopping()
 
 void SModelSeriesList::updateReconstructions()
 {
-    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer         = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
 
     SIGHT_ASSERT("container not instanced", container);
@@ -260,7 +260,8 @@ void SModelSeriesList::updateReconstructions()
         if(m_showCheckBox != nullptr)
         {
             m_showCheckBox->blockSignals(true);
-            const bool showAllRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
+            const bool showAllRec =
+                modelSeries->getField("ShowReconstructions", std::make_shared<data::Boolean>(true))->value();
             m_showCheckBox->setCheckState(showAllRec ? Qt::Unchecked : Qt::Checked);
             m_showCheckBox->blockSignals(false);
         }
@@ -275,7 +276,7 @@ void SModelSeriesList::fillTree(const data::mt::locked_ptr<data::ModelSeries>& _
 
     if(!m_tree->selectedItems().empty())
     {
-        m_sigEmptiedSelection->asyncEmit();
+        m_sigEmptiedSelection->async_emit();
     }
 
     m_tree->clear();
@@ -304,7 +305,7 @@ void SModelSeriesList::fillTree(const data::mt::locked_ptr<data::ModelSeries>& _
         auto* item = new QTreeWidgetItem(info);
         item->setCheckState(0, Qt::Unchecked);
         m_tree->addTopLevelItem(item);
-        item->setData(0, Qt::UserRole, QString::fromStdString(reconstruction->getID()));
+        item->setData(0, Qt::UserRole, QString::fromStdString(reconstruction->get_id()));
     }
 
     for(int i = 0 ; i < m_tree->topLevelItemCount() ; i++)
@@ -320,9 +321,9 @@ void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidg
     SIGHT_ASSERT("Current selected item is null", _current);
     std::string id = _current->data(0, Qt::UserRole).toString().toStdString();
 
-    data::Reconstruction::sptr rec = data::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
+    data::Reconstruction::sptr rec = std::dynamic_pointer_cast<data::Reconstruction>(core::tools::id::get_object(id));
 
-    m_sigReconstructionSelected->asyncEmit(rec);
+    m_sigReconstructionSelected->async_emit(rec);
 }
 
 //------------------------------------------------------------------------------
@@ -337,7 +338,7 @@ void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, int _colu
 void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*unused*/)
 {
     std::string id                 = _item->data(0, Qt::UserRole).toString().toStdString();
-    data::Reconstruction::sptr rec = data::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
+    data::Reconstruction::sptr rec = std::dynamic_pointer_cast<data::Reconstruction>(core::tools::id::get_object(id));
     SIGHT_ASSERT("rec not instanced", rec);
 
     const bool itemIsChecked = (_item->checkState(0) == Qt::Checked);
@@ -348,9 +349,9 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*unu
 
         data::Reconstruction::VisibilityModifiedSignalType::sptr sig;
         sig = rec->signal<data::Reconstruction::VisibilityModifiedSignalType>(
-            data::Reconstruction::s_VISIBILITY_MODIFIED_SIG
+            data::Reconstruction::VISIBILITY_MODIFIED_SIG
         );
-        sig->asyncEmit(itemIsChecked);
+        sig->async_emit(itemIsChecked);
     }
 }
 
@@ -367,7 +368,7 @@ void SModelSeriesList::onShowReconstructions(int _state)
     {
         auto modelSeries = m_modelSeries.lock();
         data::helper::Field helper(modelSeries.get_shared());
-        helper.addOrSwap("ShowReconstructions", data::Boolean::New(_state == Qt::Unchecked));
+        helper.addOrSwap("ShowReconstructions", std::make_shared<data::Boolean>(_state == Qt::Unchecked));
     }
 }
 
@@ -379,7 +380,8 @@ void SModelSeriesList::refreshVisibility()
     {
         QTreeWidgetItem* item          = m_tree->topLevelItem(i);
         std::string id                 = item->data(0, Qt::UserRole).toString().toStdString();
-        data::Reconstruction::sptr rec = data::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
+        data::Reconstruction::sptr rec =
+            std::dynamic_pointer_cast<data::Reconstruction>(core::tools::id::get_object(id));
         item->setCheckState(0, rec->getIsVisible() ? Qt::Checked : Qt::Unchecked);
     }
 }
@@ -431,9 +433,9 @@ void SModelSeriesList::onDeleteAllCheckBox()
 
     // Send the signals.
     auto sig = modelSeries->signal<data::ModelSeries::ReconstructionsRemovedSignalType>(
-        data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG
+        data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG
     );
-    sig->asyncEmit(reconstructions);
+    sig->async_emit(reconstructions);
 }
 
 //------------------------------------------------------------------------------
@@ -448,7 +450,7 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
             deleteAction,
             &QAction::triggered,
             this,
-            [ =, this]()
+            [index, this]()
             {
                 auto modelSeries = m_modelSeries.lock();
 
@@ -466,9 +468,9 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
                 // Send the signals.
                 deletedReconstructions.push_back(reconstruction);
                 auto sig = modelSeries->signal<data::ModelSeries::ReconstructionsRemovedSignalType>(
-                    data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG
+                    data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG
                 );
-                sig->asyncEmit(deletedReconstructions);
+                sig->async_emit(deletedReconstructions);
             });
 
         QMenu contextMenu;

@@ -4,7 +4,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExVideoTracking_AppCfg</id>
@@ -30,7 +30,7 @@
                 <parameter replace="TOOLBAR" by="subToolbarView" />
             </service>
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>ExVideoTracking</name>
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <editor />
@@ -56,9 +56,9 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="sight::module::ui::base::SView">
+            <service uid="cameraView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />

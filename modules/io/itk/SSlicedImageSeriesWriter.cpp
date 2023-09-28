@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,19 +25,19 @@
 #include "modules/io/itk/SImageWriter.hpp"
 
 #include <core/base.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::itk
 {
@@ -54,47 +54,47 @@ SSlicedImageSeriesWriter::~SSlicedImageSeriesWriter() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SSlicedImageSeriesWriter::getIOPathType() const
+sight::io::service::IOPathType SSlicedImageSeriesWriter::getIOPathType() const
 {
-    return sight::io::base::service::FOLDER;
+    return sight::io::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SSlicedImageSeriesWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 }
 
 //------------------------------------------------------------------------------
 
 void SSlicedImageSeriesWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialog;
+    sight::ui::dialog::location dialog;
     dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
     dialog.setDefaultLocation(defaultDirectory);
-    dialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
-    dialog.setType(ui::base::dialog::ILocationDialog::FOLDER);
+    dialog.setOption(ui::dialog::location::WRITE);
+    dialog.setType(ui::dialog::location::FOLDER);
 
-    core::location::SingleFolder::sptr result;
+    core::location::single_folder::sptr result;
 
-    while((result = core::location::SingleFolder::dynamicCast(dialog.show())))
+    while((result = std::dynamic_pointer_cast<core::location::single_folder>(dialog.show())))
     {
-        if(std::filesystem::is_empty(result->getFolder()))
+        if(std::filesystem::is_empty(result->get_folder()))
         {
             break;
         }
 
         // message box
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Overwrite confirmation");
         messageBox.setMessage("The selected directory is not empty. Write anyway ?");
-        messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::YES);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
-        if(messageBox.show() == sight::ui::base::dialog::IMessageDialog::YES)
+        messageBox.setIcon(ui::dialog::message::QUESTION);
+        messageBox.addButton(ui::dialog::message::YES);
+        messageBox.addButton(ui::dialog::message::CANCEL);
+        if(messageBox.show() == sight::ui::dialog::message::YES)
         {
             break;
         }
@@ -102,8 +102,8 @@ void SSlicedImageSeriesWriter::openLocationDialog()
 
     if(result)
     {
-        this->setFolder(result->getFolder());
-        defaultDirectory->setFolder(result->getFolder().parent_path());
+        this->set_folder(result->get_folder());
+        defaultDirectory->set_folder(result->get_folder().parent_path());
         dialog.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -140,10 +140,10 @@ void SSlicedImageSeriesWriter::updating()
     {
         const auto data        = m_data.lock();
         const auto imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(data.get_shared());
-        SIGHT_ASSERT("The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", imageSeries);
+        SIGHT_ASSERT("The input key '" + sight::io::service::s_DATA_KEY + "' is not correctly set.", imageSeries);
 
-        sight::ui::base::BusyCursor cursor;
-        SImageWriter::saveImage(this->getFolder(), imageSeries);
+        sight::ui::BusyCursor cursor;
+        SImageWriter::saveImage(this->get_folder(), imageSeries);
         m_writeFailed = false;
     }
 }

@@ -29,7 +29,7 @@
 namespace sight::module::navigation::calibration
 {
 
-static const service::IService::KeyType s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
+static const service::base::KeyType s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
 
 // -----------------------------------------------------------------------------
 
@@ -82,13 +82,13 @@ void SToolCalibration::updating()
 
 // -----------------------------------------------------------------------------
 
-void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
+void SToolCalibration::computeRegistration(core::hires_clock::type /*timestamp*/)
 {
     const auto matricesVector = m_matricesVector.lock();
 
-    data::Matrix4::sptr calibrationMatrix = data::Matrix4::New();
+    data::Matrix4::sptr calibrationMatrix = std::make_shared<data::Matrix4>();
 
-    data::Matrix4::sptr centerMatrixNoRot = data::Matrix4::New();
+    data::Matrix4::sptr centerMatrixNoRot = std::make_shared<data::Matrix4>();
 
     geometry::vision::helper::calibratePointingTool(matricesVector.get_shared(), calibrationMatrix, centerMatrixNoRot);
 

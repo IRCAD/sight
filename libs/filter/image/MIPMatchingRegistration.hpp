@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -164,7 +164,7 @@ void MIPMatchingRegistration<PIX>::registerImage(
     // Resample the image with the smallest voxels to match the other's voxel size.
     if(fixedVoxelVolume < movingVoxelVolume)
     {
-        auto inverseTransform = data::Matrix4::New();
+        auto inverseTransform = std::make_shared<data::Matrix4>();
         geometry::data::invert(*_transform, *inverseTransform);
 
         fixed = filter::image::Resampler::resample(_fixed, inverseTransform, _moving->getSpacing());

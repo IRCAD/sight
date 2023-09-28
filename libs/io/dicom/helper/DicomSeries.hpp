@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ class Equipment;
 namespace sight::core::jobs
 {
 
-class Observer;
+class observer;
 
 } // namespace sight::core::jobs
 
@@ -87,8 +87,8 @@ public:
      */
     static IO_DICOM_API DicomSeriesContainerType read(
         FilenameContainerType& filenames,
-        const SPTR(core::jobs::Observer)& readerObserver         = nullptr,
-        const SPTR(core::jobs::Observer)& completeSeriesObserver = nullptr
+        const SPTR(core::jobs::observer)& readerObserver         = nullptr,
+        const SPTR(core::jobs::observer)& completeSeriesObserver = nullptr
     );
     /**
      * @brief Fill DicomSeries information for series generated using DICOMDIR helper
@@ -97,7 +97,7 @@ public:
      */
     static IO_DICOM_API void complete(
         DicomSeriesContainerType& seriesContainer,
-        const SPTR(core::jobs::Observer)& completeSeriesObserver
+        const SPTR(core::jobs::observer)& completeSeriesObserver
     );
 
 protected:
@@ -109,7 +109,7 @@ protected:
      */
     static void fillSeries(
         DicomSeriesContainerType& seriesContainer,
-        const SPTR(core::jobs::Observer)& completeSeriesObserver
+        const SPTR(core::jobs::observer)& completeSeriesObserver
     );
 
     /**
@@ -120,7 +120,7 @@ protected:
      */
     static DicomSeriesContainerType splitFiles(
         FilenameContainerType& filenames,
-        const SPTR(core::jobs::Observer)& readerObserver
+        const SPTR(core::jobs::observer)& readerObserver
     );
 
     /**

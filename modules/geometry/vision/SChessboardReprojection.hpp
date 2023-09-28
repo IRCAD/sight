@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -84,11 +84,11 @@ namespace sight::module::geometry::vision
  * - \b distortReprojection (optional, default="true"): whether the 'videoImage' is undistorted, in which case the
  *                                                      reprojected points should not be distorted.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SChessboardReprojection final : public service::IService
+class MODULE_GEOMETRY_VISION_CLASS_API SChessboardReprojection final : public service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SChessboardReprojection, service::IService);
+    SIGHT_DECLARE_SERVICE(SChessboardReprojection, service::base);
 
     ///Constructor
     MODULE_GEOMETRY_VISION_API SChessboardReprojection();
@@ -112,11 +112,11 @@ protected:
     MODULE_GEOMETRY_VISION_API void stopping() final;
 
     /// Connects camera, transform and detected points modification to the update slot.
-    service::IService::KeyConnectionsMap getAutoConnections() const final;
+    service::connections_t getAutoConnections() const final;
 
 private:
 
-    using ErrorComputedSignalType = core::com::Signal<void (double)>;
+    using ErrorComputedSignalType = core::com::signal<void (double)>;
 
     /// Fetches the chessboard dimension from the preferences and computes the model.
     void updateChessboardSize();

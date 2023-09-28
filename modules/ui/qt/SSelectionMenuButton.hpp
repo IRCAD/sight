@@ -24,9 +24,9 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QAction>
 #include <QObject>
@@ -78,13 +78,13 @@ namespace sight::module::ui::qt
  * - \b disable(): This slots allows to disable the button
  */
 class MODULE_UI_QT_CLASS_API SSelectionMenuButton : public QObject,
-                                                    public sight::ui::base::IEditor
+                                                    public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSelectionMenuButton, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSelectionMenuButton, sight::ui::editor);
 
     MODULE_UI_QT_API SSelectionMenuButton() noexcept;
     MODULE_UI_QT_API ~SSelectionMenuButton() noexcept override = default;
@@ -122,7 +122,7 @@ private:
      * @{
      */
     /// Signal emitted when an item is selected
-    typedef core::com::Signal<void (int)> SelectedSignalType;
+    typedef core::com::signal<void (int)> SelectedSignalType;
     SelectedSignalType::sptr m_sigSelected;
     /**
      * @}

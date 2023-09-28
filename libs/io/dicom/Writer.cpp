@@ -60,7 +60,7 @@ inline static void writeEnhancedUSVolume(
 
     auto& gdcm_image = writer.GetImage();
 
-    const auto& image_sizes = image_series.getSize();
+    const auto& image_sizes = image_series.size();
 
     // Set the dimension to 3. This magically allows to write multi-frame images. Or at least, they are saved and we can
     // read them back.
@@ -99,43 +99,43 @@ inline static void writeEnhancedUSVolume(
     // Pixel Format
     switch(image_series.getType())
     {
-        case core::Type::INT8:
+        case core::type::INT8:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::INT8);
             break;
 
-        case core::Type::UINT8:
+        case core::type::UINT8:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::UINT8);
             break;
 
-        case core::Type::INT16:
+        case core::type::INT16:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::INT16);
             break;
 
-        case core::Type::UINT16:
+        case core::type::UINT16:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::UINT16);
             break;
 
-        case core::Type::INT32:
+        case core::type::INT32:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::INT32);
             break;
 
-        case core::Type::UINT32:
+        case core::type::UINT32:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::UINT32);
             break;
 
-        case core::Type::INT64:
+        case core::type::INT64:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::INT64);
             break;
 
-        case core::Type::UINT64:
+        case core::type::UINT64:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::UINT64);
             break;
 
-        case core::Type::FLOAT:
+        case core::type::FLOAT:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::FLOAT32);
             break;
 
-        case core::Type::DOUBLE:
+        case core::type::DOUBLE:
             gdcm_image.SetPixelFormat(gdcm::PixelFormat::FLOAT64);
             break;
 
@@ -183,7 +183,7 @@ inline static void writeEnhancedUSVolume(
     gdcm::DataElement pixeldata(gdcm::Tag(PIXEL_DATA::s_group, PIXEL_DATA::s_element));
 
     pixeldata.SetByteValue(
-        reinterpret_cast<const char*>(image_series.getBuffer()),
+        reinterpret_cast<const char*>(image_series.buffer()),
         std::uint32_t(size_in_bytes)
     );
 
@@ -323,9 +323,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool cancelRequested() const noexcept
+    [[nodiscard]] inline bool cancel_requested() const noexcept
     {
-        return m_job && m_job->cancelRequested();
+        return m_job && m_job->cancel_requested();
     }
 
     //------------------------------------------------------------------------------
@@ -334,14 +334,14 @@ public:
     {
         if(m_job)
         {
-            m_job->doneWork(units);
+            m_job->done_work(units);
         }
     }
 
     //------------------------------------------------------------------------------
 
     /// The default job. Allows to watch for cancellation and report progress.
-    core::jobs::Job::sptr m_job;
+    core::jobs::job::sptr m_job;
 
     /// True to disable GPU codec
     bool m_force_cpu {false};
@@ -350,8 +350,8 @@ public:
     TransferSyntax m_transfer_syntax {TransferSyntax::SOP_DEFAULT};
 };
 
-Writer::Writer(io::base::writer::IObjectWriter::Key /*unused*/) :
-    core::location::SingleFolder(),
+Writer::Writer() :
+    core::location::single_folder(),
     m_pimpl(std::make_unique<WriterImpl>(this))
 {
 }
@@ -364,11 +364,11 @@ Writer::~Writer() noexcept = default;
 void Writer::write()
 {
     // Get the destination folder
-    auto folder = getFolder();
+    auto folder = get_folder();
 
-    if(folder.empty() && getFile().has_parent_path())
+    if(folder.empty() && get_file().has_parent_path())
     {
-        folder = getFile().parent_path();
+        folder = get_file().parent_path();
     }
 
     if(!std::filesystem::exists(folder))
@@ -385,7 +385,7 @@ void Writer::write()
     const size_t progress_step = (100 - 20) / series_set->size();
 
     // Compute the base name
-    const auto& file         = getFile();
+    const auto& file         = get_file();
     const bool prepend_index = file.empty() || series_set->size() > 1;
     const auto& basename     =
         [&]
@@ -406,7 +406,7 @@ void Writer::write()
     // For each series..
     for(std::size_t index = 0 ; const auto& series : *series_set)
     {
-        if(m_pimpl->cancelRequested())
+        if(m_pimpl->cancel_requested())
         {
             break;
         }
@@ -427,7 +427,7 @@ void Writer::write()
         if(const auto& sop_keyword = series->getSOPKeyword();
            sop_keyword == data::dicom::sop::Keyword::EnhancedUSVolumeStorage)
         {
-            const auto& image_series = data::ImageSeries::dynamicCast(series);
+            const auto& image_series = std::dynamic_pointer_cast<data::ImageSeries>(series);
 
             SIGHT_THROW_IF(
                 "The series '" + series->getSeriesInstanceUID() + "' is not an image series.",
@@ -450,14 +450,14 @@ void Writer::write()
             }
         }
 
-        if(const auto& imageSeries = data::ImageSeries::dynamicCast(series))
+        if(const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series))
         {
             if(imageSeries->hasFiducials())
             {
                 writeSpatialFiducials(*imageSeries->getFiducials(), filepath);
             }
         }
-        else if(const auto& modelSeries = data::ModelSeries::dynamicCast(series))
+        else if(const auto& modelSeries = std::dynamic_pointer_cast<data::ModelSeries>(series))
         {
             if(modelSeries->hasFiducials())
             {
@@ -472,19 +472,19 @@ void Writer::write()
 
 //------------------------------------------------------------------------------
 
-core::jobs::IJob::sptr Writer::getJob() const
+core::jobs::base::sptr Writer::getJob() const
 {
     return m_pimpl->m_job;
 }
 
 //------------------------------------------------------------------------------
 
-void Writer::setJob(core::jobs::Job::sptr job)
+void Writer::setJob(core::jobs::job::sptr job)
 {
-    SIGHT_ASSERT("Some work have already be reported.", job->getDoneWorkUnits() == 0);
+    SIGHT_ASSERT("Some work have already be reported.", job->get_done_work_units() == 0);
     m_pimpl->m_job = job;
-    m_pimpl->m_job->setTotalWorkUnits(100);
-    m_pimpl->m_job->doneWork(10);
+    m_pimpl->m_job->set_total_work_units(100);
+    m_pimpl->m_job->done_work(10);
 }
 
 //------------------------------------------------------------------------------

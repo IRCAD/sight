@@ -22,9 +22,9 @@
 #include "WriterTest.hpp"
 #include "helper.hxx"
 
-#include <core/Profiling.hpp>
-#include <core/os/TempPath.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/profiling.hpp>
+#include <core/os/temp_path.hpp>
+#include <core/tools/uuid.hpp>
 
 #include <io/bitmap/Writer.hpp>
 #include <io/dicom/Reader.hpp>
@@ -54,22 +54,22 @@ inline static std::vector<data::Image::sptr> readDicomImages(std::size_t count =
         []
         {
             std::vector<data::Image::sptr> images;
-            auto seriesSet = data::SeriesSet::New();
-            auto reader    = io::dicom::Reader::New();
+            auto seriesSet = std::make_shared<data::SeriesSet>();
+            auto reader    = std::make_shared<io::dicom::Reader>();
 
             reader->setObject(seriesSet);
 
             // Read a DICOM image "us/Ultrasound Image Storage/GE, lossy JPEG"
-            reader->setFolder(utestData::Data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
+            reader->set_folder(utestData::Data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
             CPPUNIT_ASSERT_NO_THROW(reader->read());
 
             // Just to be sure we read the good data
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-            auto imageSeries = data::ImageSeries::dynamicCast(seriesSet->at(0));
+            auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->at(0));
             CPPUNIT_ASSERT(imageSeries);
 
-            auto size = imageSeries->getSize();
+            auto size = imageSeries->size();
             CPPUNIT_ASSERT_EQUAL(std::size_t(636), size[0]);
             CPPUNIT_ASSERT_EQUAL(std::size_t(434), size[1]);
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
@@ -78,16 +78,16 @@ inline static std::vector<data::Image::sptr> readDicomImages(std::size_t count =
             seriesSet->clear();
 
             // Read next image "us/Ultrasound Image Storage/Siemens Acuson 500"
-            reader->setFolder(utestData::Data::dir() / "us/Ultrasound Image Storage/Siemens Acuson 500");
+            reader->set_folder(utestData::Data::dir() / "us/Ultrasound Image Storage/Siemens Acuson 500");
             CPPUNIT_ASSERT_NO_THROW(reader->read());
 
             // Just to be sure we read the good data
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-            imageSeries = data::ImageSeries::dynamicCast(seriesSet->at(0));
+            imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->at(0));
             CPPUNIT_ASSERT(imageSeries);
 
-            size = imageSeries->getSize();
+            size = imageSeries->size();
             CPPUNIT_ASSERT_EQUAL(std::size_t(800), size[0]);
             CPPUNIT_ASSERT_EQUAL(std::size_t(600), size[1]);
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
@@ -96,16 +96,16 @@ inline static std::vector<data::Image::sptr> readDicomImages(std::size_t count =
             seriesSet->clear();
 
             // Read next image "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500"
-            reader->setFolder(utestData::Data::dir() / "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500");
+            reader->set_folder(utestData::Data::dir() / "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500");
             CPPUNIT_ASSERT_NO_THROW(reader->read());
 
             // Just to be sure we read the good data
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-            imageSeries = data::ImageSeries::dynamicCast(seriesSet->at(0));
+            imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->at(0));
             CPPUNIT_ASSERT(imageSeries);
 
-            size = imageSeries->getSize();
+            size = imageSeries->size();
             CPPUNIT_ASSERT_EQUAL(std::size_t(800), size[0]);
             CPPUNIT_ASSERT_EQUAL(std::size_t(600), size[1]);
             CPPUNIT_ASSERT_EQUAL(std::size_t(60), size[2]);
@@ -130,7 +130,7 @@ inline static void profileWriter(
     std::vector<std::future<void> >& tasks
 )
 {
-    auto writer = Writer::New();
+    auto writer = std::make_shared<Writer>();
 
     const auto [BACKEND, EXT] = backendToString(backend);
     const std::string MODE = modeToString(mode);
@@ -144,7 +144,7 @@ inline static void profileWriter(
         // Write image
         writer->setObject(image);
         const auto& tmp_path = tmp_folder / (std::to_string(i) + FILE_SUFFIX);
-        writer->setFile(tmp_path);
+        writer->set_file(tmp_path);
         CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
 
         SIGHT_INFO(LABEL << " size: " << std::filesystem::file_size(tmp_path));
@@ -169,7 +169,7 @@ inline static void profileWriter(
             {
                 writer->setObject(image);
                 const auto& tmp_path = tmp_folder / (std::to_string(i) + "_" + std::to_string(j++) + FILE_SUFFIX);
-                writer->setFile(tmp_path);
+                writer->set_file(tmp_path);
 
                 CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
 
@@ -316,7 +316,7 @@ void WriterTest::tearDown()
 
 void WriterTest::basicTest()
 {
-    auto writer = Writer::New();
+    auto writer = std::make_shared<Writer>();
 
     CPPUNIT_ASSERT_EQUAL(io::bitmap::extensions(Backend::LIBTIFF).front(), writer->extension());
 }
@@ -412,18 +412,18 @@ void WriterTest::wildcardTest()
 inline static void conformance(
     const std::vector<Backend>& supported,
     const std::vector<Backend>& unsupported,
-    core::Type type,
+    core::type type,
     data::Image::PixelFormat format
 )
 {
     // Create a temporary directory
-    core::os::TempDir tmp_dir;
+    core::os::temp_dir tmp_dir;
 
     // Create the synthetic image
     const auto& expected_image = getSyntheticImage(0, type, format);
 
     // Create the writer
-    auto writer = Writer::New();
+    auto writer = std::make_shared<Writer>();
     writer->setObject(expected_image);
 
     // Build mode list
@@ -441,7 +441,7 @@ inline static void conformance(
         {
             // Test write
             const auto& file_path = tmp_dir / ("conformance" + fileSuffix(backend, mode));
-            CPPUNIT_ASSERT_NO_THROW(writer->setFile(file_path));
+            CPPUNIT_ASSERT_NO_THROW(writer->set_file(file_path));
             CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
             CPPUNIT_ASSERT_MESSAGE(file_path.string() + " doesn't exist.", std::filesystem::exists(file_path));
 
@@ -458,7 +458,7 @@ inline static void conformance(
                 // degrade the situation more.
                 writer->setObject(actual_image);
                 const auto& copy_file_path = tmp_dir / ("conformance_copy" + fileSuffix(backend, mode));
-                CPPUNIT_ASSERT_NO_THROW(writer->setFile(copy_file_path));
+                CPPUNIT_ASSERT_NO_THROW(writer->set_file(copy_file_path));
                 CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
                 CPPUNIT_ASSERT_MESSAGE(
                     copy_file_path.string() + " doesn't exist.",
@@ -489,8 +489,8 @@ inline static void conformance(
             else
             {
                 // Compare at least sizes...
-                const auto& expected_size = expected_image->getSize();
-                const auto& actual_size   = actual_image->getSize();
+                const auto& expected_size = expected_image->size();
+                const auto& actual_size   = actual_image->size();
                 CPPUNIT_ASSERT_EQUAL(expected_size[0], actual_size[0]);
                 CPPUNIT_ASSERT_EQUAL(expected_size[1], actual_size[1]);
                 CPPUNIT_ASSERT_EQUAL(expected_size[2], actual_size[2]);
@@ -518,8 +518,8 @@ inline static void conformance(
         {
             // Test write
             const auto& file_path = tmp_dir / ("conformance" + fileSuffix(backend, mode));
-            CPPUNIT_ASSERT_NO_THROW(writer->setFile(file_path));
-            CPPUNIT_ASSERT_THROW(writer->write(backend, mode), core::Exception);
+            CPPUNIT_ASSERT_NO_THROW(writer->set_file(file_path));
+            CPPUNIT_ASSERT_THROW(writer->write(backend, mode), core::exception);
         }
     }
 }
@@ -542,7 +542,7 @@ void WriterTest::conformanceTest()
                     Backend::NVJPEG
                 },
                 {},
-                core::Type::UINT8,
+                core::type::UINT8,
                 data::Image::PixelFormat::RGB
             );
         }
@@ -551,7 +551,7 @@ void WriterTest::conformanceTest()
             conformance(
                 {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG},
                 {Backend::NVJPEG2K},
-                core::Type::UINT8,
+                core::type::UINT8,
                 data::Image::PixelFormat::RGB
             );
         }
@@ -560,7 +560,7 @@ void WriterTest::conformanceTest()
             conformance(
                 {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
                 {Backend::NVJPEG2K, Backend::NVJPEG},
-                core::Type::UINT8,
+                core::type::UINT8,
                 data::Image::PixelFormat::RGB
             );
         }
@@ -573,7 +573,7 @@ void WriterTest::conformanceTest()
             conformance(
                 {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG2K},
                 {Backend::NVJPEG},
-                core::Type::UINT8,
+                core::type::UINT8,
                 data::Image::PixelFormat::GRAY_SCALE
             );
         }
@@ -582,7 +582,7 @@ void WriterTest::conformanceTest()
             conformance(
                 {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
                 {Backend::NVJPEG2K, Backend::NVJPEG},
-                core::Type::UINT8,
+                core::type::UINT8,
                 data::Image::PixelFormat::GRAY_SCALE
             );
         }
@@ -595,7 +595,7 @@ void WriterTest::conformanceTest()
             conformance(
                 {Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG2K},
                 {Backend::LIBJPEG, Backend::NVJPEG},
-                core::Type::UINT16,
+                core::type::UINT16,
                 data::Image::PixelFormat::RGB
             );
         }
@@ -604,7 +604,7 @@ void WriterTest::conformanceTest()
             conformance(
                 {Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
                 {Backend::LIBJPEG, Backend::NVJPEG2K, Backend::NVJPEG},
-                core::Type::UINT16,
+                core::type::UINT16,
                 data::Image::PixelFormat::RGB
             );
         }
@@ -617,7 +617,7 @@ void WriterTest::conformanceTest()
             conformance(
                 {Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG2K},
                 {Backend::LIBJPEG, Backend::NVJPEG},
-                core::Type::UINT16,
+                core::type::UINT16,
                 data::Image::PixelFormat::GRAY_SCALE
             );
         }
@@ -626,7 +626,7 @@ void WriterTest::conformanceTest()
             conformance(
                 {Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
                 {Backend::LIBJPEG, Backend::NVJPEG2K, Backend::NVJPEG},
-                core::Type::UINT16,
+                core::type::UINT16,
                 data::Image::PixelFormat::GRAY_SCALE
             );
         }
@@ -638,10 +638,10 @@ void WriterTest::conformanceTest()
 void WriterTest::emptyImageTest()
 {
     // Create a temporary directory
-    core::os::TempDir tmp_dir;
+    core::os::temp_dir tmp_dir;
 
-    const auto& empty_image = data::Image::New();
-    auto writer             = Writer::New();
+    const auto& empty_image = std::make_shared<data::Image>();
+    auto writer             = std::make_shared<Writer>();
     writer->setObject(empty_image);
 
     std::vector<std::string> extensions {".jpeg", ".tiff", ".png", ".jp2", ".j2k"};
@@ -649,8 +649,8 @@ void WriterTest::emptyImageTest()
     for(const auto& ext : extensions)
     {
         const auto& tmp_path = tmp_dir / ("empty" + ext);
-        CPPUNIT_ASSERT_NO_THROW(writer->setFile(tmp_path));
-        CPPUNIT_ASSERT_THROW(writer->write(), core::Exception);
+        CPPUNIT_ASSERT_NO_THROW(writer->set_file(tmp_path));
+        CPPUNIT_ASSERT_THROW(writer->write(), core::exception);
         CPPUNIT_ASSERT_MESSAGE(tmp_path.string() + " exists.", !std::filesystem::exists(tmp_path));
     }
 }
@@ -660,12 +660,12 @@ void WriterTest::emptyImageTest()
 void WriterTest::wrongPathTest()
 {
     // Create a temporary directory, with a non existing leaf directory
-    core::os::TempDir tmp_dir;
-    const auto tmp_folder = tmp_dir / UUID::generateUUID();
+    core::os::temp_dir tmp_dir;
+    const auto tmp_folder = tmp_dir / UUID::generate();
     std::filesystem::remove_all(tmp_folder);
 
     const auto& imageSeries = readDicomImages(1);
-    auto writer             = Writer::New();
+    auto writer             = std::make_shared<Writer>();
     writer->setObject(imageSeries.front());
 
     std::vector<std::string> extensions {".jpeg", ".tiff", ".png", ".jp2", ".j2k"};
@@ -673,7 +673,7 @@ void WriterTest::wrongPathTest()
     for(const auto& ext : extensions)
     {
         const auto& tmp_path = tmp_folder / ("wrong_path" + ext);
-        CPPUNIT_ASSERT_NO_THROW(writer->setFile(tmp_path));
+        CPPUNIT_ASSERT_NO_THROW(writer->set_file(tmp_path));
         CPPUNIT_ASSERT_NO_THROW(writer->write());
         CPPUNIT_ASSERT_MESSAGE(tmp_path.string() + " doesn't exist.", std::filesystem::exists(tmp_path));
     }
@@ -686,7 +686,7 @@ void WriterTest::fromDicomTest()
     const auto& imageSeries = readDicomImages();
 
     // Create a temporary directory
-    core::os::TempDir tmp_dir;
+    core::os::temp_dir tmp_dir;
 
     // Use a big epsilon since size can vary between platforms and libraries version, especially for nvJPEG2000
     static constexpr std::int64_t EPSILON = 5000;
@@ -700,13 +700,13 @@ void WriterTest::fromDicomTest()
     static constexpr std::array<std::int64_t, 3> openjpeg_jp2_size = {279111, 141282, 272407};
     static constexpr std::array<std::int64_t, 3> openjpeg_jk2_size = {279111, 141282, 272407};
 
-    auto writer = Writer::New();
+    auto writer = std::make_shared<Writer>();
 
     const auto& write =
         [&](std::size_t i, const std::string& ext)
         {
             const auto& tmp_path = tmp_dir / (std::to_string(i) + "_from_dicom" + ext);
-            CPPUNIT_ASSERT_NO_THROW(writer->setFile(tmp_path));
+            CPPUNIT_ASSERT_NO_THROW(writer->set_file(tmp_path));
             CPPUNIT_ASSERT_NO_THROW(writer->write());
             CPPUNIT_ASSERT(std::filesystem::exists(tmp_path));
 
@@ -820,7 +820,7 @@ void WriterTest::profilingTest()
     images.push_back(getSyntheticImage(0));
 
     // Create a temporary directory
-    core::os::TempDir tmp_dir;
+    core::os::temp_dir tmp_dir;
 
     // Check how many loop to perform
     static const char* const env_loop   = std::getenv("PROFILETEST_LOOP");

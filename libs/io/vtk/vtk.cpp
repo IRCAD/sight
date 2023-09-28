@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "io/vtk/vtk.hpp"
 
-#include <core/runtime/Profile.hpp>
-#include <core/tools/Os.hpp>
+#include <core/runtime/profile.hpp>
+#include <core/tools/os.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -74,9 +74,9 @@ static bool initVTKLogFile()
 
     // Create VTK.log in user cache folder.
     // Find log dir
-    const auto& current_profile = core::runtime::getCurrentProfile();
-    const auto& profile_name    = current_profile ? current_profile->getName() : std::string();
-    const auto& vtk_log         = core::tools::os::getUserCacheDir(profile_name) / "VTK.log";
+    const auto& current_profile = core::runtime::get_current_profile();
+    const auto& profile_name    = current_profile ? current_profile->name() : std::string();
+    const auto& vtk_log         = core::tools::os::get_user_cache_dir(profile_name) / "VTK.log";
 
     // TODO: Gather all .log file together in Session.
     vtkSmartPointer<vtkFileOutputWindow> outwin = vtkFileOutputWindow::New();
@@ -122,43 +122,43 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
 const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {core::Type::INT8, VTK_CHAR},
-    {core::Type::UINT8, VTK_UNSIGNED_CHAR},
-    {core::Type::INT16, VTK_SHORT},
-    {core::Type::UINT16, VTK_UNSIGNED_SHORT},
-    {core::Type::INT32, VTK_INT},
-    {core::Type::UINT32, VTK_UNSIGNED_INT},
-    {core::Type::INT64, VTK_LONG_LONG},
-    {core::Type::UINT64, VTK_UNSIGNED_LONG_LONG},
-    {core::Type::FLOAT, VTK_FLOAT},
-    {core::Type::DOUBLE, VTK_DOUBLE}
+    {core::type::INT8, VTK_CHAR},
+    {core::type::UINT8, VTK_UNSIGNED_CHAR},
+    {core::type::INT16, VTK_SHORT},
+    {core::type::UINT16, VTK_UNSIGNED_SHORT},
+    {core::type::INT32, VTK_INT},
+    {core::type::UINT32, VTK_UNSIGNED_INT},
+    {core::type::INT64, VTK_LONG_LONG},
+    {core::type::UINT64, VTK_UNSIGNED_LONG_LONG},
+    {core::type::FLOAT, VTK_FLOAT},
+    {core::type::DOUBLE, VTK_DOUBLE}
 };
 
 const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {VTK_SIGNED_CHAR, core::Type::INT8},
-    {VTK_CHAR, core::Type::INT8},
-    {VTK_UNSIGNED_CHAR, core::Type::UINT8},
-    {VTK_SHORT, core::Type::INT16},
-    {VTK_UNSIGNED_SHORT, core::Type::UINT16},
-    {VTK_INT, core::Type::INT32},
-    {VTK_UNSIGNED_INT, core::Type::UINT32},
-    {VTK_FLOAT, core::Type::FLOAT},
-    {VTK_DOUBLE, core::Type::DOUBLE},
-    {VTK_LONG_LONG, core::Type::INT64},
-    {VTK_UNSIGNED_LONG_LONG, core::Type::UINT64},
+    {VTK_SIGNED_CHAR, core::type::INT8},
+    {VTK_CHAR, core::type::INT8},
+    {VTK_UNSIGNED_CHAR, core::type::UINT8},
+    {VTK_SHORT, core::type::INT16},
+    {VTK_UNSIGNED_SHORT, core::type::UINT16},
+    {VTK_INT, core::type::INT32},
+    {VTK_UNSIGNED_INT, core::type::UINT32},
+    {VTK_FLOAT, core::type::FLOAT},
+    {VTK_DOUBLE, core::type::DOUBLE},
+    {VTK_LONG_LONG, core::type::INT64},
+    {VTK_UNSIGNED_LONG_LONG, core::type::UINT64},
 
 #if (INT_MAX < LONG_MAX)
     {
-        VTK_LONG, core::Type::INT64
+        VTK_LONG, core::type::INT64
     },
-    {VTK_UNSIGNED_LONG, core::Type::UINT64}
+    {VTK_UNSIGNED_LONG, core::type::UINT64}
 #else
     {
-        VTK_LONG, core::Type::INT32
+        VTK_LONG, core::type::INT32
     },
-    {VTK_UNSIGNED_LONG, core::Type::UINT32}
+    {VTK_UNSIGNED_LONG, core::type::UINT32}
 #endif
 };
 
@@ -189,7 +189,7 @@ void* newBuffer(std::size_t size)
     {
         SIGHT_ERROR(
             "No enough memory to allocate an image of type "
-            << core::Type::get<IMAGETYPE>().name()
+            << core::type::get<IMAGETYPE>().name()
             << " and of size " << size << "." << std::endl
             << e.what()
         );
@@ -329,7 +329,7 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
 
         const auto dumpLock = destination->dump_lock();
 
-        destBuffer = destination->getBuffer();
+        destBuffer = destination->buffer();
         const std::size_t sizeInBytes = destination->getSizeInBytes();
         std::memcpy(destBuffer, input, sizeInBytes);
 
@@ -359,9 +359,9 @@ void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _
 
         _pImageImport->SetWholeExtent(
             0,
-            static_cast<int>(_pDataImage->getSize()[0]) - 1,
+            static_cast<int>(_pDataImage->size()[0]) - 1,
             0,
-            static_cast<int>(_pDataImage->getSize()[1]) - 1,
+            static_cast<int>(_pDataImage->size()[1]) - 1,
             0,
             0
         );
@@ -382,11 +382,11 @@ void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _
 
         _pImageImport->SetWholeExtent(
             0,
-            static_cast<int>(_pDataImage->getSize()[0]) - 1,
+            static_cast<int>(_pDataImage->size()[0]) - 1,
             0,
-            static_cast<int>(_pDataImage->getSize()[1]) - 1,
+            static_cast<int>(_pDataImage->size()[1]) - 1,
             0,
-            static_cast<int>(_pDataImage->getSize()[2]) - 1
+            static_cast<int>(_pDataImage->size()[2]) - 1
         );
     }
 
@@ -398,7 +398,7 @@ void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _
     // no copy, no buffer destruction/management
     // Remove const of the pointer.
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    _pImageImport->SetImportVoidPointer(const_cast<void*>(_pDataImage->getBuffer()));
+    _pImageImport->SetImportVoidPointer(const_cast<void*>(_pDataImage->buffer()));
 
     // used to set correct pixeltype to VtkImage
     _pImageImport->SetDataScalarType(TypeTranslator::translate(_pDataImage->getType()));

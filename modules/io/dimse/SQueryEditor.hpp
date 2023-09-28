@@ -24,16 +24,16 @@
 
 #include "modules/io/dimse/config.hpp"
 
-#include <core/thread/Worker.hpp>
+#include <core/thread/worker.hpp>
 
 #include <data/SeriesSet.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
 
-#include <service/INotifier.hpp>
+#include <service/notifier.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QDateEdit>
 #include <QLineEdit>
@@ -72,15 +72,15 @@ namespace sight::module::io::dimse
  */
 class MODULE_IO_DIMSE_CLASS_API SQueryEditor final :
     public QObject,
-    public sight::ui::base::IEditor,
-    private sight::service::INotifier
+    public sight::ui::editor,
+    private sight::service::notifier
 {
 Q_OBJECT;
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SQueryEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SQueryEditor, sight::ui::editor);
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SQueryEditor() noexcept;
@@ -114,7 +114,7 @@ private:
     void updateSeriesSet(const data::SeriesSet::container_type& _series);
 
     /// Contains the worker of the series enquire thread.
-    core::thread::Worker::sptr m_requestWorker {nullptr};
+    core::thread::worker::sptr m_requestWorker {nullptr};
 
     /// Defines if the service is executing query.
     std::atomic<bool> m_isQuerying {false};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ void Measurement::createNodes(
         unsigned int id = 1;
         for(const data::Object::sptr& object : *distanceVector)
         {
-            data::PointList::sptr pointList = data::PointList::dynamicCast(object);
+            data::PointList::sptr pointList = std::dynamic_pointer_cast<data::PointList>(object);
             if(pointList)
             {
                 this->createMeasurement(parent, pointList, id++, useSCoord3D);

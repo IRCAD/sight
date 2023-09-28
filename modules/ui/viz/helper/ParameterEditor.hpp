@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 
 #include <viz/scene3d/IParameter.hpp>
 
@@ -42,10 +42,10 @@ public:
      * @param[in] _paramSrv editor service.
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
-    MODULE_UI_VIZ_API static service::IService::ConfigType createConfig(
+    MODULE_UI_VIZ_API static service::config_t createConfig(
         const sight::viz::scene3d::IParameter::csptr& _adaptor,
-        const service::IService::csptr& _paramSrv,
-        core::com::helper::SigSlotConnection& _connections
+        const service::base::csptr& _paramSrv,
+        core::com::helper::sig_slot_connection& _connections
     );
 };
 

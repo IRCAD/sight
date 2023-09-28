@@ -6,7 +6,7 @@ add_dependencies(
     config_viz_scene2d
     data
     module_service
-    module_ui_base
+    module_ui
     module_ui_qt
     module_data
     module_viz_scene3d

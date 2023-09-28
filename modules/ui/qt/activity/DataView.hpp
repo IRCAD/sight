@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -182,11 +182,11 @@ private:
     /// Imports a SeriesSet and then extract the object required for the selected tab.
     void importObjectFromSDB();
 
-    /// Creates a new object for the selected tab (just use data::factory::New(type)).
+    /// Creates a new object for the selected tab (just use data::factory::make(type)).
     void createNewObject();
 
     /**
-     * @brief Calls @ref module::ui::base::editor::SSelector service to read the object. Return true if the object is
+     * @brief Calls @ref module::ui::editor::SSelector service to read the object. Return true if the object is
      * properly
      * read.
      * @param _classname the class name of the object to read.

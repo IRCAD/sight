@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
 
-#include <service/IRegisterer.hpp>
+#include <service/registerer.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -42,7 +42,7 @@ namespace sight::module::geometry::vision
  *  as well as the camera matrix and the distortion coefficients.
  *
  * @section Slots Slots
- * - \b computeRegistration(core::HiResClock::HiResClockType): compute the registration using cv::solvePnP.
+ * - \b computeRegistration(core::hires_clock::type): compute the registration using cv::solvePnP.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -67,11 +67,11 @@ namespace sight::module::geometry::vision
  * - \b shift (optional): shift back pointList2d with cx/cy, this can be used to compensate a "shifted" camera (that
  * uses calibration matrix) in a 3dScene (default: "false").
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SSolvePnP : public service::IRegisterer
+class MODULE_GEOMETRY_VISION_CLASS_API SSolvePnP : public service::registerer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSolvePnP, sight::service::IRegisterer);
+    SIGHT_DECLARE_SERVICE(SSolvePnP, sight::service::registerer);
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API SSolvePnP() noexcept = default;
@@ -84,7 +84,7 @@ public:
      * Update 'matrix' with the camera pose (or object pose if 'inverse' is "true")
      * @param _timestamp: not used by the method.
      */
-    MODULE_GEOMETRY_VISION_API void computeRegistration(core::HiResClock::HiResClockType _timestamp) override;
+    MODULE_GEOMETRY_VISION_API void computeRegistration(core::hires_clock::type _timestamp) override;
 
 protected:
 

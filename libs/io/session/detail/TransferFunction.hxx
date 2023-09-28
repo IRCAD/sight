@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -175,7 +175,7 @@ inline static data::TransferFunction::sptr read(
     if(version == -1)
     {
         auto& pieces = transferFunction->pieces();
-        pieces.push_back(data::TransferFunctionPiece::New());
+        pieces.push_back(std::make_shared<data::TransferFunctionPiece>());
 
         deserializeTransferFunctionPiece(tree, *pieces.back());
 
@@ -191,7 +191,7 @@ inline static data::TransferFunction::sptr read(
 
         for(const auto& pieceTree : tree.get_child(s_Pieces))
         {
-            const auto newPiece = data::TransferFunctionPiece::New();
+            const auto newPiece = std::make_shared<data::TransferFunctionPiece>();
             pieces.push_back(newPiece);
 
             deserializeTransferFunctionPiece(pieceTree.second, *newPiece);

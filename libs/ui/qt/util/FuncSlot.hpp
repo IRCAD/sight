@@ -31,13 +31,13 @@
 namespace sight::ui::qt::util
 {
 
-class UI_QT_CLASS_QT_API FuncSlot : public QObject
+class UI_QT_CLASS_API_QT FuncSlot : public QObject
 {
 Q_OBJECT
 
 public:
 
-    UI_QT_QT_API FuncSlot();
+    UI_QT_API_QT FuncSlot();
 
     template<typename CALLABLE>
     FuncSlot(CALLABLE c) :
@@ -48,7 +48,7 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename CALLABLE>
-    void setFunction(CALLABLE c)
+    void set_function(CALLABLE c)
     {
         m_func = c;
     }

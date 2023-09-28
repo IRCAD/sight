@@ -22,11 +22,11 @@
 
 #include "modules/ui/qt/viz/STransformEditor.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <geometry/data/Matrix4.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -69,7 +69,7 @@ void STransformEditor::configuring()
 
     this->initialize();
 
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     const std::string rotation = config.get<std::string>("rotation.<xmlattr>.enabled", "true");
 
@@ -125,7 +125,7 @@ void STransformEditor::starting()
     };
 
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* layout = new QVBoxLayout();
 
@@ -217,11 +217,11 @@ void STransformEditor::updating()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap STransformEditor::getAutoConnections() const
+service::connections_t STransformEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MATRIX_INOUT, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -251,10 +251,10 @@ void STransformEditor::onSliderChanged(int /*unused*/)
         m_sliders[i].m_sliderValue->setText(QString("%1").arg(m_sliders[i].m_slider->value()));
     }
 
-    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 

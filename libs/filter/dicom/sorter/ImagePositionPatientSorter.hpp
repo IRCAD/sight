@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "filter/dicom/config.hpp"
-#include "filter/dicom/sorter/ISorter.hpp"
+#include "filter/dicom/sorter/base.hpp"
 
 #include <data/DicomSeries.hpp>
 
@@ -34,26 +34,23 @@ namespace sight::filter::dicom::sorter
  * @brief Filter that uses the ImagepositionPatient tag to sort the instances.
  * The position increases along the direction given by cross product of the ImageOrientationPatient vectors.
  */
-class FILTER_DICOM_CLASS_API ImagePositionPatientSorter : public ISorter
+class FILTER_DICOM_CLASS_API ImagePositionPatientSorter : public base
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         ImagePositionPatientSorter,
-        ISorter,
-        filter::dicom::factory::New<ImagePositionPatientSorter>
+        base,
+        sight::filter::dicom::factory::make<ImagePositionPatientSorter>
     );
 
-    /// Constructor
-    FILTER_DICOM_API ImagePositionPatientSorter(filter::dicom::IFilter::Key key);
-
-    /// Destructor
-    FILTER_DICOM_API ~ImagePositionPatientSorter() override;
+    FILTER_DICOM_API ImagePositionPatientSorter()           = default;
+    FILTER_DICOM_API ~ImagePositionPatientSorter() override = default;
 
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
         const data::DicomSeries::sptr& series,
-        const core::log::Logger::sptr& logger
+        const core::log::logger::sptr& logger
     ) const override;
 
     /// Return the name of the filter

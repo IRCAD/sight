@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ bool Fiducial::containsLandmarks(const SPTR(data::SeriesSet)& seriesSet)
         seriesSet->end(),
         [](const data::Series::sptr& series)
         {
-            if(auto imageSeries = data::ImageSeries::dynamicCast(series))
+            if(auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series))
             {
                 if(data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*imageSeries))
                 {
@@ -65,7 +65,7 @@ bool Fiducial::containsDistances(const SPTR(data::SeriesSet)& seriesSet)
         seriesSet->end(),
         [](const data::Series::sptr& series)
         {
-            if(auto imageSeries = data::ImageSeries::dynamicCast(series))
+            if(auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series))
             {
                 if(auto distanceVector = data::helper::MedicalImage::getDistances(*imageSeries))
                 {
@@ -84,7 +84,7 @@ bool Fiducial::contains3DDistances(const SPTR(data::SeriesSet)& seriesSet)
     // Let's find if a series contains distances
     for(const auto& series : *seriesSet)
     {
-        const auto& imageSeries = data::ImageSeries::dynamicCast(series);
+        const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
         if(imageSeries)
         {
             const auto& distanceVector = data::helper::MedicalImage::getDistances(*imageSeries);
@@ -92,7 +92,7 @@ bool Fiducial::contains3DDistances(const SPTR(data::SeriesSet)& seriesSet)
             {
                 for(const auto& object : *distanceVector)
                 {
-                    const auto& pointList = data::PointList::dynamicCast(object);
+                    const auto& pointList = std::dynamic_pointer_cast<data::PointList>(object);
                     if(pointList && pointList->getPoints().size() >= 2)
                     {
                         const auto& point1             = *pointList->getPoints().begin();

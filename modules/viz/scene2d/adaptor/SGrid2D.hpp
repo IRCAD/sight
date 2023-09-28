@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene2d/config.hpp"
 
-#include <viz/scene2d/IAdaptor.hpp>
+#include <viz/scene2d/adaptor.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -59,17 +59,17 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b xSpacing (optional, default value: 10): Set the grid spacing (space between 2 consecutive lines) in x.
  *    - \b ySpacing (optional, default value: 10): Set the grid spacing (space between 2 consecutive lines) in y.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SGrid2D : public sight::viz::scene2d::IAdaptor
+class MODULE_VIZ_SCENE2D_CLASS_API SGrid2D : public sight::viz::scene2d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SGrid2D, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SGrid2D, sight::viz::scene2d::adaptor);
 
     /**
      * @name Slots API
      * @{
      */
-    MODULE_VIZ_SCENE2D_API static const core::com::Slots::SlotKeyType s_SET_GRID_SPACING_SLOT;
+    MODULE_VIZ_SCENE2D_API static const core::com::slots::key_t SET_GRID_SPACING_SLOT;
     /** @} */
 
     /// Constructor, set the x and y spacing to 10

@@ -26,7 +26,7 @@
 
 #include <data/helper/MedicalImage.hpp>
 
-#include <viz/scene2d/IAdaptor.hpp>
+#include <viz/scene2d/adaptor.hpp>
 
 #include <QGraphicsItemGroup>
 #include <QImage>
@@ -36,7 +36,7 @@ namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
- * @brief IAdaptor implementation to display one slice of an image.
+ * @brief adaptor implementation to display one slice of an image.
  *
  * @section Slots Slots
  * - \b updateSliceIndex() : update image slice index
@@ -68,11 +68,11 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b orientation (optional, default axial): image orientation, axial, sagittal or frontal
  *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SNegato : public sight::viz::scene2d::IAdaptor
+class MODULE_VIZ_SCENE2D_CLASS_API SNegato : public sight::viz::scene2d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SNegato, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SNegato, sight::viz::scene2d::adaptor);
 
     MODULE_VIZ_SCENE2D_API SNegato() noexcept;
 
@@ -82,12 +82,12 @@ public:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
-     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
+     * Connect Image::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect Image::SLICE_INDEX_MODIFIED_SIG to this::UPDATE_SLICE_INDEX_SLOT
+     * Connect Image::SLICE_TYPE_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
+     * Connect Image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
      */
-    MODULE_VIZ_SCENE2D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE2D_API service::connections_t getAutoConnections() const override;
 
 protected:
 

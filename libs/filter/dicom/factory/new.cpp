@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,16 @@
 
 #include "filter/dicom/factory/new.hpp"
 
-#include "filter/dicom/IFilter.hpp"
+#include "filter/dicom/filter.hpp"
 
 namespace sight::filter::dicom::factory
 {
 
 //------------------------------------------------------------------------------
 
-filter::dicom::IFilter::sptr New(const filter::dicom::registry::KeyType& classname)
+sight::filter::dicom::filter::sptr make(const sight::filter::dicom::registry::KeyType& classname)
 {
-    return filter::dicom::registry::get()->create(classname);
+    return sight::filter::dicom::registry::get()->create(classname);
 }
 
 } // namespace sight::filter::dicom::factory

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/ActivityMsg.hpp>
 #include <activity/extension/Activity.hpp>
+#include <activity/message.hpp>
 
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <ui/base/IAction.hpp>
+#include <ui/__/action.hpp>
 
 namespace sight::module::ui::qt::activity
 {
@@ -56,7 +56,7 @@ namespace sight::module::ui::qt::activity
  * - \b updateState() : Updates action state (enable if activities are available for current selection).
  *
  * @section Signal Signal
- * - \b activityLaunched(activity::ActivityMsg) : This signal is emitted when the activity is created,
+ * - \b activityLaunched(activity::message) : This signal is emitted when the activity is created,
  *      it contains the activity information. It should be connected to the slot 'createTab' of the service
  *      '::module::ui::qt::editor::SDynamicView'.
  *
@@ -114,11 +114,11 @@ namespace sight::module::ui::qt::activity
  *       - \b type: type of series (data::ImageSeries, data::ModelSeries, ....)
  *       - \b id: identifier of the activity.
  */
-class MODULE_UI_QT_CLASS_API SLauncher : public sight::ui::base::IAction
+class MODULE_UI_QT_CLASS_API SLauncher : public sight::ui::action
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SLauncher, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SLauncher, sight::ui::action);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SLauncher() noexcept;
@@ -130,9 +130,9 @@ public:
      * @name Slot API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t LAUNCH_SERIES_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t UPDATE_STATE_SLOT;
 
     /// @}
 
@@ -140,10 +140,10 @@ public:
      * @name Signal API
      * @{
      */
-    typedef core::com::Signal<void (sight::activity::ActivityMsg)> ActivityLaunchedSignalType;
+    typedef core::com::signal<void (sight::activity::message)> ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
+    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG;
 
     /// @}
 
@@ -153,15 +153,15 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
-     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
+     * Connect Vector::ADDED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
+     * Connect Vector::REMOVED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
      */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
-    ///This method launches the IAction::starting method.
+    ///This method launches the action::starting method.
     void starting() override;
 
-    ///This method launches the IAction::stopping method.
+    ///This method launches the action::stopping method.
     void stopping() override;
 
     /**
@@ -171,7 +171,7 @@ protected:
 
     /**
      * @brief Initialize the action.
-     * @see sight::ui::base::IAction::initialize()
+     * @see sight::ui::action::initialize()
      */
     void configuring() override;
 
@@ -209,7 +209,7 @@ private:
 
     /**
      * @brief Send message to launch new tab view
-     * If given activity info contains an activity::IValidator, first checks if activity is valid according to
+     * If given activity info contains an activity::validator::base, first checks if activity is valid according to
      * validator, then build activity with activity builder.
      *
      * @param info activity information

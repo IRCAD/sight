@@ -1,11 +1,11 @@
  
 # sight::module::ui::history
 
-Contains service to handle a command history. Used for instance to undo or redo some command (see `ui::history::ICommand`).
+Contains service to handle a command history. Used for instance to undo or redo some command (see `ui::history::command`).
 
 ## Services
 
-- **SCommandHistory**: manages a command history, see also `ui::history::ICommand` for more details about which command can be stored.
+- **SCommandHistory**: manages a command history, see also `ui::history::command` for more details about which command can be stored.
 
 ## How to use it
 

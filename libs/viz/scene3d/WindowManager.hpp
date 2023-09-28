@@ -25,7 +25,7 @@
 #include "viz/scene3d/config.hpp"
 
 #include <core/base.hpp>
-#include <core/LazyInstantiator.hpp>
+#include <core/lazy_instantiator.hpp>
 
 #include <OGRE/OgreRenderWindow.h>
 
@@ -38,11 +38,11 @@ namespace sight::viz::scene3d
  * The problem is that the OpenGLRenderSystem we use, somehow, needs the first window created to be deleted last.
  * This class allows to differ the deletion of the first created window.
  */
-class VIZ_SCENE3D_CLASS_API WindowManager : public core::BaseObject
+class VIZ_SCENE3D_CLASS_API WindowManager : public core::base_object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(WindowManager, viz::scene3d::WindowManager, new WindowManager);
+    SIGHT_DECLARE_CLASS(WindowManager, viz::scene3d::WindowManager);
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
 

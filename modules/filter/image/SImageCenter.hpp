@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -55,11 +55,11 @@ namespace sight::module::filter::image
  * from world origin(0,0,0) to the image center (in mm).
  *
  */
-class MODULE_FILTER_IMAGE_CLASS_API SImageCenter : public service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SImageCenter : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SImageCenter, service::IFilter);
+    SIGHT_DECLARE_SERVICE(SImageCenter, service::filter);
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SImageCenter() = default;
@@ -87,7 +87,7 @@ protected:
      * - Update service when one of the two images is modified.
      * - Update service when the transform matrix is modified.
      */
-    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API connections_t getAutoConnections() const override;
 
 private:
 

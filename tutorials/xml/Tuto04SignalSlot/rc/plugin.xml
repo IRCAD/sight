@@ -14,7 +14,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto04SignalSlot</name>
@@ -29,7 +29,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -40,7 +40,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -56,16 +56,16 @@
 
             <!--
                 Default view service:
-                This service defines the view layout. The type 'sight::ui::base::CardinalLayoutManager' represents a main
+                This service defines the view layout. The type 'sight::ui::layout::cardinal' represents a main
                 central view and other views at the 'right', 'left', 'bottom' or 'top'.
                 Here the application contains a central view at the right.
 
                 Each <view> declared into the <layout> tag, must have its associated <view> into the <registry> tag.
                 A minimum window height and a width are given to the two non-central views.
             -->
-            <service uid="containerView" type="sight::module::ui::base::SView" >
+            <service uid="containerView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::CardinalLayoutManager" >
+                    <layout type="sight::ui::layout::cardinal" >
                         <view align="center" />
                         <view caption="Move cameras 1,2" align="right" minWidth="600" minHeight="100" />
                         <view caption="Move camera 3" align="right" minWidth="600" minHeight="100" />
@@ -80,12 +80,12 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="sight::module::ui::base::SAction" />
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+            <service uid="openMeshAct" type="sight::module::ui::SAction" />
+            <service uid="quitAct" type="sight::module::ui::SQuit" />
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
+            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
             </service>

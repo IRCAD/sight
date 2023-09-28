@@ -22,8 +22,8 @@
 
 #include "SPoseFrom2d.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <geometry/vision/helper.hpp>
 
@@ -34,20 +34,20 @@
 namespace sight::module::geometry::vision
 {
 
-static const std::string s_UPDATE_CAMERA_SLOT = "updateCamera";
+static const std::string UPDATE_CAMERA_SLOT = "updateCamera";
 
 //-----------------------------------------------------------------------------
 
 SPoseFrom2d::SPoseFrom2d() noexcept
 {
-    newSlot(s_UPDATE_CAMERA_SLOT, &SPoseFrom2d::initialize, this);
+    new_slot(UPDATE_CAMERA_SLOT, &SPoseFrom2d::initialize, this);
 }
 
 //-----------------------------------------------------------------------------
 
 void SPoseFrom2d::configuring()
 {
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
     m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
     SIGHT_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
@@ -87,13 +87,13 @@ void SPoseFrom2d::starting()
         for(std::size_t i = 0 ; i < m_3dModel.size() ; ++i)
         {
             const cv::Point3f cvPoint     = m_3dModel.at(i);
-            const data::Point::sptr point = data::Point::New(cvPoint.x, cvPoint.y, cvPoint.z);
+            const data::Point::sptr point = std::make_shared<data::Point>(cvPoint.x, cvPoint.y, cvPoint.z);
             point->setLabel(std::to_string(i));
             pl->pushBack(point);
         }
 
-        auto sig = pl->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        auto sig = pl->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+        sig->async_emit();
     }
 
     this->initialize();
@@ -111,8 +111,8 @@ void SPoseFrom2d::stopping()
     if(pl)
     {
         pl->clear();
-        auto sig = pl->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        auto sig = pl->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+        sig->async_emit();
     }
 }
 
@@ -123,13 +123,13 @@ void SPoseFrom2d::updating()
     // When working with a frame (newest design), we do not rely on the timetamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
-    auto timestamp = core::HiResClock::getTimeInMilliSec();
+    auto timestamp = core::hires_clock::get_time_in_milli_sec();
     this->computeRegistration(timestamp);
 }
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
+void SPoseFrom2d::computeRegistration(core::hires_clock::type /*timestamp*/)
 {
     SIGHT_WARN_IF("Invoking computeRegistration while service is STOPPED", this->isStopped());
 
@@ -194,8 +194,8 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
 
             // Always send the signal even if we did not find anything.
             // This allows to keep updating the whole processing pipeline.
-            auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-            sig->asyncEmit();
+            auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+            sig->async_emit();
 
             ++markerIndex;
         }
@@ -285,12 +285,12 @@ cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _markerCa
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
+service::connections_t SPoseFrom2d::getAutoConnections() const
 {
     return {
-        {s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_CAMERA_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_CAMERA_SLOT},
-        {s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_CAMERA_SLOT}
+        {s_MARKERMAP_INPUT, data::Object::MODIFIED_SIG, service::slots::UPDATE},
+        {s_CAMERA_INPUT, data::Object::MODIFIED_SIG, UPDATE_CAMERA_SLOT},
+        {s_CAMERA_INPUT, data::Camera::INTRINSIC_CALIBRATED_SIG, UPDATE_CAMERA_SLOT}
     };
 }
 

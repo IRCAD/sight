@@ -71,7 +71,7 @@ public:
         SIGHT_THROW_IF("Source image is null", image == nullptr);
 
         /// @todo Should we split volume in 2D slices ?
-        const auto& sizes = image->getSize();
+        const auto& sizes = image->size();
         SIGHT_THROW_IF("Unsupported image dimension", sizes[0] == 0 || sizes[1] == 0);
 
         // Protect the image from dump
@@ -88,8 +88,8 @@ public:
             {
                 // Check if the rerror is because of unsupported pixel type
                 const auto& pixel_type = image->getType();
-                if(pixel_type != core::Type::UINT8
-                   && pixel_type != core::Type::UINT16)
+                if(pixel_type != core::type::UINT8
+                   && pixel_type != core::type::UINT16)
                 {
                     throw;
                 }
@@ -107,7 +107,7 @@ public:
 
                 /// @todo Check new version of nvjpeg2k (>0.6).
                 if((pixel_format == data::Image::PixelFormat::RGBA || pixel_format == data::Image::PixelFormat::BGRA)
-                   && pixel_type == core::Type::UINT16)
+                   && pixel_type == core::type::UINT16)
                 {
                     throw;
                 }

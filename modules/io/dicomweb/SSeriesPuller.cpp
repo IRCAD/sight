@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "SSeriesPuller.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
-#include <core/tools/System.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
+#include <core/tools/system.hpp>
 
 #include <data/DicomSeries.hpp>
 
@@ -32,12 +32,12 @@
 #include <io/http/helper/Series.hpp>
 #include <io/http/Request.hpp>
 
-#include <service/base.hpp>
 #include <service/extension/Config.hpp>
+#include <service/op.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
-#include <ui/base/Preferences.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <filesystem>
 
@@ -75,7 +75,7 @@ void SSeriesPuller::configuring()
     }
     else
     {
-        throw core::tools::Failed("'server' element not found");
+        throw core::tools::failed("'server' element not found");
     }
 }
 
@@ -84,28 +84,28 @@ void SSeriesPuller::configuring()
 void SSeriesPuller::starting()
 {
     // Create temporary SeriesSet
-    m_tmp_series_set = data::SeriesSet::New();
+    m_tmp_series_set = std::make_shared<data::SeriesSet>();
 
     // Create reader
-    m_dicomReader = service::add<sight::io::base::service::IReader>(m_dicomReaderType);
+    m_dicomReader = service::add<sight::io::service::reader>(m_dicomReaderType);
     SIGHT_ASSERT(
         "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in module::io::dicomweb::SSeriesPuller.",
         m_dicomReader
     );
-    m_dicomReader->setInOut(m_tmp_series_set, sight::io::base::service::s_DATA_KEY);
+    m_dicomReader->setInOut(m_tmp_series_set, sight::io::service::s_DATA_KEY);
 
     if(!m_dicomReaderSrvConfig.empty())
     {
         // Get the config
         const auto readerConfig = service::extension::Config::getDefault()->getServiceConfig(
             m_dicomReaderSrvConfig,
-            "sight::io::base::service::IReader"
+            "sight::io::service::reader"
         );
 
         SIGHT_ASSERT(
             "Sorry, there is no service configuration "
             << m_dicomReaderSrvConfig
-            << " for sight::io::base::service::IReader",
+            << " for sight::io::service::reader",
             !readerConfig.empty()
         );
 
@@ -131,7 +131,7 @@ void SSeriesPuller::updating()
 {
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
         m_serverPort     = preferences.delimited_get(m_serverPortKey, m_serverPort);
         m_serverHostname = preferences.delimited_get(m_serverHostnameKey, m_serverHostname);
     }
@@ -143,14 +143,14 @@ void SSeriesPuller::updating()
     if(m_isPulling)
     {
         // Display a message to inform the user that the service is already pulling data.
-        sight::ui::base::dialog::MessageDialog messageBox;
+        sight::ui::dialog::message messageBox;
         messageBox.setTitle("Pulling Series");
         messageBox.setMessage(
             "The service is already pulling data. Please wait until the pulling is done "
             "before sending a new pull request."
         );
-        messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-        messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+        messageBox.setIcon(ui::dialog::message::INFO);
+        messageBox.addButton(ui::dialog::message::OK);
         messageBox.show();
     }
     else
@@ -159,11 +159,11 @@ void SSeriesPuller::updating()
         if(selectedSeries->empty())
         {
             // Display a message to inform the user that there is no series selected.
-            sight::ui::base::dialog::MessageDialog messageBox;
+            sight::ui::dialog::message messageBox;
             messageBox.setTitle("Pulling Series");
             messageBox.setMessage("Unable to pull series, there is no series selected. ");
-            messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-            messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+            messageBox.setIcon(ui::dialog::message::INFO);
+            messageBox.addButton(ui::dialog::message::OK);
             messageBox.show();
         }
         else
@@ -199,7 +199,7 @@ void SSeriesPuller::pullSeries()
         auto it = selectedSeries->cbegin();
         for( ; it != selectedSeries->cend() ; ++it)
         {
-            data::DicomSeries::sptr series = data::DicomSeries::dynamicCast(*it);
+            data::DicomSeries::sptr series = std::dynamic_pointer_cast<data::DicomSeries>(*it);
 
             // Check if the series must be pulled
             if(series
@@ -286,7 +286,7 @@ void SSeriesPuller::pullSeries()
 
                         try
                         {
-                            m_path = m_clientQt.getFile(sight::io::http::Request::New(instanceUrl));
+                            m_path = m_clientQt.get_file(sight::io::http::Request::New(instanceUrl));
                         }
                         catch(sight::io::http::exceptions::ContentNotFound& exception)
                         {
@@ -361,7 +361,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             // Clear temporary series
             m_tmp_series_set->clear();
 
-            m_dicomReader->setFolder(m_path);
+            m_dicomReader->set_folder(m_path);
             m_dicomReader->update();
 
             // Merge series
@@ -375,11 +375,11 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 void SSeriesPuller::displayErrorMessage(const std::string& message)
 {
     SIGHT_WARN("Error: " + message);
-    sight::ui::base::dialog::MessageDialog messageBox;
+    sight::ui::dialog::message messageBox;
     messageBox.setTitle("Error");
     messageBox.setMessage(message);
-    messageBox.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
-    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+    messageBox.setIcon(ui::dialog::message::CRITICAL);
+    messageBox.addButton(ui::dialog::message::OK);
     messageBox.show();
 }
 

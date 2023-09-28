@@ -24,14 +24,14 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signals.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Material.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -58,13 +58,13 @@ namespace sight::module::ui::qt::reconstruction
  * - \b reconstruction [sight::data::Reconstruction]: reconstruction that will be updated
  */
 class MODULE_UI_QT_CLASS_API RepresentationEditor : public QObject,
-                                                    public sight::ui::base::IEditor
+                                                    public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(RepresentationEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(RepresentationEditor, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API RepresentationEditor() noexcept;
@@ -90,9 +90,9 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Reconstruction::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect Reconstruction::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
     /// Notify the changes
     void notifyMaterial();

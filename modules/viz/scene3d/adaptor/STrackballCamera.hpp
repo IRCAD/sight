@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/TrackballInteractor.hpp>
 
 #include <memory>
@@ -52,12 +52,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API STrackballCamera final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API STrackballCamera final : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(STrackballCamera, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(STrackballCamera, sight::viz::scene3d::adaptor);
 
     /// Constructor.
     MODULE_VIZ_SCENE3D_API STrackballCamera() noexcept = default;

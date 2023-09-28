@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,16 +23,16 @@
 #include "modules/ui/qt/calibration/SCameraSetEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
-#include <core/thread/Worker.hpp>
-#include <core/tools/Object.hpp>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
+#include <core/thread/worker.hpp>
+#include <core/tools/object.hpp>
 
 #include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -43,22 +43,22 @@
 namespace sight::module::ui::qt::calibration
 {
 
-const core::com::Slots::SlotKeyType SCameraSetEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
+const core::com::slots::key_t SCameraSetEditor::UPDATE_INFOS_SLOT = "updateInfos";
 // -------------------------------------------------------------------------
 
 SCameraSetEditor::SCameraSetEditor() noexcept :
     m_camIndex(1)
 {
-    newSlot(s_UPDATE_INFOS_SLOT, &SCameraSetEditor::updateInformations, this);
+    new_slot(UPDATE_INFOS_SLOT, &SCameraSetEditor::updateInformations, this);
 }
 
 // -------------------------------------------------------------------------
 
 void SCameraSetEditor::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
     m_camIndex = config.get<std::size_t>("index", 1);
 }
 
@@ -66,8 +66,8 @@ void SCameraSetEditor::configuring()
 
 void SCameraSetEditor::starting()
 {
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -145,12 +145,12 @@ void SCameraSetEditor::clearLabels()
 
 // ----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SCameraSetEditor::getAutoConnections() const
+service::connections_t SCameraSetEditor::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_CAMERASET, data::CameraSet::s_ADDED_CAMERA_SIG, s_UPDATE_INFOS_SLOT);
-    connections.push(s_CAMERASET, data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT);
-    connections.push(s_CAMERASET, data::CameraSet::s_REMOVED_CAMERA_SIG, s_UPDATE_INFOS_SLOT);
+    service::connections_t connections;
+    connections.push(s_CAMERASET, data::CameraSet::ADDED_CAMERA_SIG, UPDATE_INFOS_SLOT);
+    connections.push(s_CAMERASET, data::CameraSet::EXTRINSIC_CALIBRATED_SIG, UPDATE_INFOS_SLOT);
+    connections.push(s_CAMERASET, data::CameraSet::REMOVED_CAMERA_SIG, UPDATE_INFOS_SLOT);
     return connections;
 }
 

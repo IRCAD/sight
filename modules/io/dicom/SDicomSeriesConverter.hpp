@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,16 @@
 
 #include "modules/io/dicom/config.hpp"
 
-#include <core/com/Signal.hpp>
+#include <core/com/signal.hpp>
 
 #include <data/SeriesSet.hpp>
 
-#include <ui/base/IAction.hpp>
+#include <ui/__/action.hpp>
 
 namespace sight::core::jobs
 {
 
-class IJob;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -45,7 +45,7 @@ namespace sight::module::io::dicom
  * and push result (ImageSeries, ModelSeries, ...) in target SeriesSet
  *
  * @section Signals Signals
- * - \b jobCreated( SPTR(core::jobs::IJob) ) : Emitted when a job is created.
+ * - \b jobCreated( SPTR(core::jobs::base) ) : Emitted when a job is created.
  *
  * @section XML XML Configuration
  *
@@ -60,13 +60,13 @@ namespace sight::module::io::dicom
  * @subsection In-Out In-Out:
  * - \b target [sight::data::SeriesSet]: Destination SeriesSet.
  */
-class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public sight::ui::base::IAction
+class MODULE_IO_DICOM_CLASS_API SDicomSeriesConverter : public sight::ui::action
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDicomSeriesConverter, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SDicomSeriesConverter, sight::ui::action);
 
-    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignal;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignal;
 
     /**
      * @brief Constructor

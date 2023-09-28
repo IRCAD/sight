@@ -4,7 +4,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExStereoARCV_AppCfg</id>
@@ -29,7 +29,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>ExStereoARCV</name>
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Show settings" shortcut="Ctrl+H" style="check" />
@@ -71,7 +71,7 @@
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu">
+            <service uid="menuPreferencesView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Video directory" />
@@ -82,7 +82,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
@@ -108,9 +108,9 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="sight::module::ui::base::SView">
+            <service uid="cameraView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -122,9 +122,9 @@
                 </registry>
             </service>
 
-            <service uid="videoView" type="sight::module::ui::base::SView">
+            <service uid="videoView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="3" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -136,9 +136,9 @@
                 </registry>
             </service>
 
-            <service uid="infoView" type="sight::module::ui::base::SView">
+            <service uid="infoView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -150,9 +150,9 @@
                 </registry>
             </service>
 
-            <service uid="stereoView" type="sight::module::ui::base::SView">
+            <service uid="stereoView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -164,9 +164,9 @@
                 </registry>
             </service>
 
-            <service uid="reprojectionInfoView" type="sight::module::ui::base::SView">
+            <service uid="reprojectionInfoView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -179,9 +179,9 @@
             </service>
 
 
-            <service uid="parametersView" type="sight::module::ui::base::SView">
+            <service uid="parametersView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="3" />
                         <view proportion="2" />
@@ -199,7 +199,7 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::SQuit" />
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
             <service uid="videoDirAct" type="sight::module::ui::qt::SPreferencesConfiguration">
@@ -211,18 +211,18 @@
                 </preference>
             </service>
 
-            <service uid="showParametersAct" type="sight::module::ui::base::SModifyLayout">
+            <service uid="showParametersAct" type="sight::module::ui::SModifyLayout">
                 <config>
                     <show_or_hide sid="parametersView" />
                 </config>
             </service>
 
-            <service uid="loadCalibAct" type="sight::module::ui::base::SAction" />
-            <service uid="startVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="startRecordAct" type="sight::module::ui::base::SAction" />
-            <service uid="stopRecordAct" type="sight::module::ui::base::SAction">
+            <service uid="loadCalibAct" type="sight::module::ui::SAction" />
+            <service uid="startVideoAct" type="sight::module::ui::SAction" />
+            <service uid="stopVideoAct" type="sight::module::ui::SAction" />
+            <service uid="pauseVideoAct" type="sight::module::ui::SAction" />
+            <service uid="startRecordAct" type="sight::module::ui::SAction" />
+            <service uid="stopRecordAct" type="sight::module::ui::SAction">
                 <state visible="false" />
             </service>
 
@@ -503,7 +503,7 @@
             </service>
 
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
-            <service uid="matrixReverserSrv" type="sight::module::geometry::base::SConcatenateMatrices">
+            <service uid="matrixReverserSrv" type="sight::module::geometry::SConcatenateMatrices">
                 <in group="matrix">
                     <key uid="matrix" autoConnect="true" inverse="true" />
                 </in>
@@ -511,7 +511,7 @@
             </service>
 
             <!-- to multiply matrices -->
-            <service uid="concatenateSrv" type="sight::module::geometry::base::SConcatenateMatrices">
+            <service uid="concatenateSrv" type="sight::module::geometry::SConcatenateMatrices">
                 <in group="matrix">
                     <key uid="inverseMat" autoConnect="true" inverse="false" />
                     <key uid="extrinsic" inverse="true" />
@@ -519,7 +519,7 @@
                 <inout key="output" uid="rightMat" />
             </service>
 
-            <service uid="hideAxisSrv" type="sight::module::ui::base::SAction" />
+            <service uid="hideAxisSrv" type="sight::module::ui::SAction" />
 
             <!-- Wait for both poses -->
             <service uid="syncPose" type="sight::module::sync::SSignalGate">

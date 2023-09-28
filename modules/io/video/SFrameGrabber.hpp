@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "modules/io/video/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
 #include <core/mt/types.hpp>
-#include <core/thread/Timer.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/thread/timer.hpp>
+#include <core/tools/failed.hpp>
 
-#include <io/base/service/IGrabber.hpp>
+#include <io/__/service/grabber.hpp>
 
 #include <opencv2/videoio.hpp>
 
@@ -106,11 +106,11 @@ namespace sight::module::io::video
  * It will have not effects if reading a video or if a timestamp can be deduced from images filenames
  * (ex. img_642752427.jpg).
  */
-class MODULE_IO_VIDEO_CLASS_API SFrameGrabber : public sight::io::base::service::IGrabber
+class MODULE_IO_VIDEO_CLASS_API SFrameGrabber : public sight::io::service::grabber
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFrameGrabber, sight::io::base::service::IGrabber);
+    SIGHT_DECLARE_SERVICE(SFrameGrabber, sight::io::service::grabber);
 
     /// Constructor. Do nothing.
     MODULE_IO_VIDEO_API SFrameGrabber() noexcept;
@@ -118,7 +118,7 @@ public:
     /// Destructor. Do nothing.
     MODULE_IO_VIDEO_API ~SFrameGrabber() noexcept override;
 
-    MODULE_IO_VIDEO_API void setParameter(ui::base::parameter_t value, std::string key) override;
+    MODULE_IO_VIDEO_API void setParameter(ui::parameter_t value, std::string key) override;
 
 protected:
 
@@ -204,10 +204,10 @@ private:
     /// Counter used by the image reader.
     std::size_t m_imageCount {0};
 
-    core::thread::Timer::sptr m_timer;
+    core::thread::timer::sptr m_timer;
 
     /// Worker for the grabVideo or grabFrame timer.
-    core::thread::Worker::sptr m_worker;
+    core::thread::worker::sptr m_worker;
 
     /// OpenCV video grabber.
     cv::VideoCapture m_videoCapture;
@@ -225,7 +225,7 @@ private:
     std::optional<std::array<int, 2> > m_zoomCenter;
 
     /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead.
-    mutable core::mt::Mutex m_mutex;
+    mutable core::mt::mutex m_mutex;
 
     /// Frame -by-frame mode (true if enabled, false otherwise).
     bool m_oneShot {false};

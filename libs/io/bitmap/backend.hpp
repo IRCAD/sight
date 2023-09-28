@@ -23,7 +23,7 @@
 
 #include "io/bitmap/config.hpp"
 
-#include <data/IContainer.hpp>
+#include <data/container.hpp>
 
 namespace sight::io::bitmap
 {

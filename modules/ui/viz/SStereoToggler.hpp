@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <core/com/Signals.hpp>
+#include <core/com/signals.hpp>
 
-#include <ui/base/IAction.hpp>
+#include <ui/__/action.hpp>
 
 #include <viz/scene3d/Layer.hpp>
 
@@ -52,11 +52,11 @@ namespace sight::module::ui::viz
  * interlaced image pairs.
  *
  */
-class MODULE_UI_VIZ_CLASS_API SStereoToggler : public sight::ui::base::IAction
+class MODULE_UI_VIZ_CLASS_API SStereoToggler : public sight::ui::action
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SStereoToggler, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SStereoToggler, sight::ui::action);
 
     /// Constructor.
     MODULE_UI_VIZ_API SStereoToggler();
@@ -81,7 +81,7 @@ protected:
 private:
 
     using StereoModeType      = sight::viz::scene3d::compositor::Core::StereoModeType;
-    using StereoActiveSigType = core::com::Signal<void (bool)>;
+    using StereoActiveSigType = core::com::signal<void (bool)>;
 
     /// Layer in which we enable/disable stereo.
     std::string m_layerId;

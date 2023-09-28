@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ typedef SSIZE_T ssize_t;
 
 #include "io/igtl/config.hpp"
 
-#include <io/zip/IWriteArchive.hpp>
+#include <io/zip/write_archive.hpp>
 #include <io/zip/exception/Write.hpp>
 #include <core/macros.hpp>
 
@@ -97,7 +97,7 @@ protected:
  *
  * @brief MemoryWriteArchive is a memory archive writer
  */
-class IO_IGTL_CLASS_API MemoryWriteArchive : public io::zip::IWriteArchive
+class IO_IGTL_CLASS_API MemoryWriteArchive : public io::zip::write_archive
 {
 public:
 

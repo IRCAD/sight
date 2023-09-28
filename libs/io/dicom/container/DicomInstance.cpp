@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ DicomInstance::DicomInstance() :
 
 DicomInstance::DicomInstance(
     const data::Series::csptr& series,
-    core::log::Logger::sptr logger,
+    core::log::logger::sptr logger,
     bool isMultiFiles
 ) :
     m_isMultiFiles(isMultiFiles),
@@ -74,7 +74,7 @@ DicomInstance::DicomInstance(
 
 DicomInstance::DicomInstance(
     const data::DicomSeries::csptr& dicomSeries,
-    core::log::Logger::sptr logger
+    core::log::logger::sptr logger
 ) :
     m_isMultiFiles(dicomSeries->getDicomContainer().size() > 1),
     m_studyInstanceUID(dicomSeries->getStudyInstanceUID()),
@@ -113,8 +113,8 @@ DicomInstance::~DicomInstance()
 void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
 {
     // Retrieve series type
-    data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
-    data::ModelSeries::csptr modelSeries = data::ModelSeries::dynamicCast(series);
+    data::ImageSeries::csptr imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(series);
+    data::ModelSeries::csptr modelSeries = std::dynamic_pointer_cast<const data::ModelSeries>(series);
 
     // Create result
     std::string sopClassUID;
@@ -153,10 +153,10 @@ void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
 void DicomInstance::generateSOPInstanceUIDs(const data::Series::csptr& series)
 {
     // Retrieve ImageSeries
-    data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicConstCast(series);
+    data::ImageSeries::csptr imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(series);
 
     // Compute number of instances
-    const std::size_t nb_instances = (imageSeries && m_isMultiFiles) ? (imageSeries->getSize()[2]) : (1);
+    const std::size_t nb_instances = (imageSeries && m_isMultiFiles) ? (imageSeries->size()[2]) : (1);
 
     // Create generator
     gdcm::UIDGenerator uidGenerator;
@@ -164,7 +164,7 @@ void DicomInstance::generateSOPInstanceUIDs(const data::Series::csptr& series)
     // Generate UIDs
     for(std::size_t i = 0 ; i < nb_instances ; ++i)
     {
-        m_SOPInstanceUIDContainer.push_back(uidGenerator.Generate());
+        m_SOPInstanceUIDContainer.emplace_back(uidGenerator.Generate());
     }
 }
 
@@ -181,8 +181,8 @@ void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicom
     std::set<std::string> frameOfReferenceUIDContainer;
     for(const auto& item : dicomSeries->getDicomContainer())
     {
-        const core::memory::BufferObject::sptr bufferObj         = item.second;
-        const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+        const core::memory::buffer_object::sptr bufferObj          = item.second;
+        const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
         SPTR(std::istream) is = streamInfo.stream;
 
         gdcm::Reader reader;
@@ -190,7 +190,7 @@ void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicom
         if(!reader.ReadSelectedTags(selectedtags))
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << item.first << "')"
             );
         }

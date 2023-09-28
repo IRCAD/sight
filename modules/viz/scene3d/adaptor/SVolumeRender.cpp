@@ -24,8 +24,8 @@
 
 #include "modules/viz/scene3d/adaptor/STransform.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -34,7 +34,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/helper/Shading.hpp>
@@ -55,16 +55,16 @@ namespace sight::module::viz::scene3d::adaptor
 SVolumeRender::SVolumeRender() noexcept
 {
     // Handle connections between the layer and the volume renderer.
-    newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
-    newSlot(s_BUFFER_IMAGE_SLOT, &SVolumeRender::bufferImage, this);
-    newSlot(s_UPDATE_IMAGE_SLOT, &SVolumeRender::updateImage, this);
-    newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
-    newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
-    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
-    newSlot(s_UPDATE_CLIPPING_BOX_SLOT, &SVolumeRender::updateClippingBox, this);
-    newSlot(s_UPDATE_MASK_SLOT, &SVolumeRender::updateMask, this);
-    newSlot(s_UPDATE_TF_SLOT, &SVolumeRender::updateVolumeTF, this);
+    new_slot(NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
+    new_slot(BUFFER_IMAGE_SLOT, &SVolumeRender::bufferImage, this);
+    new_slot(UPDATE_IMAGE_SLOT, &SVolumeRender::updateImage, this);
+    new_slot(TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
+    new_slot(SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
+    new_slot(SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
+    new_slot(SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
+    new_slot(UPDATE_CLIPPING_BOX_SLOT, &SVolumeRender::updateClippingBox, this);
+    new_slot(UPDATE_MASK_SLOT, &SVolumeRender::updateMask, this);
+    new_slot(UPDATE_TF_SLOT, &SVolumeRender::updateVolumeTF, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -74,17 +74,17 @@ SVolumeRender::~SVolumeRender() noexcept =
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
+service::connections_t SVolumeRender::getAutoConnections() const
 {
     return {
-        {objects::IMAGE_IN, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT},
-        {objects::IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT},
-        {objects::MASK_IN, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT},
-        {objects::MASK_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_MASK_SLOT},
-        {objects::CLIPPING_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_CLIPPING_BOX_SLOT},
-        {objects::VOLUME_TF_IN, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
-        {objects::VOLUME_TF_IN, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
-        {objects::VOLUME_TF_IN, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {objects::IMAGE_IN, data::Image::MODIFIED_SIG, NEW_IMAGE_SLOT},
+        {objects::IMAGE_IN, data::Image::BUFFER_MODIFIED_SIG, BUFFER_IMAGE_SLOT},
+        {objects::MASK_IN, data::Image::MODIFIED_SIG, NEW_IMAGE_SLOT},
+        {objects::MASK_IN, data::Image::BUFFER_MODIFIED_SIG, UPDATE_MASK_SLOT},
+        {objects::CLIPPING_MATRIX_INOUT, data::Matrix4::MODIFIED_SIG, UPDATE_CLIPPING_BOX_SLOT},
+        {objects::VOLUME_TF_IN, data::TransferFunction::MODIFIED_SIG, UPDATE_TF_SLOT},
+        {objects::VOLUME_TF_IN, data::TransferFunction::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
+        {objects::VOLUME_TF_IN, data::TransferFunction::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT},
     };
 }
 
@@ -142,8 +142,8 @@ void SVolumeRender::configuring()
 
     this->setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            this->getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            this->get_id() + "_transform"
         )
     );
 }
@@ -163,7 +163,7 @@ void SVolumeRender::starting()
 
         Ogre::SceneNode* const rootSceneNode = m_sceneManager->getRootSceneNode();
         Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
-        m_volumeSceneNode = transformNode->createChildSceneNode(this->getID() + "_transform_origin");
+        m_volumeSceneNode = transformNode->createChildSceneNode(this->get_id() + "_transform_origin");
     }
 
     //Renderer
@@ -174,7 +174,7 @@ void SVolumeRender::starting()
         const auto mask  = m_mask.lock();
         const auto tf    = m_tf.lock();
         m_volumeRenderer = std::make_unique<sight::viz::scene3d::vr::RayTracingVolumeRenderer>(
-            this->getID(),
+            this->get_id(),
             layer,
             m_volumeSceneNode,
             image.get_shared(),
@@ -265,7 +265,7 @@ void SVolumeRender::newImage()
 
         // Ignore this update to avoid flickering when loading a new image
         // We will be signaled later when either the image or the mask will be updated
-        if(image->getSize() != mask->getSize())
+        if(image->size() != mask->size())
         {
             return;
         }
@@ -307,7 +307,7 @@ void SVolumeRender::bufferImage()
 
                 // Switch back to the main thread to compute the proxy geometry.
                 // Ogre can't handle parallel rendering.
-                this->slot(s_UPDATE_IMAGE_SLOT)->asyncRun();
+                this->slot(UPDATE_IMAGE_SLOT)->async_run();
             };
 
         m_bufferingWorker->pushTask(bufferingFn);
@@ -682,7 +682,7 @@ void SVolumeRender::createWidget()
     m_widget = std::make_shared<sight::viz::scene3d::interactor::ClippingBoxInteractor>(
         layer,
         m_config.order_dependent,
-        this->getID(),
+        this->get_id(),
         m_volumeSceneNode,
         ogreClippingMx,
         clippingMxUpdate,
@@ -798,11 +798,11 @@ void SVolumeRender::updateClippingTM3D()
         sight::viz::scene3d::Utils::copyOgreMxToTM3D(m_widget->getClippingTransform(), clippingMatrix.get_shared());
 
         const auto sig =
-            clippingMatrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+            clippingMatrix->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
 
-        core::com::Connection::Blocker blocker(sig->getConnection(this->slot(s_UPDATE_CLIPPING_BOX_SLOT)));
+        core::com::connection::blocker blocker(sig->get_connection(this->slot(UPDATE_CLIPPING_BOX_SLOT)));
 
-        sig->asyncEmit();
+        sig->async_emit();
     }
 
     std::lock_guard<std::mutex> swapLock(m_mutex);

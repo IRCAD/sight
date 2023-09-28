@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/interactor/IInteractor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/PickingCross.hpp>
 #include <viz/scene3d/Plane.hpp>
 #include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <OGRE/OgreManualObject.h>
 
@@ -86,16 +86,16 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, bool, default=true): set the initial visibility of the 3D negato.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SNegato3D final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable,
-    public sight::viz::scene3d::interactor::IInteractor
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable,
+    public sight::viz::scene3d::interactor::base
 {
 public:
 
     typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SNegato3D, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SNegato3D, sight::viz::scene3d::adaptor);
 
     /// Creates slots.
     MODULE_VIZ_SCENE3D_API SNegato3D() noexcept;
@@ -115,12 +115,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_NEWIMAGE_SLOT
-     * Connect data::Image::s_MODIFIED_SIG of s_BUFFER_MODIFIED_SIG to s_NEWIMAGE_SLOT
-     * Connect data::Image::s_MODIFIED_SIG of s_SLICE_TYPE_MODIFIED_SIG to s_SLICETYPE_SLOT
-     * Connect data::Image::s_MODIFIED_SIG of s_SLICE_INDEX_MODIFIED_SIG to s_SLICEINDEX_SLOT
+     * Connect data::Image::MODIFIED_SIG of s_IMAGE_INOUT to NEWIMAGE_SLOT
+     * Connect data::Image::MODIFIED_SIG of BUFFER_MODIFIED_SIG to NEWIMAGE_SLOT
+     * Connect data::Image::MODIFIED_SIG of SLICE_TYPE_MODIFIED_SIG to SLICETYPE_SLOT
+     * Connect data::Image::MODIFIED_SIG of SLICE_INDEX_MODIFIED_SIG to SLICEINDEX_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
 
     /// Requests rendering of the scene.
     MODULE_VIZ_SCENE3D_API void updating() override;
@@ -268,7 +268,7 @@ private:
     bool m_border {true};
 
     /// Defines the signal sent when a voxel is picked using the left mouse button.
-    using PickedVoxelSigType = core::com::Signal<void (std::string)>;
+    using PickedVoxelSigType = core::com::signal<void (std::string)>;
     PickedVoxelSigType::sptr m_pickedVoxelSignal {nullptr};
 
     static constexpr std::string_view s_IMAGE_IN = "image";

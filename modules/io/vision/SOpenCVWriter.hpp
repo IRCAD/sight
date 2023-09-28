@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/vision/config.hpp"
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 namespace sight::module::io::vision
 {
@@ -76,11 +76,11 @@ namespace sight::module::io::vision
     </opencv_storage>
  * @endcode
  */
-class MODULE_IO_VISION_CLASS_API SOpenCVWriter : public sight::io::base::service::IWriter
+class MODULE_IO_VISION_CLASS_API SOpenCVWriter : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SOpenCVWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SOpenCVWriter, sight::io::service::writer);
 
     ///Constructor
     MODULE_IO_VISION_API SOpenCVWriter();
@@ -114,7 +114,7 @@ protected:
     MODULE_IO_VISION_API void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_VISION_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API sight::io::service::IOPathType getIOPathType() const override;
 };
 
 } //namespace sight::module::io::vision

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 
 #include <filter/vision/Masker.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::vision
 {
@@ -38,7 +38,7 @@ namespace sight::module::filter::vision
  * @brief   Service that learns a foreground and background color model and allow to segment the foreground on a new
  * image using an Expectation Maximization algorithm.
  *
- * @see service::IFilter
+ * @see service::filter
  *
  * @section Slots Slots
  * - \b setBackground() : Slot to set the background image to learn the background model color
@@ -83,12 +83,12 @@ namespace sight::module::filter::vision
  * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
  * allowing to compute automatically the mask during the foreground color model learning step
  */
-class MODULE_FILTER_VISION_CLASS_API SColourImageMasking final : public service::IFilter
+class MODULE_FILTER_VISION_CLASS_API SColourImageMasking final : public service::filter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SColourImageMasking, sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SColourImageMasking, sight::service::filter);
 
     /// Initializes the slots and member variables.
     MODULE_FILTER_VISION_API SColourImageMasking() noexcept;
@@ -97,7 +97,7 @@ public:
     MODULE_FILTER_VISION_API ~SColourImageMasking() noexcept override;
 
     /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
-    service::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::connections_t getAutoConnections() const override;
 
 protected:
 
@@ -140,7 +140,7 @@ private:
     std::unique_ptr<sight::filter::vision::Masker> m_masker;
 
     /// Current timestamp.
-    core::HiResClock::HiResClockType m_lastVideoTimestamp {0.};
+    core::hires_clock::type m_lastVideoTimestamp {0.};
 
     /// Reduction factor.
     float m_scaleFactor {1.};

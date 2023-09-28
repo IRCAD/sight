@@ -4,7 +4,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExSolvePnP_AppCfg</id>
@@ -27,7 +27,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>ExSolvePnP</name>
@@ -43,7 +43,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -56,7 +56,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
@@ -67,7 +67,7 @@
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu">
+            <service uid="menuPreferencesView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Video directory" />
@@ -78,7 +78,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
@@ -104,9 +104,9 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="sight::module::ui::base::SView">
+            <service uid="cameraView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" />
@@ -117,9 +117,9 @@
                 </registry>
             </service>
 
-            <service uid="sceneView" type="sight::module::ui::base::SView">
+            <service uid="sceneView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="3" />
                         <view proportion="1" />
@@ -134,39 +134,39 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::SQuit" />
 
-            <service uid="loadCalibAct" type="sight::module::ui::base::SAction" />
+            <service uid="loadCalibAct" type="sight::module::ui::SAction" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="startVideoAct" type="sight::module::ui::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="pauseVideoAct" type="sight::module::ui::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="resumeVideoAct" type="sight::module::ui::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="stopVideoAct" type="sight::module::ui::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="loopVideoAct" type="sight::module::ui::SAction">
                 <slots>
                     <slot>videoGrabberSrv/loopVideo</slot>
                 </slots>
                 <state enabled="false" />
             </service>
 
-            <service uid="registerAct" type="sight::module::ui::base::com::STimestampSlotCaller">
+            <service uid="registerAct" type="sight::module::ui::com::STimestampSlotCaller">
                 <slots>
                     <slot>solvePnPSrv/computeRegistration</slot>
                 </slots>
@@ -309,14 +309,14 @@
                 <config inverse="true" shift="true" />
             </service>
 
-            <service uid="imagePickerSrv" type="sight::module::ui::base::video::SImagePicker">
+            <service uid="imagePickerSrv" type="sight::module::ui::video::SImagePicker">
                 <in key="camera" uid="camera" />
                 <inout key="pointList" uid="2dPoints" />
                 <inout key="pixelPointList" uid="2dPixels" />
                 <config videoReference="center" />
             </service>
 
-            <service uid="pointListVRManagerSrv" type="sight::module::geometry::base::SManagePointList">
+            <service uid="pointListVRManagerSrv" type="sight::module::geometry::SManagePointList">
                 <inout key="pointList" uid="3dPoints" />
                 <config label="true" tolerance="0.1" />
             </service>

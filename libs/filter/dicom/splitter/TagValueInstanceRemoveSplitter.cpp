@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ const std::string TagValueInstanceRemoveSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(filter::dicom::IFilter::Key /*unused*/) :
+TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter() :
     m_tag(DCM_UndefinedTagKey)
 {
 }
@@ -80,19 +80,19 @@ bool TagValueInstanceRemoveSplitter::isConfigurationRequired() const
 
 TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveSplitter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 const
 {
     if(m_tag == DCM_UndefinedTagKey)
     {
         const std::string msg = "Unable to split the series, the specified tag is not valid.";
-        throw filter::dicom::exceptions::FilterFailure(msg);
+        throw sight::filter::dicom::exceptions::FilterFailure(msg);
     }
 
     DicomSeriesContainerType result;
 
-    using InstanceContainerType = std::vector<core::memory::BufferObject::sptr>;
+    using InstanceContainerType = std::vector<core::memory::buffer_object::sptr>;
 
     // Create a container to store the instances
     InstanceContainerType instances;
@@ -102,10 +102,10 @@ const
 
     for(const auto& item : series->getDicomContainer())
     {
-        const core::memory::BufferObject::sptr bufferObj = item.second;
-        const std::size_t buffSize                       = bufferObj->getSize();
-        core::memory::BufferObject::Lock lock(bufferObj);
-        char* buffer = static_cast<char*>(lock.getBuffer());
+        const core::memory::buffer_object::sptr bufferObj = item.second;
+        const std::size_t buffSize                        = bufferObj->size();
+        core::memory::buffer_object::lock_t lock(bufferObj);
+        char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
         is.setBuffer(buffer, offile_off_t(buffSize));
@@ -116,7 +116,7 @@ const
         if(!fileFormat.read(is).good())
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << item.first << "')"
             );
         }

@@ -24,13 +24,13 @@
 
 #include "modules/ui/qml/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signals.hpp>
 
 #include <data/Material.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <ui/qml/IQmlEditor.hpp>
+#include <ui/qml/editor.hpp>
 
 #include <QObject>
 
@@ -88,13 +88,13 @@ namespace sight::module::ui::qml::reconstruction
  * @subsection In-Out In-Out
  * - \b reconstruction [sight::data::Reconstruction]: reconstruction that will be updated
  */
-class MODULE_UI_QML_CLASS_API SRepresentationEditor : public sight::ui::qml::IQmlEditor
+class MODULE_UI_QML_CLASS_API SRepresentationEditor : public sight::ui::qml::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SRepresentationEditor, sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SRepresentationEditor, sight::ui::qml::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SRepresentationEditor() noexcept;
@@ -108,10 +108,10 @@ Q_SIGNALS:
 
 protected:
 
-    /// Call IQmlEditor::starting
+    /// Call editor::starting
     void starting() override;
 
-    /// Call IQmlEditor::stopping
+    /// Call editor::stopping
     void stopping() override;
 
     /// Emit a signal to update the Qml ui with the material information
@@ -124,9 +124,9 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Reconstruction::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect Reconstruction::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
     /// Notify the changes
     void notifyMaterial();

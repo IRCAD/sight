@@ -23,26 +23,26 @@
 
 #include "SExtract.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/crypto/PasswordKeeper.hpp>
+#include <core/com/signal.hxx>
+#include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/System.hpp>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/system.hpp>
 
 #include <io/session/SessionReader.hpp>
 #include <io/zip/exception/Read.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/InputDialog.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/input.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 namespace sight::module::io::zip
 {
 
-using core::crypto::PasswordKeeper;
+using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::Archive;
 
@@ -60,7 +60,7 @@ public:
     /// Constructor
     inline explicit ExtractImpl(SExtract* const reader) noexcept :
         m_reader(reader),
-        m_job_created_signal(reader->newSignal<JobCreatedSignal>("jobCreated"))
+        m_job_created_signal(reader->new_signal<JobCreatedSignal>("jobCreated"))
     {
     }
 
@@ -106,7 +106,7 @@ void SExtract::stopping()
 
 void SExtract::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -130,10 +130,10 @@ void SExtract::updating()
 
     if(m_pimpl->m_outputPath.empty())
     {
-        static auto defaultLocation = std::make_shared<core::location::SingleFolder>();
-        defaultLocation->setFolder("/");
+        static auto defaultLocation = std::make_shared<core::location::single_folder>();
+        defaultLocation->set_folder("/");
 
-        sight::ui::base::dialog::LocationDialog locationDialog;
+        sight::ui::dialog::location locationDialog;
         locationDialog.setTitle("Enter the folder where the files must be extracted");
 
         if(!m_windowTitle.empty())
@@ -146,34 +146,34 @@ void SExtract::updating()
         }
 
         locationDialog.setDefaultLocation(defaultLocation);
-        locationDialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
-        locationDialog.setType(ui::base::dialog::ILocationDialog::FOLDER);
+        locationDialog.setOption(ui::dialog::location::WRITE);
+        locationDialog.setType(ui::dialog::location::FOLDER);
 
-        const auto result = std::dynamic_pointer_cast<core::location::SingleFolder>(locationDialog.show());
+        const auto result = std::dynamic_pointer_cast<core::location::single_folder>(locationDialog.show());
 
         if(result)
         {
-            if(!std::filesystem::is_empty(result->getFolder()))
+            if(!std::filesystem::is_empty(result->get_folder()))
             {
-                sight::ui::base::dialog::MessageDialog messageDialog("Output path not empty",
-                                                                     "The output path isn't empty. Continue anyway?",
-                                                                     sight::ui::base::dialog::IMessageDialog::WARNING);
-                messageDialog.addButton(sight::ui::base::dialog::IMessageDialog::YES);
-                messageDialog.addButton(sight::ui::base::dialog::IMessageDialog::CANCEL);
-                messageDialog.addButton(sight::ui::base::dialog::IMessageDialog::RETRY);
-                auto action = messageDialog.show();
+                sight::ui::dialog::message message("Output path not empty",
+                                                   "The output path isn't empty. Continue anyway?",
+                                                   sight::ui::dialog::message::WARNING);
+                message.addButton(sight::ui::dialog::message::YES);
+                message.addButton(sight::ui::dialog::message::CANCEL);
+                message.addButton(sight::ui::dialog::message::RETRY);
+                auto action = message.show();
                 switch(action)
                 {
-                    case sight::ui::base::dialog::IMessageDialog::YES:
+                    case sight::ui::dialog::message::YES:
                         // Continue as normal
                         break;
 
-                    case sight::ui::base::dialog::IMessageDialog::CANCEL:
+                    case sight::ui::dialog::message::CANCEL:
                         // Totally abort the operation
                         clearLocations();
                         return;
 
-                    case sight::ui::base::dialog::IMessageDialog::RETRY:
+                    case sight::ui::dialog::message::RETRY:
                         // Let the user choose another output path
                         updating();
                         return;
@@ -183,8 +183,8 @@ void SExtract::updating()
                 }
             }
 
-            m_pimpl->m_outputPath = result->getFolder();
-            defaultLocation->setFolder(result->getFolder().parent_path());
+            m_pimpl->m_outputPath = result->get_folder();
+            defaultLocation->set_folder(result->get_folder().parent_path());
             locationDialog.saveDefaultLocation(defaultLocation);
         }
         else
@@ -193,23 +193,23 @@ void SExtract::updating()
         }
     }
 
-    const auto filepath = getFile();
+    const auto filepath = get_file();
     SIGHT_THROW_IF("The file '" << filepath << "' is an existing folder.", std::filesystem::is_directory(filepath));
 
     // Ask password if needed
     const secure_string& password =
         [&]
         {
-            const secure_string& globalPassword = PasswordKeeper::get_global_password();
+            const secure_string& globalPassword = password_keeper::get_global_password();
 
             if(m_pimpl->m_password_retry > 0)
             {
                 const auto& [newPassword, ok] =
-                    sight::ui::base::dialog::InputDialog::showInputDialog(
+                    sight::ui::dialog::input::showInputDialog(
                         "Enter Password",
                         "Password:",
                         globalPassword.c_str(), // NOLINT(readability-redundant-string-cstr)
-                        sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
+                        sight::ui::dialog::input::EchoMode::PASSWORD
                     );
 
                 return secure_string(newPassword);
@@ -217,21 +217,21 @@ void SExtract::updating()
 
             if(globalPassword.empty())
             {
-                if constexpr(core::crypto::PasswordKeeper::has_default_password())
+                if constexpr(core::crypto::password_keeper::has_default_password())
                 {
-                    return core::crypto::PasswordKeeper::get_default_password();
+                    return core::crypto::password_keeper::get_default_password();
                 }
             }
 
             return globalPassword;
         }();
 
-    const auto readJob = core::jobs::Job::New(
+    const auto readJob = std::make_shared<core::jobs::job>(
         "Reading " + filepath.string() + " file",
-        [&](core::jobs::Job& runningJob)
+        [&](core::jobs::job& runningJob)
         {
-            const sight::ui::base::BusyCursor busyCursor;
-            runningJob.doneWork(10);
+            const sight::ui::BusyCursor busyCursor;
+            runningJob.done_work(10);
             sight::io::zip::ArchiveReader::get(
                 filepath,
                 Archive::ArchiveFormat::DEFAULT
@@ -241,9 +241,9 @@ void SExtract::updating()
         this->worker()
     );
 
-    core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(filepath.string() + " reader");
+    core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(filepath.string() + " reader");
     jobs->add(readJob);
-    jobs->setCancelable(false);
+    jobs->set_cancelable(false);
 
     m_pimpl->m_job_created_signal->emit(jobs);
 
@@ -254,7 +254,7 @@ void SExtract::updating()
         m_readFailed              = false;
         m_pimpl->m_password_retry = 0;
         clearLocations();
-        sight::ui::base::dialog::MessageDialog::show("Success", "The archive was successfully extracted.");
+        sight::ui::dialog::message::show("Success", "The archive was successfully extracted.");
     }
     catch(sight::io::zip::exception::BadPassword&)
     {
@@ -267,16 +267,16 @@ void SExtract::updating()
         else
         {
             // Ask if the user want to retry.
-            sight::ui::base::dialog::MessageDialog messageBox;
+            sight::ui::dialog::message messageBox;
             messageBox.setTitle("Wrong password");
             messageBox.setMessage(
                 "The file is password protected and the provided password is wrong.\n\nRetry with a different password ?"
             );
-            messageBox.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
-            messageBox.addButton(ui::base::dialog::IMessageDialog::RETRY);
-            messageBox.addButton(ui::base::dialog::IMessageDialog::CANCEL);
+            messageBox.setIcon(ui::dialog::message::QUESTION);
+            messageBox.addButton(ui::dialog::message::RETRY);
+            messageBox.addButton(ui::dialog::message::CANCEL);
 
-            if(messageBox.show() == sight::ui::base::dialog::IMessageDialog::RETRY)
+            if(messageBox.show() == sight::ui::dialog::message::RETRY)
             {
                 m_pimpl->m_password_retry++;
                 updating();
@@ -292,20 +292,20 @@ void SExtract::updating()
         m_pimpl->m_outputPath.clear();
         clearLocations();
         SIGHT_ERROR(e.what());
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Session reader failed",
             e.what(),
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
     }
     catch(...)
     {
         m_pimpl->m_outputPath.clear();
         clearLocations();
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Session reader aborted",
             "Reading process aborted",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
 }
@@ -314,10 +314,10 @@ void SExtract::updating()
 
 void SExtract::openLocationDialog()
 {
-    static auto defaultLocation = std::make_shared<core::location::SingleFolder>();
-    defaultLocation->setFolder("/");
+    static auto defaultLocation = std::make_shared<core::location::single_folder>();
+    defaultLocation->set_folder("/");
 
-    sight::ui::base::dialog::LocationDialog locationDialog;
+    sight::ui::dialog::location locationDialog;
 
     if(!m_windowTitle.empty())
     {
@@ -329,19 +329,19 @@ void SExtract::openLocationDialog()
     }
 
     locationDialog.setDefaultLocation(defaultLocation);
-    locationDialog.setOption(ui::base::dialog::ILocationDialog::READ);
-    locationDialog.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
-    locationDialog.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
+    locationDialog.setOption(ui::dialog::location::READ);
+    locationDialog.setOption(ui::dialog::location::FILE_MUST_EXIST);
+    locationDialog.setType(ui::dialog::location::SINGLE_FILE);
 
-    const auto result = std::dynamic_pointer_cast<core::location::SingleFile>(locationDialog.show());
+    const auto result = std::dynamic_pointer_cast<core::location::single_file>(locationDialog.show());
 
     if(result)
     {
-        const auto& filepath = result->getFile();
-        setFile(filepath);
+        const auto& filepath = result->get_file();
+        set_file(filepath);
 
         // Save default location for later use
-        defaultLocation->setFolder(filepath.parent_path());
+        defaultLocation->set_folder(filepath.parent_path());
         locationDialog.saveDefaultLocation(defaultLocation);
     }
     else

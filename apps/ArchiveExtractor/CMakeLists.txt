@@ -4,7 +4,7 @@ add_dependencies(
     ArchiveExtractor
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_ui_flaticons
     module_io_zip

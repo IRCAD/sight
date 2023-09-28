@@ -4,13 +4,13 @@ add_dependencies(
     ExNotifications
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_service
-    module_ui_base
+    module_ui
 )
 
-target_link_libraries(ExNotifications PUBLIC ui_base)
+target_link_libraries(ExNotifications PUBLIC ui)
 
 # Allow dark theme via module_ui_qt
 module_param(

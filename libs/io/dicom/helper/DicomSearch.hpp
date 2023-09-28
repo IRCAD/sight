@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@
 namespace sight::core::jobs
 {
 
-class Observer;
+class observer;
 
 } // namespace sight::core::jobs
 
@@ -59,7 +59,7 @@ public:
         const std::filesystem::path& dirPath,
         std::vector<std::filesystem::path>& dicomFiles,
         bool checkIsDicom,
-        const SPTR(core::jobs::Observer)& fileLookupObserver = nullptr
+        const SPTR(core::jobs::observer)& fileLookupObserver = nullptr
     );
 
 protected:
@@ -73,7 +73,7 @@ protected:
     static void checkFilenameExtension(
         const std::filesystem::path& dirPath,
         std::vector<std::filesystem::path>& dicomFiles,
-        const SPTR(core::jobs::Observer)& fileLookupObserver = nullptr
+        const SPTR(core::jobs::observer)& fileLookupObserver = nullptr
     );
 };
 

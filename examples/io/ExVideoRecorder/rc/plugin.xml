@@ -4,7 +4,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExVideoRecorder_AppCfg</id>
@@ -34,7 +34,7 @@
                 <parameter replace="removeROICenterChannelIn" by="removeROICenterChannelIn" />
             </service>
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>ExVideoRecorder</name>
@@ -48,7 +48,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <editor />
@@ -80,11 +80,11 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="frameRecordingAct" type="sight::module::ui::base::com::STimestampSignal">
+            <service uid="frameRecordingAct" type="sight::module::ui::com::STimestampSignal">
                 <useSystemClock>true</useSystemClock>
             </service>
 
-            <service uid="videoRecordingAct" type="sight::module::ui::base::com::STimestampSignal">
+            <service uid="videoRecordingAct" type="sight::module::ui::com::STimestampSignal">
                 <useSystemClock>true</useSystemClock>
             </service>
 
@@ -109,7 +109,7 @@
                 <in key="image" uid="videoImage" />
             </service>
 
-            <service uid="imagePickerSrv" type="sight::module::ui::base::video::SImagePicker">
+            <service uid="imagePickerSrv" type="sight::module::ui::video::SImagePicker">
                 <in key="camera" uid="camera" />
                 <inout key="pointList" uid="2dPoints" />
                 <inout key="pixelPointList" uid="2dPixels" />

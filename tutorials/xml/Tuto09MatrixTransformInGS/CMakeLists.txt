@@ -4,7 +4,7 @@ add_dependencies(
     Tuto09MatrixTransformInGS
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_viz_scene3d
     module_viz_scene3dQt
@@ -12,7 +12,7 @@ add_dependencies(
     module_service
     module_io_matrix
     module_io_vtk
-    module_geometry_base
+    module_geometry
 )
 
 # Allow dark theme via module_ui_qt

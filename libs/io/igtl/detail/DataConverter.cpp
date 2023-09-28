@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "DataConverter.hpp"
 
-#include <core/LazyInstantiator.hpp>
+#include <core/lazy_instantiator.hpp>
 
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
@@ -39,12 +39,12 @@ namespace sight::io::igtl::detail
 
 DataConverter::sptr DataConverter::getInstance()
 {
-    return core::LazyInstantiator<DataConverter>::getInstance();
+    return core::lazy_instantiator<DataConverter>::get_instance();
 }
 
 //-----------------------------------------------------------------------------
 
-void DataConverter::registerConverter(converter::IConverter::sptr c)
+void DataConverter::registerConverter(converter::base::sptr c)
 {
     (DataConverter::getInstance())->m_converters.push_back(c);
 }
@@ -63,8 +63,8 @@ DataConverter::~DataConverter()
 
 ::igtl::MessageBase::Pointer DataConverter::fromFwObject(data::Object::csptr src) const
 {
-    const std::string classname = src->getClassname();
-    for(const converter::IConverter::sptr& converter : m_converters)
+    const std::string classname = src->get_classname();
+    for(const converter::base::sptr& converter : m_converters)
     {
         if(converter->getFwDataObjectType() == classname)
         {
@@ -82,7 +82,7 @@ data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Poi
     data::Object::sptr obj;
     const std::string deviceType = src->GetDeviceType();
 
-    for(const converter::IConverter::sptr& converter : m_converters)
+    for(const converter::base::sptr& converter : m_converters)
     {
         if(converter->getIgtlType() == deviceType)
         {

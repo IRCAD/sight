@@ -23,12 +23,12 @@
 #include "modules/io/vtk/SMeshReader.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+#include <core/jobs/base.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <io/vtk/MeshReader.hpp>
 #include <io/vtk/ObjMeshReader.hpp>
@@ -38,38 +38,38 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <filesystem>
 
 namespace sight::module::io::vtk
 {
 
-static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SMeshReader::getIOPathType() const
+sight::io::service::IOPathType SMeshReader::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 SMeshReader::SMeshReader() noexcept
 {
-    m_sigJobCreated = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
+    m_sigJobCreated = new_signal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
 void SMeshReader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to load Mesh" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
@@ -78,15 +78,15 @@ void SMeshReader::openLocationDialog()
     dialogFile.addFilter("STL File(.stl)", "*.stl");
     dialogFile.addFilter("VTK Legacy File(.vtk)", "*.vtk");
     dialogFile.addFilter("VTK Polydata File(.vtp)", "*.vtp");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setOption(ui::dialog::location::READ);
+    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
-        this->setFile(result->getFile());
+        this->set_file(result->get_file());
     }
     else
     {
@@ -110,7 +110,7 @@ void SMeshReader::stopping()
 
 void SMeshReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -125,8 +125,8 @@ void SMeshReader::info(std::ostream& _sstream)
 template<typename READER>
 typename READER::sptr configureReader(const std::filesystem::path& _file)
 {
-    typename READER::sptr reader = READER::New();
-    reader->setFile(_file);
+    typename READER::sptr reader = std::make_shared<READER>();
+    reader->set_file(_file);
     return reader;
 }
 
@@ -144,13 +144,13 @@ bool SMeshReader::loadMesh(const std::filesystem::path& vtkFile)
         "The object is not a '"
         + data::Mesh::classname()
         + "' or '"
-        + sight::io::base::service::s_DATA_KEY
+        + sight::io::service::s_DATA_KEY
         + "' is not correctly set.",
         mesh
     );
 
     // Test extension to provide the reader
-    sight::io::base::reader::IObjectReader::sptr meshReader;
+    sight::io::reader::IObjectReader::sptr meshReader;
 
     if(vtkFile.extension() == ".vtk")
     {
@@ -175,7 +175,7 @@ bool SMeshReader::loadMesh(const std::filesystem::path& vtkFile)
     else
     {
         SIGHT_THROW_EXCEPTION(
-            core::tools::Failed(
+            core::tools::failed(
                 "Extension '" + vtkFile.extension().string()
                 + "' is not managed by module::io::vtk::SMeshReader."
             )
@@ -190,15 +190,15 @@ bool SMeshReader::loadMesh(const std::filesystem::path& vtkFile)
     {
         meshReader->read();
     }
-    catch(core::tools::Failed& e)
+    catch(core::tools::failed& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         ok = false;
 
@@ -210,10 +210,10 @@ bool SMeshReader::loadMesh(const std::filesystem::path& vtkFile)
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
 
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             ss.str(),
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         ok = false;
     }
@@ -221,10 +221,10 @@ bool SMeshReader::loadMesh(const std::filesystem::path& vtkFile)
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "Warning",
             "Warning during loading.",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
         ok = false;
     }
@@ -238,10 +238,10 @@ void SMeshReader::updating()
 {
     if(this->hasLocationDefined())
     {
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
+        sight::ui::cursor cursor;
+        cursor.setCursor(ui::cursor_base::BUSY);
 
-        this->loadMesh(this->getFile());
+        this->loadMesh(this->get_file());
         this->notificationOfUpdate();
 
         cursor.setDefaultCursor();
@@ -256,10 +256,10 @@ void SMeshReader::notificationOfUpdate()
     const auto mesh   = std::dynamic_pointer_cast<data::Mesh>(locked.get_shared());
 
     data::Object::ModifiedSignalType::sptr sig;
-    sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 

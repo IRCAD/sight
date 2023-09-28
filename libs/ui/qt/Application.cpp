@@ -22,15 +22,14 @@
 
 #include "ui/qt/Application.hpp"
 
-#include <core/runtime/ExitException.hpp>
+#include <core/runtime/exit_exception.hpp>
 
-#include <ui/base/dialog/IMessageDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/registry/macros.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/macros.hpp>
 
 #include <QCoreApplication>
 
-SIGHT_REGISTER_GUI(sight::ui::qt::Application, sight::ui::base::IApplication::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::Application, sight::ui::application::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {
@@ -42,13 +41,13 @@ void Application::exit(int returnCode, bool async)
     const auto& confirm =
         []
         {
-            ui::base::dialog::MessageDialog dlg;
+            ui::dialog::message dlg;
             dlg.setTitle("Confirm exit");
             dlg.setMessage("Do you really want to exit?");
-            dlg.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
-            dlg.addButton(ui::base::dialog::IMessageDialog::YES_NO);
+            dlg.setIcon(dialog::message::QUESTION);
+            dlg.addButton(dialog::message::YES_NO);
 
-            return dlg.show() == ui::base::dialog::IMessageDialog::YES;
+            return dlg.show() == dialog::message::YES;
         };
 
     if(!m_confirm || confirm())
@@ -59,7 +58,7 @@ void Application::exit(int returnCode, bool async)
         }
         else
         {
-            SIGHT_THROW_EXCEPTION(core::runtime::ExitException(returnCode));
+            SIGHT_THROW_EXCEPTION(core::runtime::exit_exception(returnCode));
         }
     }
 }

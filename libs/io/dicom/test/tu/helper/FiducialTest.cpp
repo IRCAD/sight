@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -36,12 +36,12 @@ namespace sight::io::dicom::helper::ut
 
 void FiducialTest::containsLandmarksTest()
 {
-    auto seriesSet   = data::SeriesSet::New();
-    auto imageSeries = data::ImageSeries::New();
+    auto seriesSet   = std::make_shared<data::SeriesSet>();
+    auto imageSeries = std::make_shared<data::ImageSeries>();
     seriesSet->push_back(imageSeries);
     CPPUNIT_ASSERT(!Fiducial::containsLandmarks(seriesSet));
-    auto pointList = data::PointList::New();
-    pointList->pushBack(data::Point::New(1., 2., 3.));
+    auto pointList = std::make_shared<data::PointList>();
+    pointList->pushBack(std::make_shared<data::Point>(1., 2., 3.));
     data::helper::MedicalImage::setLandmarks(*imageSeries, pointList);
     CPPUNIT_ASSERT(Fiducial::containsLandmarks(seriesSet));
 }
@@ -50,14 +50,14 @@ void FiducialTest::containsLandmarksTest()
 
 void FiducialTest::containsDistancesTest()
 {
-    auto seriesSet   = data::SeriesSet::New();
-    auto imageSeries = data::ImageSeries::New();
+    auto seriesSet   = std::make_shared<data::SeriesSet>();
+    auto imageSeries = std::make_shared<data::ImageSeries>();
     seriesSet->push_back(imageSeries);
     CPPUNIT_ASSERT(!Fiducial::containsDistances(seriesSet));
-    auto vector    = data::Vector::New();
-    auto pointList = data::PointList::New();
-    pointList->pushBack(data::Point::New(1., 2., 3.));
-    pointList->pushBack(data::Point::New(2., 4., 6.));
+    auto vector    = std::make_shared<data::Vector>();
+    auto pointList = std::make_shared<data::PointList>();
+    pointList->pushBack(std::make_shared<data::Point>(1., 2., 3.));
+    pointList->pushBack(std::make_shared<data::Point>(2., 4., 6.));
     vector->push_back(pointList);
     data::helper::MedicalImage::setDistances(*imageSeries, vector);
     CPPUNIT_ASSERT(Fiducial::containsDistances(seriesSet));
@@ -67,22 +67,22 @@ void FiducialTest::containsDistancesTest()
 
 void FiducialTest::contains3DDistancesTest()
 {
-    auto seriesSet   = data::SeriesSet::New();
-    auto imageSeries = data::ImageSeries::New();
-    imageSeries->resize({3, 5, 7}, core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    auto seriesSet   = std::make_shared<data::SeriesSet>();
+    auto imageSeries = std::make_shared<data::ImageSeries>();
+    imageSeries->resize({3, 5, 7}, core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
     imageSeries->setSpacing({1, 1, 1});
     seriesSet->push_back(imageSeries);
     CPPUNIT_ASSERT(!Fiducial::contains3DDistances(seriesSet));
-    auto vector    = data::Vector::New();
-    auto pointList = data::PointList::New();
-    pointList->pushBack(data::Point::New(1., 2.));
-    pointList->pushBack(data::Point::New(2., 4.));
+    auto vector    = std::make_shared<data::Vector>();
+    auto pointList = std::make_shared<data::PointList>();
+    pointList->pushBack(std::make_shared<data::Point>(1., 2.));
+    pointList->pushBack(std::make_shared<data::Point>(2., 4.));
     vector->push_back(pointList);
     data::helper::MedicalImage::setDistances(*imageSeries, vector);
     CPPUNIT_ASSERT(!Fiducial::contains3DDistances(seriesSet));
-    auto pointList3d = data::PointList::New();
-    pointList3d->pushBack(data::Point::New(1., 2., 3.));
-    pointList3d->pushBack(data::Point::New(2., 4., 6.));
+    auto pointList3d = std::make_shared<data::PointList>();
+    pointList3d->pushBack(std::make_shared<data::Point>(1., 2., 3.));
+    pointList3d->pushBack(std::make_shared<data::Point>(2., 4., 6.));
     vector->push_back(pointList3d);
     data::helper::MedicalImage::setDistances(*imageSeries, vector);
     CPPUNIT_ASSERT(Fiducial::contains3DDistances(seriesSet));

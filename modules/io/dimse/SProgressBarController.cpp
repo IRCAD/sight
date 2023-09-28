@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,26 +22,26 @@
 
 #include "SProgressBarController.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
-#include <ui/qt/dialog/ProgressDialog.hpp>
+#include <ui/qt/dialog/progress.hpp>
 
 namespace sight::module::io::dimse
 {
 
-static const core::com::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgress";
-static const core::com::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
-static const core::com::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
+static const core::com::slots::key_t START_PROGRESS_SLOT  = "startProgress";
+static const core::com::slots::key_t UPDATE_PROGRESS_SLOT = "updateProgress";
+static const core::com::slots::key_t STOP_PROGRESS_SLOT   = "stopProgress";
 
 //------------------------------------------------------------------------------
 
 SProgressBarController::SProgressBarController() noexcept
 {
-    newSlot(s_START_PROGRESS_SLOT, &SProgressBarController::startProgress, this);
-    newSlot(s_UPDATE_PROGRESS_SLOT, &SProgressBarController::updateProgress, this);
-    newSlot(s_STOP_PROGRESS_SLOT, &SProgressBarController::stopProgress, this);
+    new_slot(START_PROGRESS_SLOT, &SProgressBarController::startProgress, this);
+    new_slot(UPDATE_PROGRESS_SLOT, &SProgressBarController::updateProgress, this);
+    new_slot(STOP_PROGRESS_SLOT, &SProgressBarController::stopProgress, this);
 }
 
 //------------------------------------------------------------------------------
@@ -77,15 +77,15 @@ void SProgressBarController::stopping()
 
 void SProgressBarController::startProgress(std::string _id)
 {
-    core::mt::ScopedLock lock(m_mutex);
-    m_progressDialogs[_id] = sight::ui::base::dialog::ProgressDialog::New();
+    core::mt::scoped_lock lock(m_mutex);
+    m_progressDialogs[_id] = std::make_shared<sight::ui::dialog::progress>();
 }
 
 //------------------------------------------------------------------------------
 
 void SProgressBarController::updateProgress(std::string _id, float _percentage, std::string _message)
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
     if(m_progressDialogs.find(_id) != m_progressDialogs.end())
     {
         (*m_progressDialogs[_id])(_percentage, _message);
@@ -101,7 +101,7 @@ void SProgressBarController::updateProgress(std::string _id, float _percentage, 
 
 void SProgressBarController::stopProgress(std::string _id)
 {
-    core::mt::ScopedLock lock(m_mutex);
+    core::mt::scoped_lock lock(m_mutex);
     m_progressDialogs.erase(_id);
 }
 

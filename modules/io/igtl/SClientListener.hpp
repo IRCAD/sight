@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "modules/io/igtl/config.hpp"
-#include "modules/io/igtl/INetworkListener.hpp"
+#include "modules/io/igtl/network_listener.hpp"
 
 #include <data/Object.hpp>
 
@@ -59,11 +59,11 @@ namespace sight::module::io::igtl
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
  *  (for example <server>%HOSTNAME%:%PORT%</server>)
  */
-class MODULE_IO_IGTL_CLASS_API SClientListener : public module::io::igtl::INetworkListener
+class MODULE_IO_IGTL_CLASS_API SClientListener : public module::io::igtl::network_listener
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SClientListener, module::io::igtl::INetworkListener);
+    SIGHT_DECLARE_SERVICE(SClientListener, module::io::igtl::network_listener);
 
     /// Constructor
     MODULE_IO_IGTL_API SClientListener();

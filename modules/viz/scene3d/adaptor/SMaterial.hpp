@@ -25,14 +25,14 @@
 #include "modules/viz/scene3d/adaptor/STexture.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
 
 #include <data/Image.hpp>
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/IMaterialAdaptor.hpp>
 #include <viz/scene3d/Material.hpp>
 #include <viz/scene3d/Mesh.hpp>
@@ -99,10 +99,10 @@ public:
      * @name Slots API
      * @{
      */
-    MODULE_VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_UPDATE_FIELD_SLOT;
-    MODULE_VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SWAP_TEXTURE_SLOT;
-    MODULE_VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_ADD_TEXTURE_SLOT;
-    MODULE_VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_REMOVE_TEXTURE_SLOT;
+    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t UPDATE_FIELD_SLOT;
+    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t SWAP_TEXTURE_SLOT;
+    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t ADD_TEXTURE_SLOT;
+    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t REMOVE_TEXTURE_SLOT;
     /** @} */
 
     /**
@@ -170,13 +170,13 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Material::s_MODIFIED_SIG of s_MATERIAL_INOUT to IService::slots::s_UPDATE
-     * Connect data::Material::s_ADDED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
-     * Connect data::Material::s_CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
-     * Connect data::Material::s_ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to s_ADD_TEXTURE_SLOT
-     * Connect data::Material::s_REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to s_REMOVE_TEXTURE_SLOT
+     * Connect data::Material::MODIFIED_SIG of s_MATERIAL_INOUT to service::slots::UPDATE
+     * Connect data::Material::ADDED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD_SLOT
+     * Connect data::Material::CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD_SLOT
+     * Connect data::Material::ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to ADD_TEXTURE_SLOT
+     * Connect data::Material::REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to REMOVE_TEXTURE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
 
     /// Updates fixed function pipeline parameters.
     MODULE_VIZ_SCENE3D_API void updating() override;
@@ -223,7 +223,7 @@ private:
     std::vector<Ogre::String> m_schemesSupported;
 
     /// Handles connections with texture adaptor.
-    core::com::helper::SigSlotConnection m_textureConnection;
+    core::com::helper::sig_slot_connection m_textureConnection;
 
     /// Defines the configured shading mode.
     std::string m_shadingMode;

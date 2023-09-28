@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #pragma once
 
+#include "viz/scene3d/adaptor.hpp"
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/IAdaptor.hpp"
 
 #include <data/Mesh.hpp>
 
@@ -49,7 +49,7 @@ class VIZ_SCENE3D_CLASS_API R2VBRenderable : public Ogre::SimpleRenderable
 public:
 
     /// Create a new instance of R2VBRenderable
-    VIZ_SCENE3D_API static R2VBRenderable* New(
+    VIZ_SCENE3D_API static R2VBRenderable* make(
         const std::string& _name,
         Ogre::SubEntity* _sourceObject,
         Ogre::SceneManager* _sceneManager,
@@ -96,7 +96,7 @@ public:
     /// Set the material used to process the geometry pass.
     VIZ_SCENE3D_API void setRenderToBufferMaterial(const std::string& _mtlName);
 
-    viz::scene3d::IAdaptor::wptr m_materialAdaptor;
+    viz::scene3d::adaptor::wptr m_materialAdaptor;
 
     data::Mesh::CellType getInputPrimitiveType() const;
 

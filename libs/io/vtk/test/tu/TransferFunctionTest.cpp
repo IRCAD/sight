@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,14 +52,14 @@ void TransferFunctionTest::tearDown()
 
 data::TransferFunction::sptr TransferFunctionTest::createTFColor()
 {
-    data::TransferFunction::sptr tf = data::TransferFunction::New();
+    data::TransferFunction::sptr tf = std::make_shared<data::TransferFunction>();
 
     tf->setBackgroundColor(data::TransferFunction::color_t(1.0, 0.3, 0.6, 0.1));
     tf->setName("color_t");
     tf->setLevel(0.0);
     tf->setWindow(400.0);
 
-    auto tfData = tf->pieces().emplace_back(data::TransferFunctionPiece::New());
+    auto tfData = tf->pieces().emplace_back(std::make_shared<data::TransferFunctionPiece>());
     tfData->setClamped(false);
     tfData->setInterpolationMode(data::TransferFunction::InterpolationMode::LINEAR);
     tfData->setLevel(0.0);

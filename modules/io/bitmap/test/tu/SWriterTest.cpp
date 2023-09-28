@@ -21,14 +21,14 @@
 
 #include "SWriterTest.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 #include <io/bitmap/Writer.hpp>
 
-#include <service/base.hpp>
+#include <service/op.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
@@ -49,7 +49,7 @@ inline static void runSWriter(
     bool should_fail = false
 )
 {
-    service::IService::sptr swriter = service::add("sight::module::io::bitmap::SWriter");
+    service::base::sptr swriter = service::add("sight::module::io::bitmap::SWriter");
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service 'sight::module::io::bitmap::SWriter'"), swriter);
     swriter->setInput(image, "data");
 
@@ -61,7 +61,10 @@ inline static void runSWriter(
     service::remove(swriter);
 
     // Check the result...
-    CPPUNIT_ASSERT_EQUAL(should_fail, sight::io::base::service::IWriter::dynamicCast(swriter)->hasFailed());
+    CPPUNIT_ASSERT_EQUAL(
+        should_fail,
+        std::dynamic_pointer_cast<sight::io::service::writer>(swriter)->hasFailed()
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -71,9 +74,9 @@ inline static data::Image::csptr getSyntheticImage()
     static const data::Image::csptr generated =
         []
         {
-            auto image           = data::Image::New();
+            auto image           = std::make_shared<data::Image>();
             const auto dump_lock = image->dump_lock();
-            image->resize({800, 600, 0}, core::Type::UINT8, data::Image::RGB);
+            image->resize({800, 600, 0}, core::type::UINT8, data::Image::RGB);
 
             auto it        = image->begin<data::iterator::rgb>();
             const auto end = image->end<data::iterator::rgb>();
@@ -140,7 +143,7 @@ inline static void testEnable(
             );
 
             // Add file
-            service::IService::ConfigType config;
+            service::config_t config;
             config.add("file", filePath.string());
 
             boost::property_tree::ptree backends_tree;
@@ -207,10 +210,10 @@ void SWriterTest::tearDown()
 
 void SWriterTest::basicTest()
 {
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto& filePath = tmpDir / "basic.tiff";
 
-    service::IService::ConfigType config;
+    service::config_t config;
     config.add("file", filePath.string());
 
     const auto& expected_image = getSyntheticImage();
@@ -229,7 +232,7 @@ void SWriterTest::basicTest()
 
 void SWriterTest::configTest()
 {
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     // Build backend list
     std::vector backends {
@@ -305,7 +308,7 @@ void SWriterTest::configTest()
                 );
 
                 // Add file
-                service::IService::ConfigType config;
+                service::config_t config;
                 config.add("file", filePath.string());
 
                 // Add tiff and png backend

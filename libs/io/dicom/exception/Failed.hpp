@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "io/dicom/config.hpp"
 
-#include <core/Exception.hpp>
+#include <core/exception.hpp>
 
 namespace sight::io::dicom::exception
 {
@@ -32,10 +32,10 @@ namespace sight::io::dicom::exception
 /**
  * @brief   Implements a failed exception class for fwGdcmIO
  */
-struct IO_DICOM_CLASS_API Failed : core::Exception
+struct IO_DICOM_CLASS_API Failed : core::exception
 {
     Failed(const std::string& err) :
-        core::Exception(err)
+        core::exception(err)
     {
     }
 };

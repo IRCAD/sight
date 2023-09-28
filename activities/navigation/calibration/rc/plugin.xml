@@ -1,7 +1,7 @@
 <plugin id="sight::activity::navigation::calibration">
 
     <requirement id="sight::module::service" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::activity" />
 

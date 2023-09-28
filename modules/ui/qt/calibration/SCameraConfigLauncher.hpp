@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 
 #include <service/helper/ConfigLauncher.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -76,19 +76,19 @@ namespace sight::module::ui::qt::calibration
  * @subsection Configuration Configuration:
  * - \b config: contains the appConfigs to launch for intrinsic and extrinsic calibration.
  *   - \b intrinsic: configuration to launch the intrinsic calibration config. @see
- * module::ui::base::action::SConfigLauncher
+ * module::ui::action::SConfigLauncher
  *   - \b extrinsic: configuration to launch the extrinsic calibration config. @see
- * module::ui::base::action::SConfigLauncher
+ * module::ui::action::SConfigLauncher
  *
  */
 class MODULE_UI_QT_CLASS_API SCameraConfigLauncher : public QObject,
-                                                     public sight::ui::base::IEditor
+                                                     public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SCameraConfigLauncher, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SCameraConfigLauncher, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SCameraConfigLauncher() noexcept;
@@ -100,10 +100,10 @@ protected:
 
     void configuring() override;
 
-    ///This method launches the IEditor::starting method.
+    ///This method launches the editor::starting method.
     void starting() override;
 
-    ///This method launches the IEditor::stopping method.
+    ///This method launches the editor::stopping method.
     void stopping() override;
 
     void updating() override;
@@ -133,8 +133,8 @@ private:
     QPointer<QPushButton> m_removeButton;
     QPointer<QPushButton> m_extrinsicButton;
 
-    service::helper::ConfigLauncher m_intrinsicLauncher;
-    service::helper::ConfigLauncher m_extrinsicLauncher;
+    sight::service::helper::ConfigLauncher m_intrinsicLauncher;
+    sight::service::helper::ConfigLauncher m_extrinsicLauncher;
 
     data::ptr<data::CameraSet, data::Access::inout> m_camera_set {this, "cameraSet"};
     data::ptr<data::Activity, data::Access::inout> m_activity {this, "activity"};

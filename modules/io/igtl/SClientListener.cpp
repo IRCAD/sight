@@ -22,8 +22,8 @@
 
 #include "SClientListener.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/tools/Failed.hpp>
+#include <core/com/signal.hxx>
+#include <core/tools/failed.hpp>
 
 #include <data/FrameTL.hpp>
 #include <data/Image.hpp>
@@ -31,8 +31,8 @@
 #include <data/MatrixTL.hpp>
 #include <data/Object.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/Preferences.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <functional>
 #include <string>
@@ -54,7 +54,7 @@ SClientListener::~SClientListener()
 
 void SClientListener::configuring()
 {
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     const ConfigType configInOut = config.get_child("inout");
 
@@ -66,8 +66,8 @@ void SClientListener::configuring()
     const auto keyCfg = configInOut.equal_range("key");
     for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
     {
-        const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string deviceName              = attr.get("deviceName", "Sight");
+        const service::config_t& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string deviceName  = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(deviceName);
         m_client.addAuthorizedDevice(deviceName);
     }
@@ -85,7 +85,7 @@ void SClientListener::configuring()
     }
     else
     {
-        throw core::tools::Failed("Server element not found");
+        throw core::tools::failed("Server element not found");
     }
 }
 
@@ -96,22 +96,22 @@ void SClientListener::runClient()
     // 1. Connection
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
         const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
         const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
 
         m_client.connect(hostname, port);
-        m_sigConnected->asyncEmit();
+        m_sigConnected->async_emit();
     }
-    catch(core::Exception& ex)
+    catch(core::exception& ex)
     {
         // Only open a dialog if the service is started.
         // connect may throw if we request the service to stop,
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
-            this->slot(IService::slots::s_STOP)->asyncRun();
+            sight::ui::dialog::message::show("Connection error", ex.what());
+            this->slot(service::slots::STOP)->async_run();
         }
         else
         {
@@ -138,32 +138,32 @@ void SClientListener::runClient()
                     const auto indexReceiveObject = std::distance(m_deviceNames.begin(), iter);
                     const auto obj                = m_objects[static_cast<std::size_t>(indexReceiveObject)].lock();
 
-                    const bool isATimeline = obj->isA("data::MatrixTL") || obj->isA("data::FrameTL");
+                    const bool isATimeline = obj->is_a("data::MatrixTL") || obj->is_a("data::FrameTL");
                     if(isATimeline)
                     {
                         this->manageTimeline(receiveObject, static_cast<std::size_t>(indexReceiveObject));
                     }
                     else
                     {
-                        obj->shallowCopy(receiveObject);
+                        obj->shallow_copy(receiveObject);
 
                         data::Object::ModifiedSignalType::sptr sig;
-                        sig = obj->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-                        sig->asyncEmit();
+                        sig = obj->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+                        sig->async_emit();
                     }
                 }
             }
         }
     }
-    catch(core::Exception& ex)
+    catch(core::exception& ex)
     {
         // Only open a dialog if the service is started.
         // ReceiveObject may throw if we request the service to stop,
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            sight::ui::base::dialog::MessageDialog::show("Error", ex.what());
-            this->slot(IService::slots::s_STOP)->asyncRun();
+            sight::ui::dialog::message::show("Error", ex.what());
+            this->slot(service::slots::STOP)->async_run();
         }
         else
         {
@@ -193,11 +193,11 @@ void SClientListener::stopping()
 
         m_clientFuture.wait();
         m_tlInitialized = false;
-        m_sigDisconnected->asyncEmit();
+        m_sigDisconnected->async_emit();
     }
-    catch(core::Exception& ex)
+    catch(core::exception& ex)
     {
-        sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
+        sight::ui::dialog::message::show("Connection error", ex.what());
         SIGHT_ERROR(ex.what());
     }
 }
@@ -206,7 +206,7 @@ void SClientListener::stopping()
 
 void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
 {
-    core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
+    core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
 
     const auto data    = m_objects[index].lock();
     const auto matTL   = std::dynamic_pointer_cast<data::MatrixTL>(data.get_shared());
@@ -225,19 +225,19 @@ void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
         SPTR(data::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matTL->createBuffer(timestamp);
 
-        data::Matrix4::sptr t = data::Matrix4::dynamicCast(obj);
+        data::Matrix4::sptr t = std::dynamic_pointer_cast<data::Matrix4>(obj);
         std::array<float, 16> floatValues {};
         std::transform(t->begin(), t->end(), floatValues.begin(), boost::numeric_cast<float, double>);
 
         matrixBuf->setElement(floatValues, 0);
         matTL->pushObject(matrixBuf);
-        auto sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
-        sig->asyncEmit(timestamp);
+        auto sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::OBJECT_PUSHED_SIG);
+        sig->async_emit(timestamp);
     }
     //FrameTL
     else if(frameTL)
     {
-        data::Image::sptr im = data::Image::dynamicCast(obj);
+        data::Image::sptr im = std::dynamic_pointer_cast<data::Image>(obj);
 
         if(!m_tlInitialized)
         {
@@ -267,7 +267,7 @@ void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
                 }(im->getPixelFormat());
 
             frameTL->setMaximumSize(10);
-            frameTL->initPoolSize(im->getSize()[0], im->getSize()[1], im->getType(), frame_pixel_format);
+            frameTL->initPoolSize(im->size()[0], im->size()[1], im->getType(), frame_pixel_format);
             m_tlInitialized = true;
         }
 
@@ -285,8 +285,8 @@ void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
 
         data::TimeLine::ObjectPushedSignalType::sptr sig;
         sig = frameTL->signal<data::TimeLine::ObjectPushedSignalType>
-                  (data::TimeLine::s_OBJECT_PUSHED_SIG);
-        sig->asyncEmit(timestamp);
+                  (data::TimeLine::OBJECT_PUSHED_SIG);
+        sig->async_emit(timestamp);
     }
 }
 

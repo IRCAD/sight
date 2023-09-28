@@ -22,11 +22,11 @@
 
 #include "App.hpp"
 
-#include <core/runtime/ExitException.hpp>
-#include <core/runtime/profile/Profile.hpp>
-#include <core/tools/Os.hpp>
+#include <core/runtime/exit_exception.hpp>
+#include <core/runtime/profile/profile.hpp>
+#include <core/tools/os.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <QCursor>
 
@@ -52,11 +52,11 @@ App::App(int& argc, char** argv) :
 
     std::string appName = "No name";
 
-    core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
+    core::runtime::profile::sptr profile = core::runtime::get_current_profile();
 
     if(profile)
     {
-        appName = profile->getName();
+        appName = profile->name();
     }
 
     sight::ui::qml::App::setApplicationName(QString::fromStdString(appName));
@@ -89,10 +89,10 @@ bool App::notify(QObject* receiver, QEvent* e)
     {
         return QGuiApplication::notify(receiver, e);
     }
-    catch(const core::runtime::ExitException& e)
+    catch(const core::runtime::exit_exception& e)
     {
         SIGHT_DEBUG("Exit exception caught. Exit code:" << e.what());
-        qGuiApp->exit(e.exitCode());
+        qGuiApp->exit(e.exit_code());
         return false;
     }
 }

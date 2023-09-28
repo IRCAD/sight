@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene3d/adaptor/SVideo.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
@@ -45,10 +45,10 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT     = "updateTF";
-static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT     = "updatePL";
-static const core::com::Slots::SlotKeyType s_SET_FILTERING_SLOT = "setFiltering";
-static const core::com::Slots::SlotKeyType s_SCALE_SLOT         = "scale";
+static const core::com::slots::key_t UPDATE_TF_SLOT     = "updateTF";
+static const core::com::slots::key_t UPDATE_PL_SLOT     = "updatePL";
+static const core::com::slots::key_t SET_FILTERING_SLOT = "setFiltering";
+static const core::com::slots::key_t SCALE_SLOT         = "scale";
 
 static const std::string s_VIDEO_MATERIAL_NAME             = "Video";
 static const std::string s_VIDEO_WITH_TF_MATERIAL_NAME     = "VideoWithTF";
@@ -58,10 +58,10 @@ static const std::string s_VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 SVideo::SVideo() noexcept
 {
-    newSlot(s_UPDATE_TF_SLOT, &SVideo::updateTF, this);
-    newSlot(s_UPDATE_PL_SLOT, &SVideo::updatePL, this);
-    newSlot(s_SET_FILTERING_SLOT, &SVideo::setFiltering, this);
-    newSlot(s_SCALE_SLOT, &SVideo::scale, this);
+    new_slot(UPDATE_TF_SLOT, &SVideo::updateTF, this);
+    new_slot(UPDATE_PL_SLOT, &SVideo::updatePL, this);
+    new_slot(SET_FILTERING_SLOT, &SVideo::setFiltering, this);
+    new_slot(SCALE_SLOT, &SVideo::scale, this);
 }
 
 //------------------------------------------------------------------------------
@@ -99,17 +99,17 @@ void SVideo::starting()
 
     if(plW)
     {
-        m_pointList = data::PointList::New();
+        m_pointList = std::make_shared<data::PointList>();
 
         updatePL();
 
-        m_pointListAdaptor = this->registerService<sight::viz::scene3d::IAdaptor>(
+        m_pointListAdaptor = this->registerService<sight::viz::scene3d::adaptor>(
             "sight::module::viz::scene3d::adaptor::SPointList"
         );
 
         m_pointListAdaptor->setInput(m_pointList, s_PL_INPUT, true);
 
-        service::IService::ConfigType config;
+        service::config_t config;
         config.add(s_CONFIG + "layer", this->getLayerID());
         config.add(s_CONFIG + "autoresetcamera", "false");
         if(!m_materialTemplateName.empty())
@@ -180,19 +180,19 @@ void SVideo::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SVideo::getAutoConnections() const
+service::connections_t SVideo::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_IMAGE_INPUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE_INPUT, data::Image::MODIFIED_SIG, service::slots::UPDATE);
 
-    connections.push(s_TF_INPUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT);
-    connections.push(s_TF_INPUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);
-    connections.push(s_TF_INPUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT);
+    connections.push(s_TF_INPUT, data::TransferFunction::MODIFIED_SIG, UPDATE_TF_SLOT);
+    connections.push(s_TF_INPUT, data::TransferFunction::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT);
+    connections.push(s_TF_INPUT, data::TransferFunction::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT);
 
-    connections.push(s_PL_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_PL_SLOT);
-    connections.push(s_PL_INPUT, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_PL_SLOT);
-    connections.push(s_PL_INPUT, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_PL_SLOT);
+    connections.push(s_PL_INPUT, data::PointList::MODIFIED_SIG, UPDATE_PL_SLOT);
+    connections.push(s_PL_INPUT, data::PointList::POINT_ADDED_SIG, UPDATE_PL_SLOT);
+    connections.push(s_PL_INPUT, data::PointList::POINT_REMOVED_SIG, UPDATE_PL_SLOT);
 
     return connections;
 }
@@ -206,7 +206,7 @@ void SVideo::updating()
     const auto&& typeAndSize = [this]
                                {
                                    const auto image = m_image.lock();
-                                   return std::make_pair(image->getType(), image->getSize());
+                                   return std::make_pair(image->getType(), image->size());
                                }();
     const auto type = typeAndSize.first;
     const auto size = typeAndSize.second;
@@ -223,7 +223,7 @@ void SVideo::updating()
         Ogre::MaterialPtr defaultMat;
         if(tf)
         {
-            if(type == core::Type::FLOAT || type == core::Type::DOUBLE)
+            if(type == core::type::FLOAT || type == core::type::DOUBLE)
             {
                 defaultMat = mtlMgr.getByName(s_VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
@@ -239,7 +239,7 @@ void SVideo::updating()
 
         // Duplicate the template material to create our own material
         auto material = Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
-            this->getID() + "_VideoMaterial",
+            this->get_id() + "_VideoMaterial",
             sight::viz::scene3d::RESOURCE_GROUP,
             true
         ).first;
@@ -282,7 +282,7 @@ void SVideo::updating()
         // /////////////////////////////////////////////////////////////////////
         // Create the plane entity
         // /////////////////////////////////////////////////////////////////////
-        const std::string thisID        = this->getID();
+        const std::string thisID        = this->get_id();
         const std::string videoMeshName = thisID + "_VideoMesh";
         const std::string entityName    = thisID + "_VideoEntity";
         const std::string nodeName      = thisID + "_VideoSceneNode";
@@ -407,9 +407,9 @@ void SVideo::updatePL()
     {
         const data::Point::PointCoordArrayType& point = inPoint->getCoord();
         outPoints.push_back(
-            data::Point::New(
-                point[0] - static_cast<double>(image->getSize()[0]) * 0.5,
-                -(point[1] - static_cast<double>(image->getSize()[1]) * 0.5),
+            std::make_shared<data::Point>(
+                point[0] - static_cast<double>(image->size()[0]) * 0.5,
+                -(point[1] - static_cast<double>(image->size()[1]) * 0.5),
                 point[2]
             )
         );
@@ -417,9 +417,9 @@ void SVideo::updatePL()
 
     // Send the signal:
     auto modifiedSig = m_pointList->signal<data::PointList::ModifiedSignalType>(
-        data::PointList::s_MODIFIED_SIG
+        data::PointList::MODIFIED_SIG
     );
-    modifiedSig->asyncEmit();
+    modifiedSig->async_emit();
 }
 
 //------------------------------------------------------------------------------

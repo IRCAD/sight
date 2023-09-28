@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.0)
-
 # Function that returns the last git tag matching the prefix passed as parameter
 # tag name if you are exactly on (annotated) tag,
 # or <tag>-<n>-g<shortened sha-1> if not

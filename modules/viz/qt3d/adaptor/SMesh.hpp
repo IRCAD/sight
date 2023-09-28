@@ -24,8 +24,8 @@
 
 #include "modules/viz/qt3d/config.hpp"
 
+#include <viz/qt3d/adaptor.hpp>
 #include <viz/qt3d/data/Mesh.hpp>
-#include <viz/qt3d/IAdaptor.hpp>
 
 namespace sight::module::viz::qt3d::adaptor
 {
@@ -57,12 +57,12 @@ namespace sight::module::viz::qt3d::adaptor
  *        Must be set according to ::visuQt3D::SMaterial materialName property
  *        to retrieve the material managed by the adaptor.
  */
-class MODULE_VIZ_QT3D_CLASS_API SMesh : public sight::viz::qt3d::IAdaptor
+class MODULE_VIZ_QT3D_CLASS_API SMesh : public sight::viz::qt3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMesh, sight::viz::qt3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SMesh, sight::viz::qt3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_QT3D_API SMesh() noexcept;
@@ -82,10 +82,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_MESH_INOUT to IService::slots::s_UPDATE.
-     * Connect data::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
+     * Connect data::Image::MODIFIED_SIG of s_MESH_INOUT to service::slots::UPDATE.
+     * Connect data::Image::VERTEX_MODIFIED_SIG of s_MESH_INOUT to MODIFY_VERTICES_SLOT.
      */
-    MODULE_VIZ_QT3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_QT3D_API service::connections_t getAutoConnections() const override;
 
     /// Updates the mesh.
     MODULE_VIZ_QT3D_API void updating() override;

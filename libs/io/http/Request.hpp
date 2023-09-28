@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,12 +34,12 @@ namespace sight::io::http
 /**
  * @brief HTTP request.
  */
-class IO_HTTP_CLASS_API Request : public core::BaseObject
+class IO_HTTP_CLASS_API Request : public core::base_object
 {
 public:
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
-    SIGHT_DECLARE_CLASS(Request, core::BaseObject, new Request);
+    SIGHT_DECLARE_CLASS(Request, core::base_object);
 
     /// Maps header name to its value.
     typedef std::map<std::string, std::string> HeadersType;

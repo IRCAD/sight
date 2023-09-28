@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 #include <data/ActivitySet.hpp>
 #include <data/Vector.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QLabel>
 #include <QPointer>
@@ -92,11 +92,11 @@ namespace sight::module::ui::qt::activity
 
  */
 class MODULE_UI_QT_CLASS_API SWizard : public QObject,
-                                       public sight::ui::base::IEditor
+                                       public sight::ui::editor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SWizard, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SWizard, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SWizard() noexcept;
@@ -108,22 +108,22 @@ public:
      * @name Slot API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_CREATE_ACTIVITY_SLOT;
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_UPDATE_ACTIVITY_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t CREATE_ACTIVITY_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t UPDATE_ACTIVITY_SLOT;
     /// @}
 
     /**
      * @name Signal API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG;
-    typedef core::com::Signal<void (data::Activity::sptr)> ActivityCreatedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_CREATED_SIG;
+    typedef core::com::signal<void (data::Activity::sptr)> ActivityCreatedSignalType;
 
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_UPDATED_SIG;
-    typedef core::com::Signal<void (data::Activity::sptr)> ActivityUpdatedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_UPDATED_SIG;
+    typedef core::com::signal<void (data::Activity::sptr)> ActivityUpdatedSignalType;
 
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_CANCELED_SIG;
-    typedef core::com::Signal<void ()> CanceledSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t CANCELED_SIG;
+    typedef core::com::signal<void ()> CanceledSignalType;
     /// @}
 
 protected:

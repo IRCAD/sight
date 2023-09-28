@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,18 @@
 
 #include "modules/viz/scene3d/adaptor/SPicker.hpp"
 
-#include <core/com/Signals.hpp>
+#include <core/com/signals.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Signals::SignalKeyType s_PICKED_SIG = "picked";
+static const core::com::signals::key_t PICKED_SIG = "picked";
 
 //-----------------------------------------------------------------------------
 
 SPicker::SPicker() noexcept
 {
-    m_pickedSig = newSignal<sight::viz::scene3d::interactor::MeshPickerInteractor::PointClickedSigType>(s_PICKED_SIG);
+    m_pickedSig = new_signal<sight::viz::scene3d::interactor::MeshPickerInteractor::PointClickedSigType>(PICKED_SIG);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,7 +20,7 @@
  ***********************************************************************/
 #include "modules/ui/qt/SMaterialOpacityEditor.hpp"
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -45,7 +45,7 @@ void SMaterialOpacityEditor::configuring()
 void SMaterialOpacityEditor::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* const opacityLabel = new QLabel(tr(m_label.c_str()));
     m_opacitySlider = new QSlider(Qt::Horizontal);
@@ -89,8 +89,8 @@ void SMaterialOpacityEditor::onOpacitySlider(int _value)
     std::stringstream ss;
     ss << _value << "%";
     m_opacityValue->setText(QString::fromStdString(ss.str()));
-    auto sig = material->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    auto sig = material->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------

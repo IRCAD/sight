@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene2d/adaptor/SGrid2D.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
@@ -38,13 +38,13 @@ namespace sight::module::viz::scene2d::adaptor
 
 //---------------------------------------------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SGrid2D::s_SET_GRID_SPACING_SLOT = "setGridSpacing";
+const core::com::slots::key_t SGrid2D::SET_GRID_SPACING_SLOT = "setGridSpacing";
 
 //---------------------------------------------------------------------------------------------------------------
 
 SGrid2D::SGrid2D() noexcept
 {
-    newSlot(s_SET_GRID_SPACING_SLOT, &sight::module::viz::scene2d::adaptor::SGrid2D::setGridSpacing, this);
+    new_slot(SET_GRID_SPACING_SLOT, &sight::module::viz::scene2d::adaptor::SGrid2D::setGridSpacing, this);
 }
 
 //---------------------------------------------------------------------------------------------------------------

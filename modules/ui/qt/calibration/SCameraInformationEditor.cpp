@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "modules/ui/qt/calibration/SCameraInformationEditor.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -38,30 +38,30 @@ namespace sight::module::ui::qt::calibration
 
 // -------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SCameraInformationEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
+const core::com::slots::key_t SCameraInformationEditor::UPDATE_INFOS_SLOT = "updateInfos";
 
 // -------------------------------------------------------------------------
 
 SCameraInformationEditor::SCameraInformationEditor() noexcept
 {
-    newSlot(s_UPDATE_INFOS_SLOT, &SCameraInformationEditor::updateInformations, this);
+    new_slot(UPDATE_INFOS_SLOT, &SCameraInformationEditor::updateInformations, this);
 }
 
 // -------------------------------------------------------------------------
 
 void SCameraInformationEditor::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 }
 
 // -------------------------------------------------------------------------
 
 void SCameraInformationEditor::starting()
 {
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
     qtContainer->getQtContainer()->setObjectName(serviceID);
 
     auto* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
@@ -251,12 +251,12 @@ void SCameraInformationEditor::clearLabels()
 
 // ----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SCameraInformationEditor::getAutoConnections() const
+service::connections_t SCameraInformationEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_CAMERA, data::Camera::s_ID_MODIFIED_SIG, s_UPDATE_INFOS_SLOT);
-    connections.push(s_CAMERA, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_INFOS_SLOT);
+    connections.push(s_CAMERA, data::Camera::ID_MODIFIED_SIG, UPDATE_INFOS_SLOT);
+    connections.push(s_CAMERA, data::Camera::INTRINSIC_CALIBRATED_SIG, UPDATE_INFOS_SLOT);
 
     return connections;
 }

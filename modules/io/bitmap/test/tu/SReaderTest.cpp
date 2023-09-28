@@ -21,16 +21,16 @@
 
 #include "SReaderTest.hpp"
 
-#include <core/tools/System.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/tools/system.hpp>
+#include <core/tools/uuid.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 #include <io/bitmap/backend.hpp>
 #include <io/bitmap/Reader.hpp>
 
-#include <service/base.hpp>
+#include <service/op.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
@@ -51,7 +51,7 @@ inline static void runSReader(
     bool should_fail = false
 )
 {
-    service::IService::sptr sreader = service::add("sight::module::io::bitmap::SReader");
+    service::base::sptr sreader = service::add("sight::module::io::bitmap::SReader");
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service 'sight::module::io::bitmap::SReader'"), sreader);
     sreader->setInOut(image, "data");
 
@@ -63,7 +63,10 @@ inline static void runSReader(
     service::remove(sreader);
 
     // Check the result...
-    CPPUNIT_ASSERT_EQUAL(should_fail, sight::io::base::service::IReader::dynamicCast(sreader)->hasFailed());
+    CPPUNIT_ASSERT_EQUAL(
+        should_fail,
+        std::dynamic_pointer_cast<sight::io::service::reader>(sreader)->hasFailed()
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +83,7 @@ inline static void testEnable(
         const auto& filepath = utestData::Data::dir() / "sight" / "image" / "bitmap" / filename;
 
         // Add file
-        service::IService::ConfigType config;
+        service::config_t config;
         config.add("file", filepath.string());
 
         boost::property_tree::ptree backends_tree;
@@ -93,7 +96,7 @@ inline static void testEnable(
         // Only test if the image exists. Conformance tests are already done in the reader
         CPPUNIT_ASSERT(actual_image);
 
-        const auto& sizes = actual_image->getSize();
+        const auto& sizes = actual_image->size();
         CPPUNIT_ASSERT(sizes[0] > 0 && sizes[1] > 0 && sizes[2] == 0);
     }
 }
@@ -117,16 +120,16 @@ void SReaderTest::basicTest()
     const auto& filename = "wild" + sight::io::bitmap::extensions(sight::io::bitmap::Backend::LIBTIFF).front();
     const auto& filepath = utestData::Data::dir() / "sight" / "image" / "bitmap" / filename;
 
-    service::IService::ConfigType config;
+    service::config_t config;
     config.add("file", filepath.string());
 
-    auto actual_image = sight::data::Image::New();
+    auto actual_image = std::make_shared<sight::data::Image>();
     runSReader(config, actual_image);
 
     // Only test if the image exists. Conformance tests are already done in the reader
     CPPUNIT_ASSERT(actual_image);
 
-    const auto& sizes = actual_image->getSize();
+    const auto& sizes = actual_image->size();
     CPPUNIT_ASSERT(sizes[0] > 0 && sizes[1] > 0 && sizes[2] == 0);
 }
 
@@ -157,14 +160,14 @@ void SReaderTest::configTest()
     // Test enable="all"
     {
         // For each backend and each mode ("all" means ".jpeg, .tiff, .png, .jp2")
-        auto actual_image = sight::data::Image::New();
+        auto actual_image = std::make_shared<sight::data::Image>();
         testEnable(actual_image, backends, "all");
     }
 
     // Test enable="cpu"
     {
         // For each backend and each mode ("cpu" means ".jpeg, .tiff, .png, .jp2")
-        auto actual_image = sight::data::Image::New();
+        auto actual_image = std::make_shared<sight::data::Image>();
         testEnable(actual_image, backends, "cpu");
     }
 
@@ -185,7 +188,7 @@ void SReaderTest::configTest()
         }
 
         // For each backend and each mode ("cpu" means ".jpeg, .jp2")
-        auto actual_image = sight::data::Image::New();
+        auto actual_image = std::make_shared<sight::data::Image>();
         testEnable(actual_image, gpu_backend, "gpu");
     }
 }

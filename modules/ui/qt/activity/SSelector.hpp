@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/ActivityMsg.hpp>
 #include <activity/extension/Activity.hpp>
+#include <activity/message.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QButtonGroup>
 #include <QObject>
@@ -69,13 +69,13 @@ namespace sight::module::ui::qt::activity
  *    - \b id: id of the activity
  */
 class MODULE_UI_QT_CLASS_API SSelector : public QObject,
-                                         public sight::ui::base::IEditor
+                                         public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSelector, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSelector, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SSelector() noexcept;
@@ -87,11 +87,11 @@ public:
      * @name Signals API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_ID_SELECTED_SIG;
-    typedef core::com::Signal<void (std::string)> ActivityIDSelectedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_ID_SELECTED_SIG;
+    typedef core::com::signal<void (std::string)> ActivityIDSelectedSignalType;
 
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_LOAD_REQUESTED_SIG;
-    typedef core::com::Signal<void ()> LoadRequestedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t LOAD_REQUESTED_SIG;
+    typedef core::com::signal<void ()> LoadRequestedSignalType;
 
     /// @}
 
@@ -100,10 +100,10 @@ protected:
     /// Initialize the editor.
     void configuring() override;
 
-    /// This method launches the IEditor::starting method.
+    /// This method launches the editor::starting method.
     void starting() override;
 
-    /// This method launches the IEditor::stopping method.
+    /// This method launches the editor::stopping method.
     void stopping() override;
 
     /// Show activity selector.

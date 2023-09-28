@@ -1,7 +1,7 @@
 <plugin id="sight::module::geometry::vision" library="true" >
     <requirement id="sight::module::service"/>
     <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IController</type>
+         <type>sight::service::controller</type>
          <service>sight::module::geometry::vision::SChessBoardDetector</service>
          <object key="image">sight::data::Image</object>
          <object key="calInfo">sight::data::CalibrationInfo</object>
@@ -11,12 +11,12 @@
 
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IController</type>
+         <type>sight::service::controller</type>
          <service>sight::module::geometry::vision::SChessboardReprojection</service>
          <desc>Reprojects the chessboard model onto the detected points using the estimated camera pose and calibration.</desc>
     </extension>
     <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IFilter</type>
+         <type>sight::service::filter</type>
          <service>sight::module::geometry::vision::SDistortion</service>
          <object key="camera">sight::data::Camera</object>
          <object key="input">sight::data::Image</object>
@@ -27,7 +27,7 @@
 
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IController</type>
+         <type>sight::service::controller</type>
          <service>sight::module::geometry::vision::SMarkerToPoint</service>
          <object>sight::data::PointList</object>
          <desc>This service update a pointlist with the center of the marker (from a matrixTL) when the extractMarker slot is</desc>
@@ -48,18 +48,18 @@
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IRegisterer</type>
+         <type>sight::service::registerer</type>
          <service>sight::module::geometry::vision::SPoseFrom2d</service>
          <desc>SPoseFrom2d Class used to compute the 3d pose of a object using 2d points.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IController</type>
+         <type>sight::service::controller</type>
          <service>sight::module::geometry::vision::SReprojectionError</service>
          <desc>SReprojectionError Class used to compute the mean error of reprojection between 3d object points</desc>
     </extension>
     <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IRegisterer</type>
+         <type>sight::service::registerer</type>
          <service>sight::module::geometry::vision::SSolvePnP</service>
          <object key="pointList2d">sight::data::PointList</object>
          <object key="pointList3d">sight::data::PointList</object>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 
 #include <data/Image.hpp>
 
+#include <viz/scene2d/adaptor.hpp>
 #include <viz/scene2d/data/Viewport.hpp>
-#include <viz/scene2d/IAdaptor.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -64,11 +64,11 @@ namespace sight::module::viz::scene2d::adaptor
  *
  * This adaptor is intended to be used with a module::viz::scene2d::adaptor::SViewportRangeSelector adaptor.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SViewportUpdater : public sight::viz::scene2d::IAdaptor
+class MODULE_VIZ_SCENE2D_CLASS_API SViewportUpdater : public sight::viz::scene2d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SViewportUpdater, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SViewportUpdater, sight::viz::scene2d::adaptor);
     SViewportUpdater() noexcept = default;
 
 protected:
@@ -78,7 +78,7 @@ protected:
     MODULE_VIZ_SCENE2D_API void updating() override;
     MODULE_VIZ_SCENE2D_API void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE2D_API connections_t getAutoConnections() const override;
 
 private:
 

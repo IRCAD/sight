@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ public:
      * -  import the path using:
      * @code{.cpp}
          SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
-         engine->importModulePath(core::runtime::getModuleResourcePath("myBundle"));
+         engine->importModulePath(core::runtime::get_module_resource_path("myBundle"));
        @endcode
      *
      * @see http://doc.qt.io/qt-5/qtqml-syntax-directoryimports.html

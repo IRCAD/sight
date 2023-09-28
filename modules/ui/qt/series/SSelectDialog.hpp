@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 namespace sight::module::ui::qt::series
 {
@@ -62,17 +62,17 @@ namespace sight::module::ui::qt::series
  * - \b imageSeries [sight::data::ImageSeries]: output image series extracted from the database series.
  * - \b image [sight::data::Image]: output image extracted from the database series.
  */
-class MODULE_UI_QT_CLASS_API SSelectDialog : public service::IController
+class MODULE_UI_QT_CLASS_API SSelectDialog : public service::controller
 {
 public:
 
     /// Type of signal sent when a screen is selected.
-    using SelectedSignalType = core::com::Signal<void ()>;
+    using SelectedSignalType = core::com::signal<void ()>;
 
-    static const core::com::Signals::SignalKeyType s_IMAGE_SELECTED_SIG;
-    static const core::com::Signals::SignalKeyType s_MODEL_SELECTED_SIG;
+    static const core::com::signals::key_t IMAGE_SELECTED_SIG;
+    static const core::com::signals::key_t MODEL_SELECTED_SIG;
 
-    SIGHT_DECLARE_SERVICE(SSelectDialog, service::IController);
+    SIGHT_DECLARE_SERVICE(SSelectDialog, service::controller);
 
     /// Constructor
     MODULE_UI_QT_API SSelectDialog();

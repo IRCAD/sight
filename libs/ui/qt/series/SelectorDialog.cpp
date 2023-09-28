@@ -30,8 +30,8 @@
 namespace sight::ui::qt::series
 {
 
-/// Private SelectorDialog implementation
-class SelectorDialog::SelectorDialogImpl
+/// Private selector implementation
+class selector::SelectorDialogImpl
 {
 public:
 
@@ -42,7 +42,7 @@ public:
     SelectorDialogImpl& operator=(SelectorDialogImpl&&)      = delete;
 
     /// Constructor
-    inline explicit SelectorDialogImpl(SelectorDialog* const selector_dialog) noexcept :
+    inline explicit SelectorDialogImpl(selector* const selector_dialog) noexcept :
         m_selector_dialog(selector_dialog)
     {
     }
@@ -51,12 +51,12 @@ public:
     inline ~SelectorDialogImpl() noexcept = default;
 
     /// Pointer to the public interface
-    SelectorDialog* const m_selector_dialog;
+    selector* const m_selector_dialog;
 
     QPointer<Selector> m_selector_widget {nullptr};
 };
 
-SelectorDialog::SelectorDialog(data::SeriesSet::csptr series_set, const std::string& displayedColumn, QWidget* parent) :
+selector::selector(data::SeriesSet::csptr series_set, const std::string& displayedColumn, QWidget* parent) :
     QDialog(parent),
     m_pimpl(std::make_unique<SelectorDialogImpl>(this))
 {
@@ -83,16 +83,16 @@ SelectorDialog::SelectorDialog(data::SeriesSet::csptr series_set, const std::str
 }
 
 // Defining the destructor here, allows us to use PImpl with a unique_ptr
-SelectorDialog::~SelectorDialog() noexcept = default;
+selector::~selector() noexcept = default;
 
 //------------------------------------------------------------------------------
 
-data::SeriesSet::sptr SelectorDialog::get_selection() const
+data::SeriesSet::sptr selector::get_selection() const
 {
     if(!m_pimpl->m_selector_widget.isNull())
     {
         const auto& selected_series = m_pimpl->m_selector_widget->getSelectedSeries();
-        auto series_set             = data::SeriesSet::New();
+        auto series_set             = std::make_shared<data::SeriesSet>();
         series_set->insert(series_set->end(), selected_series.cbegin(), selected_series.cend());
 
         return series_set;

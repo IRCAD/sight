@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,17 +46,6 @@ const std::string ImagePositionPatientSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSplitter::ImagePositionPatientSplitter(filter::dicom::IFilter::Key /*unused*/)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-ImagePositionPatientSplitter::~ImagePositionPatientSplitter()
-= default;
-
-//-----------------------------------------------------------------------------
-
 std::string ImagePositionPatientSplitter::getName() const
 {
     return ImagePositionPatientSplitter::s_FILTER_NAME;
@@ -73,7 +62,7 @@ std::string ImagePositionPatientSplitter::getDescription() const
 
 ImagePositionPatientSplitter::DicomSeriesContainerType ImagePositionPatientSplitter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 const
 {
@@ -87,10 +76,10 @@ const
     data::DicomSeries::sptr currentSeries;
     for(const auto& item : series->getDicomContainer())
     {
-        const core::memory::BufferObject::sptr bufferObj = item.second;
-        const std::size_t buffSize                       = bufferObj->getSize();
-        core::memory::BufferObject::Lock lock(bufferObj);
-        char* buffer = static_cast<char*>(lock.getBuffer());
+        const core::memory::buffer_object::sptr bufferObj = item.second;
+        const std::size_t buffSize                        = bufferObj->size();
+        core::memory::buffer_object::lock_t lock(bufferObj);
+        char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
         is.setBuffer(buffer, offile_off_t(buffSize));
@@ -101,7 +90,7 @@ const
         if(!fileFormat.read(is).good())
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << item.first << "')"
             );
         }
@@ -116,7 +105,7 @@ const
             const std::string msg =
                 "Unable to split the series using ImagePositionPatient and ImageOrientationPatient. "
                 "Tag(s) missing.";
-            throw filter::dicom::exceptions::FilterFailure(msg);
+            throw sight::filter::dicom::exceptions::FilterFailure(msg);
         }
 
         fwVec3d imagePosition;
@@ -156,8 +145,8 @@ const
             }
 
             instanceNumber = 0;
-            currentSeries  = data::DicomSeries::New();
-            currentSeries->shallowCopy(series);
+            currentSeries  = std::make_shared<data::DicomSeries>();
+            currentSeries->shallow_copy(series);
             currentSeries->clearDicomContainer();
         }
 

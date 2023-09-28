@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/matrix/config.hpp"
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 #include <filesystem>
 
@@ -46,16 +46,16 @@ namespace sight::module::io::matrix
  * @subsection Input Input
  * - \b data [sight::data::Matrix4]: matrix to save.
  */
-class MODULE_IO_MATRIX_CLASS_API Matrix4WriterService : public sight::io::base::service::IWriter
+class MODULE_IO_MATRIX_CLASS_API Matrix4WriterService : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(Matrix4WriterService, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(Matrix4WriterService, sight::io::service::writer);
 
     /// Super class of writer services
-    typedef sight::io::base::service::IWriter SuperClass;
+    typedef sight::io::service::writer SuperClass;
 
-    /** @name Specified writer service methods ( override from sight::io::base::service::IWriter )
+    /** @name Specified writer service methods ( override from sight::io::service::writer )
      * @{
      */
 
@@ -68,40 +68,40 @@ public:
     MODULE_IO_MATRIX_API void openLocationDialog() override;
 
     /// Return path type managed by the service, here FILE
-    MODULE_IO_MATRIX_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_MATRIX_API sight::io::service::IOPathType getIOPathType() const override;
 
     ///@}
 
 protected:
 
-    /** @name Service methods ( override from service::IService )
+    /** @name Service methods ( override from service::base )
      * @{
      */
 
     /**
-     * @brief Starting method. This method is called by start() from base service ( service::IService )
+     * @brief Starting method. This method is called by start() from base service ( service::base )
      *
      * This method is used to initialize the service. The starting method is empty for this service.
      */
     MODULE_IO_MATRIX_API void starting() override;
 
     /**
-     * @brief Stopping method. This method is called by stop() from base service ( service::IService )
+     * @brief Stopping method. This method is called by stop() from base service ( service::base )
      *
      * The stopping method is empty for this service.
      */
     MODULE_IO_MATRIX_API void stopping() override;
 
     /**
-     * @brief Configuring method : calls implementation from `io::IWriter`
+     * @brief Configuring method : calls implementation from `io::writer`
      */
     MODULE_IO_MATRIX_API void configuring() override;
 
     /**
-     * @brief Updating method. This method is called by update() from base service ( service::IService )
+     * @brief Updating method. This method is called by update() from base service ( service::base )
      *
      * This method is used to update the service.
-     * The transformation matrix is written with the writer io::base::writer::Matrix4Writer.
+     * The transformation matrix is written with the writer io::writer::Matrix4Writer.
      * Notify writing.
      */
     MODULE_IO_MATRIX_API void updating() override;

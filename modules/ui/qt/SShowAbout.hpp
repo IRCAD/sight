@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <ui/base/IAction.hpp>
+#include <ui/__/action.hpp>
 
 #include <QObject>
 #include <QSize>
@@ -39,13 +39,13 @@ namespace sight::module::ui::qt
  * @brief   This action show the about frame.
  */
 class MODULE_UI_QT_CLASS_API SShowAbout : public QObject,
-                                          public sight::ui::base::IAction
+                                          public sight::ui::action
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SShowAbout, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SShowAbout, sight::ui::action);
 
     /**
      * @name Constructor/Destructor

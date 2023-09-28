@@ -39,7 +39,7 @@ namespace sight::examples::ui::exsparameters::test::ui
 
 std::filesystem::path NonLinearSliderValuesChange::getProfilePath()
 {
-    const std::filesystem::path cwd = sight::core::runtime::getWorkingPath();
+    const std::filesystem::path cwd = sight::core::runtime::working_path();
     return cwd / "share/sight/ExSParameters/profile.xml";
 }
 

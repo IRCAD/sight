@@ -23,32 +23,30 @@
 
 #include "io/itk/config.hpp"
 
-#include <core/location/SingleFile.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/location/single_file.hpp>
+#include <core/tools/progress_adviser.hpp>
 
 #include <data/Image.hpp>
 
-#include <io/base/reader/GenericObjectReader.hpp>
+#include <io/__/reader/GenericObjectReader.hpp>
 
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API NiftiImageReader : public base::reader::GenericObjectReader<data::Image>,
-                                          public core::location::SingleFile,
-                                          public core::tools::ProgressAdviser
+class IO_ITK_CLASS_API NiftiImageReader : public reader::GenericObjectReader<data::Image>,
+                                          public core::location::single_file,
+                                          public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         NiftiImageReader,
-        io::base::reader::GenericObjectReader<data::Image>,
-        io::base::reader::factory::New<NiftiImageReader>
+        io::reader::GenericObjectReader<data::Image>,
+        io::reader::factory::make<NiftiImageReader>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_ITK_API NiftiImageReader(io::base::reader::IObjectReader::Key key);
-
-    IO_ITK_API ~NiftiImageReader() override;
+    IO_ITK_API ~NiftiImageReader() override = default;
 
     IO_ITK_API void read() override;
 };

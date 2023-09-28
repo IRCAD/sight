@@ -21,19 +21,19 @@
 
 #include "modules/io/dicom/SReader.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/signal.hxx>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/SeriesSet.hpp>
 
 #include <io/dicom/Reader.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/InputDialog.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/input.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 #include <ui/qt/series/SelectorDialog.hpp>
 
 namespace sight::module::io::dicom
@@ -52,15 +52,15 @@ inline static auto printSeriesSet(const sight::data::SeriesSet& series_set)
         {
             for(std::size_t i = 0, end = series->numInstances() - 1 ; i < end ; ++i)
             {
-                ss << series->getFile(i).string();
+                ss << series->get_file(i).string();
                 ss << ", ";
             }
 
-            ss << series->getFile(series->numInstances() - 1).string();
+            ss << series->get_file(series->numInstances() - 1).string();
         }
         else
         {
-            ss << series->getFile().string();
+            ss << series->get_file().string();
         }
 
         ss << " }" << std::endl;
@@ -83,7 +83,7 @@ public:
     /// Constructor
     inline explicit SReaderImpl(SReader* const reader) noexcept :
         m_owner(reader),
-        m_job_created_signal(reader->newSignal<JobCreatedSignal>("jobCreated"))
+        m_job_created_signal(reader->new_signal<JobCreatedSignal>("jobCreated"))
     {
     }
 
@@ -105,12 +105,12 @@ public:
 
     [[nodiscard]] inline bool showLocation() const
     {
-        static auto default_location = std::make_shared<core::location::SingleFolder>();
+        static auto default_location = std::make_shared<core::location::single_folder>();
 
         if(m_dialog_policy == DialogPolicy::ALWAYS
            || (m_dialog_policy == DialogPolicy::ONCE && !m_owner->hasLocationDefined()))
         {
-            sight::ui::base::dialog::LocationDialog location_dialog;
+            sight::ui::dialog::location location_dialog;
 
             // Set dialog options
             if(!m_owner->m_windowTitle.empty())
@@ -123,11 +123,11 @@ public:
             }
 
             location_dialog.setDefaultLocation(default_location);
-            location_dialog.setOption(ui::base::dialog::ILocationDialog::READ);
-            location_dialog.setType(ui::base::dialog::ILocationDialog::FOLDER);
+            location_dialog.setOption(ui::dialog::location::READ);
+            location_dialog.setType(ui::dialog::location::FOLDER);
 
             // Show the dialog
-            const auto& selected_location = std::dynamic_pointer_cast<core::location::SingleFolder>(
+            const auto& selected_location = std::dynamic_pointer_cast<core::location::single_folder>(
                 location_dialog.show()
             );
 
@@ -138,11 +138,11 @@ public:
             }
 
             // Set the selected location
-            const auto& selected_folder = selected_location->getFolder();
-            m_owner->setFolder(selected_folder);
+            const auto& selected_folder = selected_location->get_folder();
+            m_owner->set_folder(selected_folder);
 
             // Save default location for later use
-            default_location->setFolder(selected_folder.parent_path());
+            default_location->set_folder(selected_folder.parent_path());
             location_dialog.saveDefaultLocation(default_location);
         }
 
@@ -154,13 +154,13 @@ public:
     inline bool scan()
     {
         // Set cursor to busy state. It will be reset to default even if exception occurs
-        const sight::ui::base::BusyCursor busy_cursor;
+        const sight::ui::BusyCursor busy_cursor;
 
         // Create the reader
-        m_reader = sight::io::dicom::Reader::New();
+        m_reader = std::make_shared<sight::io::dicom::Reader>();
 
         // Set the folder from the service location
-        m_reader->setFolder(m_owner->getFolder());
+        m_reader->set_folder(m_owner->get_folder());
 
         // Set filters
         m_reader->setFilters(m_filters);
@@ -171,10 +171,10 @@ public:
         // Exit if there is no DICOM files.
         if(!m_selection || m_selection->empty())
         {
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "DICOM reader",
                 "No DICOM files found in the selected folder.",
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
 
             return false;
@@ -194,10 +194,10 @@ public:
             const auto selection = m_selection;
 
             // Ask the user to select one or more series
-            const auto result = core::thread::getDefaultWorker()->postTask<std::pair<bool, data::SeriesSet::sptr> >(
+            const auto result = core::thread::get_default_worker()->post_task<std::pair<bool, data::SeriesSet::sptr> >(
                 [this, selection]
                 {
-                    sight::ui::qt::series::SelectorDialog selector(selection, m_displayedColumns);
+                    sight::ui::qt::series::selector selector(selection, m_displayedColumns);
                     if(selector.exec() != QDialog::Rejected)
                     {
                         return std::make_pair(true, selector.get_selection());
@@ -270,7 +270,7 @@ void SReader::stopping()
 
 void SReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 
     const auto& tree = this->getConfiguration();
 
@@ -346,42 +346,42 @@ void SReader::updating()
         return;
     }
 
-    auto jobs = core::jobs::Aggregator::New("DICOM reader");
+    auto jobs = std::make_shared<core::jobs::aggregator>("DICOM reader");
 
-    const auto read_job = core::jobs::Job::New(
+    const auto read_job = std::make_shared<core::jobs::job>(
         "Sorting selected series",
-        [&](core::jobs::Job& job)
+        [&](core::jobs::job& job)
         {
             // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::base::BusyCursor busy_cursor;
+            const sight::ui::BusyCursor busy_cursor;
 
-            job.doneWork(10);
+            job.done_work(10);
 
             SIGHT_THROW_IF("No series were selected.", !m_pimpl->m_selection || m_pimpl->m_selection->empty());
 
             // Sort the series
             m_pimpl->m_reader->sort();
 
-            job.doneWork(20);
+            job.done_work(20);
 
             // Really read the series
             m_pimpl->m_reader->read();
 
-            job.doneWork(90);
+            job.done_work(90);
 
             // Get the series set from the reader
             if(const auto& read = m_pimpl->m_reader->getConcreteObject(); read != nullptr && !read->empty())
             {
                 // Retrieve data associated with this service
                 const auto data   = m_data.lock();
-                const auto output = data::SeriesSet::dynamicCast(data.get_shared());
+                const auto output = std::dynamic_pointer_cast<data::SeriesSet>(data.get_shared());
                 SIGHT_ASSERT("Output SeriesSet not instantiated", output);
 
                 // Clear SeriesSet and add new series
                 const auto scoped_emitter = output->scoped_emit();
 
                 output->clear();
-                output->shallowCopy(read);
+                output->shallow_copy(read);
             }
 
             job.done();
@@ -404,19 +404,19 @@ void SReader::updating()
     {
         // Handle the error.
         SIGHT_ERROR(e.what());
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "DICOM reader failed",
             e.what(),
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
     }
     catch(...)
     {
         // Handle the error.
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "DICOM reader aborted",
             "Reading process aborted",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
 
@@ -445,19 +445,19 @@ void SReader::openLocationDialog()
     }
     catch(const std::exception& e)
     {
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "DICOM scanner",
             "Something wrong happened: " + std::string(e.what()),
-            sight::ui::base::dialog::IMessageDialog::CRITICAL
+            sight::ui::dialog::message::CRITICAL
         );
     }
     catch(...)
     {
         // Handle the error.
-        sight::ui::base::dialog::MessageDialog::show(
+        sight::ui::dialog::message::show(
             "DICOM scanner aborted",
             "Scanning process aborted",
-            sight::ui::base::dialog::IMessageDialog::WARNING
+            sight::ui::dialog::message::WARNING
         );
     }
 

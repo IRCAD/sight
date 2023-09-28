@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,8 @@
 #include "TagValueInstanceRemoveSplitterTest.hpp"
 
 #include <filter/dicom/factory/new.hpp>
+#include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/Filter.hpp>
-#include <filter/dicom/IFilter.hpp>
 #include <filter/dicom/splitter/TagValueInstanceRemoveSplitter.hpp>
 
 #include <io/dicom/reader/SeriesSet.hpp>
@@ -59,7 +59,7 @@ void TagValueInstanceRemoveSplitterTest::tearDown()
 
 void TagValueInstanceRemoveSplitterTest::simpleApplication()
 {
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -70,27 +70,27 @@ void TagValueInstanceRemoveSplitterTest::simpleApplication()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
+    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
-    filter::dicom::splitter::TagValueInstanceRemoveSplitter::sptr filter =
-        filter::dicom::splitter::TagValueInstanceRemoveSplitter::dynamicCast(
-            filter::dicom::factory::New("sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter")
+    sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter::sptr filter =
+        std::dynamic_pointer_cast<sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter>(
+            sight::filter::dicom::factory::make("sight::filter::dicom::splitter::TagValueInstanceRemoveSplitter")
         );
     CPPUNIT_ASSERT(filter);
     filter->setTag(DCM_AcquisitionNumber);
     filter->setTagValue("1");
-    filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
+    sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), dicomSeriesContainer.size());
     dicomSeries = dicomSeriesContainer[0];
 

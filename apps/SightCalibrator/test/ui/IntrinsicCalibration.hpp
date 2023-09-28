@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include <ui/testCore/ITest.hpp>
+#include <ui/testCore/test.hpp>
 
 namespace sight::sightcalibrator::test::ui
 {
 
-class IntrinsicCalibration : public sight::ui::testCore::ITest
+class IntrinsicCalibration : public sight::ui::testCore::test
 {
 CPPUNIT_TEST_SUITE(IntrinsicCalibration);
 CPPUNIT_TEST(test);

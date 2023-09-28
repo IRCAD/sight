@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,8 @@
 #include <data/Camera.hpp>
 #include <data/Matrix4.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <boost/circular_buffer.hpp>
 
@@ -70,13 +70,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SFrustumList final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SFrustumList, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SFrustumList, sight::viz::scene3d::adaptor);
 
     /// Creates slots.
     MODULE_VIZ_SCENE3D_API SFrustumList() noexcept;
@@ -96,9 +96,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INPUT to s_ADD_FRUSTUM_SLOT
+     * Connect data::Matrix4::MODIFIED_SIG of s_TRANSFORM_INPUT to ADD_FRUSTUM_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
 
     /// Updates the adaptor by attaching new cameras to scene nodes (called after addFrustum slot).
     MODULE_VIZ_SCENE3D_API void updating() override;

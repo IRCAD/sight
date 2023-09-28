@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "Masker.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 namespace sight::filter::vision
 {

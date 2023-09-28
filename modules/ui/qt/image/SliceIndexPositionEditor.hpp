@@ -24,11 +24,11 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/tools/Failed.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 #include <ui/qt/SliceSelector.hpp>
 
 namespace sight::module::ui::qt::image
@@ -58,11 +58,11 @@ namespace sight::module::ui::qt::image
  * - \b displayAxisSelector : Allows to change the axis.
  * - \b displayStepButtons : Allows to change the slice index with step buttons.
  */
-class MODULE_UI_QT_CLASS_API SliceIndexPositionEditor : public sight::ui::base::IEditor
+class MODULE_UI_QT_CLASS_API SliceIndexPositionEditor : public sight::ui::editor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SliceIndexPositionEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SliceIndexPositionEditor, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SliceIndexPositionEditor() noexcept;
@@ -72,7 +72,7 @@ public:
 
 protected:
 
-    static const service::IService::KeyType s_IMAGE_INOUT;
+    static const service::base::KeyType s_IMAGE_INOUT;
 
     /// @brief The slice type: axial, frontal, sagittal.
     using orientation_t = data::helper::MedicalImage::orientation_t;
@@ -107,12 +107,12 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
-     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
+     * Connect Image::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect Image::SLICE_INDEX_MODIFIED_SIG to this::UPDATE_SLICE_INDEX_SLOT
+     * Connect Image::SLICE_TYPE_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
+     * Connect Image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
      */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
     /// Overrides
     MODULE_UI_QT_API void info(std::ostream& _sstream) override;
@@ -124,7 +124,7 @@ protected:
     MODULE_UI_QT_API void updateSliceTypeFromImg(const orientation_t& type);
 
     /// This method is called when the slider is move. Notify the slice index is modified.
-    MODULE_UI_QT_API void sliceIndexNotification(unsigned int index);
+    MODULE_UI_QT_API void sliceIndexNotification(int index);
 
     /// This method is called when the slice type selected change. Notify the slice type is modified.
     MODULE_UI_QT_API void sliceTypeNotification(int type);

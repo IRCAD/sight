@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
 
 #include <data/TransferFunction.hpp>
 
-#include <viz/scene3d/detail/IResourceManager.hpp>
+#include <viz/scene3d/detail/resource_manager.hpp>
 
 namespace sight::viz::scene3d::detail
 {
@@ -42,7 +42,7 @@ public:
 
 //---------------------------------------------------------------------
 
-using TFManager = IResourceManager<sight::data::TransferFunction, Ogre::Texture, TFLoader>;
+using TFManager = resource_manager<sight::data::TransferFunction, Ogre::Texture, TFLoader>;
 
 //---------------------------------------------------------------------
 

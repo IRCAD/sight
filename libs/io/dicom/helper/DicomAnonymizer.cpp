@@ -22,15 +22,15 @@
 
 #include "io/dicom/helper/DicomAnonymizer.hpp"
 
-#include "io/base/reader/CsvReader.hpp"
+#include "io/__/reader/CsvReader.hpp"
 #include "io/dicom/exception/InvalidTag.hpp"
 #include "io/dicom/helper/DicomSearch.hpp"
 #include "io/dicom/helper/tags.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
-#include <core/os/TempPath.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
+#include <core/os/temp_path.hpp>
 #include <core/runtime/path.hpp>
 
 #include <boost/algorithm/string/join.hpp>
@@ -57,18 +57,18 @@ gdcm::UIDGenerator GENERATOR;
 
 DicomAnonymizer::DicomAnonymizer() :
     m_publicDictionary(gdcm::Global::GetInstance().GetDicts().GetPublicDict()),
-    m_observer(core::jobs::Observer::New("Anonymization process")),
+    m_observer(std::make_shared<core::jobs::observer>("Anonymization process")),
     m_referenceDate(boost::gregorian::from_undelimited_string(c_MIN_DATE_STRING))
 {
-    const std::filesystem::path tagsPath = core::runtime::getLibraryResourceFilePath(
+    const std::filesystem::path tagsPath = core::runtime::get_library_resource_file_path(
         "io_dicom/tags.csv"
     );
     SIGHT_ASSERT(
         "File '" + tagsPath.string() + "' must exists",
         std::filesystem::is_regular_file(tagsPath)
     );
-    io::base::reader::CsvReader csvReader(tagsPath);
-    io::base::reader::CsvReader::TokenContainerType tagVec = csvReader.getLine();
+    io::reader::CsvReader csvReader(tagsPath);
+    io::reader::CsvReader::TokenContainerType tagVec = csvReader.getLine();
 
     while(!tagVec.empty())
     {
@@ -136,7 +136,7 @@ void DicomAnonymizer::setReferenceDate(const boost::gregorian::date& referenceDa
 void DicomAnonymizer::anonymize(const std::filesystem::path& dirPath)
 {
     m_archiving = false;
-    m_observer->setTotalWorkUnits(100);
+    m_observer->set_total_work_units(100);
     this->anonymizationProcess(dirPath);
     m_observer->finish();
 }
@@ -243,7 +243,7 @@ const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeUTags()
 void DicomAnonymizer::anonymizationProcess(const std::filesystem::path& dirPath)
 {
     // Create temporary directory
-    core::os::TempDir tmpPath;
+    core::os::temp_dir tmpPath;
 
     // Doesn't use std::filesystem::rename because of potential issues when moving folders across volumes
     moveDirectory(dirPath, tmpPath);
@@ -268,7 +268,7 @@ void DicomAnonymizer::anonymizationProcess(const std::filesystem::path& dirPath)
     unsigned int fileIndex = 0;
     for(const auto& file : dicomFiles)
     {
-        if(m_observer->cancelRequested())
+        if(m_observer->cancel_requested())
         {
             break;
         }
@@ -284,7 +284,7 @@ void DicomAnonymizer::anonymizationProcess(const std::filesystem::path& dirPath)
 
         auto progress = static_cast<std::uint64_t>(
             ((m_archiving) ? 50.F : 100.F) * static_cast<float>(fileIndex) / static_cast<float>(dicomFiles.size()));
-        m_observer->doneWork(progress);
+        m_observer->done_work(progress);
     }
 }
 
@@ -725,7 +725,7 @@ void DicomAnonymizer::copyDirectory(
 
 //------------------------------------------------------------------------------
 
-SPTR(core::jobs::IJob) DicomAnonymizer::getJob() const
+SPTR(core::jobs::base) DicomAnonymizer::getJob() const
 {
     return m_observer;
 }

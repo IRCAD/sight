@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <service/macros.hpp>
 
-#include <viz/scene2d/IAdaptor.hpp>
+#include <viz/scene2d/adaptor.hpp>
 
 #include <QGraphicsItem>
 
@@ -58,11 +58,11 @@ namespace sight::module::viz::scene2d::adaptor
  * @section Slots Slots
  * -\b setDoubleParameter(double, std::string): set the double parameters 'x' and 'y'
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SSquare : public sight::viz::scene2d::IAdaptor
+class MODULE_VIZ_SCENE2D_CLASS_API SSquare : public sight::viz::scene2d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSquare, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SSquare, sight::viz::scene2d::adaptor);
 
     MODULE_VIZ_SCENE2D_API SSquare() noexcept;
     MODULE_VIZ_SCENE2D_API ~SSquare() noexcept override;
@@ -95,7 +95,7 @@ private:
     bool m_pointIsCaptured {false};
     bool m_autoRefresh {true};
     bool m_interaction {true};
-    static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
     void setDoubleParameter(double val, std::string key);
 };
 

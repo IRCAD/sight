@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,9 +43,9 @@ static std::pair<data::FrameTL::sptr, SPTR(data::FrameTL::BufferType)> genFrameT
 {
     CPPUNIT_ASSERT(_numChannels == 1 || _numChannels == 3 || _numChannels == 4);
 
-    const core::Type type = core::Type::get<T>();
+    const core::type type = core::type::get<T>();
 
-    data::FrameTL::sptr frameTL = data::FrameTL::New();
+    data::FrameTL::sptr frameTL = std::make_shared<data::FrameTL>();
     frameTL->initPoolSize(
         _w,
         _h,
@@ -58,7 +58,7 @@ static std::pair<data::FrameTL::sptr, SPTR(data::FrameTL::BufferType)> genFrameT
         ? data::FrameTL::PixelFormat::RGBA
         : data::FrameTL::PixelFormat::UNDEFINED
     );
-    auto buffer = frameTL->createBuffer(core::HiResClock::getTimeInMilliSec());
+    auto buffer = frameTL->createBuffer(core::hires_clock::get_time_in_milli_sec());
 
     return std::make_pair(frameTL, buffer);
 }

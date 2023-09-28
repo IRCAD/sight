@@ -48,9 +48,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="sceneOverlayView" type="sight::module::ui::base::SView">
+        <service uid="sceneOverlayView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::OverlayLayoutManager">
+                <layout type="sight::ui::layout::overlay">
                     <view />
                     <view x="0" y="0" minWidth="55" minHeight="100" />
                 </layout>
@@ -62,9 +62,9 @@
             </registry>
         </service>
 
-        <service uid="sceneView" type="sight::module::ui::base::SView">
+        <service uid="sceneView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" backgroundColor="#36393E" spacing="0" />
@@ -76,10 +76,10 @@
             </registry>
         </service>
 
-        <service uid="topToolbarSliderView" type="sight::module::ui::base::SView">
+        <service uid="topToolbarSliderView" type="sight::module::ui::SView">
             <gui>
                 <toolBar backgroundColor="#00000000" />
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                 </layout>
             </gui>
@@ -88,7 +88,7 @@
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="sight::module::ui::base::SToolBar">
+        <service uid="topToolbarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Fullscreen" icon="sight::module::ui::flaticons/YellowFullscreen.svg" />
@@ -261,12 +261,12 @@
         </service>
 
         <!-- Set the view in windowed  -->
-        <service uid="windowedAct" type="sight::module::ui::base::SAction">
+        <service uid="windowedAct" type="sight::module::ui::SAction">
             <state visible="false" />
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="sight::module::ui::base::SAction" />
+        <service uid="snapshotAct" type="sight::module::ui::SAction" />
 
         <!-- ******************************* Connections ***************************************** -->
 

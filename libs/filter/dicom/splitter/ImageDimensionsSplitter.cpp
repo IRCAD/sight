@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,17 +44,6 @@ const std::string ImageDimensionsSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImageDimensionsSplitter::ImageDimensionsSplitter(filter::dicom::IFilter::Key /*unused*/)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-ImageDimensionsSplitter::~ImageDimensionsSplitter()
-= default;
-
-//-----------------------------------------------------------------------------
-
 std::string ImageDimensionsSplitter::getName() const
 {
     return ImageDimensionsSplitter::s_FILTER_NAME;
@@ -71,21 +60,21 @@ std::string ImageDimensionsSplitter::getDescription() const
 
 ImageDimensionsSplitter::DicomSeriesContainerType ImageDimensionsSplitter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 ) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);
 
     // Columns splitter
-    auto columnsSplitter = filter::dicom::splitter::TagValueSplitter::New();
+    auto columnsSplitter = std::make_shared<sight::filter::dicom::splitter::TagValueSplitter>();
     columnsSplitter->setTag(DCM_Columns);
-    filter::dicom::helper::Filter::applyFilter(result, columnsSplitter, false, logger);
+    sight::filter::dicom::helper::Filter::applyFilter(result, columnsSplitter, false, logger);
 
     // Rows splitter
-    auto rowsSplitter = filter::dicom::splitter::TagValueSplitter::New();
+    auto rowsSplitter = std::make_shared<sight::filter::dicom::splitter::TagValueSplitter>();
     rowsSplitter->setTag(DCM_Rows);
-    filter::dicom::helper::Filter::applyFilter(result, rowsSplitter, false, logger);
+    sight::filter::dicom::helper::Filter::applyFilter(result, rowsSplitter, false, logger);
 
     return result;
 }

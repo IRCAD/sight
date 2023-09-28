@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ public:
      * @brief Retrieves data over network
      * @param request the request
      */
-    IO_HTTP_API std::string getFile(Request::sptr request);
+    IO_HTTP_API std::string get_file(Request::sptr request);
 
     /**
      * @brief Performs head request

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/debug/config.hpp"
 
-#include <ui/base/IAction.hpp>
+#include <ui/__/action.hpp>
 
 #include <QApplication>
 #include <QDialog>
@@ -36,11 +36,11 @@ namespace sight::module::ui::debug::action
 /**
  * @brief   Implements an action to show services registered in factory
  */
-class MODULE_UI_DEBUG_CLASS_API ClassFactoryRegistryInfo : public sight::ui::base::IAction
+class MODULE_UI_DEBUG_CLASS_API ClassFactoryRegistryInfo : public sight::ui::action
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(ClassFactoryRegistryInfo, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(ClassFactoryRegistryInfo, sight::ui::action);
 
     /// Does nothing
     MODULE_UI_DEBUG_API ClassFactoryRegistryInfo() noexcept;
@@ -50,7 +50,7 @@ public:
 
 protected:
 
-    /// Calls classic IAction methods to configure
+    /// Calls classic action methods to configure
     void configuring() override;
 
     /// Prepare dialog box

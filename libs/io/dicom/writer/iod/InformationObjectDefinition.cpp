@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "io/dicom/writer/iod/InformationObjectDefinition.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 namespace sight::io::dicom::writer::iod
 {
@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::iod
 InformationObjectDefinition::InformationObjectDefinition(
     SPTR(io::dicom::container::DicomInstance)instance,
     std::filesystem::path destinationPath,
-    core::log::Logger::sptr logger,
+    core::log::logger::sptr logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :

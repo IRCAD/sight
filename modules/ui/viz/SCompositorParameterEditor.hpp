@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/editor.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/Layer.hpp>
 #include <viz/scene3d/SRender.hpp>
@@ -46,11 +46,11 @@ namespace sight::module::ui::viz
        </service>
        @endcode
  */
-class MODULE_UI_VIZ_CLASS_API SCompositorParameterEditor : public sight::ui::base::IEditor
+class MODULE_UI_VIZ_CLASS_API SCompositorParameterEditor : public sight::ui::editor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SCompositorParameterEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SCompositorParameterEditor, sight::ui::editor);
 
     /// Constructor.
     MODULE_UI_VIZ_API SCompositorParameterEditor() noexcept;
@@ -63,7 +63,7 @@ public:
      * @{
      */
     /// Slot: update the interface.
-    MODULE_UI_VIZ_API static const core::com::Slots::SlotKeyType s_UPDATE_COMPOSITOR_SLOT;
+    MODULE_UI_VIZ_API static const core::com::slots::key_t UPDATE_COMPOSITOR_SLOT;
 /** @} */
 
 protected:
@@ -71,7 +71,7 @@ protected:
     /// Configure the editor to associate with each object type
     MODULE_UI_VIZ_API void configuring() override;
 
-    /// Start the service, slot connections, QtContainer initialization .
+    /// Start the service, slot connections, widget initialization .
     MODULE_UI_VIZ_API void starting() override;
 
     /// Destroy the service and the container.
@@ -94,9 +94,9 @@ private:
     struct ShaderEditorInfo
     {
         std::string uuid;
-        sight::ui::qt::container::QtContainer::sptr editorPanel;
-        service::IService::wptr service;
-        core::com::helper::SigSlotConnection connections;
+        sight::ui::qt::container::widget::sptr editorPanel;
+        service::base::wptr srv;
+        core::com::helper::sig_slot_connection connections;
     };
 
     ShaderEditorInfo m_editorInfo;

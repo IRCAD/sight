@@ -175,8 +175,8 @@ public:
         image.resize(
             {image_info.image_width, image_info.image_height, 0},
             output_image.pixel_type == NVJPEG2K_UINT16
-            ? core::Type::UINT16
-            : core::Type::UINT8,
+            ? core::type::UINT16
+            : core::type::UINT8,
             image_info.num_components == 2
             ? data::Image::PixelFormat::RG
             : image_info.num_components == 3
@@ -195,7 +195,7 @@ public:
             // Copy from GPU memory
             CHECK_CUDA(
                 cudaMemcpy(
-                    image.getBuffer(),
+                    image.buffer(),
                     m_planar_gpu_buffers[0],
                     image.getSizeInBytes(),
                     cudaMemcpyDeviceToHost
@@ -315,7 +315,7 @@ public:
             // Copy from GPU memory
             CHECK_CUDA(
                 cudaMemcpy(
-                    image.getBuffer(),
+                    image.buffer(),
                     m_packed_gpu_buffer,
                     image.getSizeInBytes(),
                     cudaMemcpyDeviceToHost

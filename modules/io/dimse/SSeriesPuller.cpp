@@ -22,9 +22,9 @@
 
 #include "SSeriesPuller.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
-#include <core/os/TempPath.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
+#include <core/os/temp_path.hpp>
 
 #include <data/SeriesSet.hpp>
 
@@ -39,29 +39,29 @@
 namespace sight::module::io::dimse
 {
 
-static const core::com::Signals::SignalKeyType s_PROGRESSED_SIG       = "progressed";
-static const core::com::Signals::SignalKeyType s_STARTED_PROGRESS_SIG = "progressStarted";
-static const core::com::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG = "progressStopped";
+static const core::com::signals::key_t PROGRESSED_SIG       = "progressed";
+static const core::com::signals::key_t STARTED_PROGRESS_SIG = "progressStarted";
+static const core::com::signals::key_t STOPPED_PROGRESS_SIG = "progressStopped";
 
-static const core::com::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
+static const core::com::slots::key_t REMOVE_SERIES_SLOT = "removeSeries";
 
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
 
 SSeriesPuller::SSeriesPuller() noexcept :
-    service::INotifier(m_signals)
+    service::notifier(m_signals)
 {
-    m_slotStoreInstance = this->newSlot(
-        sight::io::dimse::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
+    m_slotStoreInstance = this->new_slot(
+        sight::io::dimse::SeriesRetriever::PROGRESS_CALLBACK_SLOT,
         &SSeriesPuller::storeInstanceCallback,
         this
     );
 
-    m_sigProgressed      = this->newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
-    m_sigProgressStarted = this->newSignal<ProgressStartedSignalType>(s_STARTED_PROGRESS_SIG);
-    m_sigProgressStopped = this->newSignal<ProgressStoppedSignalType>(s_STOPPED_PROGRESS_SIG);
+    m_sigProgressed      = this->new_signal<ProgressedSignalType>(PROGRESSED_SIG);
+    m_sigProgressStarted = this->new_signal<ProgressStartedSignalType>(STARTED_PROGRESS_SIG);
+    m_sigProgressStopped = this->new_signal<ProgressStoppedSignalType>(STOPPED_PROGRESS_SIG);
 
-    newSlot(s_REMOVE_SERIES_SLOT, &SSeriesPuller::removeSeries, this);
+    new_slot(REMOVE_SERIES_SLOT, &SSeriesPuller::removeSeries, this);
 }
 
 //------------------------------------------------------------------------------
@@ -81,25 +81,25 @@ void SSeriesPuller::configuring()
 void SSeriesPuller::starting()
 {
     // Create the worker.
-    m_requestWorker = core::thread::Worker::New();
+    m_requestWorker = core::thread::worker::make();
 
     // Create the DICOM reader.
-    m_series_set = data::SeriesSet::New();
+    m_series_set = std::make_shared<data::SeriesSet>();
 
-    m_dicomReader = this->registerService<sight::io::base::service::IReader>(m_dicomReaderImplementation);
+    m_dicomReader = this->registerService<sight::io::service::reader>(m_dicomReaderImplementation);
     SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
-    m_dicomReader->setWorker(m_requestWorker);
-    m_dicomReader->setInOut(m_series_set, sight::io::base::service::s_DATA_KEY);
+    m_dicomReader->set_worker(m_requestWorker);
+    m_dicomReader->setInOut(m_series_set, sight::io::service::s_DATA_KEY);
     if(!m_readerConfig.empty())
     {
         const auto readerConfig =
             service::extension::Config::getDefault()->getServiceConfig(
                 m_readerConfig,
-                "sight::io::base::service::IReader"
+                "sight::io::service::reader"
             );
 
         SIGHT_ASSERT(
-            "No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
+            "No service configuration " << m_readerConfig << " for sight::io::service::reader",
             !readerConfig.empty()
         );
 
@@ -119,7 +119,7 @@ void SSeriesPuller::updating()
 
     if(selectedSeries->empty())
     {
-        this->INotifier::info("No series selected");
+        this->notifier::info("No series selected");
     }
     else
     {
@@ -161,7 +161,7 @@ void SSeriesPuller::pullSeries()
     for(const auto& object : *selectedSeries)
     {
         // Check that the series is a DICOM series.
-        const auto& series = data::DicomSeries::dynamicCast(object);
+        const auto& series = std::dynamic_pointer_cast<data::DicomSeries>(object);
 
         // Check if the series must be pulled.
         if(series)
@@ -183,15 +183,15 @@ void SSeriesPuller::pullSeries()
     // Pull series.
     if(!pullSeriesVector.empty())
     {
-        this->INotifier::info("Downloading series...");
+        this->notifier::info("Downloading series...");
 
         // Notify Progress Dialog.
-        m_sigProgressStarted->asyncEmit(m_progressbarId);
+        m_sigProgressStarted->async_emit(m_progressbarId);
 
         // Retrieve informations.
         const auto pacsConfig = m_config.lock();
 
-        auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
+        auto seriesEnquirer = std::make_shared<sight::io::dimse::SeriesEnquirer>();
 
         // Initialize connection.
         try
@@ -208,11 +208,11 @@ void SSeriesPuller::pullSeries()
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-            this->INotifier::failure("Unable to connect to the PACS");
+            this->notifier::failure("Unable to connect to the PACS");
             return;
         }
 
-        core::thread::Worker::sptr worker = core::thread::Worker::New();
+        core::thread::worker::sptr worker = core::thread::worker::make();
 
         try
         {
@@ -228,7 +228,7 @@ void SSeriesPuller::pullSeries()
             else if(pacsConfig->getRetrieveMethod()
                     == sight::io::dimse::data::PacsConfiguration::MOVE_RETRIEVE_METHOD)
             {
-                auto seriesRetriever = sight::io::dimse::SeriesRetriever::New();
+                auto seriesRetriever = std::make_shared<sight::io::dimse::SeriesRetriever>();
                 seriesRetriever->initialize(
                     pacsConfig->getMoveApplicationTitle(),
                     pacsConfig->getMoveApplicationPort(),
@@ -259,7 +259,7 @@ void SSeriesPuller::pullSeries()
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-            this->INotifier::failure("Unable to execute query");
+            this->notifier::failure("Unable to execute query");
             success = false;
         }
 
@@ -275,23 +275,23 @@ void SSeriesPuller::pullSeries()
     }
     else
     {
-        this->INotifier::info("Series already downloaded");
+        this->notifier::info("Series already downloaded");
         return;
     }
 
     // Read series if there is no error.
     if(success)
     {
-        this->INotifier::success("Series downloaded");
+        this->notifier::success("Series downloaded");
         this->readLocalSeries(selectedSeriesVector);
     }
     else
     {
-        this->INotifier::failure("Series download failed");
+        this->notifier::failure("Series download failed");
     }
 
     // Notify Progress Dialog.
-    m_sigProgressStopped->asyncEmit(m_progressbarId);
+    m_sigProgressStopped->async_emit(m_progressbarId);
 }
 
 //------------------------------------------------------------------------------
@@ -310,7 +310,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
         const std::string& modality = series->getModality();
         if(modality != "CT" && modality != "MR" && modality != "XA")
         {
-            this->INotifier::info("Unable to read the modality '" + modality + "'");
+            this->notifier::info("Unable to read the modality '" + modality + "'");
             return;
         }
 
@@ -325,19 +325,19 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
                 return already_loaded_series->getSeriesInstanceUID() == selectedSeriesUID;
             }) == dest_series_set->cend())
         {
-            this->INotifier::info("Reading series...");
+            this->notifier::info("Reading series...");
 
             // Clear temporary series.
             m_series_set->clear();
 
-            const auto& path = core::os::TempDir::sharedDirectory() / "dicom/";
-            m_dicomReader->setFolder(path.string() + selectedSeriesUID + "/");
+            const auto& path = core::os::temp_dir::shared_directory() / "dicom/";
+            m_dicomReader->set_folder(path.string() + selectedSeriesUID + "/");
             m_dicomReader->update();
 
             // Merge series.
             if(!m_dicomReader->hasFailed() && !m_series_set->empty())
             {
-                this->INotifier::success("Series read");
+                this->notifier::success("Series read");
 
                 // Add the series to the local series vector.
                 m_localSeries.insert(selectedSeriesUID);
@@ -347,7 +347,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             }
             else
             {
-                this->INotifier::failure("Failed to read series");
+                this->notifier::failure("Failed to read series");
             }
         }
     }
@@ -364,7 +364,7 @@ void SSeriesPuller::removeSeries(data::SeriesSet::container_type _removedSeries)
         {
             if(m_localSeries.erase(series->getSeriesInstanceUID()) > 0)
             {
-                this->INotifier::info("Local series deleted");
+                this->notifier::info("Local series deleted");
             }
         }
     }
@@ -393,15 +393,15 @@ void SSeriesPuller::storeInstanceCallback(
     std::stringstream ss;
     ss << "Downloading file " << _instanceNumber << "/" << m_instanceCount;
     float percentage = static_cast<float>(_instanceNumber) / static_cast<float>(m_instanceCount);
-    m_sigProgressed->asyncEmit(m_progressbarId, percentage, ss.str());
+    m_sigProgressed->async_emit(m_progressbarId, percentage, ss.str());
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
+service::connections_t SSeriesPuller::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_SERIES_SET_INOUT, data::SeriesSet::s_REMOVED_OBJECTS_SIG, s_REMOVE_SERIES_SLOT);
+    connections_t connections;
+    connections.push(s_SERIES_SET_INOUT, data::SeriesSet::REMOVED_OBJECTS_SIG, REMOVE_SERIES_SLOT);
 
     return connections;
 }

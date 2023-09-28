@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/adaptor/STransform.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Color.hpp>
 
@@ -43,7 +43,7 @@ namespace sight::module::viz::scene3d::adaptor
 
 SAxis::SAxis() noexcept
 {
-    newSlot("updateOriginColor", &SAxis::updateOriginColor, this);
+    new_slot("updateOriginColor", &SAxis::updateOriginColor, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,8 +57,8 @@ void SAxis::updateOriginColor(sight::data::Color::sptr _newColor)
 
     m_originMaterial->setAmbient(_newColor);
 
-    const auto sig = m_originMaterial->signal<core::com::Signal<void()> >(data::Material::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    const auto sig = m_originMaterial->signal<core::com::signal<void()> >(data::Material::MODIFIED_SIG);
+    sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ void SAxis::configuring()
 
     const std::string transformId = config.get<std::string>(
         module::viz::scene3d::adaptor::STransform::s_TRANSFORM_CONFIG,
-        this->getID() + "_transform"
+        this->get_id() + "_transform"
     );
 
     this->setTransformId(transformId);
@@ -113,29 +113,29 @@ void SAxis::starting()
 
     Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
     Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
-    m_sceneNode = transformNode->createChildSceneNode(this->getID() + "_mainNode");
+    m_sceneNode = transformNode->createChildSceneNode(this->get_id() + "_mainNode");
 
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
     if(m_originVisibility)
     {
-        m_origin = sceneMgr->createManualObject(this->getID() + "_origin");
+        m_origin = sceneMgr->createManualObject(this->get_id() + "_origin");
     }
 
     if(m_axisVisibility)
     {
-        m_xLine = sceneMgr->createManualObject(this->getID() + "_xLine");
-        m_yLine = sceneMgr->createManualObject(this->getID() + "_yLine");
-        m_zLine = sceneMgr->createManualObject(this->getID() + "_zLine");
+        m_xLine = sceneMgr->createManualObject(this->get_id() + "_xLine");
+        m_yLine = sceneMgr->createManualObject(this->get_id() + "_yLine");
+        m_zLine = sceneMgr->createManualObject(this->get_id() + "_zLine");
 
-        m_xCone = sceneMgr->createManualObject(this->getID() + "_xCone");
-        m_yCone = sceneMgr->createManualObject(this->getID() + "_yCone");
-        m_zCone = sceneMgr->createManualObject(this->getID() + "_zCone");
+        m_xCone = sceneMgr->createManualObject(this->get_id() + "_xCone");
+        m_yCone = sceneMgr->createManualObject(this->get_id() + "_yCone");
+        m_zCone = sceneMgr->createManualObject(this->get_id() + "_zCone");
     }
 
     // set the material
-    m_material       = data::Material::New();
-    m_originMaterial = data::Material::New();
+    m_material       = std::make_shared<data::Material>();
+    m_originMaterial = std::make_shared<data::Material>();
 
     const module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
         this->registerService<module::viz::scene3d::adaptor::SMaterial>(
@@ -143,8 +143,8 @@ void SAxis::starting()
         );
     materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->configure(
-        this->getID() + materialAdaptor->getID(),
-        this->getID() + materialAdaptor->getID(),
+        this->get_id() + materialAdaptor->get_id(),
+        this->get_id() + materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID
     );
@@ -156,12 +156,12 @@ void SAxis::starting()
     const module::viz::scene3d::adaptor::SMaterial::sptr originMaterialAdaptor =
         this->registerService<module::viz::scene3d::adaptor::SMaterial>(
             "sight::module::viz::scene3d::adaptor::SMaterial",
-            this->getID() + "_originMaterialAdp"
+            this->get_id() + "_originMaterialAdp"
         );
     originMaterialAdaptor->setInOut(m_originMaterial, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     originMaterialAdaptor->configure(
-        this->getID() + originMaterialAdaptor->getID(),
-        this->getID() + originMaterialAdaptor->getID(),
+        this->get_id() + originMaterialAdaptor->get_id(),
+        this->get_id() + originMaterialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID,
         "ambient"
@@ -183,13 +183,13 @@ void SAxis::starting()
 
     if(m_originVisibility)
     {
-        const data::Color::sptr originColor = data::Color::New();
+        const data::Color::sptr originColor = std::make_shared<data::Color>();
         originColor->setRGBA(m_originColor);
         m_originMaterial->setAmbient(originColor);
-        m_originMaterial->setDiffuse(data::Color::New(0.F, 0.F, 0.F, 1.F));
+        m_originMaterial->setDiffuse(std::make_shared<data::Color>(0.F, 0.F, 0.F, 1.F));
 
-        const auto sig = m_originMaterial->signal<core::com::Signal<void()> >(data::Material::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        const auto sig = m_originMaterial->signal<core::com::signal<void()> >(data::Material::MODIFIED_SIG);
+        sig->async_emit();
 
         sight::viz::scene3d::helper::ManualObject::createSphere(
             m_origin,
@@ -220,7 +220,7 @@ void SAxis::starting()
             cylinderLength,
             sample
         );
-        Ogre::SceneNode* const xLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_xLine");
+        Ogre::SceneNode* const xLineNode = m_sceneNode->createChildSceneNode(this->get_id() + "_xLine");
         xLineNode->attachObject(m_xLine);
         xLineNode->pitch(Ogre::Degree(90));
 
@@ -233,7 +233,7 @@ void SAxis::starting()
             cylinderLength,
             sample
         );
-        Ogre::SceneNode* const yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
+        Ogre::SceneNode* const yLineNode = m_sceneNode->createChildSceneNode(this->get_id() + "_yLine");
         yLineNode->attachObject(m_yLine);
         yLineNode->roll(Ogre::Degree(90));
 
@@ -246,7 +246,7 @@ void SAxis::starting()
             cylinderLength,
             sample
         );
-        Ogre::SceneNode* const zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
+        Ogre::SceneNode* const zLineNode = m_sceneNode->createChildSceneNode(this->get_id() + "_zLine");
         zLineNode->attachObject(m_zLine);
         zLineNode->yaw(Ogre::Degree(-90));
 
@@ -259,11 +259,11 @@ void SAxis::starting()
             coneLength,
             sample
         );
-        Ogre::SceneNode* const xConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_xCone");
+        Ogre::SceneNode* const xConeNode = m_sceneNode->createChildSceneNode(this->get_id() + "_xCone");
 
         if(m_enableLabel)
         {
-            m_axisLabels[0] = sight::viz::scene3d::IText::New(this->getLayer());
+            m_axisLabels[0] = sight::viz::scene3d::IText::make(this->getLayer());
             m_axisLabels[0]->setText("X");
             m_axisLabels[0]->setFontSize(m_fontSize);
             m_axisLabels[0]->attachToNode(xConeNode, this->getLayer()->getDefaultCamera());
@@ -281,12 +281,12 @@ void SAxis::starting()
             coneLength,
             sample
         );
-        Ogre::SceneNode* const yConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_yCone");
+        Ogre::SceneNode* const yConeNode = m_sceneNode->createChildSceneNode(this->get_id() + "_yCone");
         yConeNode->attachObject(m_yCone);
 
         if(m_enableLabel)
         {
-            m_axisLabels[1] = sight::viz::scene3d::IText::New(this->getLayer());
+            m_axisLabels[1] = sight::viz::scene3d::IText::make(this->getLayer());
             m_axisLabels[1]->setText("Y");
             m_axisLabels[1]->setFontSize(m_fontSize);
             m_axisLabels[1]->attachToNode(yConeNode, cam);
@@ -304,12 +304,12 @@ void SAxis::starting()
             coneLength,
             sample
         );
-        Ogre::SceneNode* const zConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_zCone");
+        Ogre::SceneNode* const zConeNode = m_sceneNode->createChildSceneNode(this->get_id() + "_zCone");
         zConeNode->attachObject(m_zCone);
 
         if(m_enableLabel)
         {
-            m_axisLabels[2] = sight::viz::scene3d::IText::New(this->getLayer());
+            m_axisLabels[2] = sight::viz::scene3d::IText::make(this->getLayer());
             m_axisLabels[2]->setText("Z");
             m_axisLabels[2]->setFontSize(m_fontSize);
             m_axisLabels[2]->attachToNode(zConeNode, this->getLayer()->getDefaultCamera());
@@ -322,11 +322,11 @@ void SAxis::starting()
     // Display Name if provided.
     if(!m_axisName.empty())
     {
-        m_axisNameTxt = sight::viz::scene3d::IText::New(this->getLayer());
+        m_axisNameTxt = sight::viz::scene3d::IText::make(this->getLayer());
         m_axisNameTxt->setText(m_axisName);
         m_axisNameTxt->setFontSize(m_fontSize);
         m_axisNameTxt->attachToNode(m_sceneNode, cam);
-        const data::Color::sptr txtColor = data::Color::New();
+        const data::Color::sptr txtColor = std::make_shared<data::Color>();
         txtColor->setRGBA(m_originColor);
         m_axisNameTxt->setTextColor(
             Ogre::ColourValue(
@@ -361,12 +361,12 @@ void SAxis::stopping()
     {
         if(m_axisVisibility)
         {
-            m_sceneNode->removeAndDestroyChild(this->getID() + "_xLine");
-            m_sceneNode->removeAndDestroyChild(this->getID() + "_yLine");
-            m_sceneNode->removeAndDestroyChild(this->getID() + "_zLine");
-            m_sceneNode->removeAndDestroyChild(this->getID() + "_xCone");
-            m_sceneNode->removeAndDestroyChild(this->getID() + "_yCone");
-            m_sceneNode->removeAndDestroyChild(this->getID() + "_zCone");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_xLine");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_yLine");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_zLine");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_xCone");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_yCone");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_zCone");
         }
     }
 
@@ -405,7 +405,7 @@ void SAxis::stopping()
     Ogre::SceneNode* const transformNode = this->getTransformNode();
     if(transformNode != nullptr)
     {
-        transformNode->removeAndDestroyChild(this->getID() + "_mainNode");
+        transformNode->removeAndDestroyChild(this->get_id() + "_mainNode");
     }
 
     this->unregisterServices();

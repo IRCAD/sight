@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #include "DicomDataToolsTest.hpp"
 
-#include <core/Type.hpp>
+#include <core/type.hpp>
 
 #include <io/dicom/helper/DicomDataTools.hpp>
 
@@ -38,15 +38,15 @@ using helper = helper::DicomDataTools;
 
 void DicomDataToolsTest::getPixelTypeTest()
 {
-    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::UINT8), helper::getPixelType(core::Type::UINT8));
-    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::INT8), helper::getPixelType(core::Type::INT8));
-    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::UINT16), helper::getPixelType(core::Type::UINT16));
-    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::INT16), helper::getPixelType(core::Type::INT16));
-    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::UINT32), helper::getPixelType(core::Type::UINT32));
-    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::INT32), helper::getPixelType(core::Type::INT32));
-    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::FLOAT32), helper::getPixelType(core::Type::FLOAT));
-    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::FLOAT64), helper::getPixelType(core::Type::DOUBLE));
-    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::UNKNOWN), helper::getPixelType(core::Type::NONE));
+    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::UINT8), helper::getPixelType(core::type::UINT8));
+    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::INT8), helper::getPixelType(core::type::INT8));
+    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::UINT16), helper::getPixelType(core::type::UINT16));
+    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::INT16), helper::getPixelType(core::type::INT16));
+    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::UINT32), helper::getPixelType(core::type::UINT32));
+    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::INT32), helper::getPixelType(core::type::INT32));
+    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::FLOAT32), helper::getPixelType(core::type::FLOAT));
+    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::FLOAT64), helper::getPixelType(core::type::DOUBLE));
+    CPPUNIT_ASSERT_EQUAL(gdcm::PixelFormat(gdcm::PixelFormat::UNKNOWN), helper::getPixelType(core::type::NONE));
 }
 
 //------------------------------------------------------------------------------
@@ -55,18 +55,18 @@ void DicomDataToolsTest::getPhotometricInterpretationTest()
 {
     using gdcmPI = gdcm::PhotometricInterpretation;
 
-    auto image = data::Image::New();
+    auto image = std::make_shared<data::Image>();
 
-    image->resize({1}, core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    image->resize({1}, core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
     CPPUNIT_ASSERT_EQUAL(gdcmPI(gdcmPI::MONOCHROME2), helper::getPhotometricInterpretation(image));
 
-    image->resize({1}, core::Type::UINT8, data::Image::PixelFormat::RG);
+    image->resize({1}, core::type::UINT8, data::Image::PixelFormat::RG);
     CPPUNIT_ASSERT_EQUAL(gdcmPI(gdcmPI::UNKNOWN), helper::getPhotometricInterpretation(image));
 
-    image->resize({1}, core::Type::UINT8, data::Image::PixelFormat::RGB);
+    image->resize({1}, core::type::UINT8, data::Image::PixelFormat::RGB);
     CPPUNIT_ASSERT_EQUAL(gdcmPI(gdcmPI::RGB), helper::getPhotometricInterpretation(image));
 
-    image->resize({1}, core::Type::UINT8, data::Image::PixelFormat::RGBA);
+    image->resize({1}, core::type::UINT8, data::Image::PixelFormat::RGBA);
     CPPUNIT_ASSERT_EQUAL(gdcmPI(gdcmPI::ARGB), helper::getPhotometricInterpretation(image));
 }
 
@@ -93,21 +93,24 @@ void DicomDataToolsTest::convertToRepresentationModeTest()
 
 void DicomDataToolsTest::convertPointToFrameNumberNominalTest()
 {
-    auto image = data::Image::New();
-    image->resize({1, 2, 3}, core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    auto image = std::make_shared<data::Image>();
+    image->resize({1, 2, 3}, core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
     image->setSpacing({1, 1, 1});
-    CPPUNIT_ASSERT_EQUAL(std::size_t(3), helper::convertPointToFrameNumber(image, data::Point::New(0., 1., 2.)));
+    CPPUNIT_ASSERT_EQUAL(
+        std::size_t(3),
+        helper::convertPointToFrameNumber(image, std::make_shared<data::Point>(0., 1., 2.))
+    );
 }
 
 //------------------------------------------------------------------------------
 
 void DicomDataToolsTest::convertPointToFrameNumberFailureTest()
 {
-    auto image = data::Image::New();
-    image->resize({1, 2, 3}, core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    auto image = std::make_shared<data::Image>();
+    image->resize({1, 2, 3}, core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
     image->setSpacing({1, 1, 1});
     CPPUNIT_ASSERT_THROW(
-        helper::convertPointToFrameNumber(image, data::Point::New(1., 2., 3.)),
+        helper::convertPointToFrameNumber(image, std::make_shared<data::Point>(1., 2., 3.)),
         io::dicom::exception::Failed
     );
 }
@@ -116,8 +119,8 @@ void DicomDataToolsTest::convertPointToFrameNumberFailureTest()
 
 void DicomDataToolsTest::convertFrameNumberToZCoordinateNominalTest()
 {
-    auto image = data::Image::New();
-    image->resize({1, 2, 3}, core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    auto image = std::make_shared<data::Image>();
+    image->resize({1, 2, 3}, core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
     image->setSpacing({1, 1, 1});
     CPPUNIT_ASSERT_EQUAL(2., helper::convertFrameNumberToZCoordinate(image, 3));
 }
@@ -126,8 +129,8 @@ void DicomDataToolsTest::convertFrameNumberToZCoordinateNominalTest()
 
 void DicomDataToolsTest::convertFrameNumberToZCoordinateFailureTest()
 {
-    auto image = data::Image::New();
-    image->resize({1, 2, 3}, core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    auto image = std::make_shared<data::Image>();
+    image->resize({1, 2, 3}, core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
     image->setSpacing({1, 1, 1});
     CPPUNIT_ASSERT_THROW(helper::convertFrameNumberToZCoordinate(image, 0), io::dicom::exception::Failed);
 }

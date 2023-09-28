@@ -7,7 +7,7 @@ This example shows the possibilities of SParameters:
 <plugin id="ExSParameters" >
 
     <requirement id="sight::module::service" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
     <requirement id="sight::module::ui::qt" />
 
     <extension implements="sight::service::extension::AppConfig" >
@@ -16,7 +16,7 @@ This example shows the possibilities of SParameters:
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::SFrame" >
                 <gui>
                     <frame>
                         <name>ExSParameters</name>
@@ -31,7 +31,7 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="Preferences" />
@@ -42,7 +42,7 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuPreferencesView" type="sight::module::ui::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Preference sync test" />
@@ -53,9 +53,9 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="mainview" type="sight::module::ui::base::SView" >
+            <service uid="mainview" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -67,9 +67,9 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="parametersView" type="sight::module::ui::base::SView" >
+            <service uid="parametersView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
                         <view proportion="1" backgroundColor="#36393E" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -81,9 +81,9 @@ This example shows the possibilities of SParameters:
                 </registry>
             </service>
 
-            <service uid="minmaxParametersSrvView" type="sight::module::ui::base::SView" >
+            <service uid="minmaxParametersSrvView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
                         <view proportion="1" backgroundColor="#36393E" />
                         <view proportion="1" backgroundColor="#36393E" />

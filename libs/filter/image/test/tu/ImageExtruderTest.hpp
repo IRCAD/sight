@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/Type.hpp>
+#include <core/type.hpp>
 
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
@@ -51,7 +51,7 @@ public:
 
 private:
 
-    const core::Type m_type {core::Type::INT8};
+    const core::type m_type {core::type::INT8};
 
     const data::Image::PixelFormat m_format {data::Image::PixelFormat::GRAY_SCALE};
 

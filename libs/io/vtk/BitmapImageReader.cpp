@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "io/vtk/helper/vtkLambdaCommand.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
 
-#include <io/base/reader/registry/macros.hpp>
+#include <io/__/reader/registry/macros.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -46,8 +46,8 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-BitmapImageReader::BitmapImageReader(io::base::reader::IObjectReader::Key /*unused*/) :
-    m_job(core::jobs::Observer::New("Bitmap image reader"))
+BitmapImageReader::BitmapImageReader() :
+    m_job(std::make_shared<core::jobs::observer>("Bitmap image reader"))
 {
     /* Initialize the available extensions */
     std::vector<std::string> ext;
@@ -80,25 +80,25 @@ void BitmapImageReader::read()
     // Use a vtkImageReader2Factory to automatically detect the type of the input file
     // And select the right reader for the file
     vtkSmartPointer<vtkImageReader2Factory> factory = vtkSmartPointer<vtkImageReader2Factory>::New();
-    vtkImageReader2* reader                         = factory->CreateImageReader2(this->getFile().string().c_str());
+    vtkImageReader2* reader                         = factory->CreateImageReader2(this->get_file().string().c_str());
 
-    SIGHT_THROW_IF("BitmapImageReader cannot read Bitmap image file :" << this->getFile().string(), !reader);
+    SIGHT_THROW_IF("BitmapImageReader cannot read Bitmap image file :" << this->get_file().string(), !reader);
 
-    reader->SetFileName(this->getFile().string().c_str());
+    reader->SetFileName(this->get_file().string().c_str());
 
     using helper::vtkLambdaCommand;
-    vtkSmartPointer<vtkLambdaCommand> progressCallback;
+    vtkSmartPointer<vtkLambdaCommand> progress_callback;
 
-    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progressCallback->SetCallback(
+    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progress_callback->SetCallback(
         [&](vtkObject* caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectReader*>(caller);
-            m_job->doneWork(static_cast<uint64_t>(filter->GetProgress() * 100.0));
+            m_job->done_work(static_cast<uint64_t>(filter->GetProgress() * 100.0));
         });
-    reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+    reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->addSimpleCancelHook([&]{reader->AbortExecuteOn();});
+    m_job->add_simple_cancel_hook([&]{reader->AbortExecuteOn();});
 
     reader->Update();
     vtkSmartPointer<vtkImageData> img = reader->GetOutput();
@@ -106,7 +106,7 @@ void BitmapImageReader::read()
 
     m_job->finish();
 
-    SIGHT_THROW_IF("BitmapImageReader cannot read Bitmap image file :" << this->getFile().string(), !img);
+    SIGHT_THROW_IF("BitmapImageReader cannot read Bitmap image file :" << this->get_file().string(), !img);
     try
     {
         io::vtk::fromVTKImage(img, pImage);
@@ -126,7 +126,7 @@ std::string BitmapImageReader::extension() const
 
 //------------------------------------------------------------------------------
 
-core::jobs::IJob::sptr BitmapImageReader::getJob() const
+core::jobs::base::sptr BitmapImageReader::getJob() const
 {
     return m_job;
 }

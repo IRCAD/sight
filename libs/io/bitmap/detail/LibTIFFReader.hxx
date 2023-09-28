@@ -106,7 +106,7 @@ public:
             // Allocate destination image
             image.resize(
                 {width, height, 0},
-                sample_format == SAMPLEFORMAT_INT ? core::Type::INT8 : core::Type::UINT8,
+                sample_format == SAMPLEFORMAT_INT ? core::type::INT8 : core::type::UINT8,
                 data::Image::PixelFormat::RGBA
             );
 
@@ -115,7 +115,7 @@ public:
                     keeper.m_tiff,
                     width,
                     height,
-                    reinterpret_cast<std::uint32_t*>(image.getBuffer()),
+                    reinterpret_cast<std::uint32_t*>(image.buffer()),
                     0
                 )
             );
@@ -132,10 +132,10 @@ public:
                         switch(bits_per_sample)
                         {
                             case 32:
-                                return core::Type::FLOAT;
+                                return core::type::FLOAT;
 
                             case 64:
-                                return core::Type::DOUBLE;
+                                return core::type::DOUBLE;
 
                             default:
                                 SIGHT_THROW("Unsupported bit depth for float format: '" << bits_per_sample << "'");
@@ -146,16 +146,16 @@ public:
                         switch(bits_per_sample)
                         {
                             case 8:
-                                return core::Type::UINT8;
+                                return core::type::UINT8;
 
                             case 16:
-                                return core::Type::UINT16;
+                                return core::type::UINT16;
 
                             case 32:
-                                return core::Type::UINT32;
+                                return core::type::UINT32;
 
                             case 64:
-                                return core::Type::UINT64;
+                                return core::type::UINT64;
 
                             default:
                                 SIGHT_THROW("Unsupported bits per sample: '" << bits_per_sample << "'");
@@ -166,16 +166,16 @@ public:
                         switch(bits_per_sample)
                         {
                             case 8:
-                                return core::Type::INT8;
+                                return core::type::INT8;
 
                             case 16:
-                                return core::Type::INT16;
+                                return core::type::INT16;
 
                             case 32:
-                                return core::Type::INT32;
+                                return core::type::INT32;
 
                             case 64:
-                                return core::Type::INT64;
+                                return core::type::INT64;
 
                             default:
                                 SIGHT_THROW("Unsupported bits per sample: '" << bits_per_sample << "'");

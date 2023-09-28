@@ -22,9 +22,9 @@
 
 #include "modules/viz/scene2d/adaptor/SViewportRangeSelector.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -43,13 +43,13 @@ static const std::string s_INITIAL_WIDTH_CONFIG = "initialWidth";
 static const std::string s_INITIAL_POS_CONFIG   = "initialPos";
 static const std::string s_COLOR_CONFIG         = "color";
 
-static const core::com::Slots::SlotKeyType s_UPDATE_VIEWPORT_SLOT = "updateViewport";
+static const core::com::slots::key_t UPDATE_VIEWPORT_SLOT = "updateViewport";
 
 //---------------------------------------------------------------------------------------------------------------
 
 SViewportRangeSelector::SViewportRangeSelector()
 {
-    newSlot(s_UPDATE_VIEWPORT_SLOT, [this]{this->updateViewport(false);});
+    new_slot(UPDATE_VIEWPORT_SLOT, [this]{this->updateViewport(false);});
 }
 
 //------------------------------------------------------------------------------
@@ -69,13 +69,13 @@ void SViewportRangeSelector::configuring()
 
 //----------------------------------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
+service::connections_t SViewportRangeSelector::getAutoConnections() const
 {
     return {
-        {s_SELECTED_VIEWPORT_INOUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_IMAGE_INPUT, sight::data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_IMAGE_INPUT, sight::data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_TF_INPUT, sight::data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_VIEWPORT_SLOT}
+        {s_SELECTED_VIEWPORT_INOUT, sight::viz::scene2d::data::Viewport::MODIFIED_SIG, service::slots::UPDATE},
+        {s_IMAGE_INPUT, sight::data::Image::MODIFIED_SIG, service::slots::UPDATE},
+        {s_IMAGE_INPUT, sight::data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
+        {s_TF_INPUT, sight::data::TransferFunction::POINTS_MODIFIED_SIG, UPDATE_VIEWPORT_SLOT}
     };
 }
 
@@ -186,21 +186,21 @@ void SViewportRangeSelector::updateViewport(bool _signalSelectedViewport)
     viewport->setWidth(m_max - m_min);
     this->getScene2DRender()->getView()->updateFromViewport(*viewport);
 
-    auto sig = viewport->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    auto sig = viewport->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 
     if(_signalSelectedViewport)
     {
         auto selectedViewport = m_selectedViewport.lock();
         auto sigSelected      = selectedViewport->signal<data::Object::ModifiedSignalType>(
-            data::Object::s_MODIFIED_SIG
+            data::Object::MODIFIED_SIG
         );
         {
-            core::com::Connection::Blocker block(sigSelected->getConnection(slot(IService::slots::s_UPDATE)));
-            sigSelected->asyncEmit();
+            core::com::connection::blocker block(sigSelected->get_connection(slot(service::slots::UPDATE)));
+            sigSelected->async_emit();
         }
     }
 
@@ -366,11 +366,11 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
             {
                 auto selectedViewport = m_selectedViewport.lock();
                 auto sig              = selectedViewport->signal<data::Object::ModifiedSignalType>(
-                    data::Object::s_MODIFIED_SIG
+                    data::Object::MODIFIED_SIG
                 );
                 {
-                    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                    sig->asyncEmit();
+                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                    sig->async_emit();
                 }
             }
         }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,20 +46,6 @@ const std::string TagValueInstanceRemoveConfigurableSplitter::s_FILTER_NAME =
     "Tag value instance remove configurable splitter";
 const std::string TagValueInstanceRemoveConfigurableSplitter::s_FILTER_DESCRIPTION =
     "Remove instances if a tag has a certain value.";
-
-//-----------------------------------------------------------------------------
-
-TagValueInstanceRemoveConfigurableSplitter::TagValueInstanceRemoveConfigurableSplitter(
-    filter::dicom::IFilter::Key key
-) :
-    filter::dicom::splitter::TagValueInstanceRemoveSplitter(key)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-TagValueInstanceRemoveConfigurableSplitter::~TagValueInstanceRemoveConfigurableSplitter()
-= default;
 
 //-----------------------------------------------------------------------------
 

@@ -18,7 +18,7 @@
             <!-- ******************************* UI declaration *********************************** -->
 
             <!-- Windows & Main Menu -->
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::SFrame" >
                 <gui>
                     <frame>
                         <name>Tuto06Filter</name>
@@ -33,7 +33,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -47,7 +47,7 @@
             </service>
 
             <!-- Menus -->
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -61,7 +61,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFilterView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuFilterView" type="sight::module::ui::SMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Compute image filter" />
@@ -74,9 +74,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::base::SView" >
+            <service uid="containerView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -92,21 +92,21 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Action to quit the application -->
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::SQuit" />
 
             <!-- Action to open image file: call update on image reader service -->
-            <service uid="openImageAct" type="sight::module::ui::base::SAction" />
+            <service uid="openImageAct" type="sight::module::ui::SAction" />
 
             <!-- Action apply threshold filter: call update on threshold filter service -->
-            <service uid="imageFilterAct" type="sight::module::ui::base::SAction" />
+            <service uid="imageFilterAct" type="sight::module::ui::SAction" />
 
             <!-- Action apply flip filter: call 'flipAxisY' slot on flip service -->
-            <service uid="imageFlipperAct" type="sight::module::ui::base::SAction" />
+            <service uid="imageFlipperAct" type="sight::module::ui::SAction" />
 
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Reader of the input image -->
-            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::io::SSelector" >
                 <inout key="data" uid="myImage1" />
                 <type mode="reader" />
             </service>

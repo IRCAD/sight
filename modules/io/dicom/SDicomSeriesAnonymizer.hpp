@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,12 @@
 
 #include <data/Vector.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 namespace sight::core::jobs
 {
 
-class IJob;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -49,7 +49,7 @@ namespace sight::module::io::dicom
  * @brief   Service to anonymize a DicomSeries.
  *
  * @section Signals Signals
- * - \b jobCreated( SPTR(core::jobs::IJob) ) : Emitted when a job is created.
+ * - \b jobCreated( SPTR(core::jobs::base) ) : Emitted when a job is created.
  *
  * @section XML XML Configuration
  *
@@ -63,13 +63,13 @@ namespace sight::module::io::dicom
  * - \b seriesSet [sight::data::SeriesSet]: SeriesSet where the dicom series comes from.
  * - \b selectedSeries [sight::data::Vector]: List of DICOM series to be anonymized.
  */
-class MODULE_IO_DICOM_CLASS_API SDicomSeriesAnonymizer : public service::IController
+class MODULE_IO_DICOM_CLASS_API SDicomSeriesAnonymizer : public service::controller
 {
 public:
 
-    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignal;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignal;
 
-    SIGHT_DECLARE_SERVICE(SDicomSeriesAnonymizer, service::IController);
+    SIGHT_DECLARE_SERVICE(SDicomSeriesAnonymizer, service::controller);
 
     /// Constructor
     MODULE_IO_DICOM_API SDicomSeriesAnonymizer() noexcept;

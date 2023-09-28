@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "io/dicom/config.hpp"
 
-#include <core/Exception.hpp>
+#include <core/exception.hpp>
 #include <core/macros.hpp>
 
 #include <boost/locale/encoding_errors.hpp>
@@ -36,7 +36,7 @@
 namespace sight::core::log
 {
 
-class Logger;
+class logger;
 
 } // namespace sight::core::log
 
@@ -55,14 +55,14 @@ public:
      * @param[in] source Source buffer
      * @param[in] definedCharsetTerm DICOM source charset
      * @param[in] logger Logger used for conversion errors
-     * @throw core::Exception
+     * @throw core::exception
      * @throw boost::locale::conv::invalid_charset_error
      * @return converted string in utf-8 format
      */
     IO_DICOM_API static std::string convertString(
         const std::string& source,
         const std::string& definedCharsetTerm,
-        const SPTR(core::log::Logger)& logger = nullptr
+        const SPTR(core::log::logger)& logger = nullptr
     );
 
 private:
@@ -77,21 +77,21 @@ private:
     static std::string convertStringWithoutCodeExtensions(
         const std::string& source,
         const std::string& definedTerm,
-        const SPTR(core::log::Logger)& logger
+        const SPTR(core::log::logger)& logger
     );
     /**
      * @brief Convert string sequence with a code extension.
      * @param[in] sequence Sequence buffer
      * @param[in] definedTermList DICOM charset list
      * @param[in] logger Logger used for conversion errors
-     * @throw core::Exception
+     * @throw core::exception
      * @throw boost::locale::conv::invalid_charset_error
      * @return converted sequence in utf-8 format
      */
     static std::string convertSequenceWithCodeExtensions(
         const std::string& sequence,
         const std::vector<std::string>& definedTermList,
-        const SPTR(core::log::Logger)& logger
+        const SPTR(core::log::logger)& logger
     );
 
     /**

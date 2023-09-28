@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,9 @@
 #include <data/MarkerMap.hpp>
 #include <data/Matrix4.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
-#include <ui/base/parameter.hpp>
+#include <ui/__/parameter.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -43,7 +43,7 @@ namespace sight::module::geometry::vision
  * and 2d image points.
  *
  * @section Slots Slots
- * - \b setParameter(ui::base::parameter_t, std::string): set a parameter from the UI.
+ * - \b setParameter(ui::parameter_t, std::string): set a parameter from the UI.
  *
  * @section XML XML Configuration
  *
@@ -75,23 +75,23 @@ namespace sight::module::geometry::vision
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API SReprojectionError : public service::IController
+class MODULE_GEOMETRY_VISION_CLASS_API SReprojectionError : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SReprojectionError, service::IController);
+    SIGHT_DECLARE_SERVICE(SReprojectionError, service::controller);
 
     /// Double changed signal type
-    typedef core::com::Signal<void (double)> ErrorComputedSignalType;
+    typedef core::com::signal<void (double)> ErrorComputedSignalType;
 
-    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT;
-    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_SET_PARAMETER_SLOT;
+    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t COMPUTE_SLOT;
+    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
 
     MODULE_GEOMETRY_VISION_API SReprojectionError();
     MODULE_GEOMETRY_VISION_API ~SReprojectionError() override = default;
 
-    /// Connect MatrixTL::s_OBJECT_PUSHED_SIG to s_COMPUTE_SLOT
-    service::IService::KeyConnectionsMap getAutoConnections() const override;
+    /// Connect MatrixTL::OBJECT_PUSHED_SIG to COMPUTE_SLOT
+    service::connections_t getAutoConnections() const override;
 
 protected:
 
@@ -117,13 +117,13 @@ protected:
 
 private:
 
-    void compute(core::HiResClock::HiResClockType timestamp);
+    void compute(core::hires_clock::type timestamp);
 
     ///Slot called when a parameter is changed
-    void setParameter(sight::ui::base::parameter_t _val, std::string _key);
+    void setParameter(sight::ui::parameter_t _val, std::string _key);
 
     /// Last timestamp
-    core::HiResClock::HiResClockType m_lastTimestamp {0};
+    core::hires_clock::type m_lastTimestamp {0};
 
     /// Marker pattern width.
     double m_patternWidth {80};

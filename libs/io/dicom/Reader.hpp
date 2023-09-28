@@ -23,31 +23,31 @@
 
 #include "io/dicom/config.hpp"
 
-#include <core/jobs/Job.hpp>
-#include <core/location/MultipleFiles.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/jobs/job.hpp>
+#include <core/location/multiple_files.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/SeriesSet.hpp>
 
-#include <io/base/reader/GenericObjectReader.hpp>
+#include <io/__/reader/GenericObjectReader.hpp>
 
 namespace sight::io::dicom
 {
 
-class IO_DICOM_CLASS_API Reader final : public base::reader::GenericObjectReader<data::SeriesSet>,
-                                        public core::location::SingleFolder,
-                                        public core::location::MultipleFiles,
-                                        public core::com::HasSignals
+class IO_DICOM_CLASS_API Reader final : public reader::GenericObjectReader<data::SeriesSet>,
+                                        public core::location::single_folder,
+                                        public core::location::multiple_files,
+                                        public core::com::has_signals
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         Reader,
-        io::base::reader::GenericObjectReader<data::SeriesSet>,
-        io::base::reader::factory::New<Reader>
+        io::reader::GenericObjectReader<data::SeriesSet>,
+        io::reader::factory::make<Reader>
     );
 
-    IO_DICOM_API Reader(io::base::reader::IObjectReader::Key key);
+    IO_DICOM_API Reader();
 
     IO_DICOM_API ~Reader() noexcept override;
 
@@ -56,7 +56,7 @@ public:
 
     inline std::string extension() const override;
 
-    /// Returns a list of DICOM series by scanning files, either using getFiles() or recursively using getFolder() as
+    /// Returns a list of DICOM series by scanning files, either using get_files() or recursively using get_folder() as
     /// root directory.
     /// The files are NOT sorted!
     /// @return data::SeriesSet::sptr: A set of series, with their associated files
@@ -85,8 +85,8 @@ public:
     IO_DICOM_API void setSorted(const data::SeriesSet::sptr& sorted);
 
     /// Set/get the current job
-    IO_DICOM_API core::jobs::IJob::sptr getJob() const override;
-    IO_DICOM_API void setJob(core::jobs::Job::sptr job);
+    IO_DICOM_API core::jobs::base::sptr getJob() const override;
+    IO_DICOM_API void setJob(core::jobs::job::sptr job);
 
     /// @}
 

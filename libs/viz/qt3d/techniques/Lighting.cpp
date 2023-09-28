@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,13 +63,13 @@ Lighting::Lighting() :
     this->addParameter(m_lightingMode);
 
     // Point normals visualisation shader program & render pass : render normals if specified.
-    const auto vertexShaderNormalPath = core::runtime::getLibraryResourceFilePath(
+    const auto vertexShaderNormalPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/normalVisu_VP.glsl"
     );
-    const auto geometryShaderNormalPath = core::runtime::getLibraryResourceFilePath(
+    const auto geometryShaderNormalPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/normalVisu_GP.glsl"
     );
-    const auto fragmentShaderNormalPath = core::runtime::getLibraryResourceFilePath(
+    const auto fragmentShaderNormalPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/normalVisu_FP.glsl"
     );
     auto* const normalShaderProgram = new Qt3DRender::QShaderProgram();
@@ -111,13 +111,13 @@ Lighting::Lighting() :
     this->addRenderPass(m_normalPass);
 
     // Cell normals visualisation shader program & render pass : render normals if specified.
-    const auto vertexShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
+    const auto vertexShaderCellNormalPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/normalVisu_VP.glsl"
     );
-    const auto geometryShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
+    const auto geometryShaderCellNormalPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/cellsNormalVisu_GP.glsl"
     );
-    const auto fragmentShaderCellNormalPath = core::runtime::getLibraryResourceFilePath(
+    const auto fragmentShaderCellNormalPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/normalVisu_FP.glsl"
     );
     auto* const cellNormalShaderProgram = new Qt3DRender::QShaderProgram();
@@ -161,10 +161,10 @@ Lighting::Lighting() :
     this->addRenderPass(m_cellNormalPass);
 
     // Lighting shader program & render pass : renders the mesh using selected illumination algorithm.
-    const auto vertexShaderPath = core::runtime::getLibraryResourceFilePath(
+    const auto vertexShaderPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/defaultRender_VP.glsl"
     );
-    const auto fragmentShaderPath = core::runtime::getLibraryResourceFilePath(
+    const auto fragmentShaderPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/defaultRender_FP.glsl"
     );
     auto* const renderShaderProgram = new Qt3DRender::QShaderProgram();
@@ -195,10 +195,10 @@ Lighting::Lighting() :
     this->addRenderPass(m_renderPass);
 
     // Adds a render pass needed with "EDGE" polygon mode.
-    const auto edgeVertexShaderPath = core::runtime::getLibraryResourceFilePath(
+    const auto edgeVertexShaderPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/defaultRender_VP.glsl"
     );
-    const auto edgeFragmentShaderPath = core::runtime::getLibraryResourceFilePath(
+    const auto edgeFragmentShaderPath = core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/edgeRender_FP.glsl"
     );
     auto* const edgeShaderProgram = new Qt3DRender::QShaderProgram();

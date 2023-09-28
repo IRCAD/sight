@@ -24,12 +24,12 @@
 
 #include "modules/navigation/openvslam/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/HiResTimer.hpp>
-#include <core/location/SingleFile.hpp>
-#include <core/thread/Timer.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
+#include <core/hires_timer.hpp>
+#include <core/location/single_file.hpp>
+#include <core/thread/timer.hpp>
 
 #include <data/Camera.hpp>
 #include <data/Float.hpp>
@@ -40,8 +40,8 @@
 
 #include <navigation/openvslam/OpenvslamConfig.hpp>
 
-#include <service/INotifier.hpp>
-#include <service/ITracker.hpp>
+#include <service/notifier.hpp>
+#include <service/tracker.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -143,12 +143,12 @@ namespace sight::module::navigation::openvslam
  *   started and to save it when tracking is stopped. If this option is not specified or if the file is not found when
  *   starting the tracking, an empty map will be created instead.
  */
-class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam final : public service::ITracker,
-                                                               private service::INotifier
+class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam final : public service::tracker,
+                                                               private service::notifier
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SOpenvslam, service::ITracker);
+    SIGHT_DECLARE_SERVICE(SOpenvslam, service::tracker);
 
     /// Constructor. Initializes signals and slots.
     MODULE_NAVIGATION_OPENVSLAM_API SOpenvslam() noexcept;
@@ -234,7 +234,7 @@ private:
     void resetPointCloud();
 
     /// Slot: call openvslam with the new frame.
-    void tracking(core::HiResClock::HiResClockType& timestamp) final;
+    void tracking(core::hires_clock::type& timestamp) final;
     /** @} */
 
     /**
@@ -244,7 +244,7 @@ private:
 
     /// Type of the signals.
 
-    using SignalType = core::com::Signal<void ()>;
+    using SignalType = core::com::signal<void ()>;
     /** @} */
 
     /**
@@ -323,10 +323,10 @@ private:
     bool m_localMap {false};
 
     ///Calls asynchronously updatePointCloud each 1sec.
-    core::thread::Timer::sptr m_timer;
+    core::thread::timer::sptr m_timer;
 
     /// Worker for pointcloud update
-    core::thread::Worker::sptr m_pointcloudWorker;
+    core::thread::worker::sptr m_pointcloudWorker;
 
     /// Pause state.
     bool m_isPaused {false};
@@ -335,7 +335,7 @@ private:
     std::string m_saveMapPath;
 
     /// Stores the folder where to save trajectories files.
-    core::location::SingleFile::sptr m_trajectoriesSavePath;
+    core::location::single_file::sptr m_trajectoriesSavePath;
 
     /// Stores the trajectories format ("KITTI" or "TUM" are internal formats in openvslam).
     /// This is only used when saving trajectories at stop.

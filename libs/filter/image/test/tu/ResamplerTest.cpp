@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,26 +56,26 @@ void ResamplerTest::identityTest()
     // TODO: make it work with an anisotropic spacing.
     const data::Image::Spacing SPACING = {{0.5, 0.5, 0.5}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::Type TYPE              = core::Type::INT16;
+    const core::type TYPE              = core::type::INT16;
 
-    data::Image::sptr imageIn = data::Image::New();
+    data::Image::sptr imageIn = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
     utestData::generator::Image::randomizeImage(imageIn);
 
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     // Identity.
-    data::Matrix4::sptr idMat = data::Matrix4::New();
+    data::Matrix4::sptr idMat = std::make_shared<data::Matrix4>();
 
     filter::image::Resampler::resample(
         data::Image::csptr(imageIn),
         imageOut,
         data::Matrix4::csptr(idMat),
-        std::make_tuple(imageIn->getSize(), imageIn->getOrigin(), imageIn->getSpacing())
+        std::make_tuple(imageIn->size(), imageIn->getOrigin(), imageIn->getSpacing())
     );
 
-    CPPUNIT_ASSERT(imageOut->getSize() == SIZE);
+    CPPUNIT_ASSERT(imageOut->size() == SIZE);
     CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
     CPPUNIT_ASSERT(imageOut->getType() == TYPE);
 
@@ -107,10 +107,10 @@ void ResamplerTest::translateTest()
     const data::Image::Size SIZE       = {{16, 16, 16}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::Type TYPE              = core::Type::UINT8;
+    const core::type TYPE              = core::type::UINT8;
 
-    data::Image::sptr imageIn  = data::Image::New();
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageIn  = std::make_shared<data::Image>();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
@@ -132,7 +132,7 @@ void ResamplerTest::translateTest()
     imageIn->at<std::uint8_t>(8, 8, 8) = value;
 
     // 5 mm translation along the x axis.
-    data::Matrix4::sptr transMat = data::Matrix4::New();
+    data::Matrix4::sptr transMat = std::make_shared<data::Matrix4>();
     (*transMat)(0, 3) = 5;
 
     filter::image::Resampler::resample(
@@ -164,7 +164,7 @@ void ResamplerTest::translateTest()
     }
 
     // Check if size and spacing are the same as the input.
-    CPPUNIT_ASSERT(imageOut->getSize() == SIZE);
+    CPPUNIT_ASSERT(imageOut->size() == SIZE);
     CPPUNIT_ASSERT(imageOut->getSpacing() == SPACING);
 }
 
@@ -175,10 +175,10 @@ void ResamplerTest::rotateTest()
     const data::Image::Size SIZE       = {{64, 64, 64}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::Type TYPE              = core::Type::FLOAT;
+    const core::type TYPE              = core::type::FLOAT;
 
-    data::Image::sptr imageIn  = data::Image::New();
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageIn  = std::make_shared<data::Image>();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
@@ -197,7 +197,7 @@ void ResamplerTest::rotateTest()
 
     // FIXME: compute to appropriate matrix to rotate a face from negative Z to negative X.
 
-    data::Matrix4::sptr rotMat = data::Matrix4::New();
+    data::Matrix4::sptr rotMat = std::make_shared<data::Matrix4>();
     // 90° rotation along the Y axis.
     (*rotMat)(0, 0) = 0;
     (*rotMat)(0, 2) = 1;

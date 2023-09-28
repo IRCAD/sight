@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ExTimeLine/config.hpp"
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 
 /**
  * Do not mark `EXTIMELINE` as incorrect.
@@ -37,12 +37,12 @@ namespace ExTimeLine
  * @brief This service is just a hack to block the main thread. Services on the other threads can run.
  * Without that, the application exits immediately since we have no GUI.
  */
-class EXTIMELINE_CLASS_API SMain final : public sight::service::IService
+class EXTIMELINE_CLASS_API SMain final : public sight::service::base
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMain, sight::service::IService);
+    SIGHT_DECLARE_SERVICE(SMain, sight::service::base);
 
     /// Creates the service.
     EXTIMELINE_API SMain() noexcept;

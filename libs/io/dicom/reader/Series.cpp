@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -132,7 +132,7 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
             if(imageInstance)
             {
                 data::ImageSeries::sptr imageSeries =
-                    data::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
+                    std::dynamic_pointer_cast<data::ImageSeries>(m_seriesContainerMap[imageInstance]);
 
                 imageSeries->setDicomReference(dicomSeries);
 
@@ -173,7 +173,7 @@ data::Series::sptr Series::read(const data::DicomSeries::csptr& dicomSeries)
             const auto& iter = m_seriesContainerMap.find(referencedInstance);
             if(iter != m_seriesContainerMap.end())
             {
-                imageSeries = data::ImageSeries::dynamicCast(iter->second);
+                imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(iter->second);
             }
 
             if(referencedInstance && imageSeries)
@@ -231,8 +231,8 @@ SPTR(io::dicom::container::DicomInstance) Series::getSpatialFiducialsReferencedS
     // Create Reader
     std::shared_ptr<gdcm::Reader> reader =
         std::make_shared<gdcm::Reader>();
-    const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
-    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::buffer_object::sptr bufferObj          = dicomContainer.begin()->second;
+    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
 
@@ -291,8 +291,8 @@ SPTR(io::dicom::container::DicomInstance) Series::getStructuredReportReferencedS
     // Create Reader
     std::shared_ptr<gdcm::Reader> reader =
         std::make_shared<gdcm::Reader>();
-    const core::memory::BufferObject::sptr bufferObj         = dicomContainer.begin()->second;
-    const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+    const core::memory::buffer_object::sptr bufferObj          = dicomContainer.begin()->second;
+    const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
     SPTR(std::istream) is = streamInfo.stream;
     reader->SetStream(*is);
 

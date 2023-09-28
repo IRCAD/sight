@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ namespace sight::io::dicom::container::ut
 
 void DicomSurfaceTest::basicTest()
 {
-    auto mesh = data::Mesh::New();
+    auto mesh = std::make_shared<data::Mesh>();
     mesh->reserve(4, 3, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
     {
         auto meshLock = mesh->dump_lock();
@@ -51,7 +51,7 @@ void DicomSurfaceTest::basicTest()
         mesh->pushCell(3, 0, 1);
         mesh->pushCell(2, 3, 0);
     }
-    auto reconstruction = data::Reconstruction::New();
+    auto reconstruction = std::make_shared<data::Reconstruction>();
     reconstruction->setMesh(mesh);
     auto meshLock = mesh->dump_lock(); // TODO: Fix failure because mesh isn't dump locked.
     DicomSurface dicomSurface(reconstruction);

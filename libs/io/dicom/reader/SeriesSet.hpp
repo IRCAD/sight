@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,23 +25,23 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/exception/Failed.hpp"
 
-#include <core/location/MultipleFiles.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/log/Logger.hpp>
+#include <core/location/multiple_files.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/log/logger.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <io/base/reader/GenericObjectReader.hpp>
+#include <io/__/reader/GenericObjectReader.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 
 namespace sight::core::jobs
 {
 
-class Aggregator;
-class IJob;
-class Observer;
+class aggregator;
+class base;
+class observer;
 
 }
 
@@ -54,17 +54,17 @@ namespace reader
 /**
  * @brief This class adds patient(s) from DICOM file(s) to data::SeriesSet.
  */
-class IO_DICOM_CLASS_API SeriesSet : public base::reader::GenericObjectReader<data::SeriesSet>,
-                                     public core::location::SingleFolder,
-                                     public core::location::MultipleFiles,
-                                     public core::com::HasSignals
+class IO_DICOM_CLASS_API SeriesSet : public io::reader::GenericObjectReader<data::SeriesSet>,
+                                     public core::location::single_folder,
+                                     public core::location::multiple_files,
+                                     public core::com::has_signals
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         SeriesSet,
-        io::base::reader::GenericObjectReader<data::SeriesSet>,
-        io::base::reader::factory::New<SeriesSet>
+        io::reader::GenericObjectReader<data::SeriesSet>,
+        io::reader::factory::make<SeriesSet>
     );
 
     typedef std::vector<SPTR(data::DicomSeries)> DicomSeriesContainerType;
@@ -72,7 +72,7 @@ public:
     typedef std::vector<std::string> SupportedSOPClassContainerType;
 
     /// Constructor
-    IO_DICOM_API SeriesSet(io::base::reader::IObjectReader::Key key);
+    IO_DICOM_API SeriesSet();
 
     /// Destructor
     IO_DICOM_API ~SeriesSet() override = default;
@@ -87,8 +87,7 @@ public:
      */
     IO_DICOM_API void readFromDicomSeriesSet(
         const data::SeriesSet::csptr& dicom_series_set,
-        const service::IService::sptr& notifier
-        = service::IService::sptr()
+        const sight::service::base::sptr& notifier = sight::service::base::sptr()
     );
 
     /**
@@ -139,19 +138,19 @@ public:
     }
 
     /// Get Logger
-    const core::log::Logger::sptr& getLogger() const
+    const core::log::logger::sptr& getLogger() const
     {
         return m_logger;
     }
 
     ///Set Logger
-    void setLogger(const core::log::Logger::sptr& logger)
+    void setLogger(const core::log::logger::sptr& logger)
     {
         m_logger = logger;
     }
 
     /// Getter for reader's job
-    IO_DICOM_API SPTR(core::jobs::IJob) getJob() const override;
+    IO_DICOM_API SPTR(core::jobs::base) getJob() const override;
 
     /// Enable buffer rotation
     void setBufferRotationEnabled(bool enabled)
@@ -170,7 +169,7 @@ private:
      * @brief Convert DicomSeries to Image or Model Series
      * @param[in] dicomSeries Dicom Series that must be converted
      */
-    void convertDicomSeries(const service::IService::sptr& notifier = service::IService::sptr());
+    void convertDicomSeries(const sight::service::base::sptr& notifier = sight::service::base::sptr());
 
     /**
      * @brief Function used to sort DicomSeries
@@ -195,19 +194,19 @@ private:
     SupportedSOPClassContainerType m_supportedSOPClassContainer;
 
     /// Logger
-    core::log::Logger::sptr m_logger;
+    core::log::logger::sptr m_logger;
 
     /// Observer managing all subjobs
-    SPTR(core::jobs::Aggregator) m_job;
+    SPTR(core::jobs::aggregator) m_job;
 
     /// Enable buffer rotation
     bool m_enableBufferRotation;
 
-    SPTR(core::jobs::Observer) m_dicomdirFileLookupJob;
-    SPTR(core::jobs::Observer) m_regularFileLookupJob;
-    SPTR(core::jobs::Observer) m_readerJob;
-    SPTR(core::jobs::Observer) m_completeDicomSeriesJob;
-    SPTR(core::jobs::Observer) m_converterJob;
+    SPTR(core::jobs::observer) m_dicomdirFileLookupJob;
+    SPTR(core::jobs::observer) m_regularFileLookupJob;
+    SPTR(core::jobs::observer) m_readerJob;
+    SPTR(core::jobs::observer) m_completeDicomSeriesJob;
+    SPTR(core::jobs::observer) m_converterJob;
 };
 
 } // namespace reader

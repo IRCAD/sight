@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,14 +31,18 @@ namespace sight::filter::dicom::splitter
 /**
  * @brief Filter that uses the ImageOrientationPatient tag to split the instances.
  */
-class FILTER_DICOM_CLASS_API ImageOrientationSplitter : public filter::dicom::splitter::TagValueSplitter
+class FILTER_DICOM_CLASS_API ImageOrientationSplitter : public sight::filter::dicom::splitter::TagValueSplitter
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ImageOrientationSplitter, ISplitter, filter::dicom::factory::New<ImageOrientationSplitter>);
+    SIGHT_DECLARE_CLASS(
+        ImageOrientationSplitter,
+        base,
+        sight::filter::dicom::factory::make<ImageOrientationSplitter>
+    );
 
     /// Constructor
-    FILTER_DICOM_API ImageOrientationSplitter(filter::dicom::IFilter::Key key);
+    FILTER_DICOM_API ImageOrientationSplitter();
 
     /// Destructor
     FILTER_DICOM_API ~ImageOrientationSplitter() override;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "filter/dicom/config.hpp"
-#include "filter/dicom/IFilter.hpp"
+#include "filter/dicom/filter.hpp"
 
 #include <data/DicomSeries.hpp>
 
@@ -47,9 +47,9 @@ public:
      */
     FILTER_DICOM_API static bool applyFilter(
         DicomSeriesContainerType& dicomSeriesContainer,
-        filter::dicom::IFilter::sptr filter,
+        sight::filter::dicom::filter::sptr filter,
         bool forcedApply                      = false,
-        const core::log::Logger::sptr& logger = core::log::Logger::New()
+        const core::log::logger::sptr& logger = std::make_shared<core::log::logger>()
     );
 };
 

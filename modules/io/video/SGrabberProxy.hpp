@@ -24,12 +24,12 @@
 
 #include "modules/io/video/config.hpp"
 
-#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/helper/sig_slot_connection.hpp>
 
-#include <io/base/service/IGrabber.hpp>
+#include <io/__/service/grabber.hpp>
 
-#include <service/IHasServices.hpp>
-#include <service/INotifier.hpp>
+#include <service/has_services.hpp>
+#include <service/notifier.hpp>
 
 namespace sight::data
 {
@@ -104,12 +104,12 @@ namespace sight::module::io::video
  *  - \b gui
  *      - \b title (optional) : title of the grabber selector window.
  */
-class MODULE_IO_VIDEO_CLASS_API SGrabberProxy : public sight::io::base::service::IGrabber,
-                                                public service::IHasServices
+class MODULE_IO_VIDEO_CLASS_API SGrabberProxy : public sight::io::service::grabber,
+                                                public service::has_services
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SGrabberProxy, sight::io::base::service::IGrabber);
+    SIGHT_DECLARE_SERVICE(SGrabberProxy, sight::io::service::grabber);
 
     /// Constructor. Initialize slots and signals
     MODULE_IO_VIDEO_API SGrabberProxy() noexcept;
@@ -120,7 +120,7 @@ public:
     /// Internal wrapper holding slots keys.
     struct slots
     {
-        using key_t = sight::core::com::Slots::SlotKeyType;
+        using key_t = sight::core::com::slots::key_t;
 
         static inline const key_t RECONFIGURE         = "reconfigure";
         static inline const key_t START_TARGET_CAMERA = "startTargetCamera";
@@ -183,7 +183,7 @@ protected:
     MODULE_IO_VIDEO_API void setStep(int step, std::string key) override;
 
     /// Sets internal parameters values.
-    MODULE_IO_VIDEO_API void setParameter(ui::base::parameter_t value, std::string key) final;
+    MODULE_IO_VIDEO_API void setParameter(ui::parameter_t value, std::string key) final;
 
     /// SLOT: Requests the grabber internal settings.
     MODULE_IO_VIDEO_API void requestSettings() final;
@@ -200,7 +200,7 @@ protected:
 
 private:
 
-    typedef std::pair<std::string, IService::ConfigType> ServiceConfigPair;
+    typedef std::pair<std::string, service::config_t> ServiceConfigPair;
 
     enum class CameraType : std::uint8_t
     {
@@ -232,10 +232,10 @@ private:
     void fwdPresentFrame();
 
     /// A named parameter has been emitted in the sub-service.
-    void fwdSetParameter(ui::base::parameter_t value, std::string key);
+    void fwdSetParameter(ui::parameter_t value, std::string key);
 
     /// A job has been created in the proxied service.
-    void fwdCreateJob(sight::core::jobs::IJob::sptr job);
+    void fwdCreateJob(sight::core::jobs::base::sptr job);
 
     // Forwards notifications
     void fwdNotify(service::Notification notification);
@@ -257,10 +257,10 @@ private:
     std::string m_guiTitle {"Please select a video grabber implementation"};
 
     /// Actual grabber service.
-    std::vector<sight::io::base::service::IGrabber::sptr> m_services;
+    std::vector<sight::io::service::grabber::sptr> m_services;
 
     /// Connections with service signals.
-    core::com::helper::SigSlotConnection m_connections;
+    core::com::helper::sig_slot_connection m_connections;
 
     /// List of services to be included or excluded.
     std::set<std::string> m_selectedServices;

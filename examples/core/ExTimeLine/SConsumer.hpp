@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include "MessageTL.hpp"
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 
 /**
  * Do not mark `EXTIMELINE` as incorrect.
@@ -66,13 +66,13 @@ namespace ExTimeLine
  * - \b period (optional): time between two messages display, in milliseconds.
  */
 
-class EXTIMELINE_CLASS_API SConsumer : public sight::service::IService
+class EXTIMELINE_CLASS_API SConsumer : public sight::service::base
 {
 public:
 
-    EXTIMELINE_API static const sight::core::com::Slots::SlotKeyType s_CONSUME_SLOT;
+    EXTIMELINE_API static const sight::core::com::slots::key_t CONSUME_SLOT;
 
-    SIGHT_DECLARE_SERVICE(SConsumer, sight::service::IService);
+    SIGHT_DECLARE_SERVICE(SConsumer, sight::service::base);
 
     EXTIMELINE_API SConsumer() noexcept;
     EXTIMELINE_API ~SConsumer() noexcept override;
@@ -92,12 +92,12 @@ protected:
     void updating() final;
 
     /// Called by a signal to consume a message
-    void consume(sight::core::HiResClock::HiResClockType timestamp);
+    void consume(sight::core::hires_clock::type timestamp);
 
 private:
 
     /// Timer used to read messages periodically
-    SPTR(sight::core::thread::Timer) m_timer;
+    SPTR(sight::core::thread::timer) m_timer;
 
     /// Id of the receiver
     unsigned int m_receiverId {};

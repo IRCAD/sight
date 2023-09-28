@@ -5,7 +5,7 @@ add_dependencies(
     data
     module_data
     module_service
-    module_ui_base
+    module_ui
     module_ui_qt
     module_viz_scene2d
     module_ui_flaticons

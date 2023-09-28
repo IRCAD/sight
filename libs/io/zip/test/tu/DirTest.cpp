@@ -22,7 +22,7 @@
 
 #include "DirTest.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <io/zip/ReadDirArchive.hpp>
 #include <io/zip/WriteDirArchive.hpp>
@@ -55,7 +55,7 @@ void DirTest::tearDown()
 
 void DirTest::writeReadFileTest()
 {
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     auto writer = std::make_shared<WriteDirArchive>(tmpDir);
     auto reader = std::make_shared<ReadDirArchive>(tmpDir);
@@ -64,14 +64,14 @@ void DirTest::writeReadFileTest()
 
     CPPUNIT_ASSERT_NO_THROW(writer->createFile(testFile));
 
-    CPPUNIT_ASSERT_NO_THROW(reader->getFile(testFile));
+    CPPUNIT_ASSERT_NO_THROW(reader->get_file(testFile));
 }
 
 //------------------------------------------------------------------------------
 
 void DirTest::writeDirTest()
 {
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     auto writer = std::make_shared<WriteDirArchive>(tmpDir);
 
@@ -86,7 +86,7 @@ void DirTest::writeDirTest()
 
 void DirTest::putFileTest()
 {
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     auto writer = std::make_shared<WriteDirArchive>(tmpDir);
 

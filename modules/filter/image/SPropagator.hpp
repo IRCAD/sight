@@ -33,10 +33,10 @@
 #include <filter/image/LineDrawer.hpp>
 #include <filter/image/MinMaxPropagation.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
-#include <ui/base/IHasParameters.hpp>
-#include <ui/history/ICommand.hpp>
+#include <ui/__/has_parameters.hpp>
+#include <ui/history/command.hpp>
 
 namespace sight::module::filter::image
 {
@@ -46,7 +46,7 @@ namespace sight::module::filter::image
  *
  * @section Signals Signals
  * - \b computed() : Signal sent after propagation when the mouse has been released.
- * - \b drawn(ui::history::ICommand::sptr) : Signal emitted after propagation, sends an ImageDiffCommand.
+ * - \b drawn(ui::history::command::sptr) : Signal emitted after propagation, sends an ImageDiffCommand.
  *
  * @section Slots Slots
  * - \b setIntParameter(int, std::string) : set the value to write in the image, the key passed must be "value".
@@ -83,12 +83,12 @@ namespace sight::module::filter::image
  * - \b mode (optional) : Propagation mode. Possible values are 'min', 'max' and 'minmax'. 'min' by default.
  * - \b orientation (optional) : The initial slice orientation. 'axial' by default.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SPropagator : public service::IFilter,
-                                                  public ui::base::IHasParameters
+class MODULE_FILTER_IMAGE_CLASS_API SPropagator : public service::filter,
+                                                  public ui::has_parameters
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SPropagator, sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SPropagator, sight::service::filter);
 
     /// Initializes slots signals and member variables.
     MODULE_FILTER_IMAGE_API SPropagator();
@@ -114,11 +114,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_IN to IService::slots::s_UPDATE
-     * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_IN to s_SET_ORIENTATION_SLOT
-     * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_IN to s_RESET_DRAWING
+     * Connect data::Image::MODIFIED_SIG of s_IMAGE_IN to service::slots::UPDATE
+     * Connect data::Image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_IN to SET_ORIENTATION_SLOT
+     * Connect data::Image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_IN to s_RESET_DRAWING
      */
-    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API connections_t getAutoConnections() const override;
 
     /// Sets overwrite mode. Key must be 'overwrite'.
     MODULE_FILTER_IMAGE_API void setBoolParameter(bool val, std::string key) override;
@@ -138,7 +138,7 @@ private:
 
     typedef sight::filter::image::MinMaxPropagation::OrientationType OrientationType;
 
-    typedef core::com::Signal<void (ui::history::ICommand::sptr)> DrawnSignalType;
+    typedef core::com::signal<void (ui::history::command::sptr)> DrawnSignalType;
 
     /// Swaps orientation.
     void setOrientation(int from, int to);

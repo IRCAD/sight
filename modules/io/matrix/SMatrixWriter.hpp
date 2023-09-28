@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/MatrixTL.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 #include <fstream>
 
@@ -43,8 +43,8 @@ namespace sight::module::io::matrix
  * @section Slots Slots
  * - \b startRecord() : start recording
  * - \b stopRecord() : stop recording
- * - \b write(core::HiResClock::HiResClockType) : write matrix in a csv file
- * - \b saveMatrix(core::HiResClock::HiResClockType) : save current matrices
+ * - \b write(core::hires_clock::type) : write matrix in a csv file
+ * - \b saveMatrix(core::hires_clock::type) : save current matrices
  *
  * @section XML XML Configuration
  *
@@ -58,13 +58,13 @@ namespace sight::module::io::matrix
  * - \b data [sight::data::MatrixTL]: timeline containing the matrices to save.
  *
  * @subsection Configuration Configuration
- * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
+ * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::writer
  */
-class MODULE_IO_MATRIX_CLASS_API SMatrixWriter : public sight::io::base::service::IWriter
+class MODULE_IO_MATRIX_CLASS_API SMatrixWriter : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SMatrixWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SMatrixWriter, sight::io::service::writer);
 
     /// Constructor.
     MODULE_IO_MATRIX_API SMatrixWriter() noexcept;
@@ -73,13 +73,13 @@ public:
     MODULE_IO_MATRIX_API ~SMatrixWriter() noexcept override;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    MODULE_IO_MATRIX_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_MATRIX_API service::connections_t getAutoConnections() const override;
 
     /// Display a location dialog allowing to select the video file to save
     MODULE_IO_MATRIX_API void openLocationDialog() override;
 
-    /// Return file type (io::base::service::FOLDER)
-    MODULE_IO_MATRIX_API sight::io::base::service::IOPathType getIOPathType() const override;
+    /// Return file type (io::service::FOLDER)
+    MODULE_IO_MATRIX_API sight::io::service::IOPathType getIOPathType() const override;
 
 protected:
 
@@ -98,10 +98,10 @@ protected:
 private:
 
     /// SLOT: Save current matrices.
-    void saveMatrix(core::HiResClock::HiResClockType timestamp);
+    void saveMatrix(core::hires_clock::type timestamp);
 
     /// SLOT: Write matrices in csv file
-    void write(core::HiResClock::HiResClockType timestamp);
+    void write(core::hires_clock::type timestamp);
 
     /// SLOT: Start recording
     void startRecord();

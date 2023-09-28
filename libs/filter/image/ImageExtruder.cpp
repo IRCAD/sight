@@ -22,7 +22,7 @@
 
 #include "filter/image/ImageExtruder.hpp"
 
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 
@@ -32,6 +32,13 @@
 #include <glm/vec2.hpp>
 
 #include <cmath>
+
+// Usual nolint comment does not work for an unknown reason (clang 17)
+// cspell:ignore Wunknown
+#ifdef __clang_analyzer__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
 
 namespace sight::filter::image
 {
@@ -54,8 +61,8 @@ void ImageExtruder::extrude(
     param.m_transform = _transform;
 
     // We use a dispatcher because we can't retrieve the image type without a DynamicType.
-    core::Type type = _image->getType();
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, ImageExtruder>::invoke(type, param);
+    core::type type = _image->getType();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, ImageExtruder>::invoke(type, param);
 }
 
 //------------------------------------------------------------------------------
@@ -152,7 +159,7 @@ void ImageExtruder::operator()(Parameters& _param)
 
     // Get image informations.
     const data::Image::Origin& origin   = _param.m_image->getOrigin();
-    const data::Image::Size& size       = _param.m_image->getSize();
+    const data::Image::Size& size       = _param.m_image->size();
     const data::Image::Spacing& spacing = _param.m_image->getSpacing();
 
     // Loop over the bounding box intersection of the mesh and the image to increase performance.
@@ -250,6 +257,7 @@ void ImageExtruder::operator()(Parameters& _param)
     const auto zLoop =
         [&]()
         {
+            // NOLINTNEXTLINE(clang-diagnostic-unknown-pragmas)
         #pragma omp parallel for
             for(std::int64_t x = indexXBeg ; x < indexXEnd ; ++x)
             {
@@ -324,6 +332,7 @@ void ImageExtruder::operator()(Parameters& _param)
     const auto yLoop =
         [&]()
         {
+            // NOLINTNEXTLINE(clang-diagnostic-unknown-pragmas)
         #pragma omp parallel for
             for(std::int64_t x = indexXBeg ; x < indexXEnd ; ++x)
             {
@@ -388,6 +397,7 @@ void ImageExtruder::operator()(Parameters& _param)
     const auto xLoop =
         [&]()
         {
+            // NOLINTNEXTLINE(clang-diagnostic-unknown-pragmas)
         #pragma omp parallel for
             for(std::int64_t y = indexYBeg ; y < indexYEnd ; ++y)
             {
@@ -488,3 +498,7 @@ void ImageExtruder::operator()(Parameters& _param)
 }
 
 } // namespace sight::filter::image
+
+#ifdef __clang_analyzer__
+#pragma clang diagnostic pop
+#endif

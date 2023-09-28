@@ -4,7 +4,7 @@ Library for dealing with archives, either compressed as a zip archive or uncompr
 
 ## Classes:
 
-- **IReadArchive**, **IWriteArchive**: defines abstract functions for reading / writing files in an archive.
+- **read_archive**, **write_archive**: defines abstract functions for reading / writing files in an archive.
 - **ReadDirArchive**, **WriteDirArchive**: reads / writes files in a directory.
 - **ReadZipArchive**, **WriteZipArchive**: reads / writes files in a zip archive. They use `minizip` backend.
 

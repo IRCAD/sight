@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include <ui/testCore/ITest.hpp>
+#include <ui/testCore/test.hpp>
 
 namespace sight::sightcalibrator::test::ui
 {
 
-class VideoControls : public sight::ui::testCore::ITest
+class VideoControls : public sight::ui::testCore::test
 {
 CPPUNIT_TEST_SUITE(VideoControls);
 CPPUNIT_TEST(test);

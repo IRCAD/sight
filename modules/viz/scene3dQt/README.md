@@ -4,11 +4,11 @@ Contains an Ogre Render windows based on QT which serves as main window for the 
 
 ## Services
 
-- **OffScreenWindowInteractor**: manages an offscreen render window that renders in an Ogre texture.
+- **offscreen_window_interactor**: manages an offscreen render window that renders in an Ogre texture.
 - **OpenGLContext**: defines a common shared OpenGl context for all render windows
 - **OpenGLRunner**: runs OpenGL resource handling tasks in a separate thread. Note that it can not be used for parallel rendering as Ogre does not support it
 - **Window**: initializes and renders a window, as well as its interaction mechanism
-- **WindowInteractor**: defines the interaction mechanism with the displayed windows
+- **window_interactor**: defines the interaction mechanism with the displayed windows
 
 
 ## How to use it

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "SRender.hpp"
 
+#include "viz/qt3d/adaptor.hpp"
 #include "viz/qt3d/core/GenericScene.hpp"
-#include "viz/qt3d/IAdaptor.hpp"
 #include "viz/qt3d/registry/Adaptor.hpp"
 
 #include <core/runtime/path.hpp>
@@ -92,7 +92,7 @@ void SRender::configuring()
     {
         const auto uid = it->second.get<std::string>("<xmlattr>.uid");
         auto& registry = viz::qt3d::registry::getAdaptorRegistry();
-        registry[uid] = this->getID();
+        registry[uid] = this->get_id();
     }
 }
 
@@ -103,8 +103,8 @@ void SRender::starting()
     this->create();
 
     // Instantiates render window manager.
-    auto m_interactorManager = viz::qt3d::IWindowInteractor::createManager();
-    m_interactorManager->setRenderService(this->getSptr());
+    auto m_interactorManager = viz::qt3d::window_interactor::createManager();
+    m_interactorManager->setRenderService(this->get_sptr());
     m_interactorManager->createContainer(this->getContainer());
 
     // Renders a Qt3DWindow which is then displayed as a QWidget.

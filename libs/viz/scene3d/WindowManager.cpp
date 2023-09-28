@@ -55,7 +55,7 @@ Ogre::RenderWindow* WindowManager::get(const std::string& _name) const
 
 viz::scene3d::WindowManager::sptr WindowManager::get()
 {
-    return core::LazyInstantiator<viz::scene3d::WindowManager>::getInstance();
+    return core::lazy_instantiator<viz::scene3d::WindowManager>::get_instance();
 }
 
 // ----------------------------------------------------------------------------

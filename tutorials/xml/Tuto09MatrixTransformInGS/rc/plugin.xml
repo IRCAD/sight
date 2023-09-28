@@ -5,7 +5,7 @@
 -->
 <plugin id="Tuto09MatrixTransformInGS">
 
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -72,7 +72,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>Tuto09MatrixTransformInGS</name>
@@ -87,7 +87,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -98,7 +98,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -112,9 +112,9 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::base::SView">
+            <service uid="mainView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" resizable="false" backgroundColor="#3E4453" />
@@ -189,11 +189,11 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="openMeshAct" type="sight::module::ui::com::SStarter">
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::SQuit" />
 
             <!-- ******************************* Services ***************************************** -->
 
@@ -203,12 +203,12 @@
                 <rotation enabled="y" min="0" max="360" />
             </service>
 
-            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="rotation1Srv" type="sight::module::geometry::base::SConcatenateMatrices">
+            <service uid="rotation1Srv" type="sight::module::geometry::SConcatenateMatrices">
                 <in group="matrix">
                     <key uid="matrixE" autoConnect="true" />
                     <key uid="matrixA" />
@@ -217,7 +217,7 @@
                 <inout key="output" uid="rotation1" />
             </service>
 
-            <service uid="rotation2Srv" type="sight::module::geometry::base::SConcatenateMatrices">
+            <service uid="rotation2Srv" type="sight::module::geometry::SConcatenateMatrices">
                 <in group="matrix">
                     <key uid="matrixB" />
                     <key uid="matrixE" autoConnect="true" />
@@ -229,7 +229,7 @@
                 <inout key="output" uid="rotation2" />
             </service>
 
-            <service uid="rotation3Srv" type="sight::module::geometry::base::SConcatenateMatrices">
+            <service uid="rotation3Srv" type="sight::module::geometry::SConcatenateMatrices">
                 <in group="matrix">
                     <key uid="matrixC" />
                     <key uid="matrixE" autoConnect="true" />

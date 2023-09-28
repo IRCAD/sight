@@ -33,7 +33,7 @@
 namespace sight::io::session::detail
 {
 
-using core::crypto::PasswordKeeper;
+using core::crypto::password_keeper;
 using core::crypto::secure_string;
 using sight::io::zip::Archive;
 
@@ -83,7 +83,7 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
     zip::ArchiveReader& archive,
     const boost::property_tree::ptree& tree,
     const secure_string& password,
-    const PasswordKeeper::EncryptionPolicy encryptionPolicy
+    const password_keeper::encryption_policy encryptionPolicy
 ) const
 {
     const auto& treeIt = tree.begin();
@@ -102,7 +102,7 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
         return {};
     }
 
-    const auto serialized_uuid = objectTree.get<std::string>(ISession::s_uuid);
+    const auto serialized_uuid = objectTree.get<std::string>(session::s_uuid);
     const auto& objectIt       = cache.find(serialized_uuid);
 
     // First check the cache
@@ -118,7 +118,7 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
     // Try to reuse existing rather than create new one
     // Existing object will be overwritten
 
-    auto object = data::factory::New(classname);
+    auto object = data::factory::make(classname);
 
     // Lock for writing (it will do nothing if object is null)
     data::mt::locked_ptr<data::Object> object_guard(object);
@@ -129,7 +129,7 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
     // Construct children map, if needed
     std::map<std::string, data::Object::sptr> children;
 
-    const auto& childrenIt = objectTree.find(ISession::s_children);
+    const auto& childrenIt = objectTree.find(session::s_children);
 
     if(childrenIt != objectTree.not_found())
     {
@@ -145,13 +145,13 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
         objectTree,
         children,
         object,
-        ISession::pickle(password, secure_string(serialized_uuid), encryptionPolicy)
+        session::pickle(password, secure_string(serialized_uuid), encryptionPolicy)
     );
 
     if(newObject != object)
     {
         // This should not happen normally, only if the deserializer doesn't reuse object
-        newObject->setUUID(object->getUUID(), true);
+        newObject->set_uuid(object->get_uuid(), true);
         cache[serialized_uuid] = newObject;
         SIGHT_ASSERT(
             "An object has been replaced by a deserializer, but it is still referenced",
@@ -160,12 +160,12 @@ data::Object::sptr SessionDeserializer::deepDeserialize(
     }
 
     // Do not forget the description
-    newObject->setDescription(Helper::readString(objectTree, ISession::s_description, ""));
+    newObject->setDescription(Helper::readString(objectTree, session::s_description, ""));
 
     // Construct field map
     data::Object::FieldMapType fields;
 
-    if(const auto& fields_it = objectTree.find(ISession::s_fields); fields_it != objectTree.not_found())
+    if(const auto& fields_it = objectTree.find(session::s_fields); fields_it != objectTree.not_found())
     {
         for(const auto& field_it : fields_it->second)
         {
@@ -239,7 +239,7 @@ data::Object::sptr SessionDeserializer::deserialize(
     const std::filesystem::path& archive_path,
     const Archive::ArchiveFormat archiveFormat,
     const secure_string& password,
-    const PasswordKeeper::EncryptionPolicy encryptionPolicy
+    const password_keeper::encryption_policy encryptionPolicy
 ) const
 {
     zip::ArchiveReader::uptr archive;

@@ -22,23 +22,23 @@
 
 #include "modules/viz/scene3d/adaptor/SText.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/GenericFieldBase.hpp>
 
-#include <viz/scene3d/IWindowInteractor.hpp>
 #include <viz/scene3d/SRender.hpp>
+#include <viz/scene3d/window_interactor.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_SET_TEXT_SLOT = "setText";
+static const core::com::slots::key_t SET_TEXT_SLOT = "setText";
 
 //----------------------------------------------------------------------------
 
 SText::SText() noexcept
 {
-    newSlot(s_SET_TEXT_SLOT, &SText::setText, this);
+    new_slot(SET_TEXT_SLOT, &SText::setText, this);
 }
 
 //----------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void SText::starting()
 
     auto renderSrv = this->getRenderService();
 
-    m_text = sight::viz::scene3d::IText::New(this->getLayer());
+    m_text = sight::viz::scene3d::IText::make(this->getLayer());
 
     m_text->setFontSize(m_fontSize);
     m_text->setTextColor(m_textColor);
@@ -103,10 +103,10 @@ void SText::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SText::getAutoConnections() const
+service::connections_t SText::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_OBJECT_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_OBJECT_INPUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -145,7 +145,7 @@ void SText::updateText()
 
     if(obj)
     {
-        const data::GenericFieldBase::csptr field = data::GenericFieldBase::dynamicCast(obj.get_shared());
+        const auto field = std::dynamic_pointer_cast<const data::GenericFieldBase>(obj.get_shared());
 
         if(field)
         {

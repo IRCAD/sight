@@ -4,7 +4,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExOpenvslam_AppCfg</id>
@@ -23,7 +23,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <menuBar />
                     <toolBar />
@@ -39,7 +39,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -50,7 +50,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Load map (*.map)" shortcut="Ctrl+O" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <menuItem name="Load calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
@@ -104,9 +104,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::base::SView">
+            <service uid="containerView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="3" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -118,9 +118,9 @@
                 </registry>
             </service>
 
-            <service uid="sceneViews" type="sight::module::ui::base::SView">
+            <service uid="sceneViews" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -132,9 +132,9 @@
                 </registry>
             </service>
 
-            <service uid="videoView" type="sight::module::ui::base::SView">
+            <service uid="videoView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -147,9 +147,9 @@
             </service>
 
 
-            <service uid="statusView" type="sight::module::ui::base::SView">
+            <service uid="statusView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -163,9 +163,9 @@
                 </registry>
             </service>
 
-            <service uid="editorViews" type="sight::module::ui::base::SView">
+            <service uid="editorViews" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::ToolboxLayoutManager">
+                    <layout type="sight::ui::layout::toolbox">
                         <orientation value="vertical" />
                         <view caption="Openvslam  Orb Parameters." expanded="true" />
                         <view caption="Openvslam  initializer Parameters. (Advanced)" expanded="false" />
@@ -179,28 +179,28 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::SQuit" />
 
-            <service uid="loadCalibAct" type="sight::module::ui::base::SAction" />
-            <service uid="startVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" />
-            <service uid="startOpenvslamAct" type="sight::module::ui::base::SAction" />
-            <service uid="pauseOpenvslamAct" type="sight::module::ui::base::SAction" />
-            <service uid="showHidePointCloudAct" type="sight::module::ui::base::SAction" />
+            <service uid="loadCalibAct" type="sight::module::ui::SAction" />
+            <service uid="startVideoAct" type="sight::module::ui::SAction" />
+            <service uid="stopVideoAct" type="sight::module::ui::SAction" />
+            <service uid="pauseVideoAct" type="sight::module::ui::SAction" />
+            <service uid="loopVideoAct" type="sight::module::ui::SAction" />
+            <service uid="startOpenvslamAct" type="sight::module::ui::SAction" />
+            <service uid="pauseOpenvslamAct" type="sight::module::ui::SAction" />
+            <service uid="showHidePointCloudAct" type="sight::module::ui::SAction" />
 
-            <service uid="enableLocalizationAct" type="sight::module::ui::base::SAction">
+            <service uid="enableLocalizationAct" type="sight::module::ui::SAction">
                 <state checked="false" />
             </service>
 
-            <service uid="saveMapAct" type="sight::module::ui::base::SAction" />
-            <service uid="saveTrajectoriesAct" type="sight::module::ui::base::SAction" />
-            <service uid="loadMapAct" type="sight::module::ui::base::SAction" />
-            <service uid="resetOpenvslamAct" type="sight::module::ui::base::SAction" />
-            <service uid="savePCAct" type="sight::module::ui::base::SAction" />
-            <service uid="stopOpenvslamAct" type="sight::module::ui::base::SAction" />
-            <service uid="HideAtStart" type="sight::module::ui::base::SAction" />
+            <service uid="saveMapAct" type="sight::module::ui::SAction" />
+            <service uid="saveTrajectoriesAct" type="sight::module::ui::SAction" />
+            <service uid="loadMapAct" type="sight::module::ui::SAction" />
+            <service uid="resetOpenvslamAct" type="sight::module::ui::SAction" />
+            <service uid="savePCAct" type="sight::module::ui::SAction" />
+            <service uid="stopOpenvslamAct" type="sight::module::ui::SAction" />
+            <service uid="HideAtStart" type="sight::module::ui::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -370,7 +370,7 @@
                 <out key="pointCloud" uid="openvslamPointCloud" />
             </service>
 
-            <service uid="meshWriterSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="meshWriterSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="openvslamPointCloud" />
                 <type mode="writer" />
                 <selection mode="include" />

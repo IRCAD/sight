@@ -24,20 +24,20 @@
 
 #include "modules/io/dimse/config.hpp"
 
-#include <core/thread/Timer.hpp>
-#include <core/thread/Worker.hpp>
+#include <core/thread/timer.hpp>
+#include <core/thread/worker.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 #include <io/dimse/data/PacsConfiguration.hpp>
 
-#include <service/IHasServices.hpp>
-#include <service/INotifier.hpp>
+#include <service/has_services.hpp>
+#include <service/notifier.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -75,16 +75,16 @@ namespace sight::module::io::dimse
  */
 class MODULE_IO_DIMSE_CLASS_API SSliceIndexDicomEditor final :
     public QObject,
-    public sight::ui::base::IEditor,
-    public service::IHasServices,
-    private service::INotifier
+    public sight::ui::editor,
+    public sight::service::has_services,
+    private sight::service::notifier
 {
 Q_OBJECT;
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor, sight::ui::editor);
 
     /// Creates the service.
     MODULE_IO_DIMSE_API SSliceIndexDicomEditor() noexcept;
@@ -104,9 +104,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::DicomSeries::s_MODIFIED_SIG of s_DICOMSERIES_INOUT to IService::slots::s_UPDATE
+     * Connect data::DicomSeries::MODIFIED_SIG of s_DICOMSERIES_INOUT to service::slots::UPDATE
      */
-    MODULE_IO_DIMSE_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_IO_DIMSE_API service::connections_t getAutoConnections() const override;
 
     /// Updates slider informations and retrieve the image.
     MODULE_IO_DIMSE_API void updating() override;
@@ -144,7 +144,7 @@ private:
     ) const;
 
     /// Contains the worker of the series enquire thread.
-    core::thread::Worker::sptr m_requestWorker;
+    core::thread::worker::sptr m_requestWorker;
 
     /// Contains the slider.
     QPointer<QSlider> m_slider {nullptr};
@@ -153,7 +153,7 @@ private:
     QPointer<QLineEdit> m_lineEdit {nullptr};
 
     /// Contains the timer used to trigger the new slice retrieving.
-    core::thread::Timer::sptr m_sliceTrigger {nullptr};
+    core::thread::timer::sptr m_sliceTrigger {nullptr};
 
     /// Defines the delay to wait to trigger a slice retrieving.
     unsigned int m_delay {500};
@@ -165,7 +165,7 @@ private:
     std::string m_readerConfig;
 
     /// Contains the DICOM reader.
-    sight::io::base::service::IReader::sptr m_dicomReader;
+    sight::io::service::reader::sptr m_dicomReader;
 
     /// Contains the series_set where the DICOM reader sets its output.
     data::SeriesSet::sptr m_series_set;

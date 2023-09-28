@@ -22,20 +22,20 @@
 
 #include "modules/viz/sample/SMesh.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
-#include <service/op/Add.hpp>
+#include <service/op.hpp>
 
-#include <ui/base/GuiRegistry.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/registry.hpp>
+#include <ui/qt/container/widget.hpp>
 
 namespace sight::module::viz::sample
 {
 
-const core::com::Slots::SlotKeyType SMesh::s_UPDATE_CAM_POSITION_SLOT  = "updateCamPosition";
-static const core::com::Slots::SlotKeyType s_UPDATE_CAM_TRANSFORM_SLOT = "updateCamTransform";
+const core::com::slots::key_t SMesh::UPDATE_CAM_POSITION_SLOT  = "updateCamPosition";
+static const core::com::slots::key_t UPDATE_CAM_TRANSFORM_SLOT = "updateCamTransform";
 
-const core::com::Signals::SignalKeyType SMesh::s_CAM_UPDATED_SIG = "camUpdated";
+const core::com::signals::key_t SMesh::CAM_UPDATED_SIG = "camUpdated";
 
 static const std::string s_MESH_INPUT = "mesh";
 
@@ -43,10 +43,10 @@ static const std::string s_MESH_INPUT = "mesh";
 
 SMesh::SMesh() noexcept
 {
-    newSlot(s_UPDATE_CAM_POSITION_SLOT, &SMesh::updateCamPosition, this);
-    newSlot(s_UPDATE_CAM_TRANSFORM_SLOT, &SMesh::updateCamTransform, this);
+    new_slot(UPDATE_CAM_POSITION_SLOT, &SMesh::updateCamPosition, this);
+    new_slot(UPDATE_CAM_TRANSFORM_SLOT, &SMesh::updateCamTransform, this);
 
-    m_sigCamUpdated = newSignal<CamUpdatedSignalType>(s_CAM_UPDATED_SIG);
+    m_sigCamUpdated = new_signal<CamUpdatedSignalType>(CAM_UPDATED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -58,67 +58,67 @@ SMesh::~SMesh() noexcept =
 
 void SMesh::configuring()
 {
-    this->sight::ui::base::IGuiContainer::initialize();
+    this->sight::ui::service::initialize();
 }
 
 //------------------------------------------------------------------------------
 
 void SMesh::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
-    const auto genericSceneId = this->getID() + "-genericScene";
-    sight::ui::base::GuiRegistry::registerSIDContainer(genericSceneId, qtContainer);
+    const auto genericSceneId = this->get_id() + "-genericScene";
+    sight::ui::registry::registerSIDContainer(genericSceneId, qtContainer);
 
     auto mesh = m_mesh.lock();
 
     // create and register the render service
     // create the frame configuration
-    service::IService::ConfigType renderConfig;
+    service::config_t renderConfig;
     renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
     renderConfig.put("scene.layer.<xmlattr>.id", "default");
     renderConfig.put("scene.layer.<xmlattr>.order", "1");
 
-    service::IService::ConfigType interactorCfg;
-    interactorCfg.put("<xmlattr>.uid", this->getID() + "interactorAdaptor");
-    service::IService::ConfigType negatoCfg;
-    negatoCfg.put("<xmlattr>.uid", this->getID() + "meshAdaptor");
-    service::IService::ConfigType cameraCfg;
-    cameraCfg.put("<xmlattr>.uid", this->getID() + "cameraAdaptor");
+    service::config_t interactorCfg;
+    interactorCfg.put("<xmlattr>.uid", this->get_id() + "interactorAdaptor");
+    service::config_t negatoCfg;
+    negatoCfg.put("<xmlattr>.uid", this->get_id() + "meshAdaptor");
+    service::config_t cameraCfg;
+    cameraCfg.put("<xmlattr>.uid", this->get_id() + "cameraAdaptor");
 
     renderConfig.add_child("scene.layer.adaptor", interactorCfg);
     renderConfig.add_child("scene.layer.adaptor", negatoCfg);
     renderConfig.add_child("scene.layer.adaptor", cameraCfg);
 
-    m_renderSrv = service::add("sight::viz::scene3d::SRender");
+    m_renderSrv = sight::service::add("sight::viz::scene3d::SRender");
     m_renderSrv->setConfiguration(renderConfig);
-    m_renderSrv->setID(genericSceneId);
+    m_renderSrv->set_id(genericSceneId);
     m_renderSrv->configure();
 
-    service::IService::ConfigType interactorConfig;
-    m_interactorSrv = service::add("sight::module::viz::scene3d::adaptor::STrackballCamera");
-    m_interactorSrv->setID(this->getID() + "interactorAdaptor");
+    service::config_t interactorConfig;
+    m_interactorSrv = sight::service::add("sight::module::viz::scene3d::adaptor::STrackballCamera");
+    m_interactorSrv->set_id(this->get_id() + "interactorAdaptor");
     m_interactorSrv->configure();
 
-    m_meshSrv = service::add("sight::module::viz::scene3d::adaptor::SMesh");
-    m_meshSrv->setInput(std::const_pointer_cast<data::Object>(mesh->getConstSptr()), "mesh", true);
-    m_meshSrv->setID(this->getID() + "meshAdaptor");
+    m_meshSrv = sight::service::add("sight::module::viz::scene3d::adaptor::SMesh");
+    m_meshSrv->setInput(std::const_pointer_cast<data::Object>(mesh->get_const_sptr()), "mesh", true);
+    m_meshSrv->set_id(this->get_id() + "meshAdaptor");
     m_meshSrv->configure();
 
-    m_cameraTransform = data::Matrix4::New();
+    m_cameraTransform = std::make_shared<data::Matrix4>();
     m_connections.connect(
         m_cameraTransform,
-        data::Object::s_MODIFIED_SIG,
-        this->getSptr(),
-        s_UPDATE_CAM_TRANSFORM_SLOT
+        data::Object::MODIFIED_SIG,
+        this->get_sptr(),
+        UPDATE_CAM_TRANSFORM_SLOT
     );
 
-    m_cameraSrv = service::add("sight::module::viz::scene3d::adaptor::SCamera");
-    m_cameraSrv->setInOut(m_cameraTransform->getSptr(), "transform", true);
-    m_cameraSrv->setID(this->getID() + "cameraAdaptor");
+    m_cameraSrv = sight::service::add("sight::module::viz::scene3d::adaptor::SCamera");
+    m_cameraSrv->setInOut(m_cameraTransform->get_sptr(), "transform", true);
+    m_cameraSrv->set_id(this->get_id() + "cameraAdaptor");
     m_cameraSrv->configure();
 
     m_renderSrv->start().wait();
@@ -129,12 +129,12 @@ void SMesh::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+service::connections_t SMesh::getAutoConnections() const
 {
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
-    KeyConnectionsMap connections;
-    connections.push(s_MESH_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_MESH_INPUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -154,12 +154,12 @@ void SMesh::stopping()
     m_interactorSrv->stop().wait();
     m_renderSrv->stop().wait();
 
-    sight::ui::base::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
+    sight::ui::registry::unregisterSIDContainer(this->get_id() + "-genericScene");
 
-    service::unregisterService(m_cameraSrv);
-    service::unregisterService(m_meshSrv);
-    service::unregisterService(m_interactorSrv);
-    service::unregisterService(m_renderSrv);
+    sight::service::remove(m_cameraSrv);
+    sight::service::remove(m_meshSrv);
+    sight::service::remove(m_interactorSrv);
+    sight::service::remove(m_renderSrv);
 
     m_cameraSrv.reset();
     m_meshSrv.reset();
@@ -176,7 +176,7 @@ void SMesh::stopping()
 
 void SMesh::updateCamPosition(data::Matrix4::sptr _transform)
 {
-    m_cameraTransform->shallowCopy(_transform);
+    m_cameraTransform->shallow_copy(_transform);
     m_cameraSrv->update().wait();
 }
 
@@ -185,8 +185,8 @@ void SMesh::updateCamPosition(data::Matrix4::sptr _transform)
 void SMesh::updateCamTransform()
 {
     {
-        core::com::Connection::Blocker block(m_sigCamUpdated->getConnection(this->slot(s_UPDATE_CAM_TRANSFORM_SLOT)));
-        m_sigCamUpdated->asyncEmit(m_cameraTransform);
+        core::com::connection::blocker block(m_sigCamUpdated->get_connection(this->slot(UPDATE_CAM_TRANSFORM_SLOT)));
+        m_sigCamUpdated->async_emit(m_cameraTransform);
     }
 }
 

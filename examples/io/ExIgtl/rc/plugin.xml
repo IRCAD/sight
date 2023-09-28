@@ -4,7 +4,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExIgtl_AppCfg</id>
@@ -27,7 +27,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <toolBar />
                     <frame>
@@ -41,7 +41,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <editor />
@@ -70,13 +70,13 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="loadMeshAct" type="sight::module::ui::base::SAction" />
+            <service uid="loadMeshAct" type="sight::module::ui::SAction" />
 
-            <service uid="startServerAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="startServerAct" type="sight::module::ui::com::SStarter">
                 <start uid="matrixNetworkSenderSrv" />
             </service>
 
-            <service uid="stopServerAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="stopServerAct" type="sight::module::ui::com::SStarter">
                 <stop uid="matrixNetworkSenderSrv" />
                 <state visible="false" />
             </service>
@@ -90,11 +90,11 @@
                 </preference>
             </service>
 
-            <service uid="startClientAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="startClientAct" type="sight::module::ui::com::SStarter">
                 <start uid="matrixNetworkListenerSrv" />
             </service>
 
-            <service uid="stopClientAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="stopClientAct" type="sight::module::ui::com::SStarter">
                 <stop uid="matrixNetworkListenerSrv" />
                 <state visible="false" />
             </service>
@@ -150,7 +150,7 @@
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="objectMeshUid" />
             </service>
 

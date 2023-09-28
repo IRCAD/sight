@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 #include "igtlMessageHeader.h"
 #include "igtlOSUtil.h"
 
-#include <core/FactoryRegistry.hpp>
-#include <core/spyLog.hpp>
-#include <core/thread/Worker.hpp>
+#include <core/factory_registry.hpp>
+#include <core/spy_log.hpp>
+#include <core/thread/worker.hpp>
 
 #include <io/igtl/Server.hpp>
 
@@ -68,7 +68,7 @@ struct Configuration
     std::string deviceOut;
     std::string deviceType;
     std::uint16_t port {};
-    sight::core::thread::Worker::sptr worker;
+    sight::core::thread::worker::sptr worker;
 };
 
 /**
@@ -134,7 +134,7 @@ std::map<std::string, Configuration> initialize(std::string configFile)
         //check if port num for this config isn't used
         std::map<std::string, Configuration>::iterator it;
         auto server               = std::make_shared<sight::io::igtl::Server>();
-        auto worker               = sight::core::thread::Worker::New();
+        auto worker               = sight::core::thread::worker::make();
         bool serverAlreadyStarted = false;
 
         for(it = association.begin() ; it != association.end() ; ++it)
@@ -198,7 +198,7 @@ int main(int argc, char** argv)
     std::map<std::string, Configuration> associationDeviceServer = initialize(configFile);
 
     auto receiveServer = std::make_shared<sight::io::igtl::Server>();
-    auto worker        = sight::core::thread::Worker::New();
+    auto worker        = sight::core::thread::worker::make();
     try
     {
         receiveServer->start(port);

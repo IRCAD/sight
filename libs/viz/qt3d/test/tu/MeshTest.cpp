@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,7 +71,7 @@ void MeshTest::setCubeMesh()
     auto* scene = new sight::viz::qt3d::core::GenericScene(false);
     scene->setCamera(scene->getCamera());
 
-    const data::Mesh::sptr mesh = data::Mesh::New();
+    const data::Mesh::sptr mesh = std::make_shared<data::Mesh>();
     mesh->reserve(8, 12, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
 
     const auto lock = mesh->dump_lock();
@@ -155,7 +155,7 @@ void MeshTest::centerCameraOnCube()
     auto* const scene  = new sight::viz::qt3d::core::GenericScene(false);
     auto* const camera = scene->getCamera();
 
-    const data::Mesh::sptr mesh = data::Mesh::New();
+    const data::Mesh::sptr mesh = std::make_shared<data::Mesh>();
     mesh->reserve(8, 12, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
 
     const auto lock = mesh->dump_lock();

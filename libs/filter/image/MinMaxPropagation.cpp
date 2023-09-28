@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "filter/image/MinMaxPropagation.hpp"
 
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -207,7 +207,7 @@ public:
     bool isInROI(const IndexType& index) const
     {
         const auto dumpLock = m_roi->dump_lock();
-        const auto size     = m_roi->getSize();
+        const auto size     = m_roi->size();
 
         const auto* roiVal =
             reinterpret_cast<const data::Image::BufferType*>(
@@ -332,7 +332,7 @@ ImageDiff MinMaxPropagation::propagate(
     const Mode mode
 )
 {
-    const core::Type type               = m_inImage->getType();
+    const core::type type               = m_inImage->getType();
     const std::size_t outImagePixelSize = m_outImage->getType().size() * m_outImage->numComponents();
 
     MinMaxPropagator::Parameters params;
@@ -346,7 +346,7 @@ ImageDiff MinMaxPropagation::propagate(
     params.mode        = mode;
     params.radius      = radius;
 
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, MinMaxPropagator>::invoke(type, params);
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, MinMaxPropagator>::invoke(type, params);
 
     m_seeds.clear();
 

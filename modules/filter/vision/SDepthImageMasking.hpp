@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Image.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -37,7 +37,7 @@ namespace sight::module::filter::vision
  * @brief   Service that learns a background depth image in a mask to perform a depth difference and output a foregroud
  * image.
  *
- * @see service::IFilter
+ * @see service::filter
  *
  * @section Slots Slots
  * - \b setBackground() : Slot to learn the background depth image.
@@ -68,11 +68,11 @@ namespace sight::module::filter::vision
  * - \b foregroundImage [sight::data::Image] : Image containing the foreground pixels and background pixels are
  * transparent.
  */
-class MODULE_FILTER_VISION_CLASS_API SDepthImageMasking : public service::IFilter
+class MODULE_FILTER_VISION_CLASS_API SDepthImageMasking : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDepthImageMasking, service::IFilter);
+    SIGHT_DECLARE_SERVICE(SDepthImageMasking, service::filter);
 
     /// Initializes slots
     MODULE_FILTER_VISION_CLASS_API SDepthImageMasking() noexcept;
@@ -81,7 +81,7 @@ public:
     MODULE_FILTER_VISION_CLASS_API ~SDepthImageMasking() noexcept override;
 
     /// Defines auto connection for this service (update slot) to the depth image (objectModified)
-    service::IService::KeyConnectionsMap getAutoConnections() const override;
+    service::connections_t getAutoConnections() const override;
 
 protected:
 

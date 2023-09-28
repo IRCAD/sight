@@ -36,23 +36,12 @@
 #include <data/Series.hpp>
 #include <data/Vector.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::Series);
 
 namespace sight::io::dicom::writer
 {
-
-//------------------------------------------------------------------------------
-
-Series::Series(io::base::writer::IObjectWriter::Key /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-Series::~Series()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -74,11 +63,11 @@ void Series::write()
     if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage)
        || sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MRImageStorage))
     {
-        const auto imageSeries = data::ImageSeries::dynamicCast(series);
+        const auto imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(series);
         SIGHT_ASSERT("sight::data::ImageSeries not instanced", imageSeries);
 
         // Write image
-        io::dicom::writer::iod::CTMRImageIOD imageIOD(instance, this->getFolder() / "im");
+        io::dicom::writer::iod::CTMRImageIOD imageIOD(instance, this->get_folder() / "im");
         imageIOD.write(series);
 
         data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*imageSeries);
@@ -89,12 +78,12 @@ void Series::write()
             // Write Landmarks and Distances
             if(m_fiducialsExportMode == SPATIAL_FIDUCIALS)
             {
-                io::dicom::writer::iod::SpatialFiducialsIOD spatialFiducialsIOD(instance, this->getFolder() / "imSF");
+                io::dicom::writer::iod::SpatialFiducialsIOD spatialFiducialsIOD(instance, this->get_folder() / "imSF");
                 spatialFiducialsIOD.write(series);
             }
             else
             {
-                io::dicom::writer::iod::ComprehensiveSRIOD documentIOD(instance, this->getFolder() / "imSR",
+                io::dicom::writer::iod::ComprehensiveSRIOD documentIOD(instance, this->get_folder() / "imSR",
                                                                        m_fiducialsExportMode == COMPREHENSIVE_3D_SR);
                 documentIOD.write(series);
             }
@@ -102,18 +91,18 @@ void Series::write()
     }
     else if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::EnhancedUSVolumeStorage))
     {
-        auto seriesSet = data::SeriesSet::New();
+        auto seriesSet = std::make_shared<data::SeriesSet>();
         seriesSet->push_back(std::const_pointer_cast<data::Series>(series));
 
-        auto writer = io::dicom::Writer::New();
+        auto writer = std::make_shared<io::dicom::Writer>();
         writer->setObject(seriesSet);
-        writer->setFolder(getFolder());
+        writer->set_folder(get_folder());
         writer->write();
     }
     else if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::SurfaceSegmentationStorage))
     {
         SPTR(io::dicom::container::DicomInstance) imageInstance = this->getImageInstance();
-        io::dicom::writer::iod::SurfaceSegmentationIOD iod(instance, imageInstance, this->getFolder() / "imSeg");
+        io::dicom::writer::iod::SurfaceSegmentationIOD iod(instance, imageInstance, this->get_folder() / "imSeg");
         iod.write(series);
     }
     else

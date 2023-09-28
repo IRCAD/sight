@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <core/com/Signal.hpp>
+#include <core/com/signal.hpp>
 
 #include <viz/scene3d/config.hpp>
-#include <viz/scene3d/interactor/IInteractor.hpp>
+#include <viz/scene3d/interactor/base.hpp>
 
 namespace sight::viz::scene3d::interactor
 {
@@ -35,12 +35,12 @@ namespace sight::viz::scene3d::interactor
  *
  * Emits a signal with the relevant intersection data when picking succeeds.
  */
-class VIZ_SCENE3D_CLASS_API MeshPickerInteractor final : public sight::viz::scene3d::interactor::IInteractor
+class VIZ_SCENE3D_CLASS_API MeshPickerInteractor final : public sight::viz::scene3d::interactor::base
 {
 public:
 
     /// Defines the type of signal sent when a picking query succeeded.
-    using PointClickedSigType = core::com::Signal<void (data::tools::PickingInfo)>;
+    using PointClickedSigType = core::com::signal<void (data::tools::PickingInfo)>;
 
     /// Initializes the picker.
     VIZ_SCENE3D_API MeshPickerInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true) noexcept;

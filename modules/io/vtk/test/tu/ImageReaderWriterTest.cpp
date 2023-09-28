@@ -22,13 +22,13 @@
 
 #include "ImageReaderWriterTest.hpp"
 
-#include <core/os/TempPath.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/os/temp_path.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 
-#include <service/base.hpp>
+#include <service/op.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
@@ -54,11 +54,11 @@ void runImageSrv(
     const SPTR(data::Object)& image
 )
 {
-    service::IService::sptr srv = service::add(srvname);
+    service::base::sptr srv = service::add(srvname);
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-    if(srv->isA("sight::io::base::service::IReader"))
+    if(srv->is_a("sight::io::service::reader"))
     {
         srv->setInOut(image, "data");
     }
@@ -91,7 +91,7 @@ void ImageReaderWriterTest::tearDown()
 
 boost::property_tree::ptree getIOConfiguration(const std::filesystem::path& file)
 {
-    service::IService::ConfigType readerSrvCfg;
+    service::config_t readerSrvCfg;
     readerSrvCfg.add("file", file.string());
 
     return readerSrvCfg;
@@ -108,7 +108,7 @@ void ImageReaderWriterTest::testVtkImageReader()
         std::filesystem::exists(file)
     );
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
 
     // Data expected
     data::Image::Spacing spacingExpected;
@@ -131,7 +131,7 @@ void ImageReaderWriterTest::testVtkImageReader()
     // Data read.
     data::Image::Spacing spacingRead = image->getSpacing();
     data::Image::Origin originRead   = image->getOrigin();
-    data::Image::Size sizeRead       = image->getSize();
+    data::Image::Size sizeRead       = image->size();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -161,7 +161,7 @@ void ImageReaderWriterTest::testVtiImageReader()
         std::filesystem::exists(file)
     );
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
@@ -180,12 +180,12 @@ void ImageReaderWriterTest::testVtiImageReader()
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
 
-    core::Type expectedType("int8"); // MHD File image type : MET_CHAR
+    core::type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
     data::Image::Spacing spacingRead = image->getSpacing();
     data::Image::Origin originRead   = image->getOrigin();
-    data::Image::Size sizeRead       = image->getSize();
+    data::Image::Size sizeRead       = image->size();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -216,7 +216,7 @@ void ImageReaderWriterTest::testMhdImageReader()
         std::filesystem::exists(file)
     );
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
@@ -235,12 +235,12 @@ void ImageReaderWriterTest::testMhdImageReader()
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
 
-    core::Type expectedType("int8"); // MHD File image type : MET_CHAR
+    core::type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
     data::Image::Spacing spacingRead = image->getSpacing();
     data::Image::Origin originRead   = image->getOrigin();
-    data::Image::Size sizeRead       = image->getSize();
+    data::Image::Size sizeRead       = image->size();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -265,17 +265,17 @@ void ImageReaderWriterTest::testMhdImageReader()
 
 void ImageReaderWriterTest::testImageReaderExtension()
 {
-    core::os::TempFile tmpFile;
+    core::os::temp_file tmpFile;
 
     std::ofstream o_file(tmpFile, std::ios::out | std::ios::trunc | std::ios::binary);
     o_file.close();
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
 
     {
         const std::string srvname("sight::module::io::vtk::SImageReader");
 
-        service::IService::sptr srv = service::add(srvname);
+        service::base::sptr srv = service::add(srvname);
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
@@ -284,7 +284,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
         CPPUNIT_ASSERT_NO_THROW(srv->setConfiguration(getIOConfiguration(tmpFile)));
         CPPUNIT_ASSERT_NO_THROW(srv->configure());
         CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
-        CPPUNIT_ASSERT_THROW(srv->update().get(), core::tools::Failed);
+        CPPUNIT_ASSERT_THROW(srv->update().get(), core::tools::failed);
         CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
         service::remove(srv);
     }
@@ -294,7 +294,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
 void ImageReaderWriterTest::testVtkImageWriter()
 {
     // Data to write
-    core::Type type                      = core::Type::UINT8;
+    core::type type                      = core::type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -302,7 +302,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
     const data::Image::Origin originExpected = {-5.6, 15.16, 11.11
     };
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
     utestData::generator::Image::generateImage(
         image,
         sizeExpected,
@@ -314,19 +314,19 @@ void ImageReaderWriterTest::testVtkImageWriter()
     );
 
     // Write to vtk image.
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto file = tmpDir / "tempFile.vtk";
 
     runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
-    data::Image::sptr imageFromDisk = data::Image::New();
+    data::Image::sptr imageFromDisk = std::make_shared<data::Image>();
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
     data::Image::Spacing spacingRead = image->getSpacing();
     data::Image::Origin originRead   = image->getOrigin();
-    data::Image::Size sizeRead       = image->getSize();
+    data::Image::Size sizeRead       = image->size();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -347,8 +347,8 @@ void ImageReaderWriterTest::testVtkImageWriter()
     const auto imageDumpLock         = image->dump_lock();
     const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
-    const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
-    const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
+    const char* const ptrOnGeneratedImage = static_cast<char*>(image->buffer());
+    const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->buffer());
 
     CPPUNIT_ASSERT_EQUAL(image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT(std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage));
@@ -358,18 +358,18 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
 void ImageReaderWriterTest::testVtkImageSeriesWriter()
 {
-    core::Type type  = core::Type::FLOAT;
-    auto imageSeries = data::ImageSeries::New();
+    core::type type  = core::type::FLOAT;
+    auto imageSeries = std::make_shared<data::ImageSeries>();
     utestData::generator::Image::generateRandomImage(imageSeries, type);
 
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto file = tmpDir / "imageSeries.vtk";
 
     // Write image series
     runImageSrv("sight::module::io::vtk::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
 
     // Read image series
-    auto imageSeries2 = data::ImageSeries::New();
+    auto imageSeries2 = std::make_shared<data::ImageSeries>();
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageSeries2);
 
     imageSeries2->setWindowCenter(imageSeries->getWindowCenter());
@@ -383,7 +383,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 void ImageReaderWriterTest::testVtiImageWriter()
 {
     // Data to write
-    core::Type type                      = core::Type::UINT8;
+    core::type type                      = core::type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -391,7 +391,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
     const data::Image::Origin originExpected = {-5.6, 15.16, 11.11
     };
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
     utestData::generator::Image::generateImage(
         image,
         sizeExpected,
@@ -403,19 +403,19 @@ void ImageReaderWriterTest::testVtiImageWriter()
     );
 
     // Write to vtk image.
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto file = tmpDir / "tempFile.vti";
 
     runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
-    data::Image::sptr imageFromDisk = data::Image::New();
+    data::Image::sptr imageFromDisk = std::make_shared<data::Image>();
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
     data::Image::Spacing spacingRead = image->getSpacing();
     data::Image::Origin originRead   = image->getOrigin();
-    data::Image::Size sizeRead       = image->getSize();
+    data::Image::Size sizeRead       = image->size();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -436,8 +436,8 @@ void ImageReaderWriterTest::testVtiImageWriter()
     const auto imageDumpLock         = image->dump_lock();
     const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
-    const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
-    const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
+    const char* const ptrOnGeneratedImage = static_cast<char*>(image->buffer());
+    const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->buffer());
 
     CPPUNIT_ASSERT_EQUAL(image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT(std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage));
@@ -448,7 +448,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
 void ImageReaderWriterTest::testMhdImageWriter()
 {
     // Data to write
-    core::Type type                      = core::Type::UINT8;
+    core::type type                      = core::type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -456,7 +456,7 @@ void ImageReaderWriterTest::testMhdImageWriter()
     const data::Image::Origin originExpected = {-5.6, 15.16, 11.11
     };
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
     utestData::generator::Image::generateImage(
         image,
         sizeExpected,
@@ -468,19 +468,19 @@ void ImageReaderWriterTest::testMhdImageWriter()
     );
 
     // Write to vtk image.
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto file = tmpDir / "tempFile.mhd";
 
     runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
-    data::Image::sptr imageFromDisk = data::Image::New();
+    data::Image::sptr imageFromDisk = std::make_shared<data::Image>();
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
     data::Image::Spacing spacingRead = image->getSpacing();
     data::Image::Origin originRead   = image->getOrigin();
-    data::Image::Size sizeRead       = image->getSize();
+    data::Image::Size sizeRead       = image->size();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -501,8 +501,8 @@ void ImageReaderWriterTest::testMhdImageWriter()
     const auto imageDumpLock         = image->dump_lock();
     const auto imageFromDiskDumpLock = imageFromDisk->dump_lock();
 
-    const char* const ptrOnGeneratedImage = static_cast<char*>(image->getBuffer());
-    const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->getBuffer());
+    const char* const ptrOnGeneratedImage = static_cast<char*>(image->buffer());
+    const char* const ptrOnReadImage      = static_cast<char*>(imageFromDisk->buffer());
 
     CPPUNIT_ASSERT_EQUAL(image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT(std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage));
@@ -513,12 +513,12 @@ void ImageReaderWriterTest::testMhdImageWriter()
 void ImageReaderWriterTest::testImageWriterExtension()
 {
     // Data to write
-    const auto type = core::Type::UINT8;
+    const auto type = core::type::UINT8;
     const data::Image::Size sizeExpected {10, 20, 30};
     const data::Image::Spacing spacingExpected {0.24, 1.07, 2.21};
     const data::Image::Origin originExpected {-5.6, 15.16, 11.11};
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
     utestData::generator::Image::generateImage(
         image,
         sizeExpected,
@@ -530,13 +530,13 @@ void ImageReaderWriterTest::testImageWriterExtension()
     );
 
     // Write to vtk image.
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto file = tmpDir / "tempFile.xxx";
 
     {
         const std::string srvname("sight::module::io::vtk::SImageWriter");
 
-        service::IService::sptr srv = service::add(srvname);
+        service::base::sptr srv = service::add(srvname);
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
@@ -544,7 +544,7 @@ void ImageReaderWriterTest::testImageWriterExtension()
         CPPUNIT_ASSERT_NO_THROW(srv->setConfiguration(getIOConfiguration(file)));
         CPPUNIT_ASSERT_NO_THROW(srv->configure());
         CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
-        CPPUNIT_ASSERT_THROW(srv->update().get(), core::tools::Failed);
+        CPPUNIT_ASSERT_THROW(srv->update().get(), core::tools::failed);
         CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
         service::remove(srv);
     }

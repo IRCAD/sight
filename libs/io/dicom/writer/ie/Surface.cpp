@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include "io/dicom/helper/DicomDataWriter.hxx"
 
 #include <core/runtime/path.hpp>
-#include <core/tools/dateAndTime.hpp>
+#include <core/tools/date_and_time.hpp>
 
 #include <data/Reconstruction.hpp>
 #include <data/Series.hpp>
@@ -38,7 +38,7 @@
 
 #include <geometry/data/Mesh.hpp>
 
-#include <io/base/reader/DictionaryReader.hpp>
+#include <io/__/reader/DictionaryReader.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -58,7 +58,7 @@ Surface::Surface(
     const SPTR(io::dicom::container::DicomInstance)& instance,
     SPTR(io::dicom::container::DicomInstance)imageInstance,
     const data::ModelSeries::csptr& series,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -196,7 +196,7 @@ void writeSegmentIdentification(
     const std::string& structureType,
     const gdcm::SmartPointer<gdcm::Segment>& segment,
     const io::dicom::helper::SegmentedPropertyRegistry& registry,
-    core::log::Logger::sptr logger
+    core::log::logger::sptr logger
 )
 {
     // Check that the structure name has an entry in the registry

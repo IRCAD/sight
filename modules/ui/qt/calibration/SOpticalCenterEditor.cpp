@@ -24,7 +24,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -55,7 +55,7 @@ void SOpticalCenterEditor::configuring()
 void SOpticalCenterEditor::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* vLayout  = new QVBoxLayout();
     auto* cxLayout = new QHBoxLayout();
@@ -112,7 +112,7 @@ void SOpticalCenterEditor::updating()
 {
     const auto camera = m_camera.lock();
     SIGHT_ASSERT("object '" << s_CAMERA << "' is not defined.", camera);
-    SIGHT_ASSERT("Camera " + camera->getID() + " must be calibrated.", camera->getIsCalibrated());
+    SIGHT_ASSERT("Camera " + camera->get_id() + " must be calibrated.", camera->getIsCalibrated());
 
     const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
@@ -150,13 +150,13 @@ void SOpticalCenterEditor::updating()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() const
+service::connections_t SOpticalCenterEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_CAMERA, data::Camera::s_INTRINSIC_CALIBRATED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_CAMERA, data::Camera::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_CAMERA, data::Camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE);
+    connections.push(s_CAMERA, data::Camera::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_MATRIX, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -174,10 +174,10 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
 
     m_cxLabel->setText(QString("%1").arg(value));
 
-    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 
@@ -194,10 +194,10 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
 
     m_cyLabel->setText(QString("%1").arg(value));
 
-    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 
@@ -214,10 +214,10 @@ void SOpticalCenterEditor::onFySliderChanged(int value)
 
     m_fyLabel->setText(QString("%1").arg(value));
 
-    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 

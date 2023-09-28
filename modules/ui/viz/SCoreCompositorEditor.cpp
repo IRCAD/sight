@@ -27,7 +27,7 @@
 #include <service/macros.hpp>
 #include <service/registry.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/SRender.hpp>
 
@@ -66,7 +66,7 @@ void SCoreCompositorEditor::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
@@ -185,11 +185,11 @@ void SCoreCompositorEditor::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    const auto renderers = service::getServices("sight::viz::scene3d::SRender");
+    const auto renderers = sight::service::getServices("sight::viz::scene3d::SRender");
 
     for(const auto& srv : renderers)
     {
-        sight::viz::scene3d::SRender::sptr render = sight::viz::scene3d::SRender::dynamicCast(srv);
+        sight::viz::scene3d::SRender::sptr render = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(srv);
 
         for(auto& layerMap : render->getLayers())
         {
@@ -197,7 +197,7 @@ void SCoreCompositorEditor::refreshRenderers()
             if(layerMap.second->isCoreCompositorEnabled())
             {
                 const std::string id = layerMap.first;
-                std::string renderID = render->getID();
+                std::string renderID = render->get_id();
                 m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
                 m_layers.push_back(layerMap.second);
             }

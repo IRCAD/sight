@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 
 #include <queue>
 
@@ -70,12 +70,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b textureAlpha (optional, bool, default=false): generates alpha value for the texture if the image contains only
  * 1 or 3 channels. It may be slower.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SMeshList final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API SMeshList final : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMeshList, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SMeshList, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SMeshList() noexcept;
@@ -95,9 +95,9 @@ protected:
      * @brief Proposal to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_ADD_MESH_SLOT
+     * Connect data::Matrix4::MODIFIED_SIG of s_TRANSFORM_INOUT to ADD_MESH_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
 
     /// Does nothing.
     MODULE_VIZ_SCENE3D_API void updating() override;
@@ -119,9 +119,9 @@ private:
     {
         data::Matrix4::sptr m_matrix;
         data::Image::sptr m_image;
-        sight::viz::scene3d::IAdaptor::sptr m_transform;
-        sight::viz::scene3d::IAdaptor::sptr m_mesh;
-        sight::viz::scene3d::IAdaptor::sptr m_texture;
+        sight::viz::scene3d::adaptor::sptr m_transform;
+        sight::viz::scene3d::adaptor::sptr m_mesh;
+        sight::viz::scene3d::adaptor::sptr m_texture;
         bool m_isEnabled {false}; ///< set to true when the instance has been added once
     };
 

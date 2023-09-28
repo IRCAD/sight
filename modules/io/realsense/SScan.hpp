@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <data/CameraSet.hpp>
 #include <data/Mesh.hpp>
 
-#include <io/base/service/IRGBDGrabber.hpp>
+#include <io/__/service/rgbd_grabber.hpp>
 
 #include <librealsense2/rs.hpp>
 
@@ -176,20 +176,20 @@ namespace sight::module::io::realsense
  * - \b recordFile (optional): path & filename where recording will be saved.
  */
 
-class MODULE_IO_REALSENSE_CLASS_API SScan : public sight::io::base::service::IRGBDGrabber
+class MODULE_IO_REALSENSE_CLASS_API SScan : public sight::io::service::rgbd_grabber
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SScan, sight::io::base::service::IRGBDGrabber);
+    SIGHT_DECLARE_SERVICE(SScan, sight::io::service::rgbd_grabber);
 
     /// Signal send when Distance is computed.
-    typedef core::com::Signal<void (double)> DistanceComputedSignalType;
+    typedef core::com::signal<void (double)> DistanceComputedSignalType;
 
     /// Signal send when stream from a realsense device, can be useful to enable/disable some gui actions.
-    typedef core::com::Signal<void (void)> DevicePlayedSignalType;
+    typedef core::com::signal<void (void)> DevicePlayedSignalType;
 
     /// Signal send when stream from a file (.bag), can be useful to enable/disable some gui actions.
-    typedef core::com::Signal<void (void)> FilePlayedSignalType;
+    typedef core::com::signal<void (void)> FilePlayedSignalType;
 
     /// Constructor. Initializes signals/slots.
     MODULE_IO_REALSENSE_API SScan() noexcept;
@@ -197,7 +197,7 @@ public:
     /// Destructor. Calls stopCamera()
     MODULE_IO_REALSENSE_API ~SScan() noexcept override;
     ///SLOT: When "parameter_t" parameter changes
-    MODULE_IO_REALSENSE_API void setParameter(ui::base::parameter_t value, std::string key) override;
+    MODULE_IO_REALSENSE_API void setParameter(ui::parameter_t value, std::string key) override;
 
 protected:
 
@@ -315,12 +315,12 @@ private:
     /// SLOT : Pause the grabbing
     void pauseCamera() override;
 
-    /// Does nothing (re-implemented from IGrabber)
+    /// Does nothing (re-implemented from grabber)
     void toggleLoopMode() override
     {
     }
 
-    /// Does nothing (re-implemented from IGrabber)
+    /// Does nothing (re-implemented from grabber)
     void setPosition(int64_t /*position*/) override
     {
     }

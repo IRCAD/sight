@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <viz/scene3d/ILight.hpp>
 
@@ -53,13 +53,13 @@ namespace sight::module::ui::viz
  *  <service uid=SLightEditorUid" type="module::ui::viz::SLightEditor" />
  */
 class MODULE_UI_VIZ_CLASS_API SLightEditor : public QObject,
-                                             public sight::ui::base::IEditor
+                                             public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SLightEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SLightEditor, sight::ui::editor);
 
     /// Creates the service.
     MODULE_UI_VIZ_API SLightEditor() noexcept;

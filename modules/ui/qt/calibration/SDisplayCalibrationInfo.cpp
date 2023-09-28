@@ -22,9 +22,9 @@
 
 #include "modules/ui/qt/calibration/SDisplayCalibrationInfo.hpp"
 
-#include <core/com/Proxy.hpp>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/proxy.hpp>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 
 #include <data/String.hpp>
 
@@ -37,8 +37,8 @@ namespace sight::module::ui::qt::calibration
 
 //------------------------------------------------------------------------------
 
-static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage";
-static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT   = "stopConfig";
+static const core::com::slots::key_t DISPLAY_IMAGE_SLOT = "displayImage";
+static const core::com::slots::key_t STOP_CONFIG_SLOT   = "stopConfig";
 
 static const std::string s_SINGLE_IMAGE_CONFIG = "singleImageConfig";
 
@@ -48,8 +48,8 @@ static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 SDisplayCalibrationInfo::SDisplayCalibrationInfo() noexcept
 {
-    newSlot(s_DISPLAY_IMAGE_SLOT, &SDisplayCalibrationInfo::displayImage, this);
-    newSlot(s_STOP_CONFIG_SLOT, &SDisplayCalibrationInfo::stopConfig, this);
+    new_slot(DISPLAY_IMAGE_SLOT, &SDisplayCalibrationInfo::displayImage, this);
+    new_slot(STOP_CONFIG_SLOT, &SDisplayCalibrationInfo::stopConfig, this);
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ SDisplayCalibrationInfo::~SDisplayCalibrationInfo() noexcept =
 
 void SDisplayCalibrationInfo::starting()
 {
-    m_proxychannel = this->getID() + "_stopConfig";
+    m_proxychannel = this->get_id() + "_stopConfig";
 }
 
 //------------------------------------------------------------------------------
@@ -70,8 +70,8 @@ void SDisplayCalibrationInfo::stopping()
 {
     if(m_configMgr)
     {
-        core::com::Proxy::sptr proxies = core::com::Proxy::get();
-        proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
+        core::com::proxy::sptr proxies = core::com::proxy::get();
+        proxies->disconnect(m_proxychannel, this->slot(STOP_CONFIG_SLOT));
         m_configMgr->stopAndDestroy();
         m_configMgr.reset();
     }
@@ -117,19 +117,19 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
         service::FieldAdaptorType replaceMap;
 
         data::Image::csptr img1 = calInfo1->getImage(idx);
-        replaceMap["imageId1"]        = img1->getID();
-        replaceMap["calibrationData"] = calInfo1->getID();
+        replaceMap["imageId1"]        = img1->get_id();
+        replaceMap["calibrationData"] = calInfo1->get_id();
         data::PointList::csptr pointList1 = calInfo1->getPointList(img1);
-        replaceMap["pointListId1"] = pointList1->getID();
+        replaceMap["pointListId1"] = pointList1->get_id();
 
         if(calInfo2)
         {
             strConfig = std::string(s_TWO_IMAGES_CONFIG);
 
             data::Image::csptr img2 = calInfo2->getImage(idx);
-            replaceMap["imageId2"] = img2->getID();
+            replaceMap["imageId2"] = img2->get_id();
             data::PointList::csptr pointList2 = calInfo2->getPointList(img2);
-            replaceMap["pointListId2"] = pointList2->getID();
+            replaceMap["pointListId2"] = pointList2->get_id();
         }
 
         replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
@@ -141,13 +141,13 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
         );
 
         // Launch configuration
-        m_configMgr = service::IAppConfigManager::New();
+        m_configMgr = service::app_config_manager::make();
         m_configMgr->setConfig(config);
         m_configMgr->launch();
 
         // Proxy to be notified of the window closure
-        core::com::Proxy::sptr proxies = core::com::Proxy::get();
-        proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
+        core::com::proxy::sptr proxies = core::com::proxy::get();
+        proxies->connect(m_proxychannel, this->slot(STOP_CONFIG_SLOT));
     }
 }
 

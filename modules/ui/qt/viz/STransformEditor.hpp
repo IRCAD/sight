@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Matrix4.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -61,13 +61,13 @@ namespace sight::module::ui::qt::viz
  * - \b max (optional): set the maximum value for translation/rotation (default: translation=+300, rotation=180).
  */
 class MODULE_UI_QT_CLASS_API STransformEditor : public QObject,
-                                                public sight::ui::base::IEditor
+                                                public sight::ui::editor
 {
 Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(STransformEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(STransformEditor, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API STransformEditor() noexcept;
@@ -80,17 +80,17 @@ protected:
     /// This method is used to configure the service parameters:
     MODULE_UI_QT_API void configuring() override;
 
-    ///This method launches the sight::ui::base::IGuiContainer::create method.
+    ///This method launches the sight::ui::service::create method.
     MODULE_UI_QT_API void starting() override;
 
-    ///This method launches the sight::ui::base::IGuiContainer::destroy method.
+    ///This method launches the sight::ui::service::destroy method.
     MODULE_UI_QT_API void stopping() override;
 
     /// Updates Slider value
     MODULE_UI_QT_API void updating() override;
 
-    // Connect data::Matrix4::s_MODIFIED_SIG to update slot
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    // Connect data::Matrix4::MODIFIED_SIG to update slot
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
 private Q_SLOTS:
 

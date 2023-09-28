@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 
 #include <data/Image.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QPdfWriter>
 #include <QtWidgets>
@@ -64,7 +64,7 @@ namespace sight::module::io::document
  * - \b container(optional) : Defines the SID or the WID of the container to write.
  */
 
-class MODULE_IO_DOCUMENT_CLASS_API SPdfWriter : public sight::io::base::service::IWriter
+class MODULE_IO_DOCUMENT_CLASS_API SPdfWriter : public sight::io::service::writer
 {
 public:
 
@@ -75,7 +75,7 @@ public:
     typedef std::vector<QWidget*> ContainersListType;
     typedef std::vector<std::string> ContainersIDsType;
 
-    SIGHT_DECLARE_SERVICE(SPdfWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SPdfWriter, sight::io::service::writer);
     /**
      * @brief Constructor : does nothing
      */
@@ -88,7 +88,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from service::IService )
+    /** @name Service methods ( override from service::base )
      * @{
      */
 
@@ -108,7 +108,7 @@ protected:
     MODULE_IO_DOCUMENT_API void stopping() override;
 
     /**
-     * @brief Configure service. This method is called by configure() from base service ( service::IService )
+     * @brief Configure service. This method is called by configure() from base service ( service::base )
      *
      * Gets the images or containers from their IDs.
      *
@@ -143,7 +143,7 @@ protected:
     /// @}
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_DOCUMENT_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_DOCUMENT_API sight::io::service::IOPathType getIOPathType() const override;
 
 private:
 

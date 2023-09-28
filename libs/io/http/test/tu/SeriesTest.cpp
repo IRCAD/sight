@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <data/DicomSeries.hpp>
 
-#include <utest/Exception.hpp>
+#include <utest/exception.hpp>
 
 #include <cppunit/Exception.h>
 
@@ -103,7 +103,7 @@ void SeriesTest::testSeries()
     const auto& series = seriesVector[0];
     CPPUNIT_ASSERT(series);
 
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(series);
+    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(series);
     CPPUNIT_ASSERT(dicomSeries);
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesInstanceUID(), seriesInstanceUID.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesDate(), seriesDate.toStdString());

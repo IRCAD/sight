@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,18 +23,18 @@
 #include "SScan.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
-#include <core/location/SingleFile.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
+#include <core/location/single_file.hpp>
 #include <core/runtime/path.hpp>
-#include <core/Type.hpp>
+#include <core/type.hpp>
 
 #include <data/Matrix4.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/SelectorDialog.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/selector.hpp>
 
 #include <librealsense2/rs_advanced_mode.hpp>
 
@@ -45,7 +45,7 @@
 namespace sight::module::io::realsense
 {
 
-namespace fwClock = core::HiResClock;
+namespace fwClock = core::hires_clock;
 
 static const std::string s_FPS           = "fps";
 static const std::string s_COLOR_FRAME_H = "colorH";
@@ -70,13 +70,13 @@ static const std::string s_TEMPORAL_SMOOTH_DELTA       = "temporalSmoothDelta";
 static const std::string s_TEMPORAL_PERSISTENCY        = "temporalPersistency";
 static const std::string s_HOLE_FILLING                = "holeFilling";
 
-static const core::com::Slots::SlotKeyType s_CONFIGURE_RECORDING_PATH_SLOT = "configureRecordingPath";
+static const core::com::slots::key_t CONFIGURE_RECORDING_PATH_SLOT = "configureRecordingPath";
 
-static const core::com::Slots::SlotKeyType s_RECORD = "record";
+static const core::com::slots::key_t RECORD = "record";
 
-static const core::com::Signals::SignalKeyType s_DISTANCE_COMPUTED_SIG = "distanceComputed";
-static const core::com::Signals::SignalKeyType s_DEVICE_PLAYED_SIG     = "devicePlayed";
-static const core::com::Signals::SignalKeyType s_FILE_PLAYED_SIG       = "filePlayed";
+static const core::com::signals::key_t DISTANCE_COMPUTED_SIG = "distanceComputed";
+static const core::com::signals::key_t DEVICE_PLAYED_SIG     = "devicePlayed";
+static const core::com::signals::key_t FILE_PLAYED_SIG       = "filePlayed";
 
 // Determine depth value corresponding to one meter
 static const float s_METERS_TO_MMS = 1000.F;
@@ -85,12 +85,12 @@ static const float s_METERS_TO_MMS = 1000.F;
 
 SScan::SScan() noexcept
 {
-    newSlot(s_CONFIGURE_RECORDING_PATH_SLOT, &SScan::configureRecordingPath, this);
-    newSlot(s_RECORD, &SScan::record, this);
+    new_slot(CONFIGURE_RECORDING_PATH_SLOT, &SScan::configureRecordingPath, this);
+    new_slot(RECORD, &SScan::record, this);
 
-    newSignal<DistanceComputedSignalType>(s_DISTANCE_COMPUTED_SIG);
-    newSignal<DevicePlayedSignalType>(s_DEVICE_PLAYED_SIG);
-    newSignal<FilePlayedSignalType>(s_FILE_PLAYED_SIG);
+    new_signal<DistanceComputedSignalType>(DISTANCE_COMPUTED_SIG);
+    new_signal<DevicePlayedSignalType>(DEVICE_PLAYED_SIG);
+    new_signal<FilePlayedSignalType>(FILE_PLAYED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -141,7 +141,7 @@ void SScan::configuring()
         this->updateAlignment(alignTo);
     }
 
-    static const auto s_modulePath = core::runtime::getModuleResourcePath("sight::module::io::realsense");
+    static const auto s_modulePath = core::runtime::get_module_resource_path("sight::module::io::realsense");
 
     // Parse presets files
     this->loadPresets(s_modulePath / "presets");
@@ -175,7 +175,7 @@ std::string SScan::selectDevice()
     // Several devices found -> open a selector dialog.
     else if(device_count > 1)
     {
-        sight::ui::base::dialog::SelectorDialog dial;
+        sight::ui::dialog::selector dial;
         dial.setTitle("Select realsense camera");
 
         std::vector<std::string> selections;
@@ -192,7 +192,7 @@ std::string SScan::selectDevice()
             selections[i] = nameserial;
         }
 
-        dial.setSelections(selections);
+        dial.set_choices(selections);
 
         const std::string selected = dial.show();
 
@@ -238,7 +238,7 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
         colorTimeline->initPoolSize(
             colorStreamW,
             colorStreamH,
-            core::Type::UINT8,
+            core::type::UINT8,
             data::FrameTL::PixelFormat::RGBA
         );
         colorTimeline->setMaximumSize(50);
@@ -251,7 +251,7 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
             depthTimeline->initPoolSize(
                 depthStreamW,
                 depthStreamH,
-                core::Type::UINT16,
+                core::type::UINT16,
                 data::FrameTL::PixelFormat::GRAY_SCALE
             );
             depthTimeline->setMaximumSize(50);
@@ -270,27 +270,27 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
             // check if there is camera
             if(camera_set->size() == 0)
             {
-                depthCamera = data::Camera::New();
-                colorCamera = data::Camera::New();
+                depthCamera = std::make_shared<data::Camera>();
+                colorCamera = std::make_shared<data::Camera>();
 
                 camera_set->add_camera(depthCamera);
                 camera_set->add_camera(colorCamera);
                 auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(
-                    data::CameraSet::s_ADDED_CAMERA_SIG
+                    data::CameraSet::ADDED_CAMERA_SIG
                 );
-                sig->asyncEmit(depthCamera);
-                sig->asyncEmit(colorCamera);
+                sig->async_emit(depthCamera);
+                sig->async_emit(colorCamera);
             }
             else if(camera_set->size() == 1) // missing one camera
             {
                 depthCamera = camera_set->get_camera(0);
-                colorCamera = data::Camera::New();
+                colorCamera = std::make_shared<data::Camera>();
                 camera_set->add_camera(colorCamera);
 
                 auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(
-                    data::CameraSet::s_ADDED_CAMERA_SIG
+                    data::CameraSet::ADDED_CAMERA_SIG
                 );
-                sig->asyncEmit(colorCamera);
+                sig->async_emit(colorCamera);
             }
             else
             {
@@ -301,7 +301,7 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
             if(!depthCamera->getIsCalibrated() || !colorCamera->getIsCalibrated())
             {
                 // copy device calibration into the camera series
-                data::Matrix4::sptr matrix = data::Matrix4::New();
+                data::Matrix4::sptr matrix = std::make_shared<data::Matrix4>();
 
                 const rs2_intrinsics depthIntrinsics = depthStream.get_intrinsics();
                 const rs2_intrinsics colorIntrinsics = colorStream.get_intrinsics();
@@ -359,16 +359,16 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
                 camera_set->set_extrinsic_matrix(1, matrix);
 
                 auto sig = camera_set->signal<data::CameraSet::ModifiedSignalType>(
-                    data::CameraSet::s_MODIFIED_SIG
+                    data::CameraSet::MODIFIED_SIG
                 );
-                sig->asyncEmit();
+                sig->async_emit();
             }
         }
     }
 
     //Only create the pointer one time.
 
-    auto pointcloud     = data::Mesh::New();
+    auto pointcloud     = std::make_shared<data::Mesh>();
     const auto dumpLock = pointcloud->dump_lock();
 
     const data::Mesh::size_t nbPoints = depthStreamW * depthStreamH;
@@ -408,7 +408,7 @@ void SScan::startCamera()
                 {
                     m_playbackMode     = true;
                     m_playbackFileName = camera->getVideoFile().string();
-                    this->signal<FilePlayedSignalType>(s_FILE_PLAYED_SIG)->asyncEmit();
+                    this->signal<FilePlayedSignalType>(FILE_PLAYED_SIG)->async_emit();
                 }
                 else if(camera->getCameraSource() == data::Camera::STREAM)
                 {
@@ -429,7 +429,7 @@ void SScan::startCamera()
                         m_deviceID = this->selectDevice();
                     }
 
-                    this->signal<DevicePlayedSignalType>(s_DEVICE_PLAYED_SIG)->asyncEmit();
+                    this->signal<DevicePlayedSignalType>(DEVICE_PLAYED_SIG)->async_emit();
                 }
             };
 
@@ -583,10 +583,10 @@ void SScan::startCamera()
         this->setMinMaxRange();
     }
 
-    auto sigStarted = this->signal<IGrabber::CameraStartedSignalType>(
-        IGrabber::s_CAMERA_STARTED_SIG
+    auto sigStarted = this->signal<grabber::CameraStartedSignalType>(
+        grabber::CAMERA_STARTED_SIG
     );
-    sigStarted->asyncEmit();
+    sigStarted->async_emit();
 }
 
 //-----------------------------------------------------------------------------
@@ -621,8 +621,8 @@ void SScan::stopCamera()
         m_pipe->stop();
         m_pipe.reset();
 
-        auto sig = this->signal<IGrabber::CameraStoppedSignalType>(IGrabber::s_CAMERA_STOPPED_SIG);
-        sig->asyncEmit();
+        auto sig = this->signal<grabber::CameraStoppedSignalType>(grabber::CAMERA_STOPPED_SIG);
+        sig->async_emit();
     }
 }
 
@@ -686,20 +686,20 @@ void SScan::record()
     // If file already exists, should we erase it ?
     if(std::filesystem::exists(m_recordingFileName))
     {
-        sight::ui::base::dialog::MessageDialog warnDial;
-        warnDial.setIcon(ui::base::dialog::IMessageDialog::WARNING);
+        sight::ui::dialog::message warnDial;
+        warnDial.setIcon(ui::dialog::message::WARNING);
         warnDial.setTitle("File already exists");
         warnDial.setMessage(
             "File: " + m_recordingFileName
             + " already exists, are you sure you want to erase it ?"
         );
-        warnDial.addButton(ui::base::dialog::IMessageDialog::Buttons::YES);
-        warnDial.addButton(ui::base::dialog::IMessageDialog::Buttons::NO);
-        warnDial.setDefaultButton(ui::base::dialog::IMessageDialog::Buttons::NO);
+        warnDial.addButton(ui::dialog::message::Buttons::YES);
+        warnDial.addButton(ui::dialog::message::Buttons::NO);
+        warnDial.setDefaultButton(ui::dialog::message::Buttons::NO);
 
         const auto res = warnDial.show();
 
-        if(res == sight::ui::base::dialog::IMessageDialog::Buttons::NO)
+        if(res == sight::ui::dialog::message::Buttons::NO)
         {
             erase = false;
         }
@@ -736,25 +736,25 @@ void SScan::record()
 void SScan::configureRecordingPath()
 {
     // Ask user for a new file name.
-    sight::ui::base::dialog::LocationDialog dial;
+    sight::ui::dialog::location dial;
     dial.setTitle("Name of recording file");
-    dial.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
-    dial.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dial.setType(ui::dialog::location::SINGLE_FILE);
+    dial.setOption(ui::dialog::location::WRITE);
 
     dial.addFilter("Bag files", "*.bag");
 
-    auto result = core::location::SingleFile::dynamicCast(dial.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dial.show());
 
     // If filename is ok.
     if(result)
     {
-        m_recordingFileName = result->getFile().string();
+        m_recordingFileName = result->get_file().string();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SScan::setParameter(ui::base::parameter_t _value, std::string _key)
+void SScan::setParameter(ui::parameter_t _value, std::string _key)
 {
     try
     {
@@ -968,10 +968,10 @@ void SScan::setParameter(ui::base::parameter_t _value, std::string _key)
 
 void SScan::popMessageDialog(const std::string& _message)
 {
-    sight::ui::base::dialog::MessageDialog::show(
+    sight::ui::dialog::message::show(
         "RealSense Error",
         _message,
-        sight::ui::base::dialog::IMessageDialog::CRITICAL
+        sight::ui::dialog::message::CRITICAL
     );
 }
 
@@ -1097,7 +1097,7 @@ void SScan::grab()
 
             // Compute the z value of the center pixel, to give the distance "object-camera" in mm.
             const auto distanceToCenter = depth.get_distance(depth.get_width() / 2, depth.get_height() / 2);
-            this->signal<DistanceComputedSignalType>(s_DISTANCE_COMPUTED_SIG)->asyncEmit(
+            this->signal<DistanceComputedSignalType>(DISTANCE_COMPUTED_SIG)->async_emit(
                 static_cast<double>(distanceToCenter * s_METERS_TO_MMS)
             );
         }
@@ -1190,7 +1190,7 @@ void SScan::setMinMaxRange()
 void SScan::onCameraImage(const uint8_t* _buffer)
 {
     // Filling timeline's buffer
-    const fwClock::HiResClockType timestamp(fwClock::getTimeInMilliSec());
+    const fwClock::type timestamp(fwClock::get_time_in_milli_sec());
     data::TimeLine::ObjectPushedSignalType::sptr sig;
 
     {
@@ -1199,15 +1199,15 @@ void SScan::onCameraImage(const uint8_t* _buffer)
 
         auto* destColorBuffer = reinterpret_cast<uint8_t*>(colorBuffer->addElement(0));
 
-        memcpy(destColorBuffer, _buffer, colorBuffer->getSize());
+        memcpy(destColorBuffer, _buffer, colorBuffer->size());
 
         // Push buffer to timeline and notify
         colorTimeline->pushObject(colorBuffer);
 
-        sig = colorTimeline->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
+        sig = colorTimeline->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::OBJECT_PUSHED_SIG);
     }
 
-    sig->asyncEmit(timestamp);
+    sig->async_emit(timestamp);
 }
 
 //-----------------------------------------------------------------------------
@@ -1215,7 +1215,7 @@ void SScan::onCameraImage(const uint8_t* _buffer)
 void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
 {
     // Filling the depth image buffer in the timeline
-    const fwClock::HiResClockType timestamp(fwClock::getTimeInMilliSec());
+    const fwClock::type timestamp(fwClock::get_time_in_milli_sec());
     data::TimeLine::ObjectPushedSignalType::sptr sig;
 
     {
@@ -1237,10 +1237,10 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
         // Push buffer to timeline and notify
         depthTimeline->pushObject(depthTL);
 
-        sig = depthTimeline->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
+        sig = depthTimeline->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::OBJECT_PUSHED_SIG);
     }
 
-    sig->asyncEmit(timestamp);
+    sig->async_emit(timestamp);
 }
 
 //-----------------------------------------------------------------------------
@@ -1307,11 +1307,11 @@ void SScan::onPointCloud(const rs2::points& _pc, const rs2::video_frame& _textur
             ++colors;
         }
 
-        const auto sigVertex = pointcloud->signal<data::Mesh::signal_t>(data::Mesh::s_VERTEX_MODIFIED_SIG);
-        sigVertex->asyncEmit();
+        const auto sigVertex = pointcloud->signal<data::Mesh::signal_t>(data::Mesh::VERTEX_MODIFIED_SIG);
+        sigVertex->async_emit();
 
-        const auto sigcolor = pointcloud->signal<data::Mesh::signal_t>(data::Mesh::s_POINT_COLORS_MODIFIED_SIG);
-        sigcolor->asyncEmit();
+        const auto sigcolor = pointcloud->signal<data::Mesh::signal_t>(data::Mesh::POINT_COLORS_MODIFIED_SIG);
+        sigcolor->async_emit();
     }
 }
 

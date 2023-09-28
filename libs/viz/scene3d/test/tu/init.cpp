@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,7 +29,7 @@ struct Initializer
     Initializer()
     {
         sight::core::runtime::init();
-        sight::core::runtime::loadModule("sight::module::viz::scene3d::test");
+        sight::core::runtime::load_module("sight::module::viz::scene3d::test");
     }
 };
 

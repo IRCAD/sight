@@ -22,7 +22,7 @@
 
 #include "DicomDirTest.hpp"
 
-#include <core/log/Logger.hpp>
+#include <core/log/logger.hpp>
 
 #include <data/DicomSeries.hpp>
 
@@ -81,7 +81,7 @@ void DicomDirTest::readDicomDir()
 
     std::vector<data::DicomSeries::sptr> seriesContainer;
 
-    core::log::Logger::sptr logger = core::log::Logger::New();
+    core::log::logger::sptr logger = std::make_shared<core::log::logger>();
 
     // Read DICOMDIR file
     io::dicom::helper::DicomDir::retrieveDicomSeries(path / "DICOMDIR", seriesContainer, logger);

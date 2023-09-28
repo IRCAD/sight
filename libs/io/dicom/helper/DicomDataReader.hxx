@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/helper/Encoding.hpp"
 
-#include <core/log/Logger.hpp>
+#include <core/log/logger.hpp>
 
 #include <gdcmAttribute.h>
 #include <gdcmDataSet.h>
@@ -57,7 +57,7 @@ public:
     static std::string getTagValue(
         const gdcm::DataSet& dataset,
         const std::string& charset            = "",
-        const core::log::Logger::sptr& logger = nullptr
+        const core::log::logger::sptr& logger = nullptr
 )
     {
         std::string result;
@@ -117,7 +117,7 @@ public:
     static std::string getTagValue(
         const std::string& buffer,
         const std::string& charset            = "",
-        const core::log::Logger::sptr& logger = nullptr
+        const core::log::logger::sptr& logger = nullptr
 )
     {
         std::string result;

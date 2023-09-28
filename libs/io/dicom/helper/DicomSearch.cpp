@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "io/dicom/helper/DicomSearch.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/observer.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -55,7 +55,7 @@ void DicomSearch::searchRecursively(
     const std::filesystem::path& dirPath,
     std::vector<std::filesystem::path>& dicomFiles,
     bool checkIsDicom,
-    const core::jobs::Observer::sptr& readerObserver
+    const core::jobs::observer::sptr& readerObserver
 )
 {
     std::vector<std::filesystem::path> fileVect;
@@ -65,7 +65,7 @@ void DicomSearch::searchRecursively(
     {
         if(readerObserver)
         {
-            readerObserver->setTotalWorkUnits(fileVect.size());
+            readerObserver->set_total_work_units(fileVect.size());
         }
 
         std::uint64_t progress = 0;
@@ -73,9 +73,9 @@ void DicomSearch::searchRecursively(
         {
             if(readerObserver)
             {
-                readerObserver->doneWork(++progress);
+                readerObserver->done_work(++progress);
 
-                if(readerObserver->cancelRequested())
+                if(readerObserver->cancel_requested())
                 {
                     dicomFiles.clear();
                     break;
@@ -102,7 +102,7 @@ void DicomSearch::searchRecursively(
 void DicomSearch::checkFilenameExtension(
     const std::filesystem::path& dirPath,
     std::vector<std::filesystem::path>& dicomFiles,
-    const core::jobs::Observer::sptr& fileLookupObserver
+    const core::jobs::observer::sptr& fileLookupObserver
 )
 {
     dicomFiles.clear();
@@ -116,7 +116,7 @@ void DicomSearch::checkFilenameExtension(
     for(std::filesystem::recursive_directory_iterator it(dirPath) ;
         it != std::filesystem::recursive_directory_iterator() ; ++it)
     {
-        if(fileLookupObserver && fileLookupObserver->cancelRequested())
+        if(fileLookupObserver && fileLookupObserver->cancel_requested())
         {
             dicomFiles.clear();
             break;

@@ -27,8 +27,8 @@
 #include "viz/scene3d/R2VBRenderable.hpp"
 #include "viz/scene3d/vr/GridProxyGeometry.hpp"
 #include "viz/scene3d/vr/IllumAmbientOcclusionSAT.hpp"
-#include "viz/scene3d/vr/IVolumeRenderer.hpp"
 #include "viz/scene3d/vr/RayEntryCompositor.hpp"
+#include "viz/scene3d/vr/volume_renderer.hpp"
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
@@ -44,7 +44,7 @@ namespace sight::viz::scene3d::vr
 /**
  * @brief Implements a simple GPU ray-tracing renderer.
  */
-class VIZ_SCENE3D_CLASS_API RayTracingVolumeRenderer : public IVolumeRenderer
+class VIZ_SCENE3D_CLASS_API RayTracingVolumeRenderer : public volume_renderer
 {
 public:
 

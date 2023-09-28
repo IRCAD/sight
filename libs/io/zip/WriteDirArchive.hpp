@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "io/zip/config.hpp"
-#include "io/zip/IWriteArchive.hpp"
+#include "io/zip/write_archive.hpp"
 
 #include <core/macros.hpp>
 
@@ -36,15 +36,15 @@ namespace sight::io::zip
 /**
  * @brief   This class defines functions to write a file in a file system archive.
  */
-class IO_ZIP_CLASS_API WriteDirArchive : public IWriteArchive
+class IO_ZIP_CLASS_API WriteDirArchive : public write_archive
 {
 public:
 
-    SIGHT_DECLARE_CLASS(WriteDirArchive, IWriteArchive);
+    SIGHT_DECLARE_CLASS(WriteDirArchive, write_archive);
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const std::filesystem::path& archive)
+    static sptr make(const std::filesystem::path& archive)
     {
         return std::make_shared<WriteDirArchive>(archive);
     }

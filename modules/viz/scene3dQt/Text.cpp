@@ -22,15 +22,15 @@
 
 #include "modules/viz/scene3dQt/Text.hpp"
 
-#include <core/com/Slot.hpp>
+#include <core/com/slot.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/helper/Camera.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 
-#include <modules/viz/scene3dQt/WindowInteractor.hpp>
+#include <modules/viz/scene3dQt/window_interactor.hpp>
 
 #include <OGRE/OgreNode.h>
 
@@ -106,7 +106,7 @@ public:
 
     void addText(Text* _text, Ogre::Node* _node)
     {
-        m_text.emplace_back(std::make_pair(_text, _node));
+        m_text.emplace_back(_text, _node);
     }
 
     //------------------------------------------------------------------------------
@@ -133,9 +133,9 @@ std::map<Ogre::Camera*, CameraListener*> s_cameraListeners;
 
 //------------------------------------------------------------------------------
 
-Text::Text(sight::viz::scene3d::IText::Key /*unused*/, const sight::viz::scene3d::Layer::sptr& _layer)
+Text::Text(const sight::viz::scene3d::Layer::sptr& _layer)
 {
-    m_resizeSlot = core::com::newSlot(
+    m_resizeSlot = core::com::new_slot(
         [this](int, int)
         {
             if(m_nodeListener != nullptr)
@@ -145,12 +145,12 @@ Text::Text(sight::viz::scene3d::IText::Key /*unused*/, const sight::viz::scene3d
 
             this->adjustSize();
         });
-    m_resizeSlot->setWorker(core::thread::getDefaultWorker());
+    m_resizeSlot->set_worker(core::thread::get_default_worker());
 
-    m_resizeConnection = _layer->signal(sight::viz::scene3d::Layer::s_RESIZE_LAYER_SIG)->connect(m_resizeSlot);
+    m_resizeConnection = _layer->signal(sight::viz::scene3d::Layer::RESIZE_LAYER_SIG)->connect(m_resizeSlot);
 
     auto interactor   = _layer->getRenderService()->getInteractorManager();
-    auto qtInteractor = sight::module::viz::scene3dQt::WindowInteractor::dynamicCast(interactor);
+    auto qtInteractor = std::dynamic_pointer_cast<sight::module::viz::scene3dQt::window_interactor>(interactor);
 
     auto* parentWidget = qtInteractor->getQtWidget();
 
@@ -190,7 +190,7 @@ Text::Text(sight::viz::scene3d::IText::Key /*unused*/, const sight::viz::scene3d
         &QLineEdit::textEdited,
         [this](QString text)
         {
-            signal<IText::TextEditedSignal>(IText::s_TEXT_EDITED_SIGNAL)->asyncEmit(text.toStdString());
+            signal<IText::TextEditedSignal>(IText::TEXT_EDITED_SIGNAL)->async_emit(text.toStdString());
             adjustSize();
         });
     QObject::connect(
@@ -198,7 +198,7 @@ Text::Text(sight::viz::scene3d::IText::Key /*unused*/, const sight::viz::scene3d
         &QLineEdit::editingFinished,
         [this]
         {
-            signal<IText::EditingFinishedSignal>(IText::s_EDITING_FINISHED_SIGNAL)->asyncEmit();
+            signal<IText::EditingFinishedSignal>(IText::EDITING_FINISHED_SIGNAL)->async_emit();
         });
     m_text->show();
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/history/UndoRedoManager.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 namespace sight::ui::history
 {
@@ -38,7 +38,7 @@ UndoRedoManager::UndoRedoManager(std::size_t maxMemory, std::size_t maxCommands)
 
 //-----------------------------------------------------------------------------
 
-bool UndoRedoManager::enqueue(ICommand::sptr cmd)
+bool UndoRedoManager::enqueue(command::sptr cmd)
 {
     if(m_maxMemory == 0)
     {
@@ -46,7 +46,7 @@ bool UndoRedoManager::enqueue(ICommand::sptr cmd)
         return false;
     }
 
-    if(cmd->getSize() > m_maxMemory)
+    if(cmd->size() > m_maxMemory)
     {
         SIGHT_WARN("The current command is bigger than the maximum history size");
         return false;
@@ -57,7 +57,7 @@ bool UndoRedoManager::enqueue(ICommand::sptr cmd)
     {
         for(std::size_t i = m_commandQueue.size() - 1 ; i > std::size_t(m_commandIndex) ; --i)
         {
-            m_usedMemory -= m_commandQueue[i]->getSize();
+            m_usedMemory -= m_commandQueue[i]->size();
             m_commandQueue.pop_back();
         }
     }
@@ -69,13 +69,13 @@ bool UndoRedoManager::enqueue(ICommand::sptr cmd)
     }
 
     // Remove the oldest commands if we reached the maximum history size.
-    while(m_usedMemory + cmd->getSize() > m_maxMemory)
+    while(m_usedMemory + cmd->size() > m_maxMemory)
     {
         popFront();
     }
 
     m_commandQueue.push_back(cmd);
-    m_usedMemory  += cmd->getSize();
+    m_usedMemory  += cmd->size();
     m_commandIndex = static_cast<std::int64_t>(m_commandQueue.size() - 1);
 
     return true;
@@ -170,7 +170,7 @@ void UndoRedoManager::popFront()
 {
     auto it = m_commandQueue.begin();
 
-    m_usedMemory -= (*it)->getSize();
+    m_usedMemory -= (*it)->size();
     m_commandQueue.pop_front();
 }
 

@@ -60,12 +60,12 @@ void SOrientationMarker::starting()
     this->getRenderService()->makeCurrent();
 
     Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    m_sceneNode = rootSceneNode->createChildSceneNode(this->getID() + "_mainNode");
+    m_sceneNode = rootSceneNode->createChildSceneNode(this->get_id() + "_mainNode");
 
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
     // Sets the material
-    m_material = data::Material::New();
+    m_material = std::make_shared<data::Material>();
 
     // Creates the material for the marker
     const sight::module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
@@ -74,8 +74,8 @@ void SOrientationMarker::starting()
         );
     materialAdaptor->setInOut(m_material, sight::module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     materialAdaptor->configure(
-        this->getID() + materialAdaptor->getID(),
-        this->getID() + materialAdaptor->getID(),
+        this->get_id() + materialAdaptor->get_id(),
+        this->get_id() + materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID
     );
@@ -157,10 +157,10 @@ void SOrientationMarker::setVisible(bool _visible)
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SOrientationMarker::getAutoConnections() const
+service::connections_t SOrientationMarker::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_IN, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_MATRIX_IN, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

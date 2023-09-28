@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "io/dicom/helper/Encoding.hpp"
 
-#include <core/log/Logger.hpp>
-#include <core/spyLog.hpp>
+#include <core/log/logger.hpp>
+#include <core/spy_log.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -125,7 +125,7 @@ const Encoding::EscapeSequenceToCharsetMapType Encoding::s_ESCAPE_SEQUENCE_TO_CH
 std::string Encoding::convertString(
     const std::string& source,
     const std::string& definedCharsetTerm,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 {
     if(source.empty())
@@ -183,7 +183,7 @@ std::string Encoding::convertString(
 std::string Encoding::convertStringWithoutCodeExtensions(
     const std::string& source,
     const std::string& definedTerm,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 {
     std::string charset;
@@ -233,7 +233,7 @@ std::string Encoding::convertStringWithoutCodeExtensions(
 void checkDefinedTermDeclaration(
     const std::string& definedTerm,
     const std::vector<std::string>& definedTermList,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 {
     if(std::find(definedTermList.begin(), definedTermList.end(), definedTerm) == definedTermList.end())
@@ -254,7 +254,7 @@ void checkDefinedTermDeclaration(
 std::string Encoding::convertSequenceWithCodeExtensions(
     const std::string& sequence,
     const std::vector<std::string>& definedTermList,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 )
 {
     // We need at least two more characters to determine the new character set

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,9 @@
 #include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
-#include <filter/dicom/IFilter.hpp>
+#include <filter/dicom/filter.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -63,15 +63,15 @@ namespace sight::module::ui::dicom
  */
 
 class MODULE_UI_DICOM_CLASS_API SFilterSelectionEditor : public QObject,
-                                                         public sight::ui::base::IEditor
+                                                         public sight::ui::editor
 {
 Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SFilterSelectionEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SFilterSelectionEditor, sight::ui::editor);
 
-    typedef std::map<std::string, filter::dicom::IFilter::sptr> FilterMapType;
+    typedef std::map<std::string, sight::filter::dicom::filter::sptr> FilterMapType;
 
     /**
      * @brief Constructor
@@ -144,11 +144,11 @@ protected:
      * @param[in] a First filter
      * @param[in] b Second filter
      */
-    static bool sortFilters(const filter::dicom::IFilter::sptr& a, const filter::dicom::IFilter::sptr& b);
+    static bool sortFilters(const sight::filter::dicom::filter::sptr& a, const sight::filter::dicom::filter::sptr& b);
 
-    static QIcon getFilterIcon(filter::dicom::IFilter::sptr filter);
+    static QIcon getFilterIcon(sight::filter::dicom::filter::sptr filter);
 
-    static std::string getFilterDescription(filter::dicom::IFilter::sptr filter);
+    static std::string getFilterDescription(sight::filter::dicom::filter::sptr filter);
 
     /// Combo box displaying the available filters
     QPointer<QComboBox> m_availableFilterListWidget;

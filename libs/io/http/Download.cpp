@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,8 @@
 
 #include "Download.hpp"
 
-#include <core/Exception.hpp>
-#include <core/spyLog.hpp>
+#include <core/exception.hpp>
+#include <core/spy_log.hpp>
 
 #include <curl/curl.h>
 
@@ -44,20 +44,20 @@ void downloadFile(const std::string& _url, const std::filesystem::path& _file_lo
     // Basic checks.
     if(_url.empty() || _file_location.empty())
     {
-        throw core::Exception("Missing inputs (url or file location)");
+        throw core::exception("Missing inputs (url or file location)");
     }
 
     // Don't override file if already exists, test should be done before calling the function.
     if(std::filesystem::exists(_file_location))
     {
-        throw core::Exception("file: '" + _file_location.string() + "' already exists.");
+        throw core::exception("file: '" + _file_location.string() + "' already exists.");
     }
 
     // Check that we have write permission on the parent folder of _file_location.
     const auto perms = std::filesystem::status(_file_location.parent_path()).permissions();
     if((perms& std::filesystem::perms::owner_write) == std::filesystem::perms::none)
     {
-        throw core::Exception("Cannot write in '" + _file_location.parent_path().string() + "' directory");
+        throw core::exception("Cannot write in '" + _file_location.parent_path().string() + "' directory");
     }
 
     CURL* curl = nullptr;
@@ -83,19 +83,19 @@ void downloadFile(const std::string& _url, const std::filesystem::path& _file_lo
         {
             // Remove file created with the fopen.
             std::filesystem::remove(_file_location);
-            throw core::Exception("Cannot close file '" + _file_location.string() + "'");
+            throw core::exception("Cannot close file '" + _file_location.string() + "'");
         }
 
         if(res != 0)
         {
             // Remove file created with the fopen.
             std::filesystem::remove(_file_location);
-            throw core::Exception("CURL error code [" + std::to_string(res) + "] when trying to download file");
+            throw core::exception("CURL error code [" + std::to_string(res) + "] when trying to download file");
         }
     }
     else
     {
-        throw core::Exception("Cannot initialize CURL.");
+        throw core::exception("Cannot initialize CURL.");
     }
 }
 

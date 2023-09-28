@@ -22,8 +22,8 @@
 
 #include "SReprojectionError.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <geometry/vision/helper.hpp>
 
@@ -36,10 +36,10 @@
 namespace sight::module::geometry::vision
 {
 
-const core::com::Slots::SlotKeyType SReprojectionError::s_COMPUTE_SLOT       = "compute";
-const core::com::Slots::SlotKeyType SReprojectionError::s_SET_PARAMETER_SLOT = "setParameter";
+const core::com::slots::key_t SReprojectionError::COMPUTE_SLOT       = "compute";
+const core::com::slots::key_t SReprojectionError::SET_PARAMETER_SLOT = "setParameter";
 
-static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
+static const core::com::signals::key_t ERROR_COMPUTED_SIG = "errorComputed";
 
 //-----------------------------------------------------------------------------
 
@@ -47,17 +47,17 @@ SReprojectionError::SReprojectionError() :
 
     m_cvColor(cv::Scalar(255, 255, 255, 255))
 {
-    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
+    new_signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG);
 
-    newSlot(s_COMPUTE_SLOT, &SReprojectionError::compute, this);
-    newSlot(s_SET_PARAMETER_SLOT, &SReprojectionError::setParameter, this);
+    new_slot(COMPUTE_SLOT, &SReprojectionError::compute, this);
+    new_slot(SET_PARAMETER_SLOT, &SReprojectionError::setParameter, this);
 }
 
 //-----------------------------------------------------------------------------
 
 void SReprojectionError::configuring()
 {
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
     m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
     SIGHT_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
@@ -124,7 +124,7 @@ void SReprojectionError::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
+void SReprojectionError::compute(core::hires_clock::type timestamp)
 {
     if(!this->isStarted())
     {
@@ -188,7 +188,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
                             m_distorsionCoef
                         );
 
-                    this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errP.first);
+                    this->signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG)->async_emit(errP.first);
 
                     errors.push_back(errP);
                 }
@@ -223,7 +223,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
 //-----------------------------------------------------------------------------
 
-void SReprojectionError::setParameter(sight::ui::base::parameter_t _val, std::string _key)
+void SReprojectionError::setParameter(sight::ui::parameter_t _val, std::string _key)
 {
     if(_key == "display")
     {
@@ -231,7 +231,7 @@ void SReprojectionError::setParameter(sight::ui::base::parameter_t _val, std::st
     }
     else if(_key == "color")
     {
-        const auto color = std::get<sight::ui::base::color_t>(_val);
+        const auto color = std::get<sight::ui::color_t>(_val);
         m_cvColor = cv::Scalar(color[0], color[1], color[2], 255);
     }
     else
@@ -247,16 +247,16 @@ void SReprojectionError::updating()
     // When working with a frame (newest design), we do not rely on the timetamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
-    auto timestamp = core::HiResClock::getTimeInMilliSec();
+    auto timestamp = core::hires_clock::get_time_in_milli_sec();
     this->compute(timestamp);
 }
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SReprojectionError::getAutoConnections() const
+service::connections_t SReprojectionError::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_MATRIX_INPUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

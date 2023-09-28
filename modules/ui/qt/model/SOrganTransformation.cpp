@@ -22,9 +22,9 @@
 
 #include "SOrganTransformation.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/tools/fwID.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/tools/id.hpp>
 
 #include <data/helper/Field.hpp>
 #include <data/Material.hpp>
@@ -35,7 +35,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -79,7 +79,7 @@ void SOrganTransformation::configuring()
 void SOrganTransformation::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* layout = new QVBoxLayout();
 
@@ -160,7 +160,7 @@ void SOrganTransformation::refresh()
 
     const auto series = m_modelSeries.lock();
 
-    auto qtContainer         = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer         = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
@@ -198,8 +198,8 @@ void SOrganTransformation::refresh()
 
 void SOrganTransformation::notifyTransformationMatrix(data::Matrix4::sptr aTransMat)
 {
-    auto sig = aTransMat->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    auto sig = aTransMat->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -264,8 +264,8 @@ void SOrganTransformation::onSaveClick()
             if(pTmpMat)
             {
                 data::Matrix4::sptr pCpyTmpMat;
-                pCpyTmpMat                  = data::Object::copy(pTmpMat);
-                matMap[pTmpTrMesh->getID()] = pCpyTmpMat;
+                pCpyTmpMat                   = data::Object::copy(pTmpMat);
+                matMap[pTmpTrMesh->get_id()] = pCpyTmpMat;
             }
         }
 
@@ -291,13 +291,13 @@ void SOrganTransformation::onLoadClick()
         for(const data::Reconstruction::sptr& rec : series->getReconstructionDB())
         {
             data::Mesh::sptr pTmpTrMesh = rec->getMesh();
-            if(matMap.find(pTmpTrMesh->getID()) != matMap.end())
+            if(matMap.find(pTmpTrMesh->get_id()) != matMap.end())
             {
                 data::Matrix4::sptr pTmpMat =
                     pTmpTrMesh->getField<data::Matrix4>(s_MATRIX_FIELD_NAME);
                 if(pTmpMat)
                 {
-                    pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
+                    pTmpMat->shallow_copy(matMap[pTmpTrMesh->get_id()]);
                     this->notifyTransformationMatrix(pTmpMat);
                 }
             }
@@ -353,7 +353,7 @@ void SOrganTransformation::addMeshTransform()
         if(!mesh->getField(s_MATRIX_FIELD_NAME))
         {
             data::helper::Field fieldHelper(mesh);
-            fieldHelper.setField(s_MATRIX_FIELD_NAME, data::Matrix4::New());
+            fieldHelper.setField(s_MATRIX_FIELD_NAME, std::make_shared<data::Matrix4>());
             fieldHelper.notify();
         }
     }
@@ -361,16 +361,16 @@ void SOrganTransformation::addMeshTransform()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
+service::connections_t SOrganTransformation::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_MODEL_SERIES, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_COMPOSITE, data::Composite::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_COMPOSITE, data::Composite::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
-    connections.push(s_COMPOSITE, data::Composite::s_CHANGED_OBJECTS_SIG, IService::slots::s_UPDATE);
-    connections.push(s_COMPOSITE, data::Composite::s_REMOVED_OBJECTS_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_MODEL_SERIES, data::ModelSeries::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(s_COMPOSITE, data::Composite::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_COMPOSITE, data::Composite::ADDED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(s_COMPOSITE, data::Composite::CHANGED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(s_COMPOSITE, data::Composite::REMOVED_OBJECTS_SIG, service::slots::UPDATE);
 
     return connections;
 }

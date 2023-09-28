@@ -4,10 +4,10 @@ add_dependencies(
     ExSParameters
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_service
-    module_ui_base
+    module_ui
 )
 
 # Allow dark theme via module_ui_qt

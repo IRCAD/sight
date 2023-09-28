@@ -23,7 +23,7 @@
 
 #include "Tester.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <QAbstractButton>
 #include <QTimer>

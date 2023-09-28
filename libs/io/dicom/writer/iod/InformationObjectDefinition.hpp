@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/container/DicomInstance.hpp"
 
-#include <core/log/Logger.hpp>
+#include <core/log/logger.hpp>
 
 #include <data/Series.hpp>
 
@@ -56,7 +56,7 @@ public:
     IO_DICOM_API InformationObjectDefinition(
         SPTR(io::dicom::container::DicomInstance)instance,
         std::filesystem::path destinationPath,
-        core::log::Logger::sptr logger = nullptr,
+        core::log::logger::sptr logger = nullptr,
         ProgressCallback progress      = nullptr,
         CancelRequestedCallback cancel = nullptr
     );
@@ -76,7 +76,7 @@ protected:
     std::filesystem::path m_destinationPath;
 
     ///Logger
-    core::log::Logger::sptr m_logger;
+    core::log::logger::sptr m_logger;
 
     /// Progress callback for jobs
     ProgressCallback m_progressCallback;

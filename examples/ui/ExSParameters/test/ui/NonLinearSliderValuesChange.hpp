@@ -23,14 +23,14 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <ui/testCore/test.hpp>
 
-#include <ui/testCore/ITest.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace sight::examples::ui::exsparameters::test::ui
 {
 
-class NonLinearSliderValuesChange : public sight::ui::testCore::ITest
+class NonLinearSliderValuesChange : public sight::ui::testCore::test
 {
 CPPUNIT_TEST_SUITE(NonLinearSliderValuesChange);
 CPPUNIT_TEST(test);

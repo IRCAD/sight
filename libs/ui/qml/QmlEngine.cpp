@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "QmlEngine.hpp"
 
-#include <core/LazyInstantiator.hpp>
-#include <core/spyLog.hpp>
-#include <core/tools/Os.hpp>
+#include <core/lazy_instantiator.hpp>
+#include <core/spy_log.hpp>
+#include <core/tools/os.hpp>
 
 #include <QDir>
 #include <QQmlComponent>
@@ -49,7 +49,8 @@ QmlEngine::QmlEngine() :
     // you are executing the application in the build tree or in the install tree
     // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
     // This work in all cases when we use VCPkg.
-    std::filesystem::path qt5LibDir              = core::tools::os::getSharedLibraryPath("Qt5Core").remove_filename();
+    std::filesystem::path qt5LibDir =
+        core::tools::os::get_shared_library_path("Qt5Core").remove_filename();
     const std::filesystem::path qt5QmlPluginsDir = (qt5LibDir.parent_path().parent_path()) / "qml";
 
     QDir pluginDir(QString::fromStdString(qt5QmlPluginsDir.string()));
@@ -74,7 +75,7 @@ QmlEngine::~QmlEngine()
 
 SPTR(QmlEngine) QmlEngine::getDefault()
 {
-    auto engineInstance = core::LazyInstantiator<QmlEngine>::getInstance();
+    auto engineInstance = core::lazy_instantiator<QmlEngine>::get_instance();
     return engineInstance;
 }
 

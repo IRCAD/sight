@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ public:
         const SPTR(io::dicom::container::DicomInstance)& instance,
         SPTR(io::dicom::container::DicomInstance)imageInstance,
         const data::ModelSeries::csptr& series,
-        const core::log::Logger::sptr& logger = nullptr,
+        const core::log::logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr
     );

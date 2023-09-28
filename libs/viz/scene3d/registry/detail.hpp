@@ -24,7 +24,7 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <core/FactoryRegistry.hpp>
+#include <core/factory_registry.hpp>
 #include <core/macros.hpp>
 
 #include <string>
@@ -32,7 +32,7 @@
 namespace sight::viz::scene3d
 {
 
-class IWindowInteractor;
+class window_interactor;
 class ICamera;
 class ILight;
 class IText;
@@ -41,7 +41,7 @@ class Layer;
 namespace interactor
 {
 
-class IInteractor;
+class base;
 
 } // namespace interactor
 
@@ -50,14 +50,14 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef core::FactoryRegistry<SPTR(viz::scene3d::IWindowInteractor)(), KeyType> Type;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::IWindowInteractor)(std::pair<unsigned int, unsigned int>),
-                              KeyType> OffscreenMgrType;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::interactor::IInteractor)(), KeyType> InteractorFactoryType;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::ICamera)(), KeyType> CameraFactoryType;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::ILight)(), KeyType> LightFactoryType;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::IText)(const SPTR(sight::viz::scene3d::Layer)& _layer),
-                              KeyType> TextFactoryType;
+typedef core::factory_registry<SPTR(viz::scene3d::window_interactor)(), KeyType> Type;
+typedef core::factory_registry<SPTR(viz::scene3d::window_interactor)(std::pair<unsigned int, unsigned int>),
+                               KeyType> OffscreenMgrType;
+typedef core::factory_registry<SPTR(viz::scene3d::interactor::base)(), KeyType> InteractorFactoryType;
+typedef core::factory_registry<SPTR(viz::scene3d::ICamera)(), KeyType> CameraFactoryType;
+typedef core::factory_registry<SPTR(viz::scene3d::ILight)(), KeyType> LightFactoryType;
+typedef core::factory_registry<SPTR(viz::scene3d::IText)(const SPTR(sight::viz::scene3d::Layer)& _layer),
+                               KeyType> TextFactoryType;
 
 VIZ_SCENE3D_API SPTR(Type) get();
 VIZ_SCENE3D_API SPTR(OffscreenMgrType) getOffscreenMgr();

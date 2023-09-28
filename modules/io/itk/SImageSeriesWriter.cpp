@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,20 +25,20 @@
 #include "SImageWriter.hpp"
 
 #include <core/base.hpp>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 namespace sight::module::io::itk
 {
@@ -55,36 +55,36 @@ SImageSeriesWriter::~SImageSeriesWriter() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SImageSeriesWriter::getIOPathType() const
+sight::io::service::IOPathType SImageSeriesWriter::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 }
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an image file to save image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    dialogFile.setOption(ui::dialog::location::WRITE);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        this->setFile(result->getFile());
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        this->set_file(result->get_file());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -123,12 +123,12 @@ void SImageSeriesWriter::updating()
         const auto data         = m_data.lock();
         const auto image_series = std::dynamic_pointer_cast<const data::ImageSeries>(data.get_shared());
         SIGHT_ASSERT(
-            "The input key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.",
+            "The input key '" + sight::io::service::s_DATA_KEY + "' is not correctly set.",
             image_series
         );
 
-        sight::ui::base::BusyCursor cursor;
-        SImageWriter::saveImage(this->getFile(), image_series);
+        sight::ui::BusyCursor cursor;
+        SImageWriter::saveImage(this->get_file(), image_series);
         m_writeFailed = false;
     }
 }

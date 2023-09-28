@@ -69,7 +69,7 @@ inline static void write(
     for(std::size_t instance = 0, end = series->numInstances() ; instance < end ; ++instance)
     {
         const auto& ostream = archive.openFile(
-            std::filesystem::path(series->getUUID() + "/" + std::to_string(instance) + "_" + s_instance_dataset),
+            std::filesystem::path(series->get_uuid() + "/" + std::to_string(instance) + "_" + s_instance_dataset),
             password
         );
 

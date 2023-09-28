@@ -31,7 +31,7 @@
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -176,13 +176,13 @@ struct ImageOrImageSeriesLock
  *      and groups with multiple points.
  */
 class MODULE_UI_QT_CLASS_API SLandmarks final : public QObject,
-                                                public sight::ui::base::IEditor
+                                                public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SLandmarks, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SLandmarks, sight::ui::editor);
 
     /// Initializes slots.
     MODULE_UI_QT_API SLandmarks() noexcept;
@@ -200,34 +200,34 @@ public:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Landmarks::s_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::IService::slots::s_UPDATE
-     * Connect data::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_ADD_POINT_SLOT
-     * Connect data::Landmarks::s_POINT_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_MODIFY_POINT_SLOT
-     * Connect data::Landmarks::s_POINT_SELECTED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_SELECT_POINT_SLOT
-     * Connect data::Landmarks::s_POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_DESELECT_POINT_SLOT
-     * Connect data::Landmarks::s_GROUP_ADDED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_ADD_GROUP_SLOT
-     * Connect data::Landmarks::s_GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_REMOVE_GROUP_SLOT
-     * Connect data::Landmarks::s_POINT_REMOVED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_REMOVE_POINT_SLOT
-     * Connect data::Landmarks::s_GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_MODIFY_GROUP_SLOT
-     * Connect data::Landmarks::s_GROUP_RENAMED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_RENAME_GROUP_SLOT
+     * Connect data::Landmarks::MODIFIED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::service::slots::UPDATE
+     * Connect data::Landmarks::POINT_ADDED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::ADD_POINT_SLOT
+     * Connect data::Landmarks::POINT_MODIFIED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::MODIFY_POINT_SLOT
+     * Connect data::Landmarks::POINT_SELECTED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::SELECT_POINT_SLOT
+     * Connect data::Landmarks::POINT_DESELECTED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::DESELECT_POINT_SLOT
+     * Connect data::Landmarks::GROUP_ADDED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::ADD_GROUP_SLOT
+     * Connect data::Landmarks::GROUP_REMOVED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::REMOVE_GROUP_SLOT
+     * Connect data::Landmarks::POINT_REMOVED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::REMOVE_POINT_SLOT
+     * Connect data::Landmarks::GROUP_MODIFIED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::MODIFY_GROUP_SLOT
+     * Connect data::Landmarks::GROUP_RENAMED_SIG of s_LANDMARKS_INOUT to
+     * module::ui::qt::metrics::SLandmarks::RENAME_GROUP_SLOT
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
     /// Signal send when double clicked on a landmark, send its world coordinates;
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_SEND_WORLD_COORD;
-    typedef core::com::Signal<void (double, double, double)> world_coordinates_signal_t;
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_GROUP_SELECTED;
-    using GroupSelectedSignal = core::com::Signal<void (std::string)>;
+    MODULE_UI_QT_API static const core::com::signals::key_t SEND_WORLD_COORD;
+    typedef core::com::signal<void (double, double, double)> world_coordinates_signal_t;
+    MODULE_UI_QT_API static const core::com::signals::key_t GROUP_SELECTED;
+    using GroupSelectedSignal = core::com::signal<void (std::string)>;
 
     /// Resets the interface content and create connections between widgets and this service.
     void updating() override;

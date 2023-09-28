@@ -24,13 +24,13 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
 
 #include <data/CalibrationInfo.hpp>
 
-#include <service/IAppConfigManager.hpp>
-#include <service/IController.hpp>
+#include <service/app_config_manager.hpp>
+#include <service/controller.hpp>
 
 namespace sight::module::ui::qt::calibration
 {
@@ -67,11 +67,11 @@ namespace sight::module::ui::qt::calibration
  *   an external window.
  * - \b stopConfig() : Stop the displayed configuration.
  */
-class MODULE_UI_QT_CLASS_API SDisplayCalibrationInfo : public service::IController
+class MODULE_UI_QT_CLASS_API SDisplayCalibrationInfo : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDisplayCalibrationInfo, service::IController);
+    SIGHT_DECLARE_SERVICE(SDisplayCalibrationInfo, service::controller);
 
     /// Constructor. Does nothing.
     MODULE_UI_QT_API SDisplayCalibrationInfo() noexcept;
@@ -109,7 +109,7 @@ private:
      */
 
     /// AppConfig manager, used to launch the config
-    service::IAppConfigManager::sptr m_configMgr;
+    service::app_config_manager::sptr m_configMgr;
 
     static constexpr std::string_view s_ONE_IMAGE_CONFIG {"displayImageConfig"};
     static constexpr std::string_view s_TWO_IMAGES_CONFIG {"displayTwoImagesConfig"};

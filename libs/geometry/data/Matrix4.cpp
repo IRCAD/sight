@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "geometry/data/Matrix4.hpp"
 
-#include <core/data/Matrix4.hpp>
-#include <core/data/Point.hpp>
+#include <data/Matrix4.hpp>
+#include <data/Point.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/matrix.hpp>

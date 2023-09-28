@@ -7,7 +7,7 @@ add_dependencies(
     module_ui_qt
     data
     module_service
-    module_ui_base
+    module_ui
     module_io_vtk
     module_viz_sample
     module_filter_mesh

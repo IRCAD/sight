@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace sight::filter::image::ut
 
 static std::size_t computeOffset(const std::size_t x, const std::size_t y, const std::size_t z, data::Image::sptr image)
 {
-    const data::Image::Size size = image->getSize();
+    const data::Image::Size size = image->size();
     return z * size[0] * size[1] + y * size[0] + x;
 }
 
@@ -83,10 +83,10 @@ void MinMaxPropagationTest::minPropagTest()
     const data::Image::Size SIZE       = {{32, 32, 32}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::Type TYPE              = core::Type::UINT8;
+    const core::type TYPE              = core::type::UINT8;
 
-    data::Image::sptr imageIn  = data::Image::New();
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageIn  = std::make_shared<data::Image>();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
     utestData::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
@@ -169,10 +169,10 @@ void MinMaxPropagationTest::maxPropagTest()
     const data::Image::Size SIZE       = {{32, 32, 32}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::Type TYPE              = core::Type::UINT8;
+    const core::type TYPE              = core::type::UINT8;
 
-    data::Image::sptr imageIn  = data::Image::New();
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageIn  = std::make_shared<data::Image>();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
     utestData::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
@@ -236,10 +236,10 @@ void MinMaxPropagationTest::radiusTest()
     const data::Image::Size SIZE       = {{33, 33, 33}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::Type TYPE              = core::Type::UINT8;
+    const core::type TYPE              = core::type::UINT8;
 
-    data::Image::sptr imageIn  = data::Image::New();
-    data::Image::sptr imageOut = data::Image::New();
+    data::Image::sptr imageIn  = std::make_shared<data::Image>();
+    data::Image::sptr imageOut = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
     utestData::generator::Image::generateImage(imageOut, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);

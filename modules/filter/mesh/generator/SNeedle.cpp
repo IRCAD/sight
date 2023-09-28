@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "SNeedle.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Color.hpp>
 #include <data/tools/Color.hpp>
@@ -51,13 +51,13 @@
 namespace sight::module::filter::mesh::generator
 {
 
-const core::com::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
+const core::com::slots::key_t UPDATE_HEIGHT = "updateHeight";
 
 // ------------------------------------------------------------------------------
 
 SNeedle::SNeedle() noexcept
 {
-    newSlot(s_UPDATE_HEIGHT, &SNeedle::updateHeight, this);
+    new_slot(UPDATE_HEIGHT, &SNeedle::updateHeight, this);
 }
 
 // ------------------------------------------------------------------------------
@@ -180,8 +180,8 @@ void SNeedle::updating()
     io::vtk::helper::Mesh::fromVTKMesh(vtkMesh, mesh.get_shared());
 
     data::Object::ModifiedSignalType::sptr sig;
-    sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+    sig->async_emit();
 }
 
 // ------------------------------------------------------------------------------

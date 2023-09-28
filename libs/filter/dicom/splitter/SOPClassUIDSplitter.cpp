@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,8 +44,7 @@ const std::string SOPClassUIDSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-SOPClassUIDSplitter::SOPClassUIDSplitter(filter::dicom::IFilter::Key key) :
-    filter::dicom::splitter::TagValueSplitter(key)
+SOPClassUIDSplitter::SOPClassUIDSplitter()
 {
     this->setTag(DCM_SOPClassUID);
 }
@@ -80,10 +79,10 @@ bool SOPClassUIDSplitter::isConfigurationRequired() const
 
 SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 ) const
 {
-    DicomSeriesContainerType result = filter::dicom::splitter::TagValueSplitter::apply(series, logger);
+    DicomSeriesContainerType result = sight::filter::dicom::splitter::TagValueSplitter::apply(series, logger);
 
     for(const data::DicomSeries::sptr& dicomSeries : result)
     {
@@ -93,12 +92,12 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
         OFString data;
 
         // Open first instance
-        const auto firstItem                             = dicomSeries->getDicomContainer().begin();
-        const core::memory::BufferObject::sptr bufferObj = firstItem->second;
-        const std::size_t buffSize                       = bufferObj->getSize();
-        const std::string dicomPath                      = bufferObj->getStreamInfo().fsFile.string();
-        core::memory::BufferObject::Lock lock(bufferObj);
-        char* buffer = static_cast<char*>(lock.getBuffer());
+        const auto firstItem                              = dicomSeries->getDicomContainer().begin();
+        const core::memory::buffer_object::sptr bufferObj = firstItem->second;
+        const std::size_t buffSize                        = bufferObj->size();
+        const std::string dicomPath                       = bufferObj->get_stream_info().fs_file.string();
+        core::memory::buffer_object::lock_t lock(bufferObj);
+        char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
         is.setBuffer(buffer, offile_off_t(buffSize));

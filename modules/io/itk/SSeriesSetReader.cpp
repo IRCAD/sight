@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include "modules/io/itk/SImageReader.hpp"
 
 #include <core/base.hpp>
-#include <core/location/MultipleFiles.hpp>
-#include <core/location/SingleFolder.hpp>
-#include <core/tools/dateAndTime.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/location/multiple_files.hpp>
+#include <core/location/single_folder.hpp>
+#include <core/tools/date_and_time.hpp>
+#include <core/tools/uuid.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -36,10 +36,10 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/dialog/ProgressDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/dialog/progress.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -48,44 +48,44 @@ namespace sight::module::io::itk
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SSeriesSetReader::getIOPathType() const
+sight::io::service::IOPathType SSeriesSetReader::getIOPathType() const
 {
-    return sight::io::base::service::FILES;
+    return sight::io::service::FILES;
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesSetReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesSetReader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose an image file" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
-    dialogFile.setType(ui::base::dialog::ILocationDialog::MULTI_FILES);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::FILE_MUST_EXIST);
+    dialogFile.setType(ui::dialog::location::MULTI_FILES);
+    dialogFile.setOption(ui::dialog::location::READ);
+    dialogFile.setOption(ui::dialog::location::FILE_MUST_EXIST);
 
-    auto result = core::location::MultipleFiles::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::multiple_files>(dialogFile.show());
     if(result)
     {
-        const std::vector<std::filesystem::path> paths = result->getFiles();
+        const std::vector<std::filesystem::path> paths = result->get_files();
         if(!paths.empty())
         {
-            defaultDirectory->setFolder(paths[0].parent_path());
+            defaultDirectory->set_folder(paths[0].parent_path());
             dialogFile.saveDefaultLocation(defaultDirectory);
         }
 
-        this->setFiles(paths);
+        this->set_files(paths);
     }
     else
     {
@@ -105,18 +105,18 @@ void SSeriesSetReader::updating()
         // Retrieve dataStruct associated with this service
         const auto data       = m_data.lock();
         const auto series_set = std::dynamic_pointer_cast<data::SeriesSet>(data.get_shared());
-        SIGHT_ASSERT("The inout key '" + sight::io::base::service::s_DATA_KEY + "' is not correctly set.", series_set);
+        SIGHT_ASSERT("The inout key '" + sight::io::service::s_DATA_KEY + "' is not correctly set.", series_set);
 
         // Set cursor busy
-        sight::ui::base::BusyCursor cursor;
+        sight::ui::BusyCursor cursor;
 
         bool readFailed               = false;
-        auto localSet                 = data::SeriesSet::New();
-        const std::string instanceUID = core::tools::UUID::generateUUID();
+        auto localSet                 = std::make_shared<data::SeriesSet>();
+        const std::string instanceUID = core::tools::UUID::generate();
 
-        for(const std::filesystem::path& path : this->getFiles())
+        for(const std::filesystem::path& path : this->get_files())
         {
-            auto imgSeries = data::ImageSeries::New();
+            auto imgSeries = std::make_shared<data::ImageSeries>();
             SSeriesSetReader::initSeries(imgSeries, instanceUID);
 
             if(!SImageReader::loadImage(path, imgSeries))
@@ -144,8 +144,8 @@ void SSeriesSetReader::initSeries(data::Series::sptr series, const std::string& 
 {
     series->setModality("OT");
     boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
-    const std::string date       = core::tools::getDate(now);
-    const std::string time       = core::tools::getTime(now);
+    const std::string date       = core::tools::get_date(now);
+    const std::string time       = core::tools::get_time(now);
     series->setSeriesDate(date);
     series->setSeriesTime(time);
 

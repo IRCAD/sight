@@ -22,7 +22,7 @@
 
 #include "HelperTest.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <data/Camera.hpp>
 
@@ -175,7 +175,7 @@ void HelperTest::writeReadConfig()
 
     const auto config = navigation::openvslam::Helper::createMonocularConfig(cam, orbParam, initParams);
 
-    core::os::TempFile tmpFile;
+    core::os::temp_file tmpFile;
 
     CPPUNIT_ASSERT_NO_THROW(
         navigation::openvslam::Helper::writeOpenvslamConfig(

@@ -25,8 +25,8 @@
 #include "modules/viz/scene3dQt/config.hpp"
 #include "modules/viz/scene3dQt/OpenGLContext.hpp"
 
-#include <viz/scene3d/IWindowInteractor.hpp>
 #include <viz/scene3d/Layer.hpp>
+#include <viz/scene3d/window_interactor.hpp>
 
 #include <Ogre.h>
 #include <QGestureEvent>
@@ -82,7 +82,7 @@ public:
 Q_SIGNALS:
 
     /// Emits when the user interacts with the scene using the mouse and keyboard.
-    void interacted(sight::viz::scene3d::IWindowInteractor::InteractionInfo);
+    void interacted(sight::viz::scene3d::window_interactor::InteractionInfo);
 
 private:
 
@@ -119,7 +119,7 @@ private:
     /// Manages gestures.
     void gestureEvent(QGestureEvent* _e);
 
-    using InteractionInfo = sight::viz::scene3d::IWindowInteractor::InteractionInfo;
+    using InteractionInfo = sight::viz::scene3d::window_interactor::InteractionInfo;
 
     /// Converts the mouse event to be able to handle it with ogre.
     InteractionInfo convertMouseEvent(

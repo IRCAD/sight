@@ -28,9 +28,9 @@
 
 #include <core/runtime/runtime.hpp>
 
-#include <core/crypto/PasswordKeeper.hpp>
-#include <core/runtime/profile/Profile.hpp>
-#include <core/tools/Os.hpp>
+#include <core/crypto/password_keeper.hpp>
+#include <core/runtime/profile/profile.hpp>
+#include <core/tools/os.hpp>
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
@@ -50,7 +50,7 @@
 
 namespace po = boost::program_options;
 
-using sight::core::crypto::PasswordKeeper;
+using sight::core::crypto::password_keeper;
 using sight::core::crypto::secure_string;
 
 //------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ void signalHandler(int signal)
 
     try
     {
-        const auto& profile = sight::core::runtime::getCurrentProfile();
+        const auto& profile = sight::core::runtime::get_current_profile();
 
         if(profile != nullptr)
         {
@@ -150,7 +150,7 @@ inline static std::filesystem::path findLogFilePath(
         {
             // Try the user cache directory
             return buildLogFilePath(
-                sight::core::tools::os::getUserCacheDir(profile_name),
+                sight::core::tools::os::get_user_cache_dir(profile_name),
                 encrypted_log
             );
         }
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
 {
     std::vector<std::filesystem::path> modulePaths;
     std::filesystem::path profileFile;
-    sight::core::runtime::Profile::ParamsContainer profileArgs;
+    sight::core::runtime::profile::params_container profileArgs;
 
     // Runner options
     po::options_description options("Sight application launcher options");
@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
     const bool encrypted_log = true;
 
     // By default, don't ask for a password if there is a default password
-    bool ask_password = !PasswordKeeper::has_default_password();
+    bool ask_password = !password_keeper::has_default_password();
 #else
     const bool encrypted_log = false;
     bool ask_password        = false;
@@ -201,8 +201,8 @@ int main(int argc, char* argv[])
 
     std::string log_file;
 
-    using SpyLogger = sight::core::log::SpyLogger;
-    int log_level = SpyLogger::SL_WARN;
+    using spy_logger = sight::core::log::spy_logger;
+    int log_level = spy_logger::SL_WARN;
 
     po::options_description logOptions("Log options");
     logOptions.add_options()
@@ -240,32 +240,32 @@ int main(int argc, char* argv[])
     )
     (
         "log-trace",
-        po::value(&log_level)->implicit_value(SpyLogger::SL_TRACE)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::SL_TRACE)->zero_tokens(),
         "Set log_level to trace"
     )
     (
         "log-debug",
-        po::value(&log_level)->implicit_value(SpyLogger::SL_DEBUG)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::SL_DEBUG)->zero_tokens(),
         "Set log_level to debug"
     )
     (
         "log-info",
-        po::value(&log_level)->implicit_value(SpyLogger::SL_INFO)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::SL_INFO)->zero_tokens(),
         "Set log_level to info"
     )
     (
         "log-warn",
-        po::value(&log_level)->implicit_value(SpyLogger::SL_WARN)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::SL_WARN)->zero_tokens(),
         "Set log_level to warn"
     )
     (
         "log-error",
-        po::value(&log_level)->implicit_value(SpyLogger::SL_ERROR)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::SL_ERROR)->zero_tokens(),
         "Set log_level to error"
     )
     (
         "log-fatal",
-        po::value(&log_level)->implicit_value(SpyLogger::SL_FATAL)->zero_tokens(),
+        po::value(&log_level)->implicit_value(spy_logger::SL_FATAL)->zero_tokens(),
         "Set log_level to fatal"
     );
 
@@ -360,11 +360,11 @@ int main(int argc, char* argv[])
     );
 
     // Log file
-    SpyLogger& logger = SpyLogger::get();
+    spy_logger& logger = spy_logger::get();
 
     if(console_log)
     {
-        SpyLogger::add_console_log(std::clog, static_cast<SpyLogger::LevelType>(log_level));
+        spy_logger::add_console_log(std::clog, static_cast<spy_logger::level_type>(log_level));
     }
 
     if(file_log)
@@ -374,20 +374,20 @@ int main(int argc, char* argv[])
         if(encrypted_log)
         {
             const secure_string& password =
-                PasswordKeeper::has_default_password()
-                ? PasswordKeeper::get_default_password()
+                password_keeper::has_default_password()
+                ? password_keeper::get_default_password()
                 : secure_string();
 
             logger.start_encrypted_logger(
                 log_file_path,
-                static_cast<SpyLogger::LevelType>(log_level),
+                static_cast<spy_logger::level_type>(log_level),
                 password,
                 ask_password
             );
         }
         else
         {
-            logger.start_logger(log_file_path, static_cast<SpyLogger::LevelType>(log_level));
+            logger.start_logger(log_file_path, static_cast<spy_logger::level_type>(log_level));
         }
     }
 
@@ -421,14 +421,14 @@ int main(int argc, char* argv[])
 
     for(const std::filesystem::path& modulePath : modulePaths)
     {
-        sight::core::runtime::addModules(modulePath);
+        sight::core::runtime::add_modules(modulePath);
     }
 
-    sight::core::runtime::Profile::sptr profile;
+    sight::core::runtime::profile::sptr profile;
 
     try
     {
-        profile = sight::core::runtime::io::ProfileReader::createProfile(profileFile);
+        profile = sight::core::runtime::io::profile_reader::create_profile(profileFile);
 
         // Install a signal handler
         if(std::signal(SIGINT, signalHandler) == SIG_ERR)
@@ -452,12 +452,12 @@ int main(int argc, char* argv[])
             perror("std::signal(SIGQUIT)");
         }
 #endif
-        profile->setParams(profileArgs);
+        profile->set_params(profileArgs);
 
         profile->start();
         if(macroMode)
         {
-            sight::core::runtime::loadModule("sight::module::ui::test");
+            sight::core::runtime::load_module("sight::module::ui::test");
         }
 
         profile->run();
@@ -468,7 +468,7 @@ int main(int argc, char* argv[])
 
         if(macroMode)
         {
-            sight::core::runtime::unloadModule("sight::module::ui::test");
+            sight::core::runtime::unload_module("sight::module::ui::test");
         }
     }
     catch(const std::exception& e)

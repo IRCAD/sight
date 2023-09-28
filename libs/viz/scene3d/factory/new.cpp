@@ -24,7 +24,7 @@
 
 #include "viz/scene3d/ILight.hpp"
 #include "viz/scene3d/IText.hpp"
-#include "viz/scene3d/IWindowInteractor.hpp"
+#include "viz/scene3d/window_interactor.hpp"
 
 namespace sight::viz::scene3d
 {
@@ -34,7 +34,7 @@ namespace factory
 
 //------------------------------------------------------------------------------
 
-viz::scene3d::IWindowInteractor::sptr New(const viz::scene3d::registry::KeyType& _classname)
+viz::scene3d::window_interactor::sptr make(const viz::scene3d::registry::KeyType& _classname)
 {
     return viz::scene3d::registry::get()->create(_classname);
 }
@@ -46,7 +46,7 @@ namespace offscreenInteractorMgrFactory
 
 //------------------------------------------------------------------------------
 
-viz::scene3d::IWindowInteractor::sptr New(
+viz::scene3d::window_interactor::sptr make(
     const viz::scene3d::registry::KeyType& _classname,
     std::pair<unsigned int, unsigned int> _dims
 )
@@ -61,7 +61,7 @@ namespace lightFactory
 
 //------------------------------------------------------------------------------
 
-viz::scene3d::ILight::sptr New(const viz::scene3d::registry::KeyType& _classname)
+viz::scene3d::ILight::sptr make(const viz::scene3d::registry::KeyType& _classname)
 {
     return viz::scene3d::registry::getLightRegistry()->create(_classname);
 }
@@ -73,7 +73,7 @@ namespace textFactory
 
 //------------------------------------------------------------------------------
 
-viz::scene3d::IText::sptr New(
+viz::scene3d::IText::sptr make(
     const viz::scene3d::registry::KeyType& _classname,
     const sight::viz::scene3d::Layer::sptr& _layer
 )

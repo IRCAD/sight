@@ -27,7 +27,7 @@
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <ui/base/IGuiContainer.hpp>
+#include <ui/__/service.hpp>
 
 namespace sight::module::viz::sample
 {
@@ -44,12 +44,12 @@ namespace sight::module::viz::sample
  * @subsection Input Input
  * - \b image [sight::data::Image]: image to display.
  */
-class MODULE_VIZ_SAMPLE_CLASS_API SImage : public sight::ui::base::IGuiContainer
+class MODULE_VIZ_SAMPLE_CLASS_API SImage : public sight::ui::service
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SImage, sight::ui::base::IGuiContainer);
+    SIGHT_DECLARE_SERVICE(SImage, sight::ui::service);
 
     /// Creates the service.
     MODULE_VIZ_SAMPLE_API SImage() noexcept;
@@ -71,9 +71,9 @@ protected:
      * @note This is actually useless since the sub-service already listens to the data,
      * but this prevents a warning in fwServices from being raised.
      *
-     * Connect data::Image::s_MODIFIED_SIG to IService::slots::s_UPDATE
+     * Connect data::Image::MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_VIZ_SAMPLE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SAMPLE_API connections_t getAutoConnections() const override;
 
     /// Does nothing.
     MODULE_VIZ_SAMPLE_API void updating() override;
@@ -84,13 +84,13 @@ protected:
 private:
 
     /// Contains the render service.
-    service::IService::sptr m_renderSrv {nullptr};
+    service::base::sptr m_renderSrv {nullptr};
 
     /// Contains the trackball interactor adaptor.
-    service::IService::sptr m_interactorSrv {nullptr};
+    service::base::sptr m_interactorSrv {nullptr};
 
     /// Contains the negato adaptor.
-    service::IService::sptr m_negatoSrv {nullptr};
+    service::base::sptr m_negatoSrv {nullptr};
 
     /// Default transfer function
     data::TransferFunction::sptr m_tf;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ const std::string TagValueSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueSplitter::TagValueSplitter(filter::dicom::IFilter::Key /*unused*/) :
+TagValueSplitter::TagValueSplitter() :
     m_tag(DCM_UndefinedTagKey)
 {
 }
@@ -80,18 +80,18 @@ bool TagValueSplitter::isConfigurationRequired() const
 
 TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     const data::DicomSeries::sptr& series,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 ) const
 {
     if(m_tag == DCM_UndefinedTagKey)
     {
         const std::string msg = "Unable to split the series, the specified tag is not valid.";
-        throw filter::dicom::exceptions::FilterFailure(msg);
+        throw sight::filter::dicom::exceptions::FilterFailure(msg);
     }
 
     DicomSeriesContainerType result;
 
-    using InstanceContainerType  = std::vector<core::memory::BufferObject::sptr>;
+    using InstanceContainerType  = std::vector<core::memory::buffer_object::sptr>;
     using InstanceGroupContainer = std::map<std::string, InstanceContainerType>;
 
     // Create a container to store the groups of instances
@@ -102,10 +102,10 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
 
     for(const auto& item : series->getDicomContainer())
     {
-        const core::memory::BufferObject::sptr bufferObj = item.second;
-        const std::size_t buffSize                       = bufferObj->getSize();
-        core::memory::BufferObject::Lock lock(bufferObj);
-        char* buffer = static_cast<char*>(lock.getBuffer());
+        const core::memory::buffer_object::sptr bufferObj = item.second;
+        const std::size_t buffSize                        = bufferObj->size();
+        core::memory::buffer_object::lock_t lock(bufferObj);
+        char* buffer = static_cast<char*>(lock.buffer());
 
         DcmInputBufferStream is;
         is.setBuffer(buffer, offile_off_t(buffSize));
@@ -116,7 +116,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
         if(!fileFormat.read(is).good())
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << item.first << "')"
             );
         }
@@ -137,13 +137,13 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     for(const InstanceGroupContainer::value_type& group : groupContainer)
     {
         // Copy the series
-        data::DicomSeries::sptr dicomSeries = data::DicomSeries::New();
-        dicomSeries->shallowCopy(series);
+        data::DicomSeries::sptr dicomSeries = std::make_shared<data::DicomSeries>();
+        dicomSeries->shallow_copy(series);
         dicomSeries->clearDicomContainer();
 
         std::size_t index = 0;
         // Add the paths to the series
-        for(const core::memory::BufferObject::sptr& buffer : group.second)
+        for(const core::memory::buffer_object::sptr& buffer : group.second)
         {
             dicomSeries->addBinary(index++, buffer);
         }

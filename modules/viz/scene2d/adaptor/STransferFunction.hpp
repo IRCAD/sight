@@ -26,7 +26,7 @@
 
 #include <data/TransferFunction.hpp>
 
-#include <viz/scene2d/IAdaptor.hpp>
+#include <viz/scene2d/adaptor.hpp>
 
 #include <QGraphicsItemGroup>
 
@@ -73,13 +73,13 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b interactive (optional, true/false, default="false"): enables interactions.
  */
 class MODULE_VIZ_SCENE2D_CLASS_API STransferFunction : public QObject,
-                                                       public sight::viz::scene2d::IAdaptor
+                                                       public sight::viz::scene2d::adaptor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(STransferFunction, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(STransferFunction, sight::viz::scene2d::adaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE2D_API STransferFunction() noexcept;
@@ -103,16 +103,16 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
-     * module::viz::scene2d::adaptor::STransferFunction::IService::slots::s_UPDATE.
-     * Connect data::Object::s_MODIFIED_SIG of s_TF_POOL_INOUT to
-     * module::viz::scene2d::adaptor::STransferFunction::IService::slots::s_UPDATE.
-     * Connect data::Composite::s_ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
-     * module::viz::scene2d::adaptor::STransferFunction::IService::slots::s_UPDATE.
-     * Connect data::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
-     * module::viz::scene2d::adaptor::STransferFunction::IService::slots::s_UPDATE.
+     * Connect sight::viz::scene2d::data::Viewport::MODIFIED_SIG of s_VIEWPORT_INPUT to
+     * module::viz::scene2d::adaptor::STransferFunction::service::slots::UPDATE.
+     * Connect data::Object::MODIFIED_SIG of s_TF_POOL_INOUT to
+     * module::viz::scene2d::adaptor::STransferFunction::service::slots::UPDATE.
+     * Connect data::Composite::ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
+     * module::viz::scene2d::adaptor::STransferFunction::service::slots::UPDATE.
+     * Connect data::Composite::REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
+     * module::viz::scene2d::adaptor::STransferFunction::service::slots::UPDATE.
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
     /// Release all graphics items and draw all TF, all TF connections a established here.
     void updating() override;

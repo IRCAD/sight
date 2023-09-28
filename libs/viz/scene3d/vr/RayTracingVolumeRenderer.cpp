@@ -30,7 +30,7 @@
 #include "viz/scene3d/SRender.hpp"
 #include "viz/scene3d/Utils.hpp"
 
-#include <core/Profiling.hpp>
+#include <core/profiling.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -144,7 +144,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
     std::optional<IllumAmbientOcclusionSAT::sat_parameters_t> sat,
     std::optional<std::string> shader
 ) :
-    IVolumeRenderer(parentId,
+    volume_renderer(parentId,
                     layer->getSceneManager(),
                     parentNode,
                     image,
@@ -284,7 +284,7 @@ void RayTracingVolumeRenderer::updateImage(const data::Image::csptr image, const
 
     this->scaleTranslateCube(image->getSpacing(), image->getOrigin());
 
-    const data::Image::Size& newSize = image->getSize();
+    const data::Image::Size& newSize = image->size();
 
     // Create new grid texture + proxy geometry if image size changed.
     if(m_imageSize != newSize)
@@ -625,7 +625,7 @@ void RayTracingVolumeRenderer::clipImage(const Ogre::AxisAlignedBox& clippingBox
     const Ogre::AxisAlignedBox maxBoxSize(Ogre::Vector3::ZERO, Ogre::Vector3(1.F, 1.F, 1.F));
     const Ogre::AxisAlignedBox clampedClippingBox = maxBoxSize.intersection(clippingBox);
 
-    IVolumeRenderer::clipImage(clampedClippingBox);
+    volume_renderer::clipImage(clampedClippingBox);
 
     if(m_entryPointGeometry == nullptr) //Prevent misusage
     {
@@ -1084,7 +1084,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     if(m_proxyGeometry == nullptr)
     {
         m_proxyGeometry =
-            viz::scene3d::vr::GridProxyGeometry::New(
+            viz::scene3d::vr::GridProxyGeometry::make(
                 this->m_parentId + "_GridProxyGeometry",
                 m_sceneManager,
                 m_3DOgreTexture,

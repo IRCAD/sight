@@ -34,9 +34,9 @@ Example:
         <object uid="TFSet" type="sight::data::Composite" src="deferred" />
         <object uid="${transferFunctionOutput}" type="sight::data::TransferFunction" src="deferred" />
 
-        <service uid="tfEditor" type="sight::module::ui::base::SView">
+        <service uid="tfEditor" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" minHeight="30" />
                     <view proportion="1" />
@@ -65,9 +65,9 @@ Example:
             </config>
         </service>
 
-        <service uid="tfmTab" type="sight::module::ui::base::SView">
+        <service uid="tfmTab" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::TabLayoutManager">
+                <layout type="sight::ui::layout::tab">
                     <view caption="TF-Negato" />
                     <view caption="TF-Editor" />
                 </layout>

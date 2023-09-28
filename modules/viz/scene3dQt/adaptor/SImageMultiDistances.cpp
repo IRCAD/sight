@@ -28,8 +28,8 @@
 
 #include "data/FiducialsSeries.hpp"
 
-#include <core/com/Slots.hxx>
-#include <core/tools/UUID.hpp>
+#include <core/com/slots.hxx>
+#include <core/tools/uuid.hpp>
 
 #include <data/Boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
@@ -40,7 +40,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
+#include <ui/__/cursor.hpp>
 
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/ogre.hpp>
@@ -48,7 +48,7 @@
 
 #include <libs/viz/scene3d/helper/Scene.hpp>
 
-#include <modules/viz/scene3dQt/WindowInteractor.hpp>
+#include <modules/viz/scene3dQt/window_interactor.hpp>
 
 #include <OgreEntity.h>
 #include <OgreNode.h>
@@ -57,11 +57,11 @@
 namespace sight::module::viz::scene3dQt::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_REMOVE_ALL_SLOT                    = "removeAll";
-static const core::com::Slots::SlotKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
-static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
-static const core::com::Slots::SlotKeyType s_ACTIVATE_DISTANCE_TOOL_SLOT        = "activateDistanceTool";
-static const core::com::Slots::SlotKeyType s_UPDATE_MODIFIED_DISTANCE_SLOT      = "updateModifiedDistance";
+static const core::com::slots::key_t REMOVE_ALL_SLOT                    = "removeAll";
+static const core::com::slots::key_t REMOVE_DISTANCES_SLOT              = "removeDistances";
+static const core::com::slots::key_t UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
+static const core::com::slots::key_t ACTIVATE_DISTANCE_TOOL_SLOT        = "activateDistanceTool";
+static const core::com::slots::key_t UPDATE_MODIFIED_DISTANCE_SLOT      = "updateModifiedDistance";
 
 static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::s_SURFACE_ID;
 
@@ -81,15 +81,15 @@ data::PointList::sptr toPointList(const data::FiducialsSeries::Fiducial& fiducia
     data::PointList::sptr res;
     if(fiducial.fiducialUID.has_value())
     {
-        core::tools::Object::sptr o = core::tools::fwID::getObject(*fiducial.fiducialUID);
+        core::tools::object::sptr o = core::tools::id::get_object(*fiducial.fiducialUID);
         if(o == nullptr)
         {
-            res = data::PointList::New();
-            res->setID(*fiducial.fiducialUID);
+            res = std::make_shared<data::PointList>();
+            res->set_id(*fiducial.fiducialUID);
         }
         else
         {
-            res = data::PointList::dynamicCast(o);
+            res = std::dynamic_pointer_cast<data::PointList>(o);
             SIGHT_ASSERT(
                 "The ID " << *fiducial.fiducialUID << " is already set to an object which isn't a point list.",
                 res
@@ -107,14 +107,14 @@ data::PointList::sptr toPointList(const data::FiducialsSeries::Fiducial& fiducia
         SIGHT_ASSERT("Contour Data should have two elements", fiducial.contourData.size() == 2);
         res->clear();
         res->pushBack(
-            data::Point::New(
+            std::make_shared<data::Point>(
                 fiducial.contourData[0].x,
                 fiducial.contourData[0].y,
                 fiducial.contourData[0].z
             )
         );
         res->pushBack(
-            data::Point::New(
+            std::make_shared<data::Point>(
                 fiducial.contourData[1].x,
                 fiducial.contourData[1].y,
                 fiducial.contourData[1].z
@@ -218,24 +218,24 @@ std::string SImageMultiDistances::getLength(const Ogre::Vector3& _begin, const O
 
 SImageMultiDistances::SImageMultiDistances() noexcept
 {
-    newSlot(s_REMOVE_ALL_SLOT, &SImageMultiDistances::removeAll, this);
-    newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
-    newSlot(s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT, &SImageMultiDistances::updateVisibilityFromField, this);
-    newSlot(s_ACTIVATE_DISTANCE_TOOL_SLOT, &SImageMultiDistances::activateDistanceTool, this);
-    newSlot(s_UPDATE_MODIFIED_DISTANCE_SLOT, &SImageMultiDistances::updateModifiedDistance, this);
+    new_slot(REMOVE_ALL_SLOT, &SImageMultiDistances::removeAll, this);
+    new_slot(REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
+    new_slot(UPDATE_VISIBILITY_FROM_FIELDS_SLOT, &SImageMultiDistances::updateVisibilityFromField, this);
+    new_slot(ACTIVATE_DISTANCE_TOOL_SLOT, &SImageMultiDistances::activateDistanceTool, this);
+    new_slot(UPDATE_MODIFIED_DISTANCE_SLOT, &SImageMultiDistances::updateModifiedDistance, this);
 
-    newSignal<signals::void_signal_t>(signals::s_DEACTIVATE_DISTANCE_TOOL);
+    new_signal<signals::void_signal_t>(signals::DEACTIVATE_DISTANCE_TOOL);
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
+service::connections_t SImageMultiDistances::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_MODIFIED_SIG, s_UPDATE_MODIFIED_DISTANCE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_IMAGE_INOUT, data::Image::DISTANCE_MODIFIED_SIG, UPDATE_MODIFIED_DISTANCE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::DISTANCE_REMOVED_SIG, REMOVE_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::DISTANCE_DISPLAYED_SIG, UPDATE_VISIBILITY_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -294,9 +294,9 @@ void SImageMultiDistances::starting()
 
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
-    m_sphereMaterialName     = this->getID() + "_sphereMaterialName";
-    m_lineMaterialName       = this->getID() + "_lineMaterialName";
-    m_dashedLineMaterialName = this->getID() + "_dashedLineMaterialName";
+    m_sphereMaterialName     = this->get_id() + "_sphereMaterialName";
+    m_lineMaterialName       = this->get_id() + "_lineMaterialName";
+    m_dashedLineMaterialName = this->get_id() + "_dashedLineMaterialName";
 
     // Create materials from our wrapper.
     m_sphereMaterial = std::make_unique<sight::viz::scene3d::Material>(
@@ -345,7 +345,7 @@ void SImageMultiDistances::starting()
 
     if(m_interactive)
     {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
         layer->addInteractor(interactor, m_priority);
     }
 }
@@ -375,7 +375,7 @@ void SImageMultiDistances::stopping()
 
     if(m_interactive)
     {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
         this->getLayer()->removeInteractor(interactor);
     }
 
@@ -399,8 +399,8 @@ void SImageMultiDistances::removeAll()
     }
 
     const auto image                    = m_image.lock();
-    data::Vector::sptr distanceListCopy = data::Vector::New();
-    if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
+    data::Vector::sptr distanceListCopy = std::make_shared<data::Vector>();
+    if(auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(image.get_shared()))
     {
         std::vector<data::FiducialsSeries::FiducialSet> fiducialSets = imageSeries->getFiducials()->getFiducialSets();
         for(auto itFiducialSet = fiducialSets.begin() ; itFiducialSet != fiducialSets.end() ; )
@@ -434,15 +434,15 @@ void SImageMultiDistances::removeAll()
     else
     {
         data::Vector::sptr distanceList = data::helper::MedicalImage::getDistances(*image);
-        distanceListCopy->shallowCopy(distanceList);
+        distanceListCopy->shallow_copy(distanceList);
         distanceList->clear();
     }
 
     for(const data::Object::sptr& element : *distanceListCopy)
     {
-        auto pl = data::PointList::dynamicCast(element);
+        auto pl = std::dynamic_pointer_cast<data::PointList>(element);
         SIGHT_ASSERT("All elements in distance image field must be point lists.", pl);
-        image->signal<data::Image::DistanceRemovedSignalType>(data::Image::s_DISTANCE_REMOVED_SIG)->asyncEmit(pl);
+        image->signal<data::Image::DistanceRemovedSignalType>(data::Image::DISTANCE_REMOVED_SIG)->async_emit(pl);
     }
 }
 
@@ -455,9 +455,9 @@ void SImageMultiDistances::removeDistances()
     const auto image = m_image.lock();
 
     data::Vector::sptr distanceField;
-    if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
+    if(auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(image.get_shared()))
     {
-        distanceField = data::Vector::New();
+        distanceField = std::make_shared<data::Vector>();
         for(const data::FiducialsSeries::FiducialSet& fiducialSet : imageSeries->getFiducials()->getFiducialSets())
         {
             for(const data::FiducialsSeries::Fiducial& fiducial : fiducialSet.fiducialSequence)
@@ -477,12 +477,12 @@ void SImageMultiDistances::removeDistances()
         distanceField = data::helper::MedicalImage::getDistances(*image);
     }
 
-    std::vector<core::tools::fwID::IDType> foundId;
+    std::vector<core::tools::id::type> foundId;
     if(distanceField)
     {
         for(const auto& object : *distanceField)
         {
-            foundId.push_back(object->getID());
+            foundId.push_back(object->get_id());
         }
     }
     else
@@ -493,13 +493,13 @@ void SImageMultiDistances::removeDistances()
         }
     }
 
-    std::vector<core::tools::fwID::IDType> currentdId;
+    std::vector<core::tools::id::type> currentdId;
     for(const auto& [id, _] : m_distances)
     {
         currentdId.push_back(id);
     }
 
-    for(const core::tools::fwID::IDType& id : currentdId)
+    for(const core::tools::id::type& id : currentdId)
     {
         if(std::find(foundId.begin(), foundId.end(), id) == foundId.end())
         {
@@ -622,21 +622,21 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mod
                 if(objectType == "Entity" && object->isVisible())
                 {
                     //First point
-                    auto firstPoint      = data::Point::New();
+                    auto firstPoint      = std::make_shared<data::Point>();
                     auto clickedPosition = this->getNearestPickedPosition(_x, _y);
                     firstPoint->setCoord({clickedPosition->x, clickedPosition->y, clickedPosition->z});
                     //Second Point
-                    auto secondPoint = data::Point::New();
+                    auto secondPoint = std::make_shared<data::Point>();
                     secondPoint->setCoord({clickedPosition->x, clickedPosition->y, clickedPosition->z});
                     m_points.push_back(firstPoint);
                     m_points.push_back(secondPoint);
 
                     //createDistance equal to 0, firstPoint = secondPoint
-                    auto pointList = data::PointList::New();
+                    auto pointList = std::make_shared<data::PointList>();
                     pointList->setPoints(m_points);
                     this->createDistance(pointList);
                     this->updateImageDistanceField(pointList);
-                    auto& distanceData = m_distances[pointList->getID()];
+                    auto& distanceData = m_distances[pointList->get_id()];
                     m_pickedData = {&distanceData, false};
 
                     //remember that this is a creation.
@@ -777,9 +777,9 @@ void SImageMultiDistances::mouseMoveEvent(
 
             const auto image = m_image.lock();
             const auto sig   = image->signal<data::Image::DistanceModifiedSignalType>(
-                data::Image::s_DISTANCE_MODIFIED_SIG
+                data::Image::DISTANCE_MODIFIED_SIG
             );
-            sig->asyncEmit(m_pickedData.m_data->m_pointList);
+            sig->async_emit(m_pickedData.m_data->m_pointList);
         }
         else
         {
@@ -869,7 +869,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
         {
             if(length == 0)
             {
-                destroyDistance(pl->getID());
+                destroyDistance(pl->get_id());
                 removeDistance(pl);
                 setCursor(Qt::CrossCursor);
                 m_pickedData = {nullptr, true};
@@ -880,15 +880,15 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
                 if(!m_isAMouseMove)
                 {
                     auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-                    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+                    auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
                     auto* parentWidget = qtInteractor->getQtWidget();
                     static const QIcon trashBinIcon(QString::fromStdString(
-                                                        (core::runtime::getModuleResourcePath(
+                                                        (core::runtime::get_module_resource_path(
                                                              "sight::module::ui::flaticons"
                                                          ) / "RedTrashBin.svg").string()
                     ));
                     m_binButton = new QPushButton(trashBinIcon, "", parentWidget);
-                    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+                    const std::string serviceID = get_id().substr(get_id().find_last_of('_') + 1);
                     m_binButton->setObjectName(QString::fromStdString(serviceID) + "/binButton");
                     m_binButton->setCursor(Qt::ArrowCursor);
                     m_binButton->adjustSize();
@@ -933,7 +933,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
                         [this, pl = m_pickedData.m_data->m_pointList]
                         {
                             m_binButton->hide();
-                            destroyDistance(pl->getID());
+                            destroyDistance(pl->get_id());
                             removeDistance(pl);
                             setCursor(Qt::CrossCursor);
                             m_pickedData = {nullptr, true};
@@ -959,7 +959,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
         {
             m_creationMode = false;
             const auto pl = m_pickedData.m_data->m_pointList;
-            destroyDistance(pl->getID());
+            destroyDistance(pl->get_id());
             removeDistance(pl);
             setCursor(Qt::CrossCursor);
             m_pickedData = {nullptr, true};
@@ -969,7 +969,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
         else
         {
             activateDistanceTool(false);
-            this->signal<signals::void_signal_t>(signals::s_DEACTIVATE_DISTANCE_TOOL)->asyncEmit();
+            this->signal<signals::void_signal_t>(signals::DEACTIVATE_DISTANCE_TOOL)->async_emit();
         }
     }
 }
@@ -981,7 +981,7 @@ void SImageMultiDistances::keyPressEvent(int key, Modifier /*_mods*/, int /*_mou
     if(m_toolActivated && key == Qt::Key_Escape)
     {
         activateDistanceTool(false);
-        this->signal<signals::void_signal_t>(signals::s_DEACTIVATE_DISTANCE_TOOL)->asyncEmit();
+        this->signal<signals::void_signal_t>(signals::DEACTIVATE_DISTANCE_TOOL)->async_emit();
     }
 }
 
@@ -1001,7 +1001,7 @@ void SImageMultiDistances::wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/
 
 void SImageMultiDistances::createDistance(data::PointList::sptr& _pl)
 {
-    const core::tools::fwID::IDType id = _pl->getID();
+    const core::tools::id::type id = _pl->get_id();
     SIGHT_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
 
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
@@ -1021,7 +1021,7 @@ void SImageMultiDistances::createDistance(data::PointList::sptr& _pl)
                             static_cast<float>(back[2]));
 
     // First sphere.
-    Ogre::ManualObject* const sphere1 = sceneMgr->createManualObject(this->getID() + "_sphere1_" + id);
+    Ogre::ManualObject* const sphere1 = sceneMgr->createManualObject(this->get_id() + "_sphere1_" + id);
     sight::viz::scene3d::helper::ManualObject::createSphere(
         sphere1,
         m_sphereMaterialName,
@@ -1032,12 +1032,12 @@ void SImageMultiDistances::createDistance(data::PointList::sptr& _pl)
     // Render this sphere over all others objects.
     sphere1->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
     SIGHT_ASSERT("Can't create the first entity", sphere1);
-    Ogre::SceneNode* const node1 = rootNode->createChildSceneNode(this->getID() + "_node1_" + id, begin);
+    Ogre::SceneNode* const node1 = rootNode->createChildSceneNode(this->get_id() + "_node1_" + id, begin);
     SIGHT_ASSERT("Can't create the first node", node1);
     node1->attachObject(sphere1);
 
     // Second sphere.
-    Ogre::ManualObject* const sphere2 = sceneMgr->createManualObject(this->getID() + "_sphere2_" + id);
+    Ogre::ManualObject* const sphere2 = sceneMgr->createManualObject(this->get_id() + "_sphere2_" + id);
     sight::viz::scene3d::helper::ManualObject::createSphere(
         sphere2,
         m_sphereMaterialName,
@@ -1048,12 +1048,12 @@ void SImageMultiDistances::createDistance(data::PointList::sptr& _pl)
     // Render this sphere over all others objects.
     sphere2->setRenderQueueGroup(s_DISTANCE_RQ_GROUP_ID);
     SIGHT_ASSERT("Can't create the second entity", sphere2);
-    Ogre::SceneNode* const node2 = rootNode->createChildSceneNode(this->getID() + "_node2_" + id, end);
+    Ogre::SceneNode* const node2 = rootNode->createChildSceneNode(this->get_id() + "_node2_" + id, end);
     SIGHT_ASSERT("Can't create the second node", node2);
     node2->attachObject(sphere2);
 
     // Line.
-    Ogre::ManualObject* const line = sceneMgr->createManualObject(this->getID() + "_line_" + id);
+    Ogre::ManualObject* const line = sceneMgr->createManualObject(this->get_id() + "_line_" + id);
     SIGHT_ASSERT("Can't create the line", line);
     line->begin(m_lineMaterialName, Ogre::RenderOperation::OT_LINE_LIST, sight::viz::scene3d::RESOURCE_GROUP);
     line->colour(colour);
@@ -1064,7 +1064,7 @@ void SImageMultiDistances::createDistance(data::PointList::sptr& _pl)
     rootNode->attachObject(line);
 
     // Dashed line.
-    Ogre::ManualObject* const dashedLine = sceneMgr->createManualObject(this->getID() + "_dashedLine_" + id);
+    Ogre::ManualObject* const dashedLine = sceneMgr->createManualObject(this->get_id() + "_dashedLine_" + id);
     SIGHT_ASSERT("Can't create the dashed line", dashedLine);
     dashedLine->begin(
         m_dashedLineMaterialName,
@@ -1086,14 +1086,14 @@ void SImageMultiDistances::createDistance(data::PointList::sptr& _pl)
     // Label.
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
-    sight::viz::scene3d::IText::sptr label = sight::viz::scene3d::IText::New(layer);
+    sight::viz::scene3d::IText::sptr label = sight::viz::scene3d::IText::make(layer);
 
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
     const std::string length = SImageMultiDistances::getLength(begin, end);
     label->setText(length);
     label->setTextColor(colour);
     label->setFontSize(m_fontSize);
-    Ogre::SceneNode* const labelNode = rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, end);
+    Ogre::SceneNode* const labelNode = rootNode->createChildSceneNode(this->get_id() + "_labelNode_" + id, end);
     SIGHT_ASSERT("Can't create the label node", labelNode);
     label->attachToNode(labelNode, this->getLayer()->getDefaultCamera());
 
@@ -1116,7 +1116,7 @@ void SImageMultiDistances::updateImageDistanceField(data::PointList::sptr _pl)
     const auto image = m_image.lock();
     if(data::helper::MedicalImage::checkImageValidity(image.get_shared()))
     {
-        if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
+        if(auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(image.get_shared()))
         {
             data::FiducialsSeries::FiducialSet fiducialSet;
             std::string frameOfReferenceUID = imageSeries->getStringValue(
@@ -1127,16 +1127,16 @@ void SImageMultiDistances::updateImageDistanceField(data::PointList::sptr _pl)
                 // Generate a frame of reference UID if the image doesn't have one. It is supposed to be mandatory
                 // according
                 // to the DICOM standard anyway.
-                frameOfReferenceUID = core::tools::UUID::generateUUID();
+                frameOfReferenceUID = core::tools::UUID::generate();
                 imageSeries->setStringValue(data::dicom::attribute::Keyword::FrameOfReferenceUID, frameOfReferenceUID);
             }
 
             fiducialSet.frameOfReferenceUID = frameOfReferenceUID;
             data::FiducialsSeries::Fiducial fiducial;
             fiducial.shapeType           = data::FiducialsSeries::Shape::RULER;
-            fiducial.fiducialIdentifier  = _pl->getID();
+            fiducial.fiducialIdentifier  = _pl->get_id();
             fiducial.fiducialDescription = "Distance";
-            fiducial.fiducialUID         = _pl->getID();
+            fiducial.fiducialUID         = _pl->get_id();
             std::array<double, 3> firstPoint  = _pl->getPoints().front()->getCoord();
             std::array<double, 3> secondPoint = _pl->getPoints().back()->getCoord();
             fiducial.contourData = {
@@ -1155,7 +1155,7 @@ void SImageMultiDistances::updateImageDistanceField(data::PointList::sptr _pl)
 
             if(!distancesField)
             {
-                distancesField = data::Vector::New();
+                distancesField = std::make_shared<data::Vector>();
                 distancesField->push_back(_pl);
                 data::helper::MedicalImage::setDistances(*image, distancesField);
             }
@@ -1207,7 +1207,7 @@ void SImageMultiDistances::updateDistance(
 
     {
         const auto image = m_image.lock();
-        if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
+        if(auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(image.get_shared()))
         {
             // With fields, the modified point list is a shared pointer to the distance field, so there is nothing more
             // to do; however this isn't enough for fiducials, which must be updated manually.
@@ -1218,7 +1218,7 @@ void SImageMultiDistances::updateDistance(
                 for(data::FiducialsSeries::Fiducial& fiducial : fiducialSet.fiducialSequence)
                 {
                     if(fiducial.shapeType == data::FiducialsSeries::Shape::RULER
-                       && fiducial.fiducialUID == _data->m_pointList->getID())
+                       && fiducial.fiducialUID == _data->m_pointList->get_id())
                     {
                         fiducial.contourData.clear();
                         fiducial.contourData.push_back({.x = _begin.x, .y = _begin.y, .z = _begin.z});
@@ -1232,18 +1232,18 @@ void SImageMultiDistances::updateDistance(
     }
 
     const auto& sigModified = _data->m_pointList->signal<data::PointList::ModifiedSignalType>(
-        data::PointList::s_MODIFIED_SIG
+        data::PointList::MODIFIED_SIG
     );
 
-    core::com::Connection::Blocker blocker(sigModified->getConnection(slot(IService::slots::s_UPDATE)));
-    sigModified->asyncEmit();
+    core::com::connection::blocker blocker(sigModified->get_connection(slot(service::slots::UPDATE)));
+    sigModified->async_emit();
 
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
+void SImageMultiDistances::destroyDistance(core::tools::id::type _id)
 {
     const auto it = m_distances.find(_id);
     SIGHT_ASSERT("The distance is not found", it != m_distances.end());
@@ -1276,7 +1276,7 @@ void SImageMultiDistances::activateDistanceTool(bool _activate)
         m_toolActivated = true;
         setCursor(Qt::CrossCursor);
         auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
         auto* parentWidget = qtInteractor->getQtWidget();
         m_eventFilter = std::make_unique<DeleteBinButtonWhenFocusOut>(this);
         parentWidget->installEventFilter(m_eventFilter.get());
@@ -1290,7 +1290,7 @@ void SImageMultiDistances::activateDistanceTool(bool _activate)
         m_points.clear();
 
         auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
         auto* parentWidget = qtInteractor->getQtWidget();
         parentWidget->unsetCursor();
 
@@ -1307,7 +1307,7 @@ void SImageMultiDistances::activateDistanceTool(bool _activate)
 
 void SImageMultiDistances::updateModifiedDistance(data::PointList::sptr _pl)
 {
-    if(m_distances.find(_pl->getID()) == m_distances.end())
+    if(m_distances.find(_pl->get_id()) == m_distances.end())
     {
         // create Distance if it doesn't exist
         this->createDistance(_pl);
@@ -1315,7 +1315,7 @@ void SImageMultiDistances::updateModifiedDistance(data::PointList::sptr _pl)
     else
     {
         // if it already exists, update distance with the new position
-        auto distanceToUpdate = m_distances[_pl->getID()];
+        auto distanceToUpdate = m_distances[_pl->get_id()];
 
         const std::array<double, 3> front = _pl->getPoints().front()->getCoord();
         const std::array<double, 3> back  = _pl->getPoints().back()->getCoord();
@@ -1337,7 +1337,7 @@ void SImageMultiDistances::updateModifiedDistance(data::PointList::sptr _pl)
 void SImageMultiDistances::setCursor(QCursor cursor)
 {
     auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+    auto qtInteractor  = std::dynamic_pointer_cast<window_interactor>(interactor);
     auto* parentWidget = qtInteractor->getQtWidget();
     parentWidget->setCursor(cursor);
 }
@@ -1347,7 +1347,7 @@ void SImageMultiDistances::setCursor(QCursor cursor)
 void SImageMultiDistances::removeDistance(data::PointList::sptr _pl)
 {
     const auto image = m_image.lock();
-    if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
+    if(auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(image.get_shared()))
     {
         std::vector<data::FiducialsSeries::FiducialSet> fiducialSets = imageSeries->getFiducials()->getFiducialSets();
         for(auto itFiducialSet = fiducialSets.begin() ; itFiducialSet != fiducialSets.end() ; )
@@ -1356,7 +1356,7 @@ void SImageMultiDistances::removeDistance(data::PointList::sptr _pl)
                 itFiducial != itFiducialSet->fiducialSequence.end() ; )
             {
                 if(itFiducial->shapeType == data::FiducialsSeries::Shape::RULER
-                   && itFiducial->fiducialUID == _pl->getID())
+                   && itFiducial->fiducialUID == _pl->get_id())
                 {
                     itFiducial = itFiducialSet->fiducialSequence.erase(itFiducial);
                 }
@@ -1386,9 +1386,9 @@ void SImageMultiDistances::removeDistance(data::PointList::sptr _pl)
     }
 
     const auto sig = image->signal<data::Image::DistanceRemovedSignalType>(
-        data::Image::s_DISTANCE_REMOVED_SIG
+        data::Image::DISTANCE_REMOVED_SIG
     );
-    sig->asyncEmit(_pl);
+    sig->async_emit(_pl);
 }
 
 SImageMultiDistances::DeleteBinButtonWhenFocusOut::DeleteBinButtonWhenFocusOut(

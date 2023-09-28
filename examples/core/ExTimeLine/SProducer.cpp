@@ -22,8 +22,8 @@
 
 #include "SProducer.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/thread/Timer.hpp>
+#include <core/com/signal.hxx>
+#include <core/thread/timer.hpp>
 
 namespace ExTimeLine
 {
@@ -32,7 +32,7 @@ namespace ExTimeLine
 
 void SProducer::configuring()
 {
-    sight::service::IService::ConfigType config = this->getConfiguration();
+    sight::service::config_t config = this->getConfiguration();
 
     m_message      = config.get<std::string>("message");
     m_senderId     = config.get<unsigned int>("id");
@@ -44,9 +44,9 @@ void SProducer::configuring()
 
 void SProducer::starting()
 {
-    m_timer = this->worker()->createTimer();
-    m_timer->setFunction([this](auto&& ...){updating();});
-    m_timer->setDuration(std::chrono::milliseconds(m_period));
+    m_timer = this->worker()->create_timer();
+    m_timer->set_function([this](auto&& ...){updating();});
+    m_timer->set_duration(std::chrono::milliseconds(m_period));
 
     m_timer->start();
 
@@ -79,7 +79,7 @@ void SProducer::updating()
 {
     const auto timeline = m_timeline.lock();
 
-    const auto timestamp = sight::core::HiResClock::getTimeInMilliSec();
+    const auto timestamp = sight::core::hires_clock::get_time_in_milli_sec();
     SPTR(::ExTimeLine::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
 
     ::ExTimeLine::MsgData* data = buffer->addElement(0);
@@ -94,8 +94,8 @@ void SProducer::updating()
     //Notify
     sight::data::TimeLine::ObjectPushedSignalType::sptr sig;
     sig =
-        timeline->signal<sight::data::TimeLine::ObjectPushedSignalType>(sight::data::TimeLine::s_OBJECT_PUSHED_SIG);
-    sig->asyncEmit(timestamp);
+        timeline->signal<sight::data::TimeLine::ObjectPushedSignalType>(sight::data::TimeLine::OBJECT_PUSHED_SIG);
+    sig->async_emit(timestamp);
 }
 
 //------------------------------------------------------------------------------

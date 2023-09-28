@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene2d/adaptor/SHistogram.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -37,13 +37,13 @@ using sight::viz::scene2d::vec2d_t;
 namespace sight::module::viz::scene2d::adaptor
 {
 
-const core::com::Slots::SlotKeyType s_IMAGE_CHANGE_SLOT = "imageChange";
+const core::com::slots::key_t IMAGE_CHANGE_SLOT = "imageChange";
 
 //---------------------------------------------------------------------------------------------------------
 
 SHistogram::SHistogram() noexcept
 {
-    newSlot(s_IMAGE_CHANGE_SLOT, &SHistogram::onImageChange, this);
+    new_slot(IMAGE_CHANGE_SLOT, &SHistogram::onImageChange, this);
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -210,7 +210,7 @@ void SHistogram::stopping()
 
 void SHistogram::processInteraction(sight::viz::scene2d::data::Event& _event)
 {
-    if(this->getStatus() != sight::service::IService::STARTED)
+    if(this->getStatus() != sight::service::base::STARTED)
     {
         return;
     }
@@ -244,8 +244,8 @@ void SHistogram::processInteraction(sight::viz::scene2d::data::Event& _event)
             m_yAxis->setScale(m_scale);
 
             auto viewport = m_viewport.lock();
-            auto sig      = viewport->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-            sig->asyncEmit();
+            auto sig      = viewport->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+            sig->async_emit();
         }
 
         updatePointedPos = true;
@@ -273,8 +273,8 @@ void SHistogram::processInteraction(sight::viz::scene2d::data::Event& _event)
             m_yAxis->setScale(m_scale);
 
             auto viewport = m_viewport.lock();
-            auto sig      = viewport->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-            sig->asyncEmit();
+            auto sig      = viewport->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+            sig->async_emit();
         }
 
         updatePointedPos = true;
@@ -312,11 +312,11 @@ void SHistogram::processInteraction(sight::viz::scene2d::data::Event& _event)
 
 //----------------------------------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SHistogram::getAutoConnections() const
+service::connections_t SHistogram::getAutoConnections() const
 {
     return {
-        {s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_IMAGE_CHANGE_SLOT},
-        {s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_IMAGE_CHANGE_SLOT}
+        {s_IMAGE_INPUT, data::Image::MODIFIED_SIG, IMAGE_CHANGE_SLOT},
+        {s_IMAGE_INPUT, data::Image::BUFFER_MODIFIED_SIG, IMAGE_CHANGE_SLOT}
     };
 }
 

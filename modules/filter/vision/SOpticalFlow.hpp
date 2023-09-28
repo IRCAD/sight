@@ -26,7 +26,7 @@
 
 #include <data/FrameTL.hpp>
 
-#include <service/IController.hpp>
+#include <service/controller.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -64,14 +64,14 @@ namespace sight::module::filter::vision
  * to keep a good balance between computation time and feature tracking quality (default 3,6),
  *  usually you don't need to change the value.
  */
-class MODULE_FILTER_VISION_CLASS_API SOpticalFlow : public service::IController
+class MODULE_FILTER_VISION_CLASS_API SOpticalFlow : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SOpticalFlow, sight::service::IController);
+    SIGHT_DECLARE_SERVICE(SOpticalFlow, sight::service::controller);
 
-    typedef core::com::Signal<void ()> MotionSignalType;
-    typedef core::com::Signal<void ()> NoMotionSignalType;
+    typedef core::com::signal<void ()> MotionSignalType;
+    typedef core::com::signal<void ()> NoMotionSignalType;
 
     /// Constructor
     MODULE_FILTER_VISION_CLASS_API SOpticalFlow() noexcept;
@@ -79,8 +79,8 @@ public:
     /// Destructor
     MODULE_FILTER_VISION_CLASS_API ~SOpticalFlow() noexcept override;
 
-    /// Connects ::arData:FrameTL::s_OBJECT_PUSHED_SIG to IService::slots::s_UPDATE
-    MODULE_FILTER_VISION_CLASS_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    /// Connects ::arData:FrameTL::OBJECT_PUSHED_SIG to service::slots::UPDATE
+    MODULE_FILTER_VISION_CLASS_API service::connections_t getAutoConnections() const override;
 
 protected:
 
@@ -127,7 +127,7 @@ private:
     bool m_motion {false};
 
     /// Stores last processed frame timestamp.
-    core::HiResClock::HiResClockType m_lastTimestamp {0};
+    core::hires_clock::type m_lastTimestamp {0};
 
     static constexpr std::string_view s_FRAME_TIMELINE_INPUT = "timeline";
 

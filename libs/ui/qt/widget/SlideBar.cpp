@@ -24,7 +24,7 @@
 
 #include "ui/qt/QtMainFrame.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>

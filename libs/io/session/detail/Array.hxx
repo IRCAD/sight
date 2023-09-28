@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ inline static void write(
     // Size
     boost::property_tree::ptree sizesTree;
 
-    for(const auto& size : array->getSize())
+    for(const auto& size : array->size())
     {
         sizesTree.add(s_Size, size);
     }
@@ -68,13 +68,13 @@ inline static void write(
 
     // Create the output file inside the archive
     const auto& ostream = archive.openFile(
-        std::filesystem::path(array->getUUID() + s_array),
+        std::filesystem::path(array->get_uuid() + s_array),
         password
     );
 
     // Write back to the archive
-    const auto& buffer = array->getBufferObject();
-    ostream->write(static_cast<const char*>(buffer->getBuffer()), static_cast<std::streamsize>(buffer->getSize()));
+    const auto& buffer = array->get_buffer_object();
+    ostream->write(static_cast<const char*>(buffer->buffer()), static_cast<std::streamsize>(buffer->size()));
 }
 
 //------------------------------------------------------------------------------
@@ -111,8 +111,8 @@ inline static data::Array::sptr read(
     }
 
     // Buffer
-    const auto& bufferObject = array->getBufferObject();
-    core::memory::BufferObject::Lock lockerSource(bufferObject);
+    const auto& bufferObject = array->get_buffer_object();
+    core::memory::buffer_object::lock_t lockerSource(bufferObject);
 
     // Create the istream from the input file inside the archive
     const auto& uuid    = tree.get<std::string>(s_uuid);
@@ -121,7 +121,7 @@ inline static data::Array::sptr read(
         password
     );
 
-    istream->read(static_cast<char*>(bufferObject->getBuffer()), static_cast<std::streamsize>(bufferObject->getSize()));
+    istream->read(static_cast<char*>(bufferObject->buffer()), static_cast<std::streamsize>(bufferObject->size()));
 
     return array;
 }

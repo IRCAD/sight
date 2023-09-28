@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "modules/ui/qt/metrics/Distance.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QIcon>
 #include <QVBoxLayout>
@@ -37,13 +37,13 @@ namespace sight::module::ui::qt::metrics
 
 //------------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
+const core::com::signals::key_t Distance::DISTANCE_REQUESTED_SIG = "distanceRequested";
 
 //------------------------------------------------------------------------------
 
 Distance::Distance() noexcept
 {
-    m_sigDistanceRequested = newSignal<DistanceRequestedSignalType>(s_DISTANCE_REQUESTED_SIG);
+    m_sigDistanceRequested = new_signal<DistanceRequestedSignalType>(DISTANCE_REQUESTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -55,14 +55,14 @@ Distance::~Distance() noexcept =
 
 void Distance::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
     namespace fs = std::filesystem;
-    fs::path pathImageDist = core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "distance.png");
+    fs::path pathImageDist = core::runtime::get_module_resource_file_path("sight::module::ui::qt", "distance.png");
     SIGHT_ASSERT("Image " << pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));
@@ -91,7 +91,7 @@ void Distance::stopping()
 
 void Distance::configuring()
 {
-    this->sight::ui::base::IGuiContainer::initialize();
+    this->sight::ui::service::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void Distance::onDistanceButton()
 
     // force distance to be shown
     data::helper::MedicalImage::setDistanceVisibility(*image, true);
-    m_sigDistanceRequested->asyncEmit();
+    m_sigDistanceRequested->async_emit();
 }
 
 //------------------------------------------------------------------------------

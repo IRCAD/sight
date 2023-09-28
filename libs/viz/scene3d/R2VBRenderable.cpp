@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace sight::viz::scene3d
 
 //-----------------------------------------------------------------------------
 
-viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(
+viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::make(
     const std::string& _name,
     Ogre::SubEntity* _sourceObject,
     Ogre::SceneManager* _sceneManager,

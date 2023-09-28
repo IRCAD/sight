@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
 
-#include <io/base/reader/registry/macros.hpp>
+#include <io/__/reader/registry/macros.hpp>
 
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
@@ -42,8 +42,8 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(io::base::reader::IObjectReader::Key /*unused*/) :
-    m_job(core::jobs::Observer::New("VTK Image reader"))
+ImageReader::ImageReader() :
+    m_job(std::make_shared<core::jobs::observer>("VTK Image reader"))
 {
 }
 
@@ -64,19 +64,19 @@ void ImageReader::read()
     data::Image::sptr pImage = getConcreteObject();
 
     vtkSmartPointer<vtkGenericDataObjectReader> reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
-    reader->SetFileName(this->getFile().string().c_str());
+    reader->SetFileName(this->get_file().string().c_str());
 
-    vtkSmartPointer<vtkLambdaCommand> progressCallback;
-    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progressCallback->SetCallback(
+    vtkSmartPointer<vtkLambdaCommand> progress_callback;
+    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progress_callback->SetCallback(
         [this](vtkObject* caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectReader*>(caller);
-            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
-    reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+    reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->addSimpleCancelHook(
+    m_job->add_simple_cancel_hook(
         [&]()
         {
             reader->AbortExecuteOn();
@@ -91,7 +91,7 @@ void ImageReader::read()
 
     m_job->finish();
 
-    SIGHT_THROW_IF("ImageReader cannot read VTK image file :" << this->getFile().string(), !img);
+    SIGHT_THROW_IF("ImageReader cannot read VTK image file :" << this->get_file().string(), !img);
     try
     {
         io::vtk::fromVTKImage(img, pImage);
@@ -111,7 +111,7 @@ std::string ImageReader::extension() const
 
 //------------------------------------------------------------------------------
 
-core::jobs::IJob::sptr ImageReader::getJob() const
+core::jobs::base::sptr ImageReader::getJob() const
 {
     return m_job;
 }

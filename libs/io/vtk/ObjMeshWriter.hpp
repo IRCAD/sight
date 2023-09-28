@@ -24,9 +24,9 @@
 
 #include "io/vtk/config.hpp"
 
-#include <core/location/SingleFile.hpp>
+#include <core/location/single_file.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 #include <filesystem>
 
@@ -40,8 +40,8 @@ class Mesh;
 namespace sight::core::jobs
 {
 
-class Observer;
-class IJob;
+class observer;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -52,20 +52,20 @@ namespace sight::io::vtk
  * @brief Writes a Mesh in .obj format using VTK library.
  */
 
-class IO_VTK_CLASS_API ObjMeshWriter : public base::writer::GenericObjectWriter<data::Mesh>,
-                                       public core::location::SingleFile
+class IO_VTK_CLASS_API ObjMeshWriter : public writer::GenericObjectWriter<data::Mesh>,
+                                       public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         ObjMeshWriter,
-        io::base::writer::GenericObjectWriter<data::Mesh>,
-        io::base::writer::factory::New<ObjMeshWriter>
+        io::writer::GenericObjectWriter<data::Mesh>,
+        io::writer::factory::make<ObjMeshWriter>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API ObjMeshWriter(io::base::writer::IObjectWriter::Key key);
+    IO_VTK_API ObjMeshWriter();
 
     /// @brief Destructor.
     IO_VTK_API ~ObjMeshWriter() override;
@@ -77,12 +77,12 @@ public:
     IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::IJob) getJob() const override;
+    IO_VTK_API SPTR(core::jobs::base) getJob() const override;
 
 private:
 
     ///Internal job
-    SPTR(core::jobs::Observer) m_job;
+    SPTR(core::jobs::observer) m_job;
 };
 
 } // namespace sight::io::vtk

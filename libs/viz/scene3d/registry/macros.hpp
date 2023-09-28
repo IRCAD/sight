@@ -24,8 +24,8 @@
 
 #include "viz/scene3d/ILight.hpp"
 #include "viz/scene3d/IText.hpp"
-#include "viz/scene3d/IWindowInteractor.hpp"
 #include "viz/scene3d/registry/detail.hpp"
+#include "viz/scene3d/window_interactor.hpp"
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/stringize.hpp>
@@ -34,15 +34,15 @@ namespace sight::viz::scene3d::registry
 {
 
 #define SIGHT_REGISTER_SCENE3D(OgreRenderInteractorMngClassname, FunctorKey) \
-    static sight::viz::scene3d::IWindowInteractor::Registry<OgreRenderInteractorMngClassname> \
+    static sight::viz::scene3d::window_interactor::Registry<OgreRenderInteractorMngClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 #define SIGHT_REGISTER_SCENE3D_OFFSCREEN(OgreRenderInteractorMngClassname, FunctorKey) \
-    static sight::viz::scene3d::IWindowInteractor::OffscreenMgrRegistry<OgreRenderInteractorMngClassname> \
+    static sight::viz::scene3d::window_interactor::OffscreenMgrRegistry<OgreRenderInteractorMngClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 #define SIGHT_REGISTER_SCENE3D_INTERACTOR(OgreInteractorClassname) \
-    static sight::viz::scene3d::interactor::IInteractor::Registry<OgreInteractorClassname> \
+    static sight::viz::scene3d::interactor::base::Registry<OgreInteractorClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(BOOST_PP_STRINGIZE(OgreInteractorClassname));
 
 #define SIGHT_REGISTER_SCENE3D_LIGHT(OgreLightClassname, FunctorKey) \

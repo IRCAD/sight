@@ -27,13 +27,13 @@
 #include <data/helper/Histogram.hpp>
 #include <data/Image.hpp>
 
-#include <viz/scene2d/IAdaptor.hpp>
+#include <viz/scene2d/adaptor.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
- * @brief   IAdaptor implementation for histogram data.
+ * @brief   adaptor implementation for histogram data.
  *
  * @section XML XML Configuration
  *
@@ -65,11 +65,11 @@ namespace sight::module::viz::scene2d::adaptor
  *      - \b labelColor (optional, default="#FFFFFFFF"): color of the cursor label
  *      - \b fontSize (optional, default="8"): size of the font used to display the current cursor value.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API SHistogram : public sight::viz::scene2d::IAdaptor
+class MODULE_VIZ_SCENE2D_CLASS_API SHistogram : public sight::viz::scene2d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SHistogram, sight::viz::scene2d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SHistogram, sight::viz::scene2d::adaptor);
 
     MODULE_VIZ_SCENE2D_API SHistogram() noexcept;
     MODULE_VIZ_SCENE2D_API ~SHistogram() noexcept override;
@@ -87,9 +87,9 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect SHistogram::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect SHistogram::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE2D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE2D_API service::connections_t getAutoConnections() const override;
 
     /// Ratio used for vertical scaling
     static constexpr double SCALE      = 1.1;

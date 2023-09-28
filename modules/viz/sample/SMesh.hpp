@@ -24,12 +24,13 @@
 
 #include "modules/viz/sample/config.hpp"
 
-#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/helper/sig_slot_connection.hpp>
+#include <core/macros.hpp>
 
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 
-#include <ui/base/IGuiContainer.hpp>
+#include <ui/__/service.hpp>
 
 namespace sight::module::viz::sample
 {
@@ -53,18 +54,18 @@ namespace sight::module::viz::sample
  * @subsection Input Input
  * - \b mesh [sight::data::Mesh]: mesh to display.
  */
-class MODULE_VIZ_SAMPLE_CLASS_API SMesh : public sight::ui::base::IGuiContainer
+class MODULE_VIZ_SAMPLE_CLASS_API SMesh : public sight::ui::service
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMesh, sight::ui::base::IGuiContainer);
+    SIGHT_DECLARE_SERVICE(SMesh, sight::ui::service);
 
-    MODULE_VIZ_SAMPLE_API static const core::com::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
+    MODULE_VIZ_SAMPLE_API static const core::com::slots::key_t UPDATE_CAM_POSITION_SLOT;
 
-    MODULE_VIZ_SAMPLE_API static const core::com::Signals::SignalKeyType s_CAM_UPDATED_SIG;
+    MODULE_VIZ_SAMPLE_API static const core::com::signals::key_t CAM_UPDATED_SIG;
 
-    typedef core::com::Signal<void (data::Matrix4::sptr)> CamUpdatedSignalType;
+    typedef core::com::signal<void (data::Matrix4::sptr)> CamUpdatedSignalType;
 
     /// Creates slots and the signal.
     MODULE_VIZ_SAMPLE_API SMesh() noexcept;
@@ -86,9 +87,9 @@ private:
      * @note This is actually useless since the sub-service already listens to the data,
      * but this prevents a warning in fwServices from being raised.
      *
-     * Connect data::Mesh::s_MODIFIED_SIG to IService::slots::s_UPDATE
+     * Connect data::Mesh::MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_VIZ_SAMPLE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SAMPLE_API connections_t getAutoConnections() const override;
 
     /// Does nothing.
     MODULE_VIZ_SAMPLE_API void updating() override;
@@ -105,16 +106,16 @@ private:
     void updateCamTransform();
 
     /// Contains the render service.
-    service::IService::sptr m_renderSrv;
+    sight::service::base::sptr m_renderSrv;
 
     /// Contains the trackball interactor adaptor.
-    service::IService::sptr m_interactorSrv;
+    service::base::sptr m_interactorSrv;
 
     /// Contains the mesh adaptor.
-    service::IService::sptr m_meshSrv;
+    service::base::sptr m_meshSrv;
 
     /// Contains the camera adaptor.
-    service::IService::sptr m_cameraSrv;
+    service::base::sptr m_cameraSrv;
 
     /// Contains the transformation adaptor.
     data::Matrix4::sptr m_cameraTransform;
@@ -123,7 +124,7 @@ private:
     CamUpdatedSignalType::sptr m_sigCamUpdated;
 
     /// Stores connection with the camera transform.
-    core::com::helper::SigSlotConnection m_connections;
+    core::com::helper::sig_slot_connection m_connections;
 
     data::ptr<data::Mesh, data::Access::in> m_mesh {this, "mesh", false};
 };

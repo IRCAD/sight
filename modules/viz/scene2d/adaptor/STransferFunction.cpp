@@ -22,11 +22,11 @@
 
 #include "modules/viz/scene2d/adaptor/STransferFunction.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
-#include <core/Profiling.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
+#include <core/profiling.hpp>
 
-#include <data/IContainer.hxx>
+#include <data/container.hxx>
 
 #include <viz/scene2d/data/InitQtPen.hpp>
 #include <viz/scene2d/Scene2DGraphicsView.hpp>
@@ -44,14 +44,14 @@
 namespace sight::module::viz::scene2d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
+static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTF";
 
 //-----------------------------------------------------------------------------
 
 STransferFunction::STransferFunction() noexcept :
     m_eventFilter(new QTimer())
 {
-    newSlot(s_UPDATE_TF_SLOT, &STransferFunction::updateTF, this);
+    new_slot(UPDATE_TF_SLOT, &STransferFunction::updateTF, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -115,13 +115,13 @@ void STransferFunction::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
+service::connections_t STransferFunction::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_CURRENT_TF_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_TF_SLOT);
-    connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_CURRENT_TF_INOUT, data::Object::MODIFIED_SIG, UPDATE_TF_SLOT);
+    connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::WINDOWING_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::POINTS_MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -729,7 +729,7 @@ void STransferFunction::processInteraction(sight::viz::scene2d::data::Event& _ev
             m_eventFilter,
             &QTimer::timeout,
             this,
-            [ =, this]()
+            [_event, this]()
             {
                 this->leftButtonClickEvent(_event);
             });
@@ -1394,11 +1394,11 @@ void STransferFunction::mouseMoveOnPieceViewEvent(const sight::viz::scene2d::dat
 
         // Sends the signal.
         const auto sig = tf->signal<data::TransferFunction::WindowingModifiedSignalType>(
-            data::TransferFunction::s_WINDOWING_MODIFIED_SIG
+            data::TransferFunction::WINDOWING_MODIFIED_SIG
         );
         {
-            const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-            sig->asyncEmit(tf->window(), tf->level());
+            const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+            sig->async_emit(tf->window(), tf->level());
         }
     }
 
@@ -1434,7 +1434,7 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         trapezeAction,
         &QAction::triggered,
         this,
-        [ =, this]()
+        [_event, this]()
         {
             this->addTrapeze(_event);
         });
@@ -1443,7 +1443,7 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         leftRampAction,
         &QAction::triggered,
         this,
-        [ =, this]()
+        [_event, this]()
         {
             this->addLeftRamp(_event);
         });
@@ -1452,7 +1452,7 @@ void STransferFunction::rightButtonCLickEvent(const sight::viz::scene2d::data::E
         rightRampAction,
         &QAction::triggered,
         this,
-        [ =, this]()
+        [_event, this]()
         {
             this->addRightRamp(_event);
         });
@@ -1590,10 +1590,10 @@ void STransferFunction::removeCurrentTF()
         m_currentTF = pieces.front();
         tf->fitWindow();
         // Block notifier
-        auto sig = tf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
+        auto sig = tf->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+        const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         {
-            sig->asyncEmit();
+            sig->async_emit();
         }
     }
 
@@ -1678,10 +1678,10 @@ void STransferFunction::addNewTF(const data::TransferFunctionPiece::sptr _tf)
         tf->pieces().push_back(_tf);
         tf->fitWindow();
         // Block notifier
-        auto sig = tf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
+        auto sig = tf->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+        const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
         {
-            sig->asyncEmit();
+            sig->async_emit();
         }
     }
 
@@ -1704,7 +1704,7 @@ void STransferFunction::addLeftRamp(const sight::viz::scene2d::data::Event& _eve
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
-    const auto leftRamp = data::TransferFunctionPiece::New();
+    const auto leftRamp = std::make_shared<data::TransferFunctionPiece>();
     leftRamp->insert({0.0, data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});
     leftRamp->insert({1.0, data::TransferFunction::color_t()});
     leftRamp->setClamped(false);
@@ -1728,7 +1728,7 @@ void STransferFunction::addRightRamp(const sight::viz::scene2d::data::Event& _ev
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     // Creates the new TF.
-    const auto rightRamp = data::TransferFunctionPiece::New();
+    const auto rightRamp = std::make_shared<data::TransferFunctionPiece>();
     rightRamp->insert({0.0, data::TransferFunction::color_t()});
     rightRamp->insert({1.0, data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});
     rightRamp->setClamped(false);
@@ -1752,7 +1752,7 @@ void STransferFunction::addTrapeze(const sight::viz::scene2d::data::Event& _even
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
     // Creates the new TF.
-    const auto trapeze = data::TransferFunctionPiece::New();
+    const auto trapeze = std::make_shared<data::TransferFunctionPiece>();
     trapeze->insert({0.0, data::TransferFunction::color_t()});
     trapeze->insert({1. / 3., data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});
     trapeze->insert({2. / 3., data::TransferFunction::color_t(1.0, 1.0, 1.0, 1.0)});
@@ -1798,11 +1798,11 @@ void STransferFunction::pointsModified(const sight::data::TransferFunction& _tf)
 {
     // Sends the modification signal.
     const auto sigTf = _tf.signal<data::TransferFunction::PointsModifiedSignalType>(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG
+        data::TransferFunction::POINTS_MODIFIED_SIG
     );
 
-    const core::com::Connection::Blocker block1(sigTf->getConnection(slot(IService::slots::s_UPDATE)));
-    sigTf->asyncEmit();
+    const core::com::connection::blocker block1(sigTf->get_connection(slot(service::slots::UPDATE)));
+    sigTf->async_emit();
 }
 
 //-----------------------------------------------------------------------------

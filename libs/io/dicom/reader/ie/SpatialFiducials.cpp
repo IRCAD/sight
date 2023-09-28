@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ SpatialFiducials::SpatialFiducials(
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Image::sptr& image,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -63,7 +63,7 @@ void SpatialFiducials::readLandmark(const gdcm::DataSet& fiducialDataset)
 
     if(!pointList)
     {
-        pointList = data::PointList::New();
+        pointList = std::make_shared<data::PointList>();
         data::helper::MedicalImage::setLandmarks(*m_object, pointList);
     }
 
@@ -98,7 +98,7 @@ void SpatialFiducials::readLandmark(const gdcm::DataSet& fiducialDataset)
         double zCoordinate =
             io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object, std::size_t(frameNumber));
 
-        data::Point::sptr point = data::Point::New(
+        data::Point::sptr point = std::make_shared<data::Point>(
             static_cast<double>(pointValues[0]),
             static_cast<double>(pointValues[1]),
             zCoordinate

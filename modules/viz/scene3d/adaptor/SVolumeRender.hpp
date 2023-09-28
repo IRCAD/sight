@@ -24,10 +24,10 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/IGraphicsWorker.hpp>
 #include <viz/scene3d/interactor/ClippingBoxInteractor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/transformable.hpp>
 #include <viz/scene3d/vr/IllumAmbientOcclusionSAT.hpp>
 #include <viz/scene3d/vr/PreIntegrationTable.hpp>
 #include <viz/scene3d/vr/RayTracingVolumeRenderer.hpp>
@@ -118,13 +118,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SVolumeRender final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SVolumeRender, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SVolumeRender, sight::viz::scene3d::adaptor);
 
     /// Creates slots.
     MODULE_VIZ_SCENE3D_API SVolumeRender() noexcept;
@@ -135,16 +135,16 @@ public:
 protected:
 
     // Slot keys
-    static inline const sight::core::com::Slots::SlotKeyType s_NEW_IMAGE_SLOT            = "newImage";
-    static inline const sight::core::com::Slots::SlotKeyType s_BUFFER_IMAGE_SLOT         = "bufferImage";
-    static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
-    static inline const sight::core::com::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
-    static inline const sight::core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-    static inline const sight::core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-    static inline const sight::core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-    static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
-    static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT            = "updateTF";
-    static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_MASK_SLOT          = "updateMask";
+    static inline const sight::core::com::slots::key_t NEW_IMAGE_SLOT            = "newImage";
+    static inline const sight::core::com::slots::key_t BUFFER_IMAGE_SLOT         = "bufferImage";
+    static inline const sight::core::com::slots::key_t UPDATE_IMAGE_SLOT         = "updateImage";
+    static inline const sight::core::com::slots::key_t TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
+    static inline const sight::core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+    static inline const sight::core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "setIntParameter";
+    static inline const sight::core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+    static inline const sight::core::com::slots::key_t UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
+    static inline const sight::core::com::slots::key_t UPDATE_TF_SLOT            = "updateTF";
+    static inline const sight::core::com::slots::key_t UPDATE_MASK_SLOT          = "updateMask";
 
     ///@brief Internal wrapper holding config defines.
     struct config
@@ -221,11 +221,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to s_NEW_IMAGE_SLOT
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to s_BUFFER_IMAGE_SLOT
-     * Connect data::Image::s_MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to s_UPDATE_CLIPPING_BOX_SLOT
+     * Connect data::Image::MODIFIED_SIG of s_IMAGE_INOUT to NEW_IMAGE_SLOT
+     * Connect data::Image::BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to BUFFER_IMAGE_SLOT
+     * Connect data::Image::MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to UPDATE_CLIPPING_BOX_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
 
     /// Does nothing.
     MODULE_VIZ_SCENE3D_API void updating() override;

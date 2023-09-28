@@ -22,12 +22,12 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/interactor/IInteractor.hpp"
+#include "viz/scene3d/interactor/base.hpp"
 #include "viz/scene3d/Layer.hpp"
 
-#include <core/thread/Timer.hpp>
+#include <core/thread/timer.hpp>
 
-#include <ui/base/parameter.hpp>
+#include <ui/__/parameter.hpp>
 
 #include <glm/glm.hpp>
 
@@ -40,7 +40,7 @@ namespace sight::viz::scene3d::interactor
  * Moves the camera around a set of predefined positions.
  *
  */
-class VIZ_SCENE3D_CLASS_API PredefinedPositionInteractor final : public sight::viz::scene3d::interactor::IInteractor
+class VIZ_SCENE3D_CLASS_API PredefinedPositionInteractor final : public sight::viz::scene3d::interactor::base
 {
 public:
 
@@ -120,7 +120,7 @@ public:
     VIZ_SCENE3D_API void setSceneLength(float _sceneLength) override;
 
     /// SLOT: Sets a parameter value with its key.
-    VIZ_SCENE3D_API void setParameter(ui::base::parameter_t value, std::string key);
+    VIZ_SCENE3D_API void setParameter(ui::parameter_t value, std::string key);
 
     ///SLOT: Goes to the next predefined position (return to first one after the latest).
     VIZ_SCENE3D_API void nextPosition();
@@ -183,7 +183,7 @@ private:
     bool m_mouseMove {false};
 
     /// Timer used to animate the camera.
-    core::thread::Timer::sptr m_timer;
+    core::thread::timer::sptr m_timer;
 
     /// Stores the initial rotation.
     const Ogre::Quaternion m_cameraInitRotation {Ogre::Quaternion(Ogre::Degree(180), Ogre::Vector3::NEGATIVE_UNIT_X)};

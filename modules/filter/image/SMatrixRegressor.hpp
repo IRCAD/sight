@@ -32,7 +32,7 @@
 
 #include <filter/image/MatrixRegressor.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -60,12 +60,12 @@ namespace sight::module::filter::image
  * @subsection In-Out In-Out
  * - \b optimalMatrix [sight::data::Matrix4]: The optimal matrix.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SMatrixRegressor : public service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SMatrixRegressor : public service::filter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMatrixRegressor, service::IFilter);
+    SIGHT_DECLARE_SERVICE(SMatrixRegressor, service::filter);
 
     /// Does nothing.
     MODULE_FILTER_IMAGE_API SMatrixRegressor();
@@ -91,14 +91,14 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Vector::s_ADDED_OBJECTS_SIG of s_MATRIX_LIST_IN to IService::slots::s_UPDATE
-     * Connect data::Vector::s_REMOVED_OBJECTS_SIG of s_MATRIX_LIST_IN to IService::slots::s_UPDATE
-     * Connect data::Vector::s_MODIFIED_SIG of s_MATRIX_LIST_IN to IService::slots::s_UPDATE
-     * Connect data::PointList::s_POINT_ADDED_SIG of s_POINT_LIST_IN to IService::slots::s_UPDATE
-     * Connect data::PointList::s_POINT_REMOVED_SIG of s_POINT_LIST_IN to IService::slots::s_UPDATE
-     * Connect data::PointList::s_MODIFIED_SIG of s_POINT_LIST_IN to IService::slots::s_UPDATE
+     * Connect data::Vector::ADDED_OBJECTS_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
+     * Connect data::Vector::REMOVED_OBJECTS_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
+     * Connect data::Vector::MODIFIED_SIG of s_MATRIX_LIST_IN to service::slots::UPDATE
+     * Connect data::PointList::POINT_ADDED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
+     * Connect data::PointList::POINT_REMOVED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
+     * Connect data::PointList::MODIFIED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
      */
-    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API connections_t getAutoConnections() const override;
 
 private:
 

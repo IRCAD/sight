@@ -116,7 +116,7 @@ private:
     CompositorListener* m_listener {nullptr};
 
     /// Handles connection with the layer.
-    core::com::helper::SigSlotConnection m_resizeConnection;
+    core::com::helper::sig_slot_connection m_resizeConnection;
 
     friend class CompositorListener;
 };

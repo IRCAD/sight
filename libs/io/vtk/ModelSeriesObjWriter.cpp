@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,15 +26,15 @@
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
+#include <core/tools/uuid.hpp>
 
 #include <data/Material.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
 #include <vtkActor.h>
 #include <vtkOBJExporter.h>
@@ -54,8 +54,8 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-ModelSeriesObjWriter::ModelSeriesObjWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
-    m_job(core::jobs::Observer::New("ModelSeries Writer"))
+ModelSeriesObjWriter::ModelSeriesObjWriter() :
+    m_job(std::make_shared<core::jobs::observer>("ModelSeries Writer"))
 {
 }
 
@@ -106,11 +106,11 @@ void ModelSeriesObjWriter::write()
 
     SIGHT_ASSERT("Object Lock null.", objectLock);
 
-    const std::filesystem::path prefix = this->getFolder();
+    const std::filesystem::path prefix = this->get_folder();
 
     const data::ModelSeries::csptr modelSeries = getConcreteObject();
 
-    m_job->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
+    m_job->set_total_work_units(modelSeries->getReconstructionDB().size());
     std::uint64_t units = 0;
     for(const data::Reconstruction::sptr& rec : modelSeries->getReconstructionDB())
     {
@@ -121,13 +121,13 @@ void ModelSeriesObjWriter::write()
         vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
         renderWindow->AddRenderer(renderer);
 
-        const std::string filename = (prefix / (rec->getOrganName() + "_" + rec->getUUID())).string();
+        const std::string filename = (prefix / (rec->getOrganName() + "_" + rec->get_uuid())).string();
 
         vtkSmartPointer<vtkOBJExporter> exporter = vtkSmartPointer<vtkOBJExporter>::New();
         exporter->SetRenderWindow(renderWindow);
         exporter->SetFilePrefix(filename.c_str());
         exporter->Write();
-        m_job->doneWork(++units);
+        m_job->done_work(++units);
 
         // can not observe progression, not a vtkAlgorithm ...
     }
@@ -144,7 +144,7 @@ std::string ModelSeriesObjWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-core::jobs::IJob::sptr ModelSeriesObjWriter::getJob() const
+core::jobs::base::sptr ModelSeriesObjWriter::getJob() const
 {
     return m_job;
 }

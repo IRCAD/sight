@@ -4,7 +4,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExRealSense_AppCgf</id>
@@ -41,7 +41,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>ExRealSense</name>
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -71,7 +71,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Recording Path..." shortcut="Ctrl+S" />
@@ -84,7 +84,7 @@
                 </registry>
             </service>
 
-            <service uid="menuOptionsView" type="sight::module::ui::base::SMenu">
+            <service uid="menuOptionsView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Filters settings..." style="check" />
@@ -99,7 +99,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <editor />
@@ -139,9 +139,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::base::SView">
+            <service uid="containerView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" visible="false" backgroundColor="#36393E" />
@@ -153,9 +153,9 @@
                 </registry>
             </service>
 
-            <service uid="scanningView" type="sight::module::ui::base::SView">
+            <service uid="scanningView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -167,9 +167,9 @@
                 </registry>
             </service>
 
-            <service uid="bottomView" type="sight::module::ui::base::SView">
+            <service uid="bottomView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -181,9 +181,9 @@
                 </registry>
             </service>
 
-            <service uid="RGBDView" type="sight::module::ui::base::SView">
+            <service uid="RGBDView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -195,9 +195,9 @@
                 </registry>
             </service>
 
-            <service uid="pointcloudView" type="sight::module::ui::base::SView">
+            <service uid="pointcloudView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -209,9 +209,9 @@
                 </registry>
             </service>
 
-            <service uid="TFView" type="sight::module::ui::base::SView">
+            <service uid="TFView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="80" />
                         <view proportion="20" />
@@ -224,9 +224,9 @@
             </service>
 
 
-            <service uid="filterSettingsView" type="sight::module::ui::base::SView">
+            <service uid="filterSettingsView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -249,52 +249,52 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::SQuit" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="startVideoAct" type="sight::module::ui::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="pauseVideoAct" type="sight::module::ui::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="resumeVideoAct" type="sight::module::ui::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="stopVideoAct" type="sight::module::ui::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::SAction">
+            <service uid="loopVideoAct" type="sight::module::ui::SAction">
                 <state enabled="false" />
             </service>
 
-            <service uid="recordAct" type="sight::module::ui::base::SAction" />
+            <service uid="recordAct" type="sight::module::ui::SAction" />
 
-            <service uid="configureRecordingPathAct" type="sight::module::ui::base::SAction">
+            <service uid="configureRecordingPathAct" type="sight::module::ui::SAction">
                 <slots>
                     <slot>videoGrabberSrv/configureRecordingPath</slot>
                 </slots>
             </service>
 
-            <service uid="showPCDepthAct" type="sight::module::ui::base::SAction">
+            <service uid="showPCDepthAct" type="sight::module::ui::SAction">
                 <state checked="false" />
             </service>
 
-            <service uid="showPCColorAct" type="sight::module::ui::base::SAction">
+            <service uid="showPCColorAct" type="sight::module::ui::SAction">
                 <state checked="false" />
             </service>
 
             <!-- Show/hide the parameters view -->
 
-            <service uid="showfilterSettingsAct" type="sight::module::ui::base::SAction" />
+            <service uid="showfilterSettingsAct" type="sight::module::ui::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 

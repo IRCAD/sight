@@ -21,9 +21,9 @@
 
 #include "SText.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -73,7 +73,7 @@ void SText::configuring()
 void SText::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* const layout = new QHBoxLayout();
     layout->addWidget(m_label);

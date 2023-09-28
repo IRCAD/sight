@@ -25,11 +25,11 @@
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Slot.hpp>
+#include <core/com/slot.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/IText.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 #include <Ogre.h>
 
@@ -72,13 +72,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b name (optional, string): displayed name of the axis (default empty).
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SAxis final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SAxis, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SAxis, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
     MODULE_VIZ_SCENE3D_API SAxis() noexcept;

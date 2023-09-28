@@ -36,7 +36,7 @@ namespace sight::ui::qt
  * @brief defines the Qt main frame.
  *
  */
-class UI_QT_CLASS_QT_API QtMainFrame : public QMainWindow
+class UI_QT_CLASS_API_QT QtMainFrame : public QMainWindow
 {
 Q_OBJECT
 
@@ -45,13 +45,13 @@ public:
     /**
      * @brief Constructor.
      */
-    UI_QT_QT_API QtMainFrame() noexcept;
+    UI_QT_API_QT QtMainFrame() noexcept;
 
     /// @brief Destructor.
-    UI_QT_QT_API ~QtMainFrame() noexcept override;
+    UI_QT_API_QT ~QtMainFrame() noexcept override;
 
     typedef std::function<void ()> CloseCallback;
-    UI_QT_QT_API void setCloseCallback(CloseCallback fct);
+    UI_QT_API_QT void setCloseCallback(CloseCallback fct);
 
 protected:
 

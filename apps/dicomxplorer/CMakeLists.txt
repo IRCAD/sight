@@ -4,7 +4,7 @@ add_dependencies(
     dicomxplorer
     module_service
     data
-    module_ui_base
+    module_ui
     module_ui_qt
     module_activity
     module_appXml
@@ -21,7 +21,7 @@ add_dependencies(
     activity_viz_negato
     activity_viz_3d
     module_ui_icons
-    module_ui_base
+    module_ui
 )
 
 module_param(module_appXml PARAM_LIST config parameters PARAM_VALUES dicomXplorerBase dicomXplorerAppBase)

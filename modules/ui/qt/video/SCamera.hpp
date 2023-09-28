@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,13 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/com/signal.hpp>
+#include <core/tools/failed.hpp>
 
 #include <data/Camera.hpp>
 #include <data/CameraSet.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -102,13 +102,13 @@ namespace sight::module::ui::qt::video
  */
 
 class MODULE_UI_QT_CLASS_API SCamera final : public QObject,
-                                             public sight::ui::base::IEditor
+                                             public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SCamera, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SCamera, sight::ui::editor);
 
     /// Initialize signals and slots.
     MODULE_UI_QT_API SCamera();
@@ -139,7 +139,7 @@ protected Q_SLOTS:
 private:
 
     /// Type of the 'configured' signal.
-    typedef core::com::Signal<void ()> ConfiguredSignalType;
+    typedef core::com::signal<void ()> ConfiguredSignalType;
 
     /// Configures the service.
     void configuring() final;

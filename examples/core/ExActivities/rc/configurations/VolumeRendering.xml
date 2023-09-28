@@ -16,9 +16,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" />
                     <view proportion="0" />
@@ -33,7 +33,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <menuItem name="Import image" icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -46,7 +46,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="sight::module::ui::base::io::SSelector">
+        <service uid="importAct" type="sight::module::ui::io::SSelector">
             <inout key="data" uid="${imageSeries}" />
             <type mode="reader" />
             <selection mode="include" />

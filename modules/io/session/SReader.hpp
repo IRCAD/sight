@@ -23,10 +23,10 @@
 
 #include "modules/io/session/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/jobs/IJob.hpp>
+#include <core/com/signal.hpp>
+#include <core/jobs/base.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 namespace sight::module::io::session
 {
@@ -46,7 +46,7 @@ namespace sight::module::io::session
  * The compression level is set individually, depending of the type of data to serialize.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -92,22 +92,22 @@ namespace sight::module::io::session
  *          - \b "archive": Reads files from an session archive.
  *          - \b "default": uses the builtin default behavior which is "archive"
  *
- * @see sight::io::base::service::IReader
+ * @see sight::io::service::reader
  * @see sight::io::session::SessionReader
  */
 
-class MODULE_IO_SESSION_CLASS_API SReader final : public sight::io::base::service::IReader
+class MODULE_IO_SESSION_CLASS_API SReader final : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SReader, sight::io::service::reader);
 
     struct signals
     {
-        using JobCreatedSignal  = sight::core::com::Signal<void (sight::core::jobs::IJob::sptr)>;
-        using SessionPathSignal = core::com::Signal<void (std::filesystem::path)>;
+        using JobCreatedSignal  = sight::core::com::signal<void (sight::core::jobs::base::sptr)>;
+        using SessionPathSignal = core::com::signal<void (std::filesystem::path)>;
 
-        using signal_t = sight::core::com::Signals::SignalKeyType;
+        using signal_t = sight::core::com::signals::key_t;
         inline static const signal_t SESSION_LOADED         = "sessionLoaded";
         inline static const signal_t SESSION_LOADING_FAILED = "sessionLoadingFailed";
     };
@@ -134,9 +134,9 @@ protected:
     MODULE_IO_SESSION_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_SESSION_API sight::io::base::service::IOPathType getIOPathType() const override
+    MODULE_IO_SESSION_API sight::io::service::IOPathType getIOPathType() const override
     {
-        return sight::io::base::service::FILE;
+        return sight::io::service::FILE;
     }
 
 private:

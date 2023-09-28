@@ -22,36 +22,36 @@
 
 #include "SSequencer.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Composite.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 namespace sight::module::ui::qml::activity
 {
 
-const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
-const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
+const core::com::signals::key_t ACTIVITY_CREATED_SIG = "activityCreated";
+const core::com::signals::key_t DATA_REQUIRED_SIG    = "dataRequired";
 
-const core::com::Slots::SlotKeyType s_GO_TO_SLOT      = "goTo";
-const core::com::Slots::SlotKeyType s_CHECK_NEXT_SLOT = "checkNext";
-const core::com::Slots::SlotKeyType s_NEXT_SLOT       = "next";
-const core::com::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
+const core::com::slots::key_t GO_TO_SLOT      = "goTo";
+const core::com::slots::key_t CHECK_NEXT_SLOT = "checkNext";
+const core::com::slots::key_t NEXT_SLOT       = "next";
+const core::com::slots::key_t PREVIOUS_SLOT   = "previous";
 
 //------------------------------------------------------------------------------
 
 SSequencer::SSequencer() :
-    m_sigActivityCreated(newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG)),
-    m_sigDataRequired(newSignal<DataRequiredSignalType>(s_DATA_REQUIRED_SIG))
+    m_sigActivityCreated(new_signal<ActivityCreatedSignalType>(ACTIVITY_CREATED_SIG)),
+    m_sigDataRequired(new_signal<DataRequiredSignalType>(DATA_REQUIRED_SIG))
 {
-    newSlot(s_GO_TO_SLOT, &SSequencer::goTo, this);
-    newSlot(s_CHECK_NEXT_SLOT, &SSequencer::checkNext, this);
-    newSlot(s_NEXT_SLOT, &SSequencer::next, this);
-    newSlot(s_PREVIOUS_SLOT, &SSequencer::previous, this);
+    new_slot(GO_TO_SLOT, &SSequencer::goTo, this);
+    new_slot(CHECK_NEXT_SLOT, &SSequencer::checkNext, this);
+    new_slot(NEXT_SLOT, &SSequencer::next, this);
+    new_slot(PREVIOUS_SLOT, &SSequencer::previous, this);
 }
 
 //------------------------------------------------------------------------------
@@ -69,9 +69,9 @@ void SSequencer::configuring()
 
 void SSequencer::starting()
 {
-    for(int i = 0 ; i < m_qActivityIds.size() ; ++i)
+    for(const auto& m_qActivityId : m_qActivityIds)
     {
-        m_activityIds.push_back(m_qActivityIds.at(i).toStdString());
+        m_activityIds.push_back(m_qActivityId.toStdString());
     }
 }
 
@@ -127,7 +127,7 @@ void SSequencer::goTo(int index)
         storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
-    auto activity = getActivity(*activity_set, std::size_t(index), slot(IService::slots::s_UPDATE));
+    auto activity = getActivity(*activity_set, std::size_t(index), slot(service::slots::UPDATE));
 
     bool ok = true;
     std::string errorMsg;
@@ -135,15 +135,15 @@ void SSequencer::goTo(int index)
     std::tie(ok, errorMsg) = sight::module::ui::qml::activity::SSequencer::validateActivity(activity);
     if(ok)
     {
-        m_sigActivityCreated->asyncEmit(activity);
+        m_sigActivityCreated->async_emit(activity);
 
         m_currentActivity = index;
         Q_EMIT select(index);
     }
     else
     {
-        sight::ui::base::dialog::MessageDialog::show("Activity not valid", errorMsg);
-        m_sigDataRequired->asyncEmit(activity);
+        sight::ui::dialog::message::show("Activity not valid", errorMsg);
+        m_sigDataRequired->async_emit(activity);
     }
 }
 
@@ -164,7 +164,7 @@ void SSequencer::checkNext()
     const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
     if(nextIdx < m_activityIds.size())
     {
-        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, slot(IService::slots::s_UPDATE));
+        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, slot(service::slots::UPDATE));
 
         bool ok = true;
         std::string errorMsg;
@@ -194,11 +194,11 @@ void SSequencer::previous()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
+service::connections_t SSequencer::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
-    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::ADDED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }

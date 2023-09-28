@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #pragma once
 
+#include "viz/scene3d/adaptor.hpp"
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/IAdaptor.hpp"
 
 #include <viz/scene3d/Texture.hpp>
 
@@ -33,25 +33,25 @@ namespace sight::viz::scene3d
 /**
  * @brief   Base interface containing common code to upload shader parameters from Sight data.
  */
-class VIZ_SCENE3D_CLASS_API IParameter : public sight::viz::scene3d::IAdaptor
+class VIZ_SCENE3D_CLASS_API IParameter : public sight::viz::scene3d::adaptor
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IParameter, viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_CLASS(IParameter, viz::scene3d::adaptor);
 
     /**
      * @name Slots API
      * @{
      */
 
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_COLOR_PARAMETER_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_DOUBLE2_PARAMETER_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_DOUBLE3_PARAMETER_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_INT_PARAMETER_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_INT2_PARAMETER_SLOT;
+    VIZ_SCENE3D_API static const core::com::slots::key_t SET_INT3_PARAMETER_SLOT;
 
     ///@}
 
@@ -96,7 +96,7 @@ protected:
     VIZ_SCENE3D_API void setMaterial(const Ogre::MaterialPtr& material);
 
     /// Connect the input parameter modified signal to this service update slot.
-    VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
 
 private:
 

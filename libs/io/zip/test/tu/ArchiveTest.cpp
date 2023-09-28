@@ -22,7 +22,7 @@
 
 #include "ArchiveTest.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <io/zip/ArchiveReader.hpp>
 #include <io/zip/ArchiveWriter.hpp>
@@ -60,7 +60,7 @@ void ArchiveTest::newTest()
     // Nominal test
     {
         // Create a temporary file
-        core::os::TempDir tmpDir;
+        core::os::temp_dir tmpDir;
         const std::filesystem::path archivePath = tmpDir / "newTest.zip";
 
         {
@@ -99,7 +99,7 @@ void ArchiveTest::newTest()
 void ArchiveTest::singletonTest()
 {
     // Create a temporary file
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const std::filesystem::path archivePath = tmpDir / "singletonTest.zip";
 
     // Error test
@@ -109,7 +109,7 @@ void ArchiveTest::singletonTest()
         CPPUNIT_ASSERT_THROW_MESSAGE(
             "Open the same archive in writing and in reading at the same time, should trigger an exception.",
             ArchiveReader::get(archivePath),
-            core::Exception
+            core::exception
         );
     }
 }
@@ -119,7 +119,7 @@ void ArchiveTest::singletonTest()
 void ArchiveTest::openTest()
 {
     // Create a temporary file
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const std::filesystem::path archivePath = tmpDir / "openTest.zip";
 
     // Test default parameters
@@ -209,7 +209,7 @@ void ArchiveTest::openTest()
 void ArchiveTest::rawTest()
 {
     // Create a temporary file
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     // use a complex uncreated path
     auto folderPath = tmpDir / std::filesystem::path("a/b/c/d");

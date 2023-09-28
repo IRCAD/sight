@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <io/http/ClientQt.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QDateEdit>
 #include <QLineEdit>
@@ -65,13 +65,13 @@ namespace sight::module::io::dicomweb
 
  */
 class MODULE_IO_DICOMWEB_CLASS_API SQueryEditor : public QObject,
-                                                  public sight::ui::base::IEditor
+                                                  public sight::ui::editor
 {
 Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SQueryEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SQueryEditor, sight::ui::editor);
 
     /// Constructor
     MODULE_IO_DICOMWEB_API SQueryEditor() noexcept;

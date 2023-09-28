@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "io/dicom/helper/DicomDataWriter.hxx"
 
-#include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/profile/profile.hpp>
 
 namespace sight::io::dicom::writer::ie
 {
@@ -35,7 +35,7 @@ Equipment::Equipment(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Series::csptr& series,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -64,8 +64,8 @@ void Equipment::writeGeneralEquipmentModule()
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0080>(institutName, dataset);
 
     // Software Versions - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
-    const auto profile                = core::runtime::getCurrentProfile();
-    const std::string softwareVersion = profile ? profile->getName() + " " + profile->getVersion() : "Unknown";
+    const auto profile                = core::runtime::get_current_profile();
+    const std::string softwareVersion = profile ? profile->name() + " " + profile->get_version() : "Unknown";
 
     // We do not use the DicomDataWriter helper as VM might be more than one
     gdcm::Attribute<0x0018, 0x1020> attribute;

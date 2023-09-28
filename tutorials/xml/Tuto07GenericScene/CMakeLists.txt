@@ -4,7 +4,7 @@ add_dependencies(
     Tuto07GenericScene
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_viz_scene3d
     module_viz_scene3dQt

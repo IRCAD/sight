@@ -28,31 +28,31 @@
 namespace sight::ui::qt::widget
 {
 
-class UI_QT_CLASS_QT_API NonLinearSlider : public QWidget
+class UI_QT_CLASS_API_QT NonLinearSlider : public QWidget
 {
 Q_OBJECT
 
 public:
 
-    UI_QT_QT_API NonLinearSlider(QWidget* parent = nullptr);
+    UI_QT_API_QT NonLinearSlider(QWidget* parent = nullptr);
 
-    UI_QT_QT_API void setOrientation(Qt::Orientation orientation);
+    UI_QT_API_QT void setOrientation(Qt::Orientation orientation);
 
-    UI_QT_QT_API void setValues(const std::vector<int>& values);
-    UI_QT_QT_API void setValue(int value);
+    UI_QT_API_QT void setValues(const std::vector<int>& values);
+    UI_QT_API_QT void setValue(int value);
 
-    UI_QT_QT_API void setTracking(bool tracking);
+    UI_QT_API_QT void setTracking(bool tracking);
 
-    UI_QT_QT_API int value();
-    UI_QT_QT_API std::size_t index();
+    UI_QT_API_QT int value();
+    UI_QT_API_QT std::size_t index();
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
 Q_SIGNALS:
 
-    UI_QT_QT_API void valueChanged(int value);
-    UI_QT_QT_API void rangeChanged(int min, int max);
+    UI_QT_API_QT void valueChanged(int value);
+    UI_QT_API_QT void rangeChanged(int min, int max);
 
 protected:
 

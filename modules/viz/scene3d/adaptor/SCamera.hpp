@@ -29,7 +29,7 @@
 #include <data/CameraSet.hpp>
 #include <data/Matrix4.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 
 #include <OGRE/OgreMovableObject.h>
 
@@ -68,12 +68,12 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection InOut InOut
  * - \b transform [sight::data::Matrix4]: transform matrix for the camera.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SCamera final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API SCamera final : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SCamera, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SCamera, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor and initialize slots.
     MODULE_VIZ_SCENE3D_API SCamera() noexcept;
@@ -93,12 +93,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INOUT to IService::slots::s_UPDATE
-     * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to s_CALIBRATE_SLOT
-     * Connect data::CameraSet::s_MODIFIED_SIG of s_CAMERA_SET_INPUT to s_CALIBRATE_SLOT
-     * Connect data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SET_INPUT to s_CALIBRATE_SLOT
+     * Connect data::Matrix4::MODIFIED_SIG of s_TRANSFORM_INOUT to service::slots::UPDATE
+     * Connect data::Camera::INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to CALIBRATE_SLOT
+     * Connect data::CameraSet::MODIFIED_SIG of s_CAMERA_SET_INPUT to CALIBRATE_SLOT
+     * Connect data::CameraSet::EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SET_INPUT to CALIBRATE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
 
     /// Sets the camera's transform.
     MODULE_VIZ_SCENE3D_API void updating() override;
@@ -140,7 +140,7 @@ private:
     Ogre::Real m_aspectRatio {0.F};
 
     /// Handles connection with the layer.
-    core::com::helper::SigSlotConnection m_layerConnection;
+    core::com::helper::sig_slot_connection m_layerConnection;
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
     struct CameraNodeListener;

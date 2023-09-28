@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ void PointListTest::copyFromCv()
         cvPointList.emplace_back(double(i), double(i * 2 + 3));
     }
 
-    data::PointList::sptr pl = data::PointList::New();
+    data::PointList::sptr pl = std::make_shared<data::PointList>();
     io::opencv::PointList::copyFromCv(cvPointList, pl);
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
@@ -83,11 +83,11 @@ void PointListTest::copyFromCv()
 
 void PointListTest::copyToCv()
 {
-    data::PointList::sptr pl = data::PointList::New();
+    data::PointList::sptr pl = std::make_shared<data::PointList>();
 
     for(std::uint16_t i = 0 ; i < 512 ; ++i)
     {
-        data::Point::sptr point = data::Point::New(double(i), double(i * 3 + 5), 0.);
+        data::Point::sptr point = std::make_shared<data::Point>(double(i), double(i * 3 + 5), 0.);
         pl->getPoints().push_back(point);
     }
 

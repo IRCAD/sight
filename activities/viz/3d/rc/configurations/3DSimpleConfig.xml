@@ -7,9 +7,9 @@
     <config>
         <object uid="${objectID}" type="sight::data::ModelSeries" src="ref" />
 
-        <service uid="mainview" type="sight::module::ui::base::SView">
+        <service uid="mainview" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
                 </layout>
             </gui>

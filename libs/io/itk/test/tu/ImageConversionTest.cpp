@@ -25,7 +25,7 @@
 #include "helper.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/random/Generator.hpp>
+#include <core/tools/random/generator.hpp>
 
 #include <data/Object.hpp>
 
@@ -39,7 +39,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::ImageConversionTest);
 namespace sight::io::itk::ut
 {
 
-using core::tools::random::safeRand;
+using core::tools::random::safe_rand;
 
 //------------------------------------------------------------------------------
 
@@ -59,13 +59,13 @@ void ImageConversionTest::tearDown()
 void ImageConversionTest::testConversion()
 {
     // create Image
-    data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
+    data::Image::sptr image = std::make_shared<data::Image>();
+    utestData::generator::Image::generateRandomImage(image, core::type::INT16);
 
     using ImageType = ::itk::Image<std::int16_t, 3>;
     ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
-    data::Image::sptr image2 = data::Image::New();
+    data::Image::sptr image2 = std::make_shared<data::Image>();
     io::itk::moveFromItk<ImageType>(itkImage, image2, false);
 
     io::itk::ut::helper::roundSpacing(image);
@@ -108,13 +108,13 @@ void ImageConversionTest::stressTest()
 void ImageConversionTest::testConversion2D()
 {
     // create Image
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
     data::Image::Size size  =
-    {static_cast<std::size_t>(safeRand() % 100 + 2), static_cast<std::size_t>(safeRand() % 100 + 2), 0
+    {static_cast<std::size_t>(safe_rand() % 100 + 2), static_cast<std::size_t>(safe_rand() % 100 + 2), 0
     };
-    data::Image::Spacing spacing = {(safeRand() % 200 + 1) / 100., (safeRand() % 200 + 1) / 100., 0.};
-    data::Image::Origin origin   = {(safeRand() % 200 - 100) / 3., (safeRand() % 200 - 100) / 3., 0.};
-    core::Type type              = core::Type::INT16;
+    data::Image::Spacing spacing = {(safe_rand() % 200 + 1) / 100., (safe_rand() % 200 + 1) / 100., 0.};
+    data::Image::Origin origin   = {(safe_rand() % 200 - 100) / 3., (safe_rand() % 200 - 100) / 3., 0.};
+    core::type type              = core::type::INT16;
 
     utestData::generator::Image::generateImage(image, size, spacing, origin, type, data::Image::GRAY_SCALE, 0);
 
@@ -122,7 +122,7 @@ void ImageConversionTest::testConversion2D()
 
     ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
-    data::Image::sptr image2    = data::Image::New();
+    data::Image::sptr image2    = std::make_shared<data::Image>();
     bool image2ManagesHisBuffer = false;
     io::itk::moveFromItk<ImageType>(itkImage, image2, image2ManagesHisBuffer);
 

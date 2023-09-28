@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <viz/scene3d/ILight.hpp>
 #include <viz/scene3d/Layer.hpp>
@@ -60,14 +60,14 @@ namespace sight::module::ui::viz
  */
 class MODULE_UI_VIZ_CLASS_API SLightSelector final :
     public QObject,
-    public sight::ui::base::IEditor
+    public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SLightSelector, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SLightSelector, sight::ui::editor);
 
     /// Initializes signals and slots.
     MODULE_UI_VIZ_API SLightSelector() noexcept;
@@ -125,7 +125,7 @@ private Q_SLOTS:
 
 private:
 
-    typedef core::com::Signal<void (sight::viz::scene3d::ILight::sptr)> LightSelectedSignalType;
+    typedef core::com::signal<void (sight::viz::scene3d::ILight::sptr)> LightSelectedSignalType;
 
     /// Checks or unchecks all item in m_lightsList.
     void onCheckAllBoxes(bool visible);
@@ -179,7 +179,7 @@ private:
     sight::viz::scene3d::ILight::sptr m_currentLight;
 
     /// Handles connections with the layer.
-    core::com::helper::SigSlotConnection m_connections;
+    core::com::helper::sig_slot_connection m_connections;
 };
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #include "io/dicom/helper/DicomAnonymizer.hpp"
 #include "io/dicom/helper/DicomSeriesWriter.hpp"
 
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/job.hpp>
+#include <core/jobs/observer.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Series.hpp>
@@ -40,8 +40,8 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-DicomSeriesSetWriter::DicomSeriesSetWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
-    m_aggregator(core::jobs::Aggregator::New("Writing Dicom series"))
+DicomSeriesSetWriter::DicomSeriesSetWriter() :
+    m_aggregator(std::make_shared<core::jobs::aggregator>("Writing Dicom series"))
 {
 }
 
@@ -54,7 +54,7 @@ std::string DicomSeriesSetWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-core::jobs::Aggregator::sptr DicomSeriesSetWriter::getAggregator()
+core::jobs::aggregator::sptr DicomSeriesSetWriter::getAggregator()
 {
     return m_aggregator;
 }
@@ -89,39 +89,39 @@ void DicomSeriesSetWriter::write()
     auto series_set = getConcreteObject();
     SIGHT_ASSERT("Unable to retrieve associated SeriesSet", series_set);
 
-    io::zip::IWriteArchive::sptr writeArchive = io::zip::WriteDirArchive::New(this->getFolder());
+    io::zip::write_archive::sptr writeArchive = io::zip::WriteDirArchive::make(this->get_folder());
 
     const auto nbSeries = series_set->size();
     int processedSeries = 0;
 
     for(const auto& series : *series_set)
     {
-        const auto& dicomSeries = data::DicomSeries::dynamicCast(series);
+        const auto& dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(series);
 
-        core::jobs::Job::sptr job =
-            core::jobs::Job::New(
+        core::jobs::job::sptr job =
+            std::make_shared<core::jobs::job>(
                 "Write Dicom series",
-                [&, dicomSeries](core::jobs::Job& runningJob)
+                [&, dicomSeries](core::jobs::job& runningJob)
             {
-                if(!runningJob.cancelRequested())
+                if(!runningJob.cancel_requested())
                 {
                     m_anonymizer->resetIndex();
 
-                    io::dicom::helper::DicomSeriesWriter::sptr writer = io::dicom::helper::DicomSeriesWriter::New();
+                    io::dicom::helper::DicomSeriesWriter::sptr writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
                     writer->setObject(dicomSeries);
                     writer->setAnonymizer(m_anonymizer);
                     writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
 
-                    runningJob.addCancelHook(
-                        [&](core::jobs::IJob&)
+                    runningJob.add_cancel_hook(
+                        [&](core::jobs::base&)
                     {
                         writer->getJob()->cancel();
                     });
 
-                    writer->getJob()->addDoneWorkHook(
-                        [&](core::jobs::IJob& subJob, std::uint64_t)
+                    writer->getJob()->add_done_work_hook(
+                        [&](core::jobs::base& subJob, std::uint64_t)
                     {
-                        runningJob.doneWork(subJob.getDoneWorkUnits());
+                        runningJob.done_work(subJob.get_done_work_units());
                     });
 
                     try
@@ -138,11 +138,11 @@ void DicomSeriesSetWriter::write()
                     }
                 }
             },
-                core::thread::getDefaultWorker()
+                core::thread::get_default_worker()
             );
 
-        m_aggregator->addCancelHook(
-            [&](core::jobs::IJob&)
+        m_aggregator->add_cancel_hook(
+            [&](core::jobs::base&)
             {
                 job->cancel();
             });

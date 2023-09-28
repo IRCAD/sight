@@ -31,7 +31,7 @@
 namespace sight::io::bitmap
 {
 
-Reader::Reader(base::reader::IObjectReader::Key /*unused*/) :
+Reader::Reader() :
     m_pimpl(std::make_unique<detail::ReaderImpl>(this))
 {
 }
@@ -47,7 +47,7 @@ std::string Reader::extension() const
     {
         const auto& [backend, extensions] = detail::guessBackendOrExtension(
             Backend::ANY,
-            getFile().extension().string()
+            get_file().extension().string()
         );
 
         return extensions.front();
@@ -69,7 +69,7 @@ void Reader::read()
 
 void Reader::read(Backend backend)
 {
-    auto file = getFile();
+    auto file = get_file();
 
     if(file.has_parent_path() && !std::filesystem::exists(file.parent_path()))
     {

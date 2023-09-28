@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,7 +58,7 @@ ComputeMaterial::ComputeMaterial(Qt3DCore::QNode* _parent) :
     m_computeTechnique(new Qt3DRender::QTechnique)
 {
     //Initialize shader program
-    const auto computeShaderPath = sight::core::runtime::getLibraryResourceFilePath(
+    const auto computeShaderPath = sight::core::runtime::get_library_resource_file_path(
         "viz_qt3d/glsl/quadToTriangleMesh_CP.glsl"
     );
     const auto source = QUrl::fromLocalFile(QString::fromStdString(computeShaderPath.string()));

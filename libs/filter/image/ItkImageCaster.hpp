@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <data/Image.hpp>
 
@@ -71,7 +71,7 @@ typename itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer castTo(const sight::data::Imag
 
     const auto inType = _img->getType();
 
-    sight::core::tools::Dispatcher<sight::core::tools::SupportedDispatcherTypes, CasterType>::invoke(inType, p);
+    sight::core::tools::dispatcher<sight::core::tools::supported_dispatcher_types, CasterType>::invoke(inType, p);
 
     return p.o_img;
 }

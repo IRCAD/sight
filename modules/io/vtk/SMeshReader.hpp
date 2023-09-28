@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Mesh.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -34,7 +34,7 @@
 namespace sight::core::jobs
 {
 
-class IJob;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -60,16 +60,16 @@ namespace sight::module::io::vtk
  * - \b file (optional): path of the file to load, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API SMeshReader : public sight::io::base::service::IReader
+class MODULE_IO_VTK_CLASS_API SMeshReader : public sight::io::service::reader
 {
 public:
 
     ~SMeshReader() noexcept override =
         default;
 
-    SIGHT_DECLARE_SERVICE(SMeshReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SMeshReader, sight::io::service::reader);
 
-    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
 
     /// Constructor
     MODULE_IO_VTK_API SMeshReader() noexcept;
@@ -84,7 +84,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

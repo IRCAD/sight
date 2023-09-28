@@ -21,9 +21,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="tfView" type="sight::module::ui::base::SView" >
+        <service uid="tfView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" maxHeight="50"/>
                     <view proportion="0" backgroundColor="#36393E" minHeight="300" maxHeight="400" />
@@ -38,9 +38,9 @@
             </registry>
         </service>
 
-        <service uid="transferFunctionEditorView" type="sight::module::ui::base::SView" >
+        <service uid="transferFunctionEditorView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
                     <view proportion="0" />
                     <spacer />

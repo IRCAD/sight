@@ -23,18 +23,18 @@
 #include "modules/io/matrix/Matrix4ReaderService.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hxx>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/signal.hxx>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/Matrix4.hpp>
 
-#include <io/base/reader/Matrix4Reader.hpp>
-#include <io/base/service/IReader.hpp>
+#include <io/__/reader/Matrix4Reader.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/__/dialog/location.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -47,9 +47,9 @@ namespace sight::module::io::matrix
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType Matrix4ReaderService::getIOPathType() const
+sight::io::service::IOPathType Matrix4ReaderService::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //-----------------------------------------------------------------------------
@@ -79,27 +79,27 @@ void Matrix4ReaderService::starting()
 
 void Matrix4ReaderService::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 }
 
 //-----------------------------------------------------------------------------
 
 void Matrix4ReaderService::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load a transformation matrix" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
     dialogFile.addFilter("TRF files", "*.trf");
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
+    dialogFile.setOption(ui::dialog::location::READ);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
-        this->setFile(result->getFile());
+        this->set_file(result->get_file());
     }
     else
     {
@@ -129,25 +129,25 @@ void Matrix4ReaderService::updating()
             "The object is not a '"
             + data::Matrix4::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             matrix
         );
 
-        const auto reader = sight::io::base::reader::Matrix4Reader::New();
+        const auto reader = std::make_shared<sight::io::reader::Matrix4Reader>();
         reader->setObject(matrix);
-        reader->setFile(this->getFile());
+        reader->set_file(this->get_file());
         reader->read();
 
         m_readFailed = false;
 
         // Notify reading
         const auto sig = matrix->signal<data::Object::ModifiedSignalType>(
-            data::Object::s_MODIFIED_SIG
+            data::Object::MODIFIED_SIG
         );
         {
-            core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-            sig->asyncEmit();
+            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+            sig->async_emit();
         }
     }
 }

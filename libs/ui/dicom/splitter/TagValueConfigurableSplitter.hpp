@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,21 +34,18 @@ namespace sight::ui::dicom::splitter
 /**
  * @brief Filter that uses a tag to split the instances.
  */
-class UI_DICOM_CLASS_API TagValueConfigurableSplitter : public filter::dicom::splitter::TagValueSplitter
+class UI_DICOM_CLASS_API TagValueConfigurableSplitter : public sight::filter::dicom::splitter::TagValueSplitter
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         TagValueConfigurableSplitter,
-        filter::dicom::splitter::TagValueSplitter,
-        filter::dicom::factory::New<TagValueConfigurableSplitter>
+        sight::filter::dicom::splitter::TagValueSplitter,
+        sight::filter::dicom::factory::make<TagValueConfigurableSplitter>
     );
 
-    /// Constructor
-    UI_DICOM_API TagValueConfigurableSplitter(filter::dicom::IFilter::Key key);
-
     /// Destructor
-    UI_DICOM_API ~TagValueConfigurableSplitter() override;
+    UI_DICOM_API ~TagValueConfigurableSplitter() override = default;
 
     /// Return the name of the filter
     UI_DICOM_API std::string getName() const override;

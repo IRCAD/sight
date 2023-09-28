@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,6 @@ namespace sight::filter::dicom::registry
 {
 
 #define SIGHT_REGISTER_DICOM_FILTER(classname) \
-    static sight::filter::dicom::IFilter::Registry<classname> s__factory__record__ ## __LINE__;
+    static sight::filter::dicom::filter::Registry<classname> s__factory__record__ ## __LINE__;
 
 } // namespace sight::filter::dicom::registry

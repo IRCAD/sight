@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include "ITest.hpp"
+#include "test.hpp"
 
 namespace sight::sightviewer::test::ui
 {
 
-class DoubleClickOnScene : public ITest
+class DoubleClickOnScene : public test
 {
 CPPUNIT_TEST_SUITE(DoubleClickOnScene);
 CPPUNIT_TEST(test);

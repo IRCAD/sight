@@ -26,7 +26,7 @@
 
 #include <data/helper/MedicalImage.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 
 #include <memory>
 
@@ -72,13 +72,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b margin (optional, default=0.1): margin to the border of the viewport, in percentage of the highest of width
  *  or height.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SNegato2DCamera final : public sight::viz::scene3d::IAdaptor,
-                                                           public sight::viz::scene3d::interactor::IInteractor
+class MODULE_VIZ_SCENE3D_CLASS_API SNegato2DCamera final : public sight::viz::scene3d::adaptor,
+                                                           public sight::viz::scene3d::interactor::base
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SNegato2DCamera, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SNegato2DCamera, sight::viz::scene3d::adaptor);
 
     /// Creates the service and initializes slots.
     MODULE_VIZ_SCENE3D_API SNegato2DCamera() noexcept;
@@ -133,7 +133,7 @@ public:
      * @param _y current height coordinate of the mouse cursor.
      */
     MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
-        IInteractor::MouseButton _button,
+        sight::viz::scene3d::interactor::base::MouseButton _button,
         Modifier /*_mods*/,
         int _x,
         int _y,
@@ -149,7 +149,7 @@ public:
      * @param _y current height coordinate of the mouse cursor.
      */
     MODULE_VIZ_SCENE3D_API void buttonPressEvent(
-        IInteractor::MouseButton _button,
+        sight::viz::scene3d::interactor::base::MouseButton _button,
         Modifier /*_mods*/,
         int _x,
         int _y
@@ -162,7 +162,7 @@ public:
      * @param _y current height coordinate of the mouse cursor.
      */
     MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(
-        IInteractor::MouseButton _button,
+        sight::viz::scene3d::interactor::base::MouseButton _button,
         Modifier /*_mods*/,
         int _x,
         int _y
@@ -188,11 +188,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_RESET_CAMERA_SLOT
-     * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_CHANGE_ORIENTATION_SLOT
-     * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to s_MOVE_BACK_SLOT
+     * Connect data::Image::MODIFIED_SIG of s_IMAGE_INPUT to RESET_CAMERA_SLOT
+     * Connect data::Image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to CHANGE_ORIENTATION_SLOT
+     * Connect data::Image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to MOVE_BACK_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Does nothing.
     MODULE_VIZ_SCENE3D_API void updating() noexcept final;
@@ -245,7 +245,7 @@ private:
     bool m_hasMoved {false};
 
     /// Handles connection with the layer.
-    core::com::helper::SigSlotConnection m_layerConnection;
+    core::com::helper::sig_slot_connection m_layerConnection;
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     static constexpr std::string_view s_TF_INOUT    = "tf";

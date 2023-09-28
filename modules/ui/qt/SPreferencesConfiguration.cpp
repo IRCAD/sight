@@ -21,13 +21,13 @@
  ***********************************************************************/
 #include "SPreferencesConfiguration.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/Preferences.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
@@ -44,12 +44,12 @@
 namespace sight::module::ui::qt
 {
 
-const core::com::Signals::SignalKeyType SPreferencesConfiguration::s_PARAMETERS_MODIFIED_SIG = "parametersModified";
-const core::com::Signals::SignalKeyType SPreferencesConfiguration::s_PREFERENCE_CHANGED_SIG  = "preferenceChanged";
+const core::com::signals::key_t SPreferencesConfiguration::PARAMETERS_MODIFIED_SIG = "parametersModified";
+const core::com::signals::key_t SPreferencesConfiguration::PREFERENCE_CHANGED_SIG  = "preferenceChanged";
 
 //------------------------------------------------------------------------------
 
-sight::ui::base::parameter_t SPreferencesConfiguration::convertValue(const PreferenceElt& _elt)
+sight::ui::parameter_t SPreferencesConfiguration::convertValue(const PreferenceElt& _elt)
 {
     switch(_elt.m_type)
     {
@@ -95,8 +95,8 @@ sight::ui::base::parameter_t SPreferencesConfiguration::convertValue(const Prefe
 
 SPreferencesConfiguration::SPreferencesConfiguration() noexcept
 {
-    m_sigParametersModified = newSignal<ParametersModifiedSignalType>(s_PARAMETERS_MODIFIED_SIG);
-    m_sigPreferenceChanged  = newSignal<ChangedSignalType>(s_PREFERENCE_CHANGED_SIG);
+    m_sigParametersModified = new_signal<ParametersModifiedSignalType>(PARAMETERS_MODIFIED_SIG);
+    m_sigPreferenceChanged  = new_signal<ChangedSignalType>(PREFERENCE_CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -217,7 +217,7 @@ void SPreferencesConfiguration::starting()
 
     try
     {
-        sight::ui::base::Preferences preferences;
+        sight::ui::Preferences preferences;
 
         for(auto& preference : m_preferences)
         {
@@ -232,7 +232,7 @@ void SPreferencesConfiguration::starting()
             }
         }
     }
-    catch(const sight::ui::base::PreferencesDisabled& /*e*/)
+    catch(const sight::ui::PreferencesDisabled& /*e*/)
     {
         // Nothing to do..
     }
@@ -242,7 +242,7 @@ void SPreferencesConfiguration::starting()
 
 void SPreferencesConfiguration::updating()
 {
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     QPointer<QDialog> dialog = new QDialog();
     dialog->setObjectName("SPreferencesConfiguration");
@@ -364,7 +364,7 @@ void SPreferencesConfiguration::updating()
 
     if(dialog->exec() == QDialog::Accepted)
     {
-        sight::ui::base::Preferences preferences;
+        sight::ui::Preferences preferences;
 
         for(PreferenceElt& pref : m_preferences)
         {
@@ -425,11 +425,11 @@ void SPreferencesConfiguration::updating()
             if(preferenceUpdate)
             {
                 const auto value = this->convertValue(pref);
-                m_sigPreferenceChanged->asyncEmit(value, pref.m_preferenceKey);
+                m_sigPreferenceChanged->async_emit(value, pref.m_preferenceKey);
             }
         }
 
-        m_sigParametersModified->asyncEmit();
+        m_sigParametersModified->async_emit();
     }
 }
 
@@ -444,19 +444,19 @@ void SPreferencesConfiguration::stopping()
 
 void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle("Select Storage directory");
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(sight::ui::base::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(sight::ui::dialog::location::WRITE);
+    dialogFile.setType(sight::ui::dialog::location::FOLDER);
 
-    const auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    const auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
     if(result)
     {
-        defaultDirectory->setFolder(result->getFolder());
-        lineEdit->setText(QString::fromStdString(result->getFolder().string()));
+        defaultDirectory->set_folder(result->get_folder());
+        lineEdit->setText(QString::fromStdString(result->get_folder().string()));
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
 }
@@ -465,19 +465,19 @@ void SPreferencesConfiguration::onSelectDir(QPointer<QLineEdit> lineEdit)
 
 void SPreferencesConfiguration::onSelectFile(QPointer<QLineEdit> lineEdit)
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle("Select File");
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(sight::ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setType(sight::ui::base::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(sight::ui::dialog::location::READ);
+    dialogFile.setType(sight::ui::dialog::location::SINGLE_FILE);
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        defaultDirectory->setFolder(result->getFile().parent_path());
-        lineEdit->setText(QString::fromStdString(result->getFile().string()));
+        defaultDirectory->set_folder(result->get_file().parent_path());
+        lineEdit->setText(QString::fromStdString(result->get_file().string()));
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
 }

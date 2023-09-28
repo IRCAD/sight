@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "io/dimse/config.hpp"
 
-#include <core/BaseObject.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/memory/BufferObject.hpp>
+#include <core/base_object.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
+#include <core/memory/buffer_object.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scu.h>
@@ -63,17 +63,17 @@ namespace sight::io::dimse
    @endcode
  */
 class IO_DIMSE_CLASS_API SeriesEnquirer :
-    public core::BaseObject,
+    public core::base_object,
     protected DcmSCU
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SeriesEnquirer, io::dimse::SeriesEnquirer, new SeriesEnquirer);
+    SIGHT_DECLARE_CLASS(SeriesEnquirer, io::dimse::SeriesEnquirer, std::make_shared<SeriesEnquirer>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_DIMSE_API static const core::com::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
+    IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
 
-    typedef core::com::Slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
+    typedef core::com::slot<void (const std::string&, unsigned int, const std::string&)> ProgressCallbackSlotType;
 
     typedef std::vector<std::string> InstanceUIDContainer;
 

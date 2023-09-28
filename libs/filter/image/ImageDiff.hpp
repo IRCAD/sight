@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ public:
     };
 
     /// Constructor.
-    FILTER_IMAGE_API ImageDiff(std::size_t imageElementSize = 0, std::size_t reservedElements = 0);
+    FILTER_IMAGE_API explicit ImageDiff(std::size_t imageElementSize = 0, std::size_t reservedElements = 0);
 
     /// Destructor
     FILTER_IMAGE_API ~ImageDiff() = default;
@@ -78,7 +78,7 @@ public:
     FILTER_IMAGE_API void revertDiff(const data::Image::sptr& img) const;
 
     /// Return the amount of memory actually used by the elements.
-    [[nodiscard]] FILTER_IMAGE_API std::size_t getSize() const;
+    [[nodiscard]] FILTER_IMAGE_API std::size_t size() const;
 
     /// Returns the number of stored pixel diffs.
     [[nodiscard]] FILTER_IMAGE_API std::size_t numElements() const;

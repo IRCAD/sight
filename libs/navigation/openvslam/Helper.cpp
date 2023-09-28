@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ namespace sight::navigation::openvslam
 
 data::Camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSlamCam)
 {
-    data::Camera::sptr cam = data::Camera::New();
+    data::Camera::sptr cam = std::make_shared<data::Camera>();
 
     cam->setCameraID(_oVSlamCam.name_);
     cam->setWidth(_oVSlamCam.cols_);

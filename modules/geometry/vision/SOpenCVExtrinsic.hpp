@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ public:
     SIGHT_DECLARE_SERVICE(SOpenCVExtrinsic, sight::geometry::vision::ICalibration);
 
     /// Double changed signal type
-    typedef core::com::Signal<void (double)> ErrorComputedSignalType;
+    typedef core::com::signal<void (double)> ErrorComputedSignalType;
 
     /// Constructor.
     MODULE_GEOMETRY_VISION_API SOpenCVExtrinsic() noexcept;

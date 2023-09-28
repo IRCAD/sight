@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/tools/random/Generator.hpp>
+#include <core/tools/random/generator.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -53,7 +53,7 @@ public:
     template<class T>
     static T random(const T& a, const T& b)
     {
-        return static_cast<T>(core::tools::random::safeRand()) / static_cast<T>(RAND_MAX) * (b - a) + a;
+        return static_cast<T>(core::tools::random::safe_rand()) / static_cast<T>(RAND_MAX) * (b - a) + a;
     }
 };
 

@@ -25,13 +25,13 @@
 
 #include "io/bitmap/config.hpp"
 
-#include <core/location/SingleFile.hpp>
-#include <core/tools/ProgressAdviser.hpp>
+#include <core/location/single_file.hpp>
+#include <core/tools/progress_adviser.hpp>
 
-#include <data/IContainer.hpp>
+#include <data/container.hpp>
 #include <data/Image.hpp>
 
-#include <io/base/reader/GenericObjectReader.hpp>
+#include <io/__/reader/GenericObjectReader.hpp>
 
 #include <ostream>
 
@@ -55,29 +55,28 @@ namespace sight::io::bitmap
  * The performance should still be better than VTK or even OpenCV because of direct API calls and avoided unneeded
  * buffer copy.
  */
-class IO_BITMAP_CLASS_API Reader final : public base::reader::GenericObjectReader<data::Image>,
-                                         public core::location::SingleFile,
-                                         public core::tools::ProgressAdviser
+class IO_BITMAP_CLASS_API Reader final : public io::reader::GenericObjectReader<data::Image>,
+                                         public core::location::single_file,
+                                         public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         Reader,
-        base::reader::GenericObjectReader<data::Image>,
-        base::reader::factory::New<Reader>
+        io::reader::GenericObjectReader<data::Image>,
+        io::reader::factory::make<Reader>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Delete default constructors and assignment operators
-    Reader()                         = delete;
     Reader(const Reader&)            = delete;
     Reader(Reader&&)                 = delete;
     Reader& operator=(const Reader&) = delete;
     Reader& operator=(Reader&&)      = delete;
 
     /// Constructor/Destructor
-    IO_BITMAP_API Reader(io::base::reader::IObjectReader::Key key);
+    IO_BITMAP_API Reader();
     IO_BITMAP_API ~Reader() override;
 
     /// Main writing method from GenericObjectReader
@@ -101,7 +100,7 @@ public:
         Backend backend = Backend::LIBTIFF
     );
 
-    /// Return the extension to use, by default, or the one from file set by SingleFile::setFile(), if valid
+    /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid
     /// @return an extension as string
     [[nodiscard]] IO_BITMAP_API std::string extension() const override;
 

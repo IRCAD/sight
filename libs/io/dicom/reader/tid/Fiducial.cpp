@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ Fiducial::Fiducial(
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
     const data::Image::sptr& image,
-    const core::log::Logger::sptr& logger
+    const core::log::logger::sptr& logger
 ) :
     io::dicom::reader::tid::TemplateID<data::Image>(dicomSeries, reader, instance, image, logger)
 {
@@ -140,14 +140,14 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
 
 void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
 {
-    data::Point::sptr point = data::Point::New(x, y, z);
+    data::Point::sptr point = std::make_shared<data::Point>(x, y, z);
     point->setLabel(label);
 
     data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
 
     if(!pointList)
     {
-        pointList = data::PointList::New();
+        pointList = std::make_shared<data::PointList>();
         data::helper::MedicalImage::setLandmarks(*m_object, pointList);
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "Image.hpp"
 
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 namespace sight::filter::image
 {
@@ -53,7 +53,7 @@ struct RoiApplier
         const auto imgDumpLock = p.img->dump_lock();
         const auto roiDumpLock = p.roi->dump_lock();
 
-        SIGHT_ASSERT("Null data buffers", p.img->getBuffer() && p.roi->getBuffer());
+        SIGHT_ASSERT("Null data buffers", p.img->buffer() && p.roi->buffer());
 
         auto imIt         = p.img->begin<ImgType>();
         const auto imEnd  = p.img->end<ImgType>();
@@ -79,7 +79,7 @@ struct RoiApplierCaller
     template<typename IMAGE_TYPE>
     void operator()(RoiApplierParam& p)
     {
-        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiApplier<IMAGE_TYPE> >::invoke(
+        core::tools::dispatcher<core::tools::supported_dispatcher_types, RoiApplier<IMAGE_TYPE> >::invoke(
             p.roi->getType(),
             p
         );
@@ -91,14 +91,14 @@ struct RoiApplierCaller
 void applyRoi(data::Image::sptr image, data::Image::sptr roi)
 {
     SIGHT_ASSERT("Null image pointers", image && roi);
-    SIGHT_ASSERT("Images have different size", image->getSize() == roi->getSize());
+    SIGHT_ASSERT("Images have different size", image->size() == roi->size());
 
     RoiApplierParam param;
     param.img = image;
     param.roi = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiApplierCaller>::invoke(
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, RoiApplierCaller>::invoke(
         image->getType(),
         param
     );
@@ -136,7 +136,7 @@ struct RoiTester
 
         SIGHT_ASSERT(
             "Null data buffers",
-            p.img->getBuffer() && p.roi->getBuffer() && p.imgRoiApplied->getBuffer()
+            p.img->buffer() && p.roi->buffer() && p.imgRoiApplied->buffer()
         );
 
         auto imIt        = p.img->begin<ImgType>();
@@ -160,7 +160,7 @@ struct RoiTesterCaller
     template<typename IMAGE_TYPE>
     void operator()(RoiTesterParam& p)
     {
-        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiTester<IMAGE_TYPE> >::invoke(
+        core::tools::dispatcher<core::tools::supported_dispatcher_types, RoiTester<IMAGE_TYPE> >::invoke(
             p.roi->getType(),
             p
         );
@@ -174,7 +174,7 @@ bool isRoiApplied(data::Image::sptr image, data::Image::sptr roi, data::Image::s
     SIGHT_ASSERT("Null image pointers", image && imgRoiApplied && roi);
     SIGHT_ASSERT(
         "Images have different size",
-        image->getSize() == imgRoiApplied->getSize() && image->getSize() == roi->getSize()
+        image->size() == imgRoiApplied->size() && image->size() == roi->size()
     );
 
     RoiTesterParam param;
@@ -183,7 +183,7 @@ bool isRoiApplied(data::Image::sptr image, data::Image::sptr roi, data::Image::s
     param.roi           = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RoiTesterCaller>::invoke(
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, RoiTesterCaller>::invoke(
         image->getType(),
         param
     );

@@ -2,7 +2,7 @@
 
 <plugin id="SightViewer" >
 
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::io::session" />
@@ -75,7 +75,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="sight::module::ui::base::SFrame" >
+            <service uid="mainView" type="sight::module::ui::SFrame" >
                 <gui>
                     <frame>
                         <name>Sight Viewer</name>
@@ -89,9 +89,9 @@
                 </registry>
             </service>
 
-            <service uid="mainContainerView" type="sight::module::ui::base::SView" >
+            <service uid="mainContainerView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="1" topBorder="5" bottomBorder="5" backgroundColor="#2E2F30" />
                     </layout>
@@ -101,10 +101,10 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::base::SView" >
+            <service uid="containerView" type="sight::module::ui::SView" >
                 <gui>
                     <toolBar align="left" />
-                    <layout type="sight::ui::base::OverlayLayoutManager" >
+                    <layout type="sight::ui::layout::overlay" >
                         <view />
                         <view x="-1" y="0" width="50" height="55" visible="false" />
                     </layout>
@@ -116,9 +116,9 @@
                 </registry>
             </service>
 
-            <service uid="sceneParameterView" type="sight::module::ui::base::SView" >
+            <service uid="sceneParameterView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" minWidth="500" backgroundColor="#36393E" />
@@ -130,10 +130,10 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarSliderView" type="sight::module::ui::base::SView">
+            <service uid="rightToolbarSliderView" type="sight::module::ui::SView">
                 <gui>
                     <toolBar backgroundColor="#3E4453" />
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                     </layout>
                 </gui>
@@ -142,7 +142,7 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarView" type="sight::module::ui::base::SToolBar">
+            <service uid="rightToolbarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <spacer />
@@ -154,10 +154,10 @@
                 </registry>
             </service>
 
-            <service uid="parameterView" type="sight::module::ui::base::SView" >
+            <service uid="parameterView" type="sight::module::ui::SView" >
                 <gui>
                     <toolBar/>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="0" spacing="0" />
                         <view proportion="0" spacing="0" />
@@ -177,9 +177,9 @@
                 </registry>
             </service>
 
-            <service uid="TFParameterView" type="sight::module::ui::base::SView" >
+            <service uid="TFParameterView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -192,7 +192,7 @@
                 </registry>
             </service>
 
-            <service uid="parameterToolBarView" type="sight::module::ui::base::SToolBar" >
+            <service uid="parameterToolBarView" type="sight::module::ui::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Show volume parameters" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
@@ -214,9 +214,9 @@
                 </registry>
             </service>
 
-            <service uid="volumeParameterView" type="sight::module::ui::base::SView" >
+            <service uid="volumeParameterView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <spacer />
@@ -227,9 +227,9 @@
                 </registry>
             </service>
 
-            <service uid="landmarksParameterView" type="sight::module::ui::base::SView" >
+            <service uid="landmarksParameterView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <spacer />
@@ -240,9 +240,9 @@
                 </registry>
             </service>
 
-            <service uid="lightParameterView" type="sight::module::ui::base::SView" >
+            <service uid="lightParameterView" type="sight::module::ui::SView" >
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -256,7 +256,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+            <service uid="toolBarView" type="sight::module::ui::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Load series" icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -315,7 +315,7 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Read a series -->
-            <service uid="openSeriesSetAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
+            <service uid="openSeriesSetAct" type="sight::module::ui::io::SSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesSet" />
                 <type mode="reader" />
                 <selection mode="exclude" />
@@ -328,14 +328,14 @@
             </service>
 
             <!-- Show the negato/volume view -->
-            <service uid="negatoViewAct" type="sight::module::ui::base::SAction" />
+            <service uid="negatoViewAct" type="sight::module::ui::SAction" />
 
-            <service uid="volumeViewAct" type="sight::module::ui::base::SAction" >
+            <service uid="volumeViewAct" type="sight::module::ui::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Switch between parameters -->
-            <service uid="volumeManagerAct" type="sight::module::ui::base::SModifyLayout" >
+            <service uid="volumeManagerAct" type="sight::module::ui::SModifyLayout" >
                 <config>
                     <show sid="volumeParameterView" />
                     <hide sid="TFParameterView" />
@@ -345,7 +345,7 @@
                 </config>
             </service>
 
-            <service uid="TFManagerAct" type="sight::module::ui::base::SModifyLayout" >
+            <service uid="TFManagerAct" type="sight::module::ui::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <show sid="TFParameterView" />
@@ -355,7 +355,7 @@
                 </config>
             </service>
 
-            <service uid="organsManagerAct" type="sight::module::ui::base::SModifyLayout" >
+            <service uid="organsManagerAct" type="sight::module::ui::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide sid="TFParameterView" />
@@ -365,7 +365,7 @@
                 </config>
             </service>
 
-            <service uid="landmarksManagerAct" type="sight::module::ui::base::SModifyLayout" >
+            <service uid="landmarksManagerAct" type="sight::module::ui::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide sid="TFParameterView" />
@@ -375,7 +375,7 @@
                 </config>
             </service>
 
-            <service uid="lightManagerAct" type="sight::module::ui::base::SModifyLayout" >
+            <service uid="lightManagerAct" type="sight::module::ui::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide sid="TFParameterView" />
@@ -386,14 +386,14 @@
             </service>
 
             <!-- Show or hide the parameter view -->
-            <service uid="hideParameterAct" type="sight::module::ui::base::SAction" />
+            <service uid="hideParameterAct" type="sight::module::ui::SAction" />
 
-            <service uid="showParameterAct" type="sight::module::ui::base::SAction" >
+            <service uid="showParameterAct" type="sight::module::ui::SAction" >
                 <state checked="true" />
             </service>
 
             <!-- PACS manager -->
-            <service uid="pacsAct" type="sight::module::ui::base::SConfigLauncher" >
+            <service uid="pacsAct" type="sight::module::ui::SConfigLauncher" >
                 <appConfig id="PACSSelectorWindow_AppCfg" />
                 <inout group="data">
                     <key name="outputSeriesSet" uid="pacsSeriesSet" />
@@ -403,54 +403,54 @@
             </service>
 
             <!-- Adaptors visibility -->
-            <service uid="volumeVisibilityAct" type="sight::module::ui::base::SAction" >
+            <service uid="volumeVisibilityAct" type="sight::module::ui::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="negato3DVisibilityAct" type="sight::module::ui::base::SAction" >
+            <service uid="negato3DVisibilityAct" type="sight::module::ui::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="meshVisibilityAct" type="sight::module::ui::base::SAction" >
+            <service uid="meshVisibilityAct" type="sight::module::ui::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="boxWidgetVisibilityAct" type="sight::module::ui::base::SAction" >
+            <service uid="boxWidgetVisibilityAct" type="sight::module::ui::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="boxWidgetResetAct" type="sight::module::ui::base::SAction" >
+            <service uid="boxWidgetResetAct" type="sight::module::ui::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="shapeExtruderAct" type="sight::module::ui::base::SAction" >
+            <service uid="shapeExtruderAct" type="sight::module::ui::SAction" >
                 <state enabled="true" />
             </service>
 
-            <service uid="shapeExtruderCancelAct" type="sight::module::ui::base::SAction" >
+            <service uid="shapeExtruderCancelAct" type="sight::module::ui::SAction" >
                 <state enabled="true" />
             </service>
 
-            <service uid="shapeExtruderRevertAct" type="sight::module::ui::base::SAction" >
+            <service uid="shapeExtruderRevertAct" type="sight::module::ui::SAction" >
                 <state enabled="true" />
             </service>
 
-            <service uid="axisVisibilityAct" type="sight::module::ui::base::SAction" />
+            <service uid="axisVisibilityAct" type="sight::module::ui::SAction" />
 
-            <service uid="landmarksEditModeAct" type="sight::module::ui::base::SAction" >
+            <service uid="landmarksEditModeAct" type="sight::module::ui::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="removeAllLandmarksAct" type="sight::module::ui::base::SAction" />
+            <service uid="removeAllLandmarksAct" type="sight::module::ui::SAction" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="sight::module::ui::base::SAction">
+            <service uid="addDistanceAct" type="sight::module::ui::SAction">
                 <state enabled="false" checked="false"/>
             </service>
 
-            <service uid="removeAllDistancesAct" type="sight::module::ui::base::SAction" />
+            <service uid="removeAllDistancesAct" type="sight::module::ui::SAction" />
 
-            <service uid="hideDistanceAct" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true" >
+            <service uid="hideDistanceAct" type="sight::module::ui::metrics::SShowDistance" autoConnect="true" >
                 <inout key="image" uid="image" />
             </service>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,14 @@
 
 #include "modules/ui/dicom/config.hpp"
 
-#include <core/com/Slot.hpp>
+#include <core/com/slot.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QLineEdit>
 #include <QObject>
@@ -95,19 +95,19 @@ namespace sight::module::ui::dicom
  * - \b readerConfig Optional configuration for the DICOM Reader.
  */
 class MODULE_UI_DICOM_CLASS_API SSliceIndexDicomEditor : public QObject,
-                                                         public sight::ui::base::IEditor
+                                                         public sight::ui::editor
 {
 Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSliceIndexDicomEditor, sight::ui::editor);
 
-    MODULE_UI_DICOM_API static const core::com::Slots::SlotKeyType s_READ_IMAGE_SLOT;
-    typedef core::com::Slot<void (std::size_t)> ReadImageSlotType;
+    MODULE_UI_DICOM_API static const core::com::slots::key_t READ_IMAGE_SLOT;
+    typedef core::com::slot<void (std::size_t)> ReadImageSlotType;
 
-    MODULE_UI_DICOM_API static const core::com::Slots::SlotKeyType s_DISPLAY_MESSAGE_SLOT;
-    typedef core::com::Slot<void (const std::string&)> DisplayMessageSlotType;
+    MODULE_UI_DICOM_API static const core::com::slots::key_t DISPLAY_MESSAGE_SLOT;
+    typedef core::com::slot<void (const std::string&)> DisplayMessageSlotType;
 
     /**
      * @brief Constructor
@@ -177,7 +177,7 @@ private:
     std::string m_dicomReaderType;
 
     /// Reader
-    sight::io::base::service::IReader::wptr m_dicomReader;
+    sight::io::service::reader::wptr m_dicomReader;
 
     /// Temporary SeriesSet
     SPTR(data::SeriesSet) m_tmp_series_set;
@@ -190,13 +190,13 @@ private:
     SPTR(data::Integer) m_sagittalIndex;
 
     /// Timer used to generate the new slice selection delay
-    SPTR(core::thread::Timer) m_delayTimer2;
+    SPTR(core::thread::timer) m_delayTimer2;
 
     /// Delay
     std::size_t m_delay {500};
 
     /// Optional configuration to set to reader implementation
-    IService::ConfigType m_readerConfig;
+    service::config_t m_readerConfig;
 
     static constexpr std::string_view s_IMAGE = "image";
 

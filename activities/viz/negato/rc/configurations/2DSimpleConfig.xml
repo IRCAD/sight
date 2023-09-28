@@ -8,9 +8,9 @@
     <config>
         <object uid="${objectID}" type="sight::data::ImageSeries" src="ref" />
         <object uid="tf" type="sight::data::TransferFunction" />
-        <service uid="mainview" type="sight::module::ui::base::SView">
+        <service uid="mainview" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
                     <view align="bottom" minWidth="200" minHeight="30" resizable="false" />
                 </layout>

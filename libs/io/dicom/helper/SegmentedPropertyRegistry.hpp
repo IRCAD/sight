@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 namespace sight::core::log
 {
 
-class Logger;
+class logger;
 
 } // namespace sight::core::log
 
@@ -78,7 +78,7 @@ public:
     IO_DICOM_API bool readSegmentedPropertyRegistryFile(
         const std::filesystem::path& filepath,
         bool omitFirstLine                    = false,
-        const SPTR(core::log::Logger)& logger = nullptr
+        const SPTR(core::log::logger)& logger = nullptr
     );
 
     /**
@@ -98,7 +98,7 @@ public:
     IO_DICOM_API bool readSegmentedPropertyRegistryFile(
         std::istream& csvStream,
         bool omitFirstLine                    = false,
-        const SPTR(core::log::Logger)& logger = nullptr
+        const SPTR(core::log::logger)& logger = nullptr
     );
 
     /// Returns whether the registry is empty or not

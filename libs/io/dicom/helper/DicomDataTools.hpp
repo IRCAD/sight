@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ public:
      * @param[in] type pixel type from a sight.
      * @return The pixel format (e.g: INT8, UINT16, ...)
      */
-    IO_DICOM_API static gdcm::PixelFormat getPixelType(const core::Type& type);
+    IO_DICOM_API static gdcm::PixelFormat getPixelType(const core::type& type);
 
     /**
      * @brief Return the photometric interpretation of an acquisition.

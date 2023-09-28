@@ -22,8 +22,8 @@
 
 #include "SPointListRegistration.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Composite.hpp>
 #include <data/Matrix4.hpp>
@@ -33,7 +33,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <vtkLandmarkTransform.h>
 #include <vtkMatrix4x4.h>
@@ -43,13 +43,13 @@
 namespace sight::module::filter::point
 {
 
-const core::com::Slots::SlotKeyType SPointListRegistration::s_CHANGE_MODE = "changeMode";
-static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG       = "errorComputed";
+const core::com::slots::key_t SPointListRegistration::CHANGE_MODE = "changeMode";
+static const core::com::signals::key_t ERROR_COMPUTED_SIG         = "errorComputed";
 
 SPointListRegistration::SPointListRegistration()
 {
-    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
-    newSlot(s_CHANGE_MODE, &SPointListRegistration::changeMode, this);
+    new_signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG);
+    new_slot(CHANGE_MODE, &SPointListRegistration::changeMode, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void SPointListRegistration::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
+void SPointListRegistration::computeRegistration(core::hires_clock::type /*timestamp*/)
 {
     const auto registeredPL = m_registeredPL.lock();
     SIGHT_ASSERT("No 'registeredPL' found", registeredPL);
@@ -225,23 +225,23 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
 
         errorValue /= static_cast<double>(sourcePts->GetNumberOfPoints());
 
-        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errorValue);
+        this->signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG)->async_emit(errorValue);
 
         // Notify Matrix modified
-        auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
         {
-            core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-            sig->asyncEmit();
+            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+            sig->async_emit();
         }
     }
     else
     {
         if(registeredPL->getPoints().size() < 3)
         {
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Error",
                 "You must enter 3 or more points for the registration to work.",
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
         else
@@ -250,10 +250,10 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
             msg += std::to_string(registeredPL->getPoints().size()) + " != " + std::to_string(
                 referencePL->getPoints().size()
             );
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Error",
                 msg,
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
     }
@@ -263,7 +263,7 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
 
 void SPointListRegistration::updating()
 {
-    const core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
+    const core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
     this->computeRegistration(timestamp);
 }
 

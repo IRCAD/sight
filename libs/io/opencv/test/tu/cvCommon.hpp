@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <opencv2/core.hpp>
 

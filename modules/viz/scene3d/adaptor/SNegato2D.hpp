@@ -24,17 +24,17 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Signal.hpp>
+#include <core/com/signal.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/interactor/IInteractor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/PickingCross.hpp>
 #include <viz/scene3d/Plane.hpp>
 #include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -81,16 +81,16 @@ namespace sight::module::viz::scene3d::adaptor
  * * - \b interactive (optional, bool, default=false): enables interactions on the negato.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SNegato2D final :
-    public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::ITransformable,
-    public sight::viz::scene3d::interactor::IInteractor
+    public sight::viz::scene3d::adaptor,
+    public sight::viz::scene3d::transformable,
+    public sight::viz::scene3d::interactor::base
 {
 public:
 
     using OrientationMode = data::helper::MedicalImage::orientation_t;
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SNegato2D, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SNegato2D, sight::viz::scene3d::adaptor);
 
     /// Creates the service and initializes slots.
     MODULE_VIZ_SCENE3D_API SNegato2D() noexcept;
@@ -111,12 +111,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INOUT to IService::slots::s_UPDATE
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to IService::slots::s_UPDATE
-     * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICETYPE_SLOT
-     * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICEINDEX_SLOT
+     * Connect data::Image::MODIFIED_SIG of s_IMAGE_INOUT to service::slots::UPDATE
+     * Connect data::Image::BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to service::slots::UPDATE
+     * Connect data::Image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to SLICETYPE_SLOT
+     * Connect data::Image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to SLICEINDEX_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
     MODULE_VIZ_SCENE3D_API void updating() final;
@@ -237,11 +237,11 @@ private:
     /// True if the plane is being picked
     bool m_picked {false};
 
-    using SliceIndexChangedSignalType = core::com::Signal<void ()>;
+    using SliceIndexChangedSignalType = core::com::signal<void ()>;
     SliceIndexChangedSignalType::sptr m_sliceIndexChangedSig;
 
     /// Defines the signal sent when a voxel is picked using the left mouse button.
-    using PickedVoxelSigType = core::com::Signal<void (std::string)>;
+    using PickedVoxelSigType = core::com::signal<void (std::string)>;
     PickedVoxelSigType::sptr m_pickedVoxelSignal {nullptr};
 
     static constexpr std::string_view s_IMAGE_IN = "image";

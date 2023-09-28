@@ -23,14 +23,14 @@
 #include "modules/ui/qt/calibration/SCalibrationInfoEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 
@@ -39,17 +39,17 @@
 namespace sight::module::ui::qt::calibration
 {
 
-const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT        = "remove";
-const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";
-const core::com::Slots::SlotKeyType SCalibrationInfoEditor::s_GET_SELECTION_SLOT = "getSelection";
+const core::com::slots::key_t SCalibrationInfoEditor::REMOVE_SLOT        = "remove";
+const core::com::slots::key_t SCalibrationInfoEditor::RESET_SLOT         = "reset";
+const core::com::slots::key_t SCalibrationInfoEditor::GET_SELECTION_SLOT = "getSelection";
 
 // ----------------------------------------------------------------------------
 
 SCalibrationInfoEditor::SCalibrationInfoEditor() noexcept
 {
-    newSlot(s_REMOVE_SLOT, &SCalibrationInfoEditor::remove, this);
-    newSlot(s_RESET_SLOT, &SCalibrationInfoEditor::reset, this);
-    newSlot(s_GET_SELECTION_SLOT, &SCalibrationInfoEditor::getSelection, this);
+    new_slot(REMOVE_SLOT, &SCalibrationInfoEditor::remove, this);
+    new_slot(RESET_SLOT, &SCalibrationInfoEditor::reset, this);
+    new_slot(GET_SELECTION_SLOT, &SCalibrationInfoEditor::getSelection, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -91,10 +91,10 @@ void SCalibrationInfoEditor::updating()
             const auto* const errMsg = "Left and right calibration input datasets do not have the same size.\n\n"
                                        "Your images may be out of sync.";
 
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Inputs do not match",
                 errMsg,
-                sight::ui::base::dialog::MessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
     }
@@ -119,15 +119,15 @@ void SCalibrationInfoEditor::updating()
 
 void SCalibrationInfoEditor::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 }
 
 // ----------------------------------------------------------------------------
 
 void SCalibrationInfoEditor::starting()
 {
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     // Creation of the Qt elements
 
@@ -141,7 +141,7 @@ void SCalibrationInfoEditor::starting()
     auto* label = new QLabel("nb captures:");
     nbItemsHBox->addWidget(label);
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     m_nbCapturesLabel = new QLabel("-");
     m_nbCapturesLabel->setObjectName(serviceID + "/nbCapturesLabel");
@@ -171,7 +171,7 @@ void SCalibrationInfoEditor::starting()
 
 void SCalibrationInfoEditor::stopping()
 {
-    sight::ui::base::IGuiContainer::destroy();
+    sight::ui::service::destroy();
 }
 
 // ----------------------------------------------------------------------------
@@ -195,10 +195,10 @@ void SCalibrationInfoEditor::remove()
             //Notify
             {
                 auto sig = calInfo1->signal<data::CalibrationInfo::RemovedRecordSignalType>(
-                    data::CalibrationInfo::s_REMOVED_RECORD_SIG
+                    data::CalibrationInfo::REMOVED_RECORD_SIG
                 );
-                core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                sig->asyncEmit();
+                core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                sig->async_emit();
             }
 
             if(calInfo2)
@@ -208,10 +208,10 @@ void SCalibrationInfoEditor::remove()
                 //Notify
                 {
                     auto sig = calInfo2->signal<data::CalibrationInfo::RemovedRecordSignalType>(
-                        data::CalibrationInfo::s_REMOVED_RECORD_SIG
+                        data::CalibrationInfo::REMOVED_RECORD_SIG
                     );
-                    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                    sig->asyncEmit();
+                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+                    sig->async_emit();
                 }
             }
         }
@@ -233,10 +233,10 @@ void SCalibrationInfoEditor::reset()
     //Notify
     {
         auto sig = calInfo1->signal<data::CalibrationInfo::ResetRecordSignalType>(
-            data::CalibrationInfo::s_RESET_RECORD_SIG
+            data::CalibrationInfo::RESET_RECORD_SIG
         );
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 
     if(calInfo2)
@@ -246,10 +246,10 @@ void SCalibrationInfoEditor::reset()
         //Notify
         {
             auto sig = calInfo2->signal<data::CalibrationInfo::ResetRecordSignalType>(
-                data::CalibrationInfo::s_RESET_RECORD_SIG
+                data::CalibrationInfo::RESET_RECORD_SIG
             );
-            core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-            sig->asyncEmit();
+            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+            sig->async_emit();
         }
     }
 
@@ -273,20 +273,20 @@ void SCalibrationInfoEditor::getSelection()
         //Notify
         {
             auto sig = calInfo1->signal<data::CalibrationInfo::GetRecordSignalType>(
-                data::CalibrationInfo::s_GET_RECORD_SIG
+                data::CalibrationInfo::GET_RECORD_SIG
             );
-            sig->asyncEmit(idx);
+            sig->async_emit(idx);
         }
     }
 }
 
 // ----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SCalibrationInfoEditor::getAutoConnections() const
+service::connections_t SCalibrationInfoEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_CALIBRATION_INFO_1, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_CALIBRATION_INFO_2, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_CALIBRATION_INFO_1, data::Object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_CALIBRATION_INFO_2, data::Object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,19 +26,19 @@
 #include "io/dicom/container/DicomInstance.hpp"
 #include "io/dicom/exception/Failed.hpp"
 
-#include <core/location/SingleFile.hpp>
-#include <core/log/Logger.hpp>
+#include <core/location/single_file.hpp>
+#include <core/log/logger.hpp>
 
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/GenericObjectWriter.hpp>
 
 namespace sight::core::jobs
 {
 
-class Aggregator;
-class Observer;
+class aggregator;
+class observer;
 
 } // namespace sight::core::jobs
 
@@ -49,19 +49,19 @@ namespace sight::io::dicom::writer
  * @brief This class handles DICOM Surface Segmentation files writing.
  */
 class IO_DICOM_CLASS_API SurfaceSegmentation :
-    public io::base::writer::GenericObjectWriter<data::ModelSeries>,
-    public core::location::SingleFile
+    public io::writer::GenericObjectWriter<data::ModelSeries>,
+    public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         SurfaceSegmentation,
-        io::base::writer::GenericObjectWriter<data::ModelSeries>,
-        io::base::writer::factory::New<SurfaceSegmentation>
+        io::writer::GenericObjectWriter<data::ModelSeries>,
+        io::writer::factory::make<SurfaceSegmentation>
     );
 
     /// Constructor
-    IO_DICOM_API SurfaceSegmentation(io::base::writer::IObjectWriter::Key key);
+    IO_DICOM_API SurfaceSegmentation();
 
     /// Destructor
     IO_DICOM_API ~SurfaceSegmentation() override;
@@ -73,18 +73,18 @@ public:
     IO_DICOM_API std::string extension() const override;
 
     /// Returns logger
-    IO_DICOM_API SPTR(core::log::Logger) getLogger() const;
+    IO_DICOM_API SPTR(core::log::logger) getLogger() const;
 
     /// Getter for writer's job
-    IO_DICOM_API SPTR(core::jobs::IJob) getJob() const override;
+    IO_DICOM_API SPTR(core::jobs::base) getJob() const override;
 
 private:
 
     /// Logger
-    core::log::Logger::sptr m_logger;
+    core::log::logger::sptr m_logger;
 
     /// Writer job
-    SPTR(core::jobs::Observer) m_writerJob;
+    SPTR(core::jobs::observer) m_writerJob;
 };
 
 } // namespace sight::io::dicom::writer

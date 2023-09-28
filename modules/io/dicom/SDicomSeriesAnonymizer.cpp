@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,27 +22,27 @@
 
 #include "SDicomSeriesAnonymizer.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/IJob.hpp>
+#include <core/com/signal.hxx>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/base.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/SeriesSet.hpp>
 
 #include <io/dicom/helper/DicomSeriesAnonymizer.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/message.hpp>
 
 namespace sight::module::io::dicom
 {
 
-static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const core::com::signals::key_t JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesAnonymizer::SDicomSeriesAnonymizer() noexcept :
-    m_sigJobCreated(newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
+    m_sigJobCreated(new_signal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
 {
 }
 
@@ -75,22 +75,22 @@ void SDicomSeriesAnonymizer::updating()
 {
     const auto vector = m_selectedSeries.lock();
 
-    sight::ui::base::dialog::MessageDialog dialog;
+    sight::ui::dialog::message dialog;
     dialog.setTitle("Series anonymization");
 
     // If the selection is not empty
     if(!vector->empty())
     {
         dialog.setMessage("Are you sure you want to anonymize the selected series ?");
-        dialog.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
-        dialog.addButton(ui::base::dialog::IMessageDialog::YES);
-        dialog.addButton(ui::base::dialog::IMessageDialog::CANCEL);
-        sight::ui::base::dialog::IMessageDialog::Buttons answer = dialog.show();
+        dialog.setIcon(ui::dialog::message::QUESTION);
+        dialog.addButton(ui::dialog::message::YES);
+        dialog.addButton(ui::dialog::message::CANCEL);
+        sight::ui::dialog::message::Buttons answer = dialog.show();
 
-        if(answer == sight::ui::base::dialog::IMessageDialog::YES)
+        if(answer == sight::ui::dialog::message::YES)
         {
-            sight::ui::base::Cursor cursor;
-            cursor.setCursor(ui::base::ICursor::BUSY);
+            sight::ui::cursor cursor;
+            cursor.setCursor(ui::cursor_base::BUSY);
             this->anonymize(*vector);
             cursor.setDefaultCursor();
         }
@@ -99,8 +99,8 @@ void SDicomSeriesAnonymizer::updating()
     else
     {
         dialog.setMessage("Please select which series you want to anonymize.");
-        dialog.setIcon(ui::base::dialog::IMessageDialog::INFO);
-        dialog.addButton(ui::base::dialog::IMessageDialog::OK);
+        dialog.setIcon(ui::dialog::message::INFO);
+        dialog.addButton(ui::dialog::message::OK);
         dialog.show();
     }
 }
@@ -119,19 +119,19 @@ void SDicomSeriesAnonymizer::anonymize(sight::data::Vector& _vector)
     const auto series_set     = m_series_set.lock();
     const auto scoped_emitter = series_set->scoped_emit();
 
-    auto anonymizer = sight::io::dicom::helper::DicomSeriesAnonymizer::New();
+    auto anonymizer = std::make_shared<sight::io::dicom::helper::DicomSeriesAnonymizer>();
     m_sigJobCreated->emit(anonymizer->getJob());
 
     std::vector<data::DicomSeries::sptr> anonymizedDicomSeriesVector;
 
     for(const auto& value : _vector)
     {
-        data::DicomSeries::sptr dicomSeries           = data::DicomSeries::dynamicCast(value);
-        data::DicomSeries::sptr anonymizedDicomSeries = data::DicomSeries::New();
+        data::DicomSeries::sptr dicomSeries           = std::dynamic_pointer_cast<data::DicomSeries>(value);
+        data::DicomSeries::sptr anonymizedDicomSeries = std::make_shared<data::DicomSeries>();
         anonymizer->anonymize(dicomSeries, anonymizedDicomSeries);
         anonymizedDicomSeriesVector.push_back(anonymizedDicomSeries);
 
-        m_cancelled = anonymizer->getJob()->cancelRequested();
+        m_cancelled = anonymizer->getJob()->cancel_requested();
         if(m_cancelled)
         {
             break;
@@ -142,7 +142,7 @@ void SDicomSeriesAnonymizer::anonymize(sight::data::Vector& _vector)
     {
         for(const auto& value : _vector)
         {
-            auto dicomSeries = data::DicomSeries::dynamicCast(value);
+            auto dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(value);
             series_set->remove(dicomSeries);
         }
 

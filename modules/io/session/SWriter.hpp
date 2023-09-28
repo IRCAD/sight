@@ -23,10 +23,10 @@
 
 #include "modules/io/session/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/jobs/IJob.hpp>
+#include <core/com/signal.hpp>
+#include <core/jobs/base.hpp>
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 namespace sight::module::io::session
 {
@@ -46,7 +46,7 @@ namespace sight::module::io::session
  * The compression level is set individually, depending of the type of data to serialize.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -93,17 +93,17 @@ namespace sight::module::io::session
  *          - \b "optimized": Store files in a ZIP archive, with zstd algorithm
  *          - \b "default": uses the builtin default behavior which is "optimized"
  *
- * @see sight::io::base::service::IWriter
+ * @see sight::io::service::writer
  * @see sight::io::session::SessionWriter
  */
 
-class MODULE_IO_SESSION_CLASS_API SWriter final : public sight::io::base::service::IWriter
+class MODULE_IO_SESSION_CLASS_API SWriter final : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SWriter, sight::io::service::writer);
 
-    using JobCreatedSignal = core::com::Signal<void (core::jobs::IJob::sptr)>;
+    using JobCreatedSignal = core::com::signal<void (core::jobs::base::sptr)>;
 
     MODULE_IO_SESSION_API SWriter() noexcept;
 
@@ -127,9 +127,9 @@ protected:
     MODULE_IO_SESSION_API void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_SESSION_API sight::io::base::service::IOPathType getIOPathType() const override
+    MODULE_IO_SESSION_API sight::io::service::IOPathType getIOPathType() const override
     {
-        return sight::io::base::service::FILE;
+        return sight::io::service::FILE;
     }
 
 private:

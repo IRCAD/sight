@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,10 @@
 
 #include <core/base.hpp>
 
-#include <io/base/writer/registry/macros.hpp>
+#include <io/__/writer/registry/macros.hpp>
 
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Observer.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/observer.hpp>
 
 #include <data/Mesh.hpp>
 #include <data/Material.hpp>
@@ -58,8 +58,8 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-ObjMeshWriter::ObjMeshWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
-    m_job(core::jobs::Observer::New("OBJ Mesh writer"))
+ObjMeshWriter::ObjMeshWriter() :
+    m_job(std::make_shared<core::jobs::observer>("OBJ Mesh writer"))
 {
 }
 
@@ -87,20 +87,20 @@ void ObjMeshWriter::write()
     vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
     io::vtk::helper::Mesh::toVTKMesh(pMesh, vtkMesh);
     writer->SetInputData(vtkMesh);
-    writer->SetFileName(this->getFile().string().c_str());
+    writer->SetFileName(this->get_file().string().c_str());
 
-    vtkSmartPointer<vtkLambdaCommand> progressCallback;
+    vtkSmartPointer<vtkLambdaCommand> progress_callback;
 
-    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
-    progressCallback->SetCallback(
+    progress_callback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progress_callback->SetCallback(
         [&](vtkObject* caller, long unsigned int, void*)
         {
             const auto filter = static_cast<vtkOBJWriter*>(caller);
-            m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
-    writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+    writer->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->addSimpleCancelHook([&]{writer->AbortExecuteOn();});
+    m_job->add_simple_cancel_hook([&]{writer->AbortExecuteOn();});
 
     writer->Update();
 
@@ -140,7 +140,7 @@ void ObjMeshWriter::write()
     vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
     renderWindow->AddRenderer(renderer);
 
-    std::filesystem::path file = this->getFile();
+    std::filesystem::path file = this->get_file();
     const std::string filename = file.extension() == ".obj"
                                  ? file.replace_extension().string()
                                  : file.string();
@@ -162,7 +162,7 @@ std::string ObjMeshWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-core::jobs::IJob::sptr ObjMeshWriter::getJob() const
+core::jobs::base::sptr ObjMeshWriter::getJob() const
 {
     return m_job;
 }

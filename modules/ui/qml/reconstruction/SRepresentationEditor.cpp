@@ -22,7 +22,7 @@
 
 #include "SRepresentationEditor.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
@@ -50,14 +50,14 @@ void SRepresentationEditor::configuring()
 
 void SRepresentationEditor::starting()
 {
-    this->IQmlEditor::starting();
+    this->editor::starting();
 }
 
 //------------------------------------------------------------------------------
 
 void SRepresentationEditor::stopping()
 {
-    this->IQmlEditor::stopping();
+    this->editor::stopping();
 }
 
 //------------------------------------------------------------------------------
@@ -170,17 +170,17 @@ void SRepresentationEditor::notifyMaterial()
 
     data::Object::ModifiedSignalType::sptr sig;
     sig = reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(
-        data::Object::s_MODIFIED_SIG
+        data::Object::MODIFIED_SIG
     );
-    sig->asyncEmit();
+    sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections() const
+service::connections_t SRepresentationEditor::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections_t connections;
+    connections.push(s_RECONSTRUCTION_INOUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

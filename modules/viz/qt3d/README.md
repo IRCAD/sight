@@ -12,7 +12,7 @@ Module that allows to visualize a 3D scene using Qt3D. This module is not mature
 
 ## Classes
 
-- **WindowInteractor**: manages an interactive `Qt3DExtras::Qt3DWindow` from `ui::base::container::fwContainer::sptr `.
+- **window_interactor**: manages an interactive `Qt3DExtras::Qt3DWindow` from `ui::container::widget::sptr `.
 
 ## How to use it
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "filter/image/Flipper.hpp"
 
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -77,7 +77,7 @@ struct FlippingDimensionExtractor
     template<class PixelType>
     void operator()(Parameters& params)
     {
-        const data::Image::Size size = params.i_image->getSize();
+        const data::Image::Size size = params.i_image->size();
         switch(size.size())
         {
             case 1:
@@ -101,7 +101,7 @@ struct FlippingDimensionExtractor
                     + std::to_string(size.size()) + ")."
                 );
                 // In this case, we just deep copy the input image in the output
-                params.o_image->deepCopy(params.i_image);
+                params.o_image->deep_copy(params.i_image);
                 break;
         }
     }
@@ -123,15 +123,15 @@ void Flipper::flip(
         params.i_flipAxes = _inFlipAxes;
         params.o_image    = _outImage;
 
-        const core::Type type = _inImage->getType();
-        core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, FlippingDimensionExtractor>::invoke(
+        const core::type type = _inImage->getType();
+        core::tools::dispatcher<core::tools::supported_dispatcher_types, FlippingDimensionExtractor>::invoke(
             type,
             params
         );
     }
     else
     {
-        _outImage->deepCopy(_inImage);
+        _outImage->deep_copy(_inImage);
     }
 }
 

@@ -5,7 +5,7 @@
  -->
 <plugin id="Tuto08MesherWithGenericScene">
 
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -24,7 +24,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>Tuto08MesherWithGenericScene</name>
@@ -38,9 +38,9 @@
                 </registry>
             </service>
 
-            <service uid="progressBarView" type="sight::module::ui::base::SJobBar" />
+            <service uid="progressBarView" type="sight::module::ui::SJobBar" />
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -53,7 +53,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="menuMesherView" type="sight::module::ui::base::SMenu">
+            <service uid="menuMesherView" type="sight::module::ui::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Create Mesh 50" />
@@ -82,9 +82,9 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::base::SView">
+            <service uid="mainView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" resizable="false" backgroundColor="#3E4453" />
@@ -96,9 +96,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::base::SView">
+            <service uid="containerView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="2" />
                         <view proportion="1" backgroundColor="#36393E" />
@@ -110,9 +110,9 @@
                 </registry>
             </service>
 
-            <service uid="organsView" type="sight::module::ui::base::SView">
+            <service uid="organsView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::ToolboxLayoutManager">
+                    <layout type="sight::ui::layout::toolbox">
                         <view caption="Organs" expanded="true" />
                         <view caption="Material" expanded="true" />
                         <view caption="Representation" />
@@ -127,9 +127,9 @@
                 </registry>
             </service>
 
-            <service uid="sceneEditorsView" type="sight::module::ui::base::SView">
+            <service uid="sceneEditorsView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
@@ -178,21 +178,21 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="openImageAct" type="sight::module::ui::com::SStarter">
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="saveModelSeriesAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="saveModelSeriesAct" type="sight::module::ui::com::SStarter">
                 <start_if_exists uid="modelSeriesWriterSrv" />
             </service>
 
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::SQuit" />
 
-            <service uid="createMesh50Act" type="sight::module::ui::base::com::SStarter">
+            <service uid="createMesh50Act" type="sight::module::ui::com::SStarter">
                 <start_if_exists uid="mesher50Srv" />
             </service>
 
-            <service uid="createMesh80Act" type="sight::module::ui::base::com::SStarter">
+            <service uid="createMesh80Act" type="sight::module::ui::com::SStarter">
                 <start_if_exists uid="mesher80Srv" />
             </service>
 
@@ -246,12 +246,12 @@
               <config percentReduction="80" threshold="255" />
             </service>
 
-            <service uid="modelSeriesWriterSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="modelSeriesWriterSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="modelSeries" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="imageReaderSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="imageSeries" />
                 <type mode="reader" />
             </service>

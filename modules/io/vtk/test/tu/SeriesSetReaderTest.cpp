@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "SeriesSetReaderTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/tools/system.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -32,7 +32,7 @@
 #include <data/Series.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <service/base.hpp>
+#include <service/op.hpp>
 
 #include <utestData/Data.hpp>
 
@@ -79,15 +79,15 @@ void SeriesSetReaderTest::testSeriesSetReader()
         std::filesystem::exists(meshFile)
     );
 
-    service::IService::ConfigType readerSrvCfg;
+    service::config_t readerSrvCfg;
     readerSrvCfg.add("file", imageFile.string());
-    service::IService::ConfigType file2Cfg;
+    service::config_t file2Cfg;
     readerSrvCfg.add("file", meshFile.string());
     readerSrvCfg.add("file", meshFile.string());
 
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
-    service::IService::sptr srv = service::add("sight::module::io::vtk::SSeriesSetReader");
+    service::base::sptr srv = service::add("sight::module::io::vtk::SSeriesSetReader");
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesSetReader failed", srv);
 
@@ -106,15 +106,15 @@ void SeriesSetReaderTest::testSeriesSetReader()
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
-    data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series_set->at(0));
-    data::ModelSeries::sptr modelSeries = data::ModelSeries::dynamicCast(series_set->at(1));
+    data::ImageSeries::sptr imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series_set->at(0));
+    data::ModelSeries::sptr modelSeries = std::dynamic_pointer_cast<data::ModelSeries>(series_set->at(1));
     CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imageSeries);
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
     // Data read.
     const data::Image::Spacing spacingRead = imageSeries->getSpacing();
     const data::Image::Spacing originRead  = imageSeries->getOrigin();
-    const data::Image::Size sizeRead       = imageSeries->getSize();
+    const data::Image::Size sizeRead       = imageSeries->size();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -156,14 +156,14 @@ void SeriesSetReaderTest::testMergeSeriesSetReader()
         std::filesystem::exists(imageFile)
     );
 
-    service::IService::ConfigType readerSrvCfg;
+    service::config_t readerSrvCfg;
     readerSrvCfg.add("file", imageFile.string());
 
-    auto imageSeries = data::ImageSeries::New();
-    auto series_set  = data::SeriesSet::New();
+    auto imageSeries = std::make_shared<data::ImageSeries>();
+    auto series_set  = std::make_shared<data::SeriesSet>();
     series_set->push_back(imageSeries);
 
-    service::IService::sptr srv = service::add("sight::module::io::vtk::SSeriesSetReader");
+    service::base::sptr srv = service::add("sight::module::io::vtk::SSeriesSetReader");
 
     CPPUNIT_ASSERT_MESSAGE("Create SSeriesSetReader failed", srv);
 

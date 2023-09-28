@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "io/zip/config.hpp"
-#include "io/zip/IReadArchive.hpp"
+#include "io/zip/read_archive.hpp"
 
 #include <core/macros.hpp>
 
@@ -36,15 +36,15 @@ namespace sight::io::zip
 /**
  * @brief   This class defines functions to read a file in a file system archive.
  */
-class IO_ZIP_CLASS_API ReadDirArchive : public IReadArchive
+class IO_ZIP_CLASS_API ReadDirArchive : public read_archive
 {
 public:
 
-    SIGHT_DECLARE_CLASS(ReadDirArchive, IReadArchive);
+    SIGHT_DECLARE_CLASS(ReadDirArchive, read_archive);
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const std::filesystem::path& archive)
+    static sptr make(const std::filesystem::path& archive)
     {
         return std::make_shared<ReadDirArchive>(archive);
     }
@@ -62,7 +62,7 @@ public:
      *
      * @throw io::zip::exception::Read if file doesn't exist in archive.
      */
-    IO_ZIP_API SPTR(std::istream) getFile(const std::filesystem::path& path) override;
+    IO_ZIP_API SPTR(std::istream) get_file(const std::filesystem::path& path) override;
 
     /**
      * @brief Returns archive path.
@@ -71,9 +71,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] IReadArchive::sptr clone() const override
+    [[nodiscard]] read_archive::sptr clone() const override
     {
-        return ReadDirArchive::New(m_archive);
+        return ReadDirArchive::make(m_archive);
     }
 
 protected:

@@ -6,7 +6,7 @@ add_dependencies(
     module_appXml
     module_ui_qt
     module_service
-    module_ui_base
+    module_ui
     module_viz_scene2d
 )
 

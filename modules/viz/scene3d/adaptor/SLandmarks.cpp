@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/adaptor/STransform.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 #include <core/tools/compare.hpp>
 
 #include <viz/scene3d/helper/ManualObject.hpp>
@@ -55,23 +55,23 @@ SLandmarks::SLandmarks() noexcept
         " 'sight::module::viz::scene3dQt::adaptor::SLandmarks' instead."
     );
 
-    newSlot(Slots::REMOVE_GROUP, &SLandmarks::removeGroup, this);
-    newSlot(Slots::MODIFY_GROUP, &SLandmarks::modifyGroup, this);
-    newSlot(Slots::MODIFY_POINT, &SLandmarks::modifyPoint, this);
-    newSlot(Slots::ADD_POINT, &SLandmarks::addPoint, this);
-    newSlot(Slots::REMOVE_POINT, &SLandmarks::removePoint, this);
-    newSlot(Slots::INSERT_POINT, &SLandmarks::insertPoint, this);
-    newSlot(Slots::SELECT_POINT, &SLandmarks::selectPoint, this);
-    newSlot(Slots::DESELECT_POINT, &SLandmarks::deselectPoint, this);
-    newSlot(Slots::INITIALIZE_IMAGE, &SLandmarks::initializeImage, this);
-    newSlot(Slots::SLICE_TYPE, &SLandmarks::changeSliceType, this);
-    newSlot(Slots::SLICE_INDEX, &SLandmarks::changeSliceIndex, this);
-    newSlot(Slots::RENAME_GROUP, &SLandmarks::renameGroup, this);
-    newSlot(Slots::TOGGLE_ADD_LANDMARKS, &SLandmarks::toggleAddLandmarks, this);
-    newSlot(Slots::TOGGLE_REMOVE_LANDMARKS, &SLandmarks::toggleRemoveLandmarks, this);
-    newSlot(Slots::REMOVE_LANDMARKS, &SLandmarks::removeLandmarks, this);
-    newSlot(Slots::CREATE_LANDMARK, &SLandmarks::createLandmark, this);
-    newSlot(Slots::CONFIGURE_LANDMARKS, &SLandmarks::configureLandmarks, this);
+    new_slot(Slots::REMOVE_GROUP, &SLandmarks::removeGroup, this);
+    new_slot(Slots::MODIFY_GROUP, &SLandmarks::modifyGroup, this);
+    new_slot(Slots::MODIFY_POINT, &SLandmarks::modifyPoint, this);
+    new_slot(Slots::ADD_POINT, &SLandmarks::addPoint, this);
+    new_slot(Slots::REMOVE_POINT, &SLandmarks::removePoint, this);
+    new_slot(Slots::INSERT_POINT, &SLandmarks::insertPoint, this);
+    new_slot(Slots::SELECT_POINT, &SLandmarks::selectPoint, this);
+    new_slot(Slots::DESELECT_POINT, &SLandmarks::deselectPoint, this);
+    new_slot(Slots::INITIALIZE_IMAGE, &SLandmarks::initializeImage, this);
+    new_slot(Slots::SLICE_TYPE, &SLandmarks::changeSliceType, this);
+    new_slot(Slots::SLICE_INDEX, &SLandmarks::changeSliceIndex, this);
+    new_slot(Slots::RENAME_GROUP, &SLandmarks::renameGroup, this);
+    new_slot(Slots::TOGGLE_ADD_LANDMARKS, &SLandmarks::toggleAddLandmarks, this);
+    new_slot(Slots::TOGGLE_REMOVE_LANDMARKS, &SLandmarks::toggleRemoveLandmarks, this);
+    new_slot(Slots::REMOVE_LANDMARKS, &SLandmarks::removeLandmarks, this);
+    new_slot(Slots::CREATE_LANDMARK, &SLandmarks::createLandmark, this);
+    new_slot(Slots::CONFIGURE_LANDMARKS, &SLandmarks::configureLandmarks, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,8 +84,8 @@ void SLandmarks::configuring()
 
     setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            get_id() + "_transform"
         )
     );
 
@@ -168,7 +168,7 @@ void SLandmarks::configuring()
     m_currentGroup = config.get<std::string>(s_INITIAL_GROUP, m_currentGroup);
 
     // Initial color
-    auto color = sight::data::Color::New();
+    auto color = std::make_shared<sight::data::Color>();
     color->setRGBA(config.get<std::string>(s_INITIAL_COLOR, "#FFFF00FF"));
     m_currentColor = {color->red(), color->green(), color->blue(), color->alpha()};
 
@@ -202,8 +202,8 @@ void SLandmarks::starting()
     auto* rootSceneNode = getSceneManager()->getRootSceneNode();
     m_transNode = getOrCreateTransformNode(rootSceneNode);
 
-    m_material = data::Material::New();
-    m_material->setDiffuse(data::Color::New(1.F, 1.F, 1.F, 1.F));
+    m_material = std::make_shared<data::Material>();
+    m_material->setDiffuse(std::make_shared<data::Color>(1.F, 1.F, 1.F, 1.F));
 
     // Register the material adaptor.
     m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
@@ -211,8 +211,8 @@ void SLandmarks::starting()
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
     m_materialAdaptor->configure(
-        this->getID() + m_materialAdaptor->getID(),
-        this->getID() + m_materialAdaptor->getID(),
+        this->get_id() + m_materialAdaptor->get_id(),
+        this->get_id() + m_materialAdaptor->get_id(),
         this->getRenderService(),
         m_layerID
     );
@@ -223,7 +223,7 @@ void SLandmarks::starting()
 
     if(m_interactive)
     {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(getSptr());
+        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(get_sptr());
         getLayer()->addInteractor(interactor, m_priority);
     }
 
@@ -236,25 +236,25 @@ void SLandmarks::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
+service::connections_t SLandmarks::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
+    service::connections_t connections;
 
-    connections.push(s_TRANSFORM_CONFIG, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_TRANSFORM_CONFIG, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE);
 
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_REMOVED_SIG, Slots::REMOVE_GROUP);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_MODIFIED_SIG, Slots::MODIFY_GROUP);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_GROUP_RENAMED_SIG, Slots::RENAME_GROUP);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_MODIFIED_SIG, Slots::MODIFY_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_ADDED_SIG, Slots::ADD_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_REMOVED_SIG, Slots::REMOVE_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_INSERTED_SIG, Slots::INSERT_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_SELECTED_SIG, Slots::SELECT_POINT);
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_DESELECTED_SIG, Slots::DESELECT_POINT);
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, Slots::INITIALIZE_IMAGE);
-    connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, Slots::SLICE_TYPE);
-    connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, Slots::SLICE_INDEX);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_REMOVED_SIG, Slots::REMOVE_GROUP);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_MODIFIED_SIG, Slots::MODIFY_GROUP);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::GROUP_RENAMED_SIG, Slots::RENAME_GROUP);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_MODIFIED_SIG, Slots::MODIFY_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_ADDED_SIG, Slots::ADD_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_REMOVED_SIG, Slots::REMOVE_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_INSERTED_SIG, Slots::INSERT_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_SELECTED_SIG, Slots::SELECT_POINT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::POINT_DESELECTED_SIG, Slots::DESELECT_POINT);
+    connections.push(s_IMAGE_INPUT, data::Image::MODIFIED_SIG, Slots::INITIALIZE_IMAGE);
+    connections.push(s_IMAGE_INPUT, data::Image::SLICE_TYPE_MODIFIED_SIG, Slots::SLICE_TYPE);
+    connections.push(s_IMAGE_INPUT, data::Image::SLICE_INDEX_MODIFIED_SIG, Slots::SLICE_INDEX);
 
     return connections;
 }
@@ -285,7 +285,7 @@ void SLandmarks::stopping()
 {
     if(m_interactive)
     {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(getSptr());
+        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(get_sptr());
         getLayer()->removeInteractor(interactor);
     }
 
@@ -572,7 +572,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
         Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
 
     Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    Ogre::ManualObject* object   = sceneMgr->createManualObject(this->getID() + "_" + pointName + "_object");
+    Ogre::ManualObject* object   = sceneMgr->createManualObject(this->get_id() + "_" + pointName + "_object");
     switch(group.m_shape)
     {
         case data::Landmarks::Shape::SPHERE:
@@ -596,7 +596,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
 
     object->setQueryFlags(m_landmarksQueryFlag);
 
-    Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->getID() + "_" + pointName + "_node");
+    Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->get_id() + "_" + pointName + "_node");
 
     // Set the point to the right position.
     const data::Landmarks::PointType& point = _landmarks->getPoint(_groupName, _index);
@@ -610,7 +610,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
     if(m_enableLabels)
     {
         // Create the label.
-        text = sight::viz::scene3d::IText::New(this->getLayer());
+        text = sight::viz::scene3d::IText::make(this->getLayer());
         text->setFontSize(m_fontSize);
         text->setText(pointName);
         text->setTextColor(color);
@@ -660,17 +660,17 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 
                 // Create thread data.
                 std::shared_ptr<SelectedLandmark> selectedLandmark =
-                    std::make_shared<SelectedLandmark>(this->worker()->createTimer(), m_manualObject);
+                    std::make_shared<SelectedLandmark>(this->worker()->create_timer(), m_manualObject);
                 m_selectedLandmarks.push_back(selectedLandmark);
 
                 // Run a thread that change the selected point.
-                core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(500);
-                selectedLandmark->m_timer->setFunction(
+                core::thread::timer::time_duration_t duration = std::chrono::milliseconds(500);
+                selectedLandmark->m_timer->set_function(
                     [this, selectedLandmark](auto&& ...)
                     {
                         hightlight(selectedLandmark);
                     });
-                selectedLandmark->m_timer->setDuration(duration);
+                selectedLandmark->m_timer->set_duration(duration);
                 selectedLandmark->m_timer->start();
             }
 
@@ -901,9 +901,9 @@ void SLandmarks::removeLandmarks()
     if(hasDeleted)
     {
         const auto& sig = landmarks->signal<sight::data::Landmarks::ModifiedSignalType>(
-            sight::data::Landmarks::s_MODIFIED_SIG
+            sight::data::Landmarks::MODIFIED_SIG
         );
-        sig->asyncEmit();
+        sig->async_emit();
     }
 }
 
@@ -1001,10 +1001,10 @@ void SLandmarks::createAndPickLandmark(const sight::data::Landmarks::PointType& 
     {
         landmarks->addGroup(m_currentGroup, m_currentColor, m_currentSize, m_currentShape);
         const auto& sig = landmarks->signal<sight::data::Landmarks::GroupAddedSignalType>(
-            sight::data::Landmarks::s_GROUP_ADDED_SIG
+            sight::data::Landmarks::GROUP_ADDED_SIG
         );
 
-        sig->asyncEmit(m_currentGroup);
+        sig->async_emit(m_currentGroup);
     }
 
     landmarks->addPoint(m_currentGroup, point);
@@ -1027,11 +1027,11 @@ void SLandmarks::createAndPickLandmark(const sight::data::Landmarks::PointType& 
 
     // Block the signal to avoid being called back.
     const auto& sig = landmarks->signal<sight::data::Landmarks::PointAddedSignalType>(
-        sight::data::Landmarks::s_POINT_ADDED_SIG
+        sight::data::Landmarks::POINT_ADDED_SIG
     );
 
-    sight::core::com::Connection::Blocker blocker(sig->getConnection(slot(Slots::ADD_POINT)));
-    sig->asyncEmit(m_currentGroup);
+    sight::core::com::connection::blocker blocker(sig->get_connection(slot(Slots::ADD_POINT)));
+    sig->async_emit(m_currentGroup);
 }
 
 //------------------------------------------------------------------------------
@@ -1314,15 +1314,15 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _
                             removePoint(landmark->m_groupName, landmark->m_index);
 
                             const auto& sig = landmarks->signal<sight::data::Landmarks::PointRemovedSignalType>(
-                                sight::data::Landmarks::s_POINT_REMOVED_SIG
+                                sight::data::Landmarks::POINT_REMOVED_SIG
                             );
 
                             // Block the signal to avoid a being called back.
-                            sight::core::com::Connection::Blocker blocker(
-                                sig->getConnection(slot(Slots::REMOVE_POINT))
+                            sight::core::com::connection::blocker blocker(
+                                sig->get_connection(slot(Slots::REMOVE_POINT))
                             );
 
-                            sig->asyncEmit(m_currentGroup, landmark->m_index);
+                            sig->async_emit(m_currentGroup, landmark->m_index);
                         }
 
                         break;
@@ -1413,9 +1413,9 @@ void SLandmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int
         point[2] = newPos[2];
 
         const auto& sig = landmarks->signal<data::Landmarks::PointModifiedSigType>(
-            data::Landmarks::s_POINT_MODIFIED_SIG
+            data::Landmarks::POINT_MODIFIED_SIG
         );
-        sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
+        sig->async_emit(m_pickedData->m_groupName, m_pickedData->m_index);
 
         this->requestRender();
     }
@@ -1496,7 +1496,7 @@ void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mod
             );
 
             // Send signal with world coordinates of the landmarks
-            m_send_world_coord->asyncEmit(
+            m_send_world_coord->async_emit(
                 point[0],
                 point[1],
                 point[2]

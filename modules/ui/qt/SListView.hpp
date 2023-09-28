@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QListWidget>
 #include <QPointer>
@@ -51,13 +51,13 @@ namespace sight::module::ui::qt
  * - \b removeItem(int): This slot allows to remove the element at the index.
  */
 class MODULE_UI_QT_CLASS_API SListView : public QObject,
-                                         public sight::ui::base::IEditor
+                                         public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SListView, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SListView, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SListView() noexcept;
@@ -69,14 +69,14 @@ public:
      * @{
      */
 
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ITEM_ADDED_SIG;
-    typedef core::com::Signal<void (int)> ItemAddedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t ITEM_ADDED_SIG;
+    typedef core::com::signal<void (int)> ItemAddedSignalType;
 
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ITEM_REMOVED_SIG;
-    typedef core::com::Signal<void (int)> ItemRemovedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t ITEM_REMOVED_SIG;
+    typedef core::com::signal<void (int)> ItemRemovedSignalType;
 
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ITEM_DOUBLE_CLICKED_SIG;
-    typedef core::com::Signal<void (int)> ItemDoubleClickedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t ITEM_DOUBLE_CLICKED_SIG;
+    typedef core::com::signal<void (int)> ItemDoubleClickedSignalType;
 
     /** @} */
 
@@ -85,8 +85,8 @@ public:
      * @{
      */
 
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_INSERT_ITEM_SLOT;
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_REMOVE_ITEM_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t INSERT_ITEM_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t REMOVE_ITEM_SLOT;
 
     /// SLOT : Called to insert an item at index.
     void insertItem(int index, std::string value);

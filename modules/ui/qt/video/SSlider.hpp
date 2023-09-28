@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/tools/Failed.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
+#include <core/tools/failed.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -42,13 +42,13 @@ namespace sight::module::ui::qt::video
  * @brief   This editor allows to draw a slider. It is designed to be used with SFrameGrabber to browse a video.
  */
 class MODULE_UI_QT_CLASS_API SSlider : public QObject,
-                                       public sight::ui::base::IEditor
+                                       public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSlider, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SSlider, sight::ui::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QT_API SSlider() noexcept;
@@ -60,8 +60,8 @@ public:
      * @{
      */
 
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_POSITION_CHANGED_SIG;
-    typedef core::com::Signal<void (int64_t)> PositionChangedSignalType;
+    MODULE_UI_QT_API static const core::com::signals::key_t POSITION_CHANGED_SIG;
+    typedef core::com::signal<void (int64_t)> PositionChangedSignalType;
 
     /** @} */
 
@@ -70,11 +70,11 @@ public:
      * @{
      */
 
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_SET_POSITION_SLIDER_SLOT;
-    typedef core::com::Slot<void (int64_t)> ChangePositionSlotType;
+    MODULE_UI_QT_API static const core::com::slots::key_t SET_POSITION_SLIDER_SLOT;
+    typedef core::com::slot<void (int64_t)> ChangePositionSlotType;
 
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_SET_DURATION_SLIDER_SLOT;
-    typedef core::com::Slot<void (int64_t)> ChangeDurationSlotType;
+    MODULE_UI_QT_API static const core::com::slots::key_t SET_DURATION_SLIDER_SLOT;
+    typedef core::com::slot<void (int64_t)> ChangeDurationSlotType;
 
     ///@}
 
@@ -93,7 +93,7 @@ protected:
      * @brief Configure the service
      *
      * @code{.xml}
-        <service uid="..." type="ui::base::editor::IEditor" impl="sight::module::ui::qt::video::SSlider"
+        <service uid="..." type="ui::editor::editor" impl="sight::module::ui::qt::video::SSlider"
      * autoConnect="false"/>
        @endcode
      */

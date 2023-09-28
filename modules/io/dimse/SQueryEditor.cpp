@@ -32,7 +32,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <dcmtk/dcmnet/scu.h>
 #include <dcmtk/ofstd/ofstring.h>
@@ -56,7 +56,7 @@ static const std::string s_ICON_HEIGHT_CONFIG = "height";
 //------------------------------------------------------------------------------
 
 SQueryEditor::SQueryEditor() noexcept :
-    service::INotifier(m_signals)
+    sight::service::notifier(m_signals)
 {
 }
 
@@ -64,7 +64,7 @@ SQueryEditor::SQueryEditor() noexcept :
 
 void SQueryEditor::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 
     const auto configTree = this->getConfiguration();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
@@ -73,7 +73,7 @@ void SQueryEditor::configuring()
         const auto iconPath = config->get_optional<std::string>(s_ICON_PATH_CONFIG);
         if(iconPath)
         {
-            m_iconPath = core::runtime::getModuleResourceFilePath(iconPath.value());
+            m_iconPath = core::runtime::get_module_resource_file_path(iconPath.value());
         }
 
         m_advanced   = config->get<bool>(s_ADVANCED_CONFIG, m_advanced);
@@ -87,11 +87,11 @@ void SQueryEditor::configuring()
 void SQueryEditor::starting()
 {
     // Create the worker.
-    m_requestWorker = core::thread::Worker::New();
+    m_requestWorker = core::thread::worker::make();
 
     // Create the GUI.
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* const mainLayout = new QVBoxLayout();
 
@@ -260,7 +260,7 @@ void SQueryEditor::executeQueryAsync()
     }
     else
     {
-        this->INotifier::info("Already querying");
+        this->notifier::info("Already querying");
         return;
     }
 }
@@ -271,7 +271,7 @@ void SQueryEditor::executeQuery()
 {
     m_isQuerying = true;
 
-    auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
+    auto seriesEnquirer = std::make_shared<sight::io::dimse::SeriesEnquirer>();
 
     // Initialize connection.
     try
@@ -289,7 +289,7 @@ void SQueryEditor::executeQuery()
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
-        this->INotifier::failure("Can't connect to the PACS");
+        this->notifier::failure("Can't connect to the PACS");
         m_isQuerying = false;
         return;
     }
@@ -502,7 +502,7 @@ void SQueryEditor::executeQuery()
         // Check whether the instance number start at 1 or 0.
         for(const data::Series::sptr& s : series)
         {
-            data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
+            data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(s);
             SIGHT_ASSERT("The PACS response should contain only DicomSeries", dicomSeries);
             const std::string instanceUID = seriesEnquirer->findSOPInstanceUID(dicomSeries->getSeriesInstanceUID(), 0);
             dicomSeries->setFirstInstanceNumber((instanceUID.empty() ? 1 : 0));
@@ -513,7 +513,7 @@ void SQueryEditor::executeQuery()
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Can't execute query to the PACS: " + std::string(_e.what()));
-        this->INotifier::failure("Can't execute query");
+        this->notifier::failure("Can't execute query");
     }
 
     if(seriesEnquirer->isConnectedToPacs())
@@ -537,7 +537,7 @@ void SQueryEditor::updateSeriesSet(const data::SeriesSet::container_type& _serie
     // Push new series in the SeriesSet.
     for(const auto& s : _series)
     {
-        series_set->push_back(data::DicomSeries::dynamicCast(s));
+        series_set->push_back(std::dynamic_pointer_cast<data::DicomSeries>(s));
     }
 }
 

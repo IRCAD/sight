@@ -25,8 +25,8 @@
 #include "modules/viz/scene3d/adaptor/STransform.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
 
 #include <data/Material.hpp>
 
@@ -80,9 +80,6 @@ public:
 
     /// Creates the service.
     MODULE_VIZ_SCENE3D_API SLight() noexcept;
-
-    /// Creates the service.
-    MODULE_VIZ_SCENE3D_API SLight(sight::viz::scene3d::ILight::Key key);
 
     /// Destroys the adaptor.
     MODULE_VIZ_SCENE3D_API ~SLight() noexcept final = default;
@@ -197,10 +194,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to IService::slots::s_UPDATE
-     * Connect data::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to IService::slots::s_UPDATE
+     * Connect data::Color::MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
+     * Connect data::Color::MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
     /// Updates the light position and orientation.
     MODULE_VIZ_SCENE3D_API void updating() final;

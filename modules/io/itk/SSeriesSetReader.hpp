@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 
 #include <filesystem>
 #include <string>
@@ -68,11 +68,11 @@ namespace sight::module::io::itk
  * - \b file (optional): path of the images to load, if it not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_ITK_CLASS_API SSeriesSetReader : public sight::io::base::service::IReader
+class MODULE_IO_ITK_CLASS_API SSeriesSetReader : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SSeriesSetReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SSeriesSetReader, sight::io::service::reader);
 
     MODULE_IO_ITK_API SSeriesSetReader() noexcept = default;
 
@@ -104,7 +104,7 @@ protected:
     MODULE_IO_ITK_API void openLocationDialog() override;
 
     /// Returns managed file type, here FILES
-    MODULE_IO_ITK_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_ITK_API sight::io::service::IOPathType getIOPathType() const override;
 
 private:
 

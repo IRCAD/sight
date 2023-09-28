@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "SOpenCVExtrinsic.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
@@ -34,7 +34,7 @@
 
 #include <io/opencv/Matrix.hpp>
 
-#include <ui/base/Preferences.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
@@ -42,15 +42,15 @@
 namespace sight::module::geometry::vision
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
-static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "errorComputed";
+static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::signals::key_t ERROR_COMPUTED_SIG        = "errorComputed";
 
 // ----------------------------------------------------------------------------
 
 SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept
 {
-    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
-    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
+    new_signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG);
+    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ void SOpenCVExtrinsic::updating()
         );
 
         data::Image::csptr img = calInfo1->getImageContainer().front();
-        cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
+        cv::Size2i imgsize(static_cast<int>(img->size()[0]), static_cast<int>(img->size()[1]));
         {
             data::Camera::csptr cam1 = camSeries->get_camera(0);
             data::Camera::csptr cam2 = camSeries->get_camera(m_camIndex);
@@ -231,9 +231,9 @@ void SOpenCVExtrinsic::updating()
             )
         );
 
-        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(err);
+        this->signal<ErrorComputedSignalType>(ERROR_COMPUTED_SIG)->async_emit(err);
 
-        data::Matrix4::sptr matrix = data::Matrix4::New();
+        data::Matrix4::sptr matrix = std::make_shared<data::Matrix4>();
         cv::Mat cv4x4              = cv::Mat::eye(4, 4, CV_64F);
         rotationMatrix.copyTo(cv4x4(cv::Rect(0, 0, 3, 3)));
         translationVector.copyTo(cv4x4(cv::Rect(3, 0, 1, 3)));
@@ -246,10 +246,10 @@ void SOpenCVExtrinsic::updating()
 
         data::CameraSet::extrinsic_calibrated_signal_t::sptr sig;
         sig = camSeries->signal<data::CameraSet::extrinsic_calibrated_signal_t>(
-            data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG
+            data::CameraSet::EXTRINSIC_CALIBRATED_SIG
         );
 
-        sig->asyncEmit();
+        sig->async_emit();
 
         // Export matrix if needed.
         m_matrix = matrix;
@@ -262,12 +262,12 @@ void SOpenCVExtrinsic::updateChessboardSize()
 {
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
         m_width      = preferences.get(m_widthKey, m_width);
         m_height     = preferences.get(m_heightKey, m_height);
         m_squareSize = preferences.get(m_squareSizeKey, m_squareSize);
     }
-    catch(const ui::base::PreferencesDisabled&)
+    catch(const ui::PreferencesDisabled&)
     {
         // Nothing to do..
     }

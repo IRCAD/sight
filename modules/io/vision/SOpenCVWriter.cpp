@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "SOpenCVWriter.hpp"
 
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/CameraSet.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
+#include <ui/__/dialog/location.hpp>
 
 #include <opencv2/core.hpp>
 
@@ -50,7 +50,7 @@ SOpenCVWriter::~SOpenCVWriter()
 
 void SOpenCVWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 }
 
 //----------------------------------------------------------------------------
@@ -67,22 +67,22 @@ bool SOpenCVWriter::defineLocationGUI()
     bool ok = false;
 
     // Ask user for the file path
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(ui::dialog::location::WRITE);
+    dialogFile.setType(ui::dialog::location::SINGLE_FILE);
     dialogFile.addFilter("XML file", "*.xml");
     dialogFile.addFilter("YAML file", "*.yaml *.yml");
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
 
     if(result)
     {
-        this->setFile(result->getFile());
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        this->set_file(result->get_file());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
         ok = true;
     }
@@ -157,7 +157,7 @@ void SOpenCVWriter::updating()
         }
     }
 
-    cv::FileStorage fs(this->getFile().string(), cv::FileStorage::WRITE);
+    cv::FileStorage fs(this->get_file().string(), cv::FileStorage::WRITE);
 
     fs << "nbCameras" << static_cast<int>(numberOfCameras);
 
@@ -204,9 +204,9 @@ void SOpenCVWriter::updating()
 
 // ----------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SOpenCVWriter::getIOPathType() const
+sight::io::service::IOPathType SOpenCVWriter::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 // ----------------------------------------------------------------------------

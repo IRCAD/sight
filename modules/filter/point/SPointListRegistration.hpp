@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,12 @@
 
 #include "modules/filter/point/config.hpp"
 
-#include <core/com/Slot.hpp>
+#include <core/com/slot.hpp>
 
 #include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
 
-#include <service/IRegisterer.hpp>
+#include <service/registerer.hpp>
 
 namespace sight::module::filter::point
 {
@@ -42,7 +42,7 @@ namespace sight::module::filter::point
  * - \b errorComputed(double): emitted when registration error is computed.
  * @section Slots Slots
  * - \b changeMode(std::string): called when registration mode is changed.
- * - \b computeRegistration(core::HiResClock::HiResClockType timestamp): computes the registration.
+ * - \b computeRegistration(core::hires_clock::type timestamp): computes the registration.
  * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
@@ -62,17 +62,17 @@ namespace sight::module::filter::point
  * - \b mode (optional, values=rigid|similarity|affine, default=rigid): registration mode.
  *
  */
-class MODULE_FILTER_POINT_CLASS_API SPointListRegistration : public service::IRegisterer
+class MODULE_FILTER_POINT_CLASS_API SPointListRegistration : public service::registerer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SPointListRegistration, service::IRegisterer);
+    SIGHT_DECLARE_SERVICE(SPointListRegistration, service::registerer);
 
     /**
      * @name Slots API
      * @{
      */
-    MODULE_FILTER_POINT_API static const core::com::Slots::SlotKeyType s_CHANGE_MODE;
+    MODULE_FILTER_POINT_API static const core::com::slots::key_t CHANGE_MODE;
     ///@}
 
     /**
@@ -80,7 +80,7 @@ public:
      * @{
      */
     /// Emitted when registration error is computed
-    typedef core::com::Signal<void (double)> ErrorComputedSignalType;
+    typedef core::com::signal<void (double)> ErrorComputedSignalType;
     ///@}
 
     MODULE_FILTER_POINT_API SPointListRegistration();
@@ -90,7 +90,7 @@ public:
 protected:
 
     /// Register a point list slot
-    MODULE_FILTER_POINT_API void computeRegistration(core::HiResClock::HiResClockType timestamp) override;
+    MODULE_FILTER_POINT_API void computeRegistration(core::hires_clock::type timestamp) override;
 
     /// Registration Mode (default: RIGID)
     typedef enum Mode

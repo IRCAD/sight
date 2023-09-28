@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,11 @@
 #include "io/dicom/helper/DicomDir.hpp"
 
 #include <core/exceptionmacros.hpp>
-#include <core/jobs/Aggregator.hpp>
-#include <core/jobs/IJob.hpp>
-#include <core/jobs/Job.hpp>
-#include <core/jobs/Observer.hpp>
-#include <core/spyLog.hpp>
+#include <core/jobs/aggregator.hpp>
+#include <core/jobs/base.hpp>
+#include <core/jobs/job.hpp>
+#include <core/jobs/observer.hpp>
+#include <core/spy_log.hpp>
 
 #include <data/DicomSeries.hpp>
 
@@ -125,8 +125,8 @@ std::string getStringValue(
 
 DicomSeries::DicomSeriesContainerType DicomSeries::read(
     FilenameContainerType& filenames,
-    const SPTR(core::jobs::Observer)& readerObserver,
-    const SPTR(core::jobs::Observer)& completeSeriesObserver
+    const SPTR(core::jobs::observer)& readerObserver,
+    const SPTR(core::jobs::observer)& completeSeriesObserver
 )
 {
     DicomSeriesContainerType seriesContainer = DicomSeries::splitFiles(filenames, readerObserver);
@@ -138,7 +138,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::read(
 
 void DicomSeries::complete(
     DicomSeriesContainerType& seriesContainer,
-    const SPTR(core::jobs::Observer)& completeSeriesObserver
+    const SPTR(core::jobs::observer)& completeSeriesObserver
 )
 {
     std::set<gdcm::Tag> selectedtags;
@@ -160,9 +160,9 @@ void DicomSeries::complete(
             break;
         }
 
-        const auto& firstItem                                    = series->getDicomContainer().begin();
-        const core::memory::BufferObject::sptr bufferObj         = firstItem->second;
-        const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+        const auto& firstItem                                      = series->getDicomContainer().begin();
+        const core::memory::buffer_object::sptr bufferObj          = firstItem->second;
+        const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
         SPTR(std::istream) is = streamInfo.stream;
 
         gdcm::Reader reader;
@@ -171,7 +171,7 @@ void DicomSeries::complete(
         if(!reader.ReadSelectedTags(selectedtags))
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << firstItem->first << "')"
             );
         }
@@ -210,7 +210,7 @@ void DicomSeries::complete(
 
 DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
     FilenameContainerType& filenames,
-    const core::jobs::Observer::sptr& readerObserver
+    const core::jobs::observer::sptr& readerObserver
 )
 {
     gdcm::Scanner seriesScanner;
@@ -224,8 +224,8 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
     seriesScanner.AddTag(s_SOPClassUIDTag);
     seriesScanner.AddTag(s_SOPInstanceUIDTag);
     seriesScanner.AddTag(s_MediaStorageSOPClassUID);
-    readerObserver->setTotalWorkUnits(filenames.size());
-    readerObserver->doneWork(0);
+    readerObserver->set_total_work_units(filenames.size());
+    readerObserver->done_work(0);
 
     std::vector<std::string> fileVec;
     for(const auto& file : filenames)
@@ -284,12 +284,12 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
             previousSOPInstanceUIDs.insert(sopInstanceUID);
         }
 
-        if(!readerObserver || readerObserver->cancelRequested())
+        if(!readerObserver || readerObserver->cancel_requested())
         {
             break;
         }
 
-        readerObserver->doneWork(static_cast<std::uint64_t>(++progress * 100LL / keys.size()));
+        readerObserver->done_work(static_cast<std::uint64_t>(++progress * 100LL / keys.size()));
     }
 
     return seriesContainer;
@@ -299,7 +299,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
 
 void DicomSeries::fillSeries(
     DicomSeriesContainerType& seriesContainer,
-    const core::jobs::Observer::sptr& completeSeriesObserver
+    const core::jobs::observer::sptr& completeSeriesObserver
 )
 {
     std::set<gdcm::Tag> selectedtags;
@@ -333,9 +333,9 @@ void DicomSeries::fillSeries(
         }
 
         // Load first instance
-        const auto& firstItem                                    = series->getDicomContainer().begin();
-        const core::memory::BufferObject::sptr bufferObj         = firstItem->second;
-        const core::memory::BufferManager::StreamInfo streamInfo = bufferObj->getStreamInfo();
+        const auto& firstItem                                      = series->getDicomContainer().begin();
+        const core::memory::buffer_object::sptr bufferObj          = firstItem->second;
+        const core::memory::buffer_manager::stream_info streamInfo = bufferObj->get_stream_info();
         SPTR(std::istream) is = streamInfo.stream;
 
         gdcm::Reader reader;
@@ -344,7 +344,7 @@ void DicomSeries::fillSeries(
         if(!reader.ReadSelectedTags(selectedtags))
         {
             SIGHT_THROW(
-                "Unable to read Dicom file '" << bufferObj->getStreamInfo().fsFile.string() << "' "
+                "Unable to read Dicom file '" << bufferObj->get_stream_info().fs_file.string() << "' "
                 << "(slice: '" << firstItem->first << "')"
             );
         }
@@ -395,9 +395,9 @@ void DicomSeries::fillSeries(
 
         if(completeSeriesObserver)
         {
-            completeSeriesObserver->doneWork(static_cast<std::uint64_t>(++progress * 100 / seriesContainer.size()));
+            completeSeriesObserver->done_work(static_cast<std::uint64_t>(++progress * 100 / seriesContainer.size()));
 
-            if(completeSeriesObserver->cancelRequested())
+            if(completeSeriesObserver->cancel_requested())
             {
                 break;
             }
@@ -433,7 +433,7 @@ void DicomSeries::createSeries(
     // If the series doesn't exist we create it
     if(!series)
     {
-        series = data::DicomSeries::New();
+        series = std::make_shared<data::DicomSeries>();
 
         seriesContainer.push_back(series);
 

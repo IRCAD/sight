@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #pragma once
 
 #include "geometry/data/config.hpp"
-
-#include <core/data/PointList.hpp>
 
 #include <data/Array.hpp>
 #include <data/Matrix4.hpp>

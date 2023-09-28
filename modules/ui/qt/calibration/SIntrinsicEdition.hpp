@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,12 @@
 #include "modules/ui/qt/calibration/SUpdateIntrinsicDialog.hpp"
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
 
 #include <data/Camera.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 
 #include <QObject>
 
@@ -57,13 +57,13 @@ namespace sight::module::ui::qt::calibration
  * - \b camera [sight::data::Camera]: camera on which the intrinsic parameters will be modified.
  */
 class MODULE_UI_QT_CLASS_API SIntrinsicEdition : public QObject,
-                                                 public service::IService
+                                                 public service::base
 {
 Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SIntrinsicEdition, sight::service::IService);
+    SIGHT_DECLARE_SERVICE(SIntrinsicEdition, sight::service::base);
 
     /**
      * @brief Constructor.

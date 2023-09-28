@@ -14,9 +14,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView" >
+        <service uid="mainView" type="sight::module::ui::SView" >
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#2E3034" />
                 </layout>
@@ -27,10 +27,10 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="sight::module::ui::base::SView" >
+        <service uid="containerView" type="sight::module::ui::SView" >
             <gui>
                 <toolBar/>
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#36393E" />
                     <view proportion="1" backgroundColor="#2E3034" border="5" />
@@ -44,7 +44,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::SToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -63,7 +63,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="importAct" type="sight::module::ui::base::series::SDBMerger" >
+        <service uid="importAct" type="sight::module::ui::series::SDBMerger" >
             <inout key="seriesSet" uid="${seriesSet}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>

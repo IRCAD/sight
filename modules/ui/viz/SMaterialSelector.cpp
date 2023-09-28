@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "SMaterialSelector.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <data/helper/Field.hpp>
 #include <data/Material.hpp>
@@ -30,7 +30,7 @@
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/Utils.hpp>
@@ -50,14 +50,14 @@
 namespace sight::module::ui::viz
 {
 
-const core::com::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
+const core::com::signals::key_t SMaterialSelector::SELECTED_SIG = "selected";
 
 static const std::string s_MATERIAL_RESOURCEGROUP_NAME = "materialsTemplate";
 
 //------------------------------------------------------------------------------
 SMaterialSelector::SMaterialSelector() noexcept
 {
-    newSignal<SelectedSignalType>(s_SELECTED_SIG);
+    new_signal<SelectedSignalType>(SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -71,9 +71,9 @@ void SMaterialSelector::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     qtContainer->getQtContainer()->setObjectName(serviceID);
 
     // Selection
@@ -151,7 +151,7 @@ void SMaterialSelector::updateMaterial()
     data::Object::sptr fieldObj   = material->getField("ogreMaterial");
     if(fieldObj != nullptr)
     {
-        data::String::sptr field = data::String::dynamicCast(fieldObj);
+        data::String::sptr field = std::dynamic_pointer_cast<data::String>(fieldObj);
         m_materialBox->setCurrentText(field->value().c_str());
     }
 }
@@ -162,15 +162,15 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
 {
     const auto reconstruction     = m_reconstruction.lock();
     data::Material::sptr material = reconstruction->getMaterial();
-    data::String::sptr string     = data::String::New();
+    data::String::sptr string     = std::make_shared<data::String>();
     string->setValue(text.toStdString());
 
     data::helper::Field helper(material);
     helper.setField("ogreMaterial", string);
     helper.notify();
 
-    auto sig = this->signal<SelectedSignalType>(s_SELECTED_SIG);
-    sig->asyncEmit(text.toStdString());
+    auto sig = this->signal<SelectedSignalType>(SELECTED_SIG);
+    sig->async_emit(text.toStdString());
 }
 
 //------------------------------------------------------------------------------

@@ -22,10 +22,10 @@
 
 #include "viz/scene3d/compositor/ChainManager.hpp"
 
+#include "viz/scene3d/adaptor.hpp"
 #include "viz/scene3d/compositor/listener/AutoStereo.hpp"
 #include "viz/scene3d/compositor/SaoListener.hpp"
 #include "viz/scene3d/helper/Shading.hpp"
-#include "viz/scene3d/IAdaptor.hpp"
 #include "viz/scene3d/Layer.hpp"
 #include "viz/scene3d/SRender.hpp"
 
@@ -79,7 +79,7 @@ void ChainManager::addAvailableCompositor(CompositorIdType _compositorName)
     }
 
     // Add the new compositor
-    m_compositorChain.push_back(CompositorType(_compositorName, false));
+    m_compositorChain.emplace_back(_compositorName, false);
     Ogre::CompositorInstance* compositor = compositorManager.addCompositor(viewport, _compositorName);
 
     // TODO: Handle this with a proper registration of the listener so that future extensions do not need to modify
@@ -139,7 +139,7 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
             auto sig           = renderService->signal<SRender::signals::compositorUpdated_signal_t>(
                 SRender::signals::COMPOSITOR_UPDATED
             );
-            sig->asyncEmit(_compositorName, _isEnabled, layer);
+            sig->async_emit(_compositorName, _isEnabled, layer);
         }
     }
 }
@@ -165,7 +165,7 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
     {
         if(compositorManager.resourceExists(compositorName, RESOURCE_GROUP))
         {
-            m_compositorChain.push_back(CompositorType(compositorName, true));
+            m_compositorChain.emplace_back(compositorName, true);
             compositorManager.addCompositor(viewport, compositorName);
             compositorManager.setCompositorEnabled(viewport, compositorName, true);
 
@@ -176,7 +176,7 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
             auto sig           = renderService->signal<SRender::signals::compositorUpdated_signal_t>(
                 SRender::signals::COMPOSITOR_UPDATED
             );
-            sig->asyncEmit(compositorName, true, layer);
+            sig->async_emit(compositorName, true, layer);
         }
         else
         {
@@ -247,10 +247,10 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                                                       "geometry";
 
                     // Naming convention for shader parameters
-                    auto renderService                 = layer->getRenderService();
-                    const core::tools::fwID::IDType id = renderService->getID() + layer->getLayerID() + "_"
-                                                         + shaderTypeStr
-                                                         + "-" + constantName;
+                    auto renderService             = layer->getRenderService();
+                    const core::tools::id::type id = renderService->get_id() + layer->getLayerID() + "_"
+                                                     + shaderTypeStr
+                                                     + "-" + constantName;
 
                     if(_isEnabled && this->getRegisteredService(id) == nullptr)
                     {
@@ -271,10 +271,10 @@ void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bo
                             );
                             srv->setInOut(obj, "parameter", true);
 
-                            auto shaderParamService = viz::scene3d::IAdaptor::dynamicCast(srv);
+                            auto shaderParamService = std::dynamic_pointer_cast<viz::scene3d::adaptor>(srv);
                             shaderParamService->setRenderService(renderService);
 
-                            service::IService::ConfigType config;
+                            service::config_t config;
                             config.add("config.<xmlattr>.compositorName", _compositorName);
                             config.add("config.<xmlattr>.parameter", constantName);
                             config.add("config.<xmlattr>.shaderType", shaderTypeStr);

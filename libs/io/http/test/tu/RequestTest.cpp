@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "RequestTest.hpp"
 
-#include <utest/Exception.hpp>
+#include <utest/exception.hpp>
 
 #include <cppunit/Exception.h>
 

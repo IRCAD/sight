@@ -22,8 +22,8 @@
 
 #include "SSliceIndexDicomEditor.hpp"
 
-#include <core/com/Slots.hxx>
-#include <core/os/TempPath.hpp>
+#include <core/com/slots.hxx>
+#include <core/os/temp_path.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/ImageSeries.hpp>
@@ -34,7 +34,7 @@
 
 #include <service/extension/Config.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 
@@ -48,7 +48,7 @@ static const std::string s_READER_CONFIG       = "readerConfig";
 //------------------------------------------------------------------------------
 
 SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept :
-    service::INotifier(m_signals)
+    sight::service::notifier(m_signals)
 {
 }
 
@@ -56,7 +56,7 @@ SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept :
 
 void SSliceIndexDicomEditor::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 
     const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
@@ -73,26 +73,26 @@ void SSliceIndexDicomEditor::configuring()
 void SSliceIndexDicomEditor::starting()
 {
     // Create the worker.
-    m_requestWorker = core::thread::Worker::New();
+    m_requestWorker = core::thread::worker::make();
 
     // Create the DICOM reader.
-    m_series_set = data::SeriesSet::New();
+    m_series_set = std::make_shared<data::SeriesSet>();
 
-    m_dicomReader = this->registerService<sight::io::base::service::IReader>(m_dicomReaderImplementation);
+    m_dicomReader = this->registerService<sight::io::service::reader>(m_dicomReaderImplementation);
     SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
-    m_dicomReader->setWorker(m_requestWorker);
+    m_dicomReader->set_worker(m_requestWorker);
     m_dicomReader->setInOut(m_series_set, "data");
 
     if(!m_readerConfig.empty())
     {
         const auto readerConfig =
-            service::extension::Config::getDefault()->getServiceConfig(
+            sight::service::extension::Config::getDefault()->getServiceConfig(
                 m_readerConfig,
-                "sight::io::base::service::IReader"
+                "sight::io::service::reader"
             );
 
         SIGHT_ASSERT(
-            "No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
+            "No service configuration " << m_readerConfig << " for sight::io::service::reader",
             !readerConfig.empty()
         );
 
@@ -104,18 +104,18 @@ void SSliceIndexDicomEditor::starting()
     SIGHT_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 
     // Create the timer used to retrieve a slice.
-    m_sliceTrigger = this->worker()->createTimer();
-    m_sliceTrigger->setFunction(
+    m_sliceTrigger = this->worker()->create_timer();
+    m_sliceTrigger->set_function(
         [&]()
         {
             this->retrieveSlice();
         });
-    m_sliceTrigger->setDuration(std::chrono::milliseconds(m_delay));
-    m_sliceTrigger->setOneShot(true);
+    m_sliceTrigger->set_duration(std::chrono::milliseconds(m_delay));
+    m_sliceTrigger->set_one_shot(true);
 
     // Create the slider.
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* layout = new QHBoxLayout();
 
@@ -143,10 +143,10 @@ void SSliceIndexDicomEditor::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections() const
+service::connections_t SSliceIndexDicomEditor::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_DICOMSERIES_INOUT, data::DicomSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_DICOMSERIES_INOUT, data::DicomSeries::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -240,7 +240,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     // Retrieve informations.
     const auto pacsConfig = m_config.lock();
 
-    auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
+    auto seriesEnquirer = std::make_shared<sight::io::dimse::SeriesEnquirer>();
 
     // Initialize connection.
     try
@@ -257,7 +257,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-        this->INotifier::failure("Unable to connect to PACS");
+        this->notifier::failure("Unable to connect to PACS");
     }
 
     const auto dicomSeries = m_series.lock();
@@ -290,7 +290,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
             }
 
             // Compute the path and add it to the DICOM series.
-            std::filesystem::path tmpPath      = core::os::TempDir::sharedDirectory() / "dicom";
+            std::filesystem::path tmpPath      = core::os::temp_dir::shared_directory() / "dicom";
             std::filesystem::path downloadPath = tmpPath / seriesInstanceUID / sopInstanceUID;
             dicomSeries->addDicomPath(_selectedSliceIndex, downloadPath);
 
@@ -298,13 +298,13 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         }
         else
         {
-            this->INotifier::failure("No instance found");
+            this->notifier::failure("No instance found");
         }
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-        this->INotifier::failure("Unable to execute query");
+        this->notifier::failure("Unable to execute query");
     }
     catch(const std::filesystem::filesystem_error& _e)
     {
@@ -334,7 +334,7 @@ void SSliceIndexDicomEditor::readSlice(
     const std::string modality = _dicomSeries->getModality();
     if(modality != "CT" && modality != "MR" && modality != "XA")
     {
-        this->INotifier::info("Unable to read the modality '" + modality + "'");
+        this->notifier::info("Unable to read the modality '" + modality + "'");
         return;
     }
 
@@ -342,14 +342,14 @@ void SSliceIndexDicomEditor::readSlice(
     const auto& binaries = _dicomSeries->getDicomContainer();
     auto iter            = binaries.find(_selectedSliceIndex);
     SIGHT_ASSERT("Index '" << _selectedSliceIndex << "' is not found in DicomSeries", iter != binaries.end());
-    const core::memory::BufferObject::sptr bufferObj = iter->second;
-    const core::memory::BufferObject::Lock lockerDest(bufferObj);
-    const char* buffer           = static_cast<char*>(lockerDest.getBuffer());
-    const std::size_t bufferSize = bufferObj->getSize();
+    const core::memory::buffer_object::sptr bufferObj = iter->second;
+    const core::memory::buffer_object::lock_t lockerDest(bufferObj);
+    const char* buffer           = static_cast<char*>(lockerDest.buffer());
+    const std::size_t bufferSize = bufferObj->size();
 
     // Creates unique temporary folder to save the DICOM instance.
     // Do not delete the folder, as we may use the file in the DicomReference.
-    const auto tmpDir = core::os::TempDir::sharedDirectory("do_not_delete_");
+    const auto tmpDir = core::os::temp_dir::shared_directory("do_not_delete_");
 
     // Open the temporary folder and write the buffer.
     std::filesystem::path path = tmpDir / std::to_string(_selectedSliceIndex);
@@ -364,20 +364,22 @@ void SSliceIndexDicomEditor::readSlice(
     fs.close();
 
     // Read the image.
-    m_dicomReader->setFolder(tmpDir);
+    m_dicomReader->set_folder(tmpDir);
     m_dicomReader->update().wait();
 
     if(!m_dicomReader->hasFailed() && !m_series_set->empty())
     {
         // Copy the read series to the image.
-        const auto imageSeries = data::ImageSeries::dynamicCast(m_series_set->front());
+        const auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(m_series_set->front());
 
         const auto image = m_image.lock();
-        image->deepCopy(imageSeries);
+        image->deep_copy(imageSeries);
 
-        data::Integer::sptr axialIndex    = data::Integer::New(0);
-        data::Integer::sptr frontalIndex  = data::Integer::New(static_cast<std::int64_t>(image->getSize()[0] / 2));
-        data::Integer::sptr sagittalIndex = data::Integer::New(static_cast<std::int64_t>(image->getSize()[1] / 2));
+        data::Integer::sptr axialIndex   = std::make_shared<data::Integer>(0);
+        data::Integer::sptr frontalIndex =
+            std::make_shared<data::Integer>(static_cast<std::int64_t>(image->size()[0] / 2));
+        data::Integer::sptr sagittalIndex =
+            std::make_shared<data::Integer>(static_cast<std::int64_t>(image->size()[1] / 2));
 
         data::helper::MedicalImage::setSliceIndex(
             *image,
@@ -396,13 +398,13 @@ void SSliceIndexDicomEditor::readSlice(
         );
 
         // Send the signal
-        const auto sig = image->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        const auto sig = image->signal<data::Image::ModifiedSignalType>(data::Image::MODIFIED_SIG);
+        sig->async_emit();
     }
     else
     {
         SIGHT_ERROR("Unable to read the image");
-        this->INotifier::failure("Unable to read the image");
+        this->notifier::failure("Unable to read the image");
     }
 }
 

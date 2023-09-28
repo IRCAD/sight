@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,10 @@
 
 #pragma once
 
+#include "ui/history/command.hpp"
 #include "ui/history/config.hpp"
-#include "ui/history/ICommand.hpp"
 
-#include <core/data/Image.hpp>
+#include <data/Image.hpp>
 
 #include <filter/image/Image.hpp>
 #include <filter/image/ImageDiff.hpp>
@@ -33,7 +33,7 @@
 namespace sight::ui::history
 {
 
-class UI_HISTORY_CLASS_API ImageDiffCommand : public ICommand
+class UI_HISTORY_CLASS_API ImageDiffCommand : public command
 {
 public:
 
@@ -41,7 +41,7 @@ public:
     UI_HISTORY_API ImageDiffCommand(const data::Image::sptr& img, filter::image::ImageDiff diff);
 
     /// The diff size.
-    [[nodiscard]] UI_HISTORY_API std::size_t getSize() const override;
+    [[nodiscard]] UI_HISTORY_API std::size_t size() const override;
 
     /// Apply diff.
     UI_HISTORY_API bool redo() override;

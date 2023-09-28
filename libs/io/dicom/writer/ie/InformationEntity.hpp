@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/container/DicomInstance.hpp"
 
-#include <core/log/Logger.hpp>
+#include <core/log/logger.hpp>
 
 #include <data/Object.hpp>
 
@@ -60,7 +60,7 @@ public:
         SPTR(gdcm::Writer)writer,
         SPTR(io::dicom::container::DicomInstance)instance,
         CSPTR(DATATYPE)object,
-        core::log::Logger::sptr logger = nullptr,
+        core::log::logger::sptr logger = nullptr,
         ProgressCallback progress      = nullptr,
         CancelRequestedCallback cancel = nullptr
     );
@@ -80,7 +80,7 @@ protected:
     CSPTR(DATATYPE) m_object;
 
     /// Logger
-    core::log::Logger::sptr m_logger;
+    core::log::logger::sptr m_logger;
 
     /// Progress callback for jobs
     ProgressCallback m_progressCallback;
@@ -96,7 +96,7 @@ InformationEntity<DATATYPE>::InformationEntity(
     SPTR(gdcm::Writer)writer,
     SPTR(io::dicom::container::DicomInstance)instance,
     CSPTR(DATATYPE)object,
-    core::log::Logger::sptr logger,
+    core::log::logger::sptr logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :

@@ -22,7 +22,7 @@
 
 #include "SCompositorParameterEditor.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
@@ -31,10 +31,10 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
-#include <ui/base/GuiRegistry.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/registry.hpp>
+#include <ui/qt/container/widget.hpp>
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/SRender.hpp>
 
 #include <modules/ui/viz/helper/ParameterEditor.hpp>
@@ -44,12 +44,12 @@
 namespace sight::module::ui::viz
 {
 
-const core::com::Slots::SlotKeyType SCompositorParameterEditor::s_UPDATE_COMPOSITOR_SLOT = "updateCompositor";
+const core::com::slots::key_t SCompositorParameterEditor::UPDATE_COMPOSITOR_SLOT = "updateCompositor";
 
 //------------------------------------------------------------------------------
 SCompositorParameterEditor::SCompositorParameterEditor() noexcept
 {
-    newSlot(s_UPDATE_COMPOSITOR_SLOT, &SCompositorParameterEditor::updateCompositor, this);
+    new_slot(UPDATE_COMPOSITOR_SLOT, &SCompositorParameterEditor::updateCompositor, this);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void SCompositorParameterEditor::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     m_sizer = new QVBoxLayout();
     m_sizer->setContentsMargins(0, 0, 0, 0);
 
@@ -118,12 +118,12 @@ void SCompositorParameterEditor::updateCompositor(
         for(const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if(adaptor->getClassname() == "sight::module::viz::scene3d::adaptor::SCompositorParameter")
+            if(adaptor->get_classname() == "sight::module::viz::scene3d::adaptor::SCompositorParameter")
             {
                 /// Filter object types
                 const auto shaderObj =
-                    adaptor->getInOut(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
-                const auto& objType = shaderObj->getClassname();
+                    adaptor->inout(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
+                const auto& objType = shaderObj->get_classname();
 
                 if(objType == "sight::data::Boolean" || objType == "sight::data::Float"
                    || objType == "sight::data::Integer")
@@ -140,33 +140,33 @@ void SCompositorParameterEditor::updateCompositor(
         }
 
         /// Getting this widget's container
-        auto qtContainer   = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+        auto qtContainer   = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
         QWidget* container = qtContainer->getQtContainer();
 
         auto* p2 = new QWidget(container);
-        m_editorInfo.editorPanel = sight::ui::qt::container::QtContainer::New();
+        m_editorInfo.editorPanel = sight::ui::qt::container::widget::make();
         m_editorInfo.editorPanel->setQtContainer(p2);
 
-        const std::string uuid = this->getID();
+        const std::string uuid = this->get_id();
         m_editorInfo.uuid = uuid + "-editor";
 
-        sight::ui::base::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
+        sight::ui::registry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
 
-        auto editorService = service::add("sight::module::ui::qt::SParameters", m_editorInfo.uuid);
-        m_editorInfo.service = editorService;
+        auto editorService = sight::service::add("sight::module::ui::qt::SParameters", m_editorInfo.uuid);
+        m_editorInfo.srv = editorService;
 
-        service::IService::ConfigType editorConfig;
+        service::config_t editorConfig;
 
         // Get all ShaderParameter subservices from the corresponding Material adaptor
         for(const auto& wAdaptor : adaptors)
         {
             const auto adaptor = wAdaptor.lock();
-            if(adaptor->getClassname() == "sight::module::viz::scene3d::adaptor::SCompositorParameter")
+            if(adaptor->get_classname() == "sight::module::viz::scene3d::adaptor::SCompositorParameter")
             {
-                auto paramAdaptor = sight::viz::scene3d::IParameter::dynamicConstCast(adaptor);
+                auto paramAdaptor = std::dynamic_pointer_cast<const sight::viz::scene3d::IParameter>(adaptor);
                 auto paramConfig  = module::ui::viz::helper::ParameterEditor::createConfig(
                     paramAdaptor,
-                    m_editorInfo.service.lock(),
+                    m_editorInfo.srv.lock(),
                     m_editorInfo.connections
                 );
 
@@ -190,15 +190,15 @@ void SCompositorParameterEditor::updateCompositor(
 
 void SCompositorParameterEditor::clear()
 {
-    service::IService::sptr objService = m_editorInfo.service.lock();
+    service::base::sptr objService = m_editorInfo.srv.lock();
 
     if(objService)
     {
         objService->stop();
 
-        sight::ui::base::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
+        sight::ui::registry::unregisterSIDContainer(m_editorInfo.uuid);
 
-        service::unregisterService(objService);
+        sight::service::unregisterService(objService);
 
         m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
         m_editorInfo.editorPanel->destroyContainer();
@@ -210,7 +210,7 @@ void SCompositorParameterEditor::clear()
 
 void SCompositorParameterEditor::fillGui()
 {
-    auto editorService = m_editorInfo.service.lock();
+    auto editorService = m_editorInfo.srv.lock();
     if(editorService)
     {
         m_sizer->addWidget(m_editorInfo.editorPanel->getQtContainer(), 0);

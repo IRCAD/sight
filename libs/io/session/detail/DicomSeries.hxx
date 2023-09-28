@@ -93,18 +93,18 @@ inline static void write(
 
         // Store the instance number and the size to the tree
         instanceTree.put(s_Number, key);
-        instanceTree.put(s_Size, bufferObject->getSize());
+        instanceTree.put(s_Size, bufferObject->size());
 
         // Create the output file inside the archive
         const auto& ostream = archive.openFile(
-            std::filesystem::path(dicomSeries->getUUID() + "/" + std::to_string(key) + ".dcm"),
+            std::filesystem::path(dicomSeries->get_uuid() + "/" + std::to_string(key) + ".dcm"),
             password
         );
 
         // Write the data
         ostream->write(
-            static_cast<const char*>(bufferObject->getBuffer()),
-            static_cast<std::streamsize>(bufferObject->getSize())
+            static_cast<const char*>(bufferObject->buffer()),
+            static_cast<std::streamsize>(bufferObject->size())
         );
 
         instancesTree.add_child(s_Instance, instanceTree);
@@ -157,7 +157,7 @@ inline static data::DicomSeries::sptr read(
 
     // Dicom Instances
     const auto& uuid = tree.get<std::string>(s_uuid);
-    std::map<std::size_t, core::memory::BufferObject::sptr> dicomContainer;
+    std::map<std::size_t, core::memory::buffer_object::sptr> dicomContainer;
 
     for(const auto& [key, instance] : tree.get_child(s_Instances))
     {
@@ -166,7 +166,7 @@ inline static data::DicomSeries::sptr read(
         const auto size           = instance.get<std::size_t>(s_Size, 0);
 
         SIGHT_THROW_IF(
-            dicomSeries->getClassname()
+            dicomSeries->get_classname()
             << " (UUID="
             << uuid
             << "): Incorrect buffer size stored for Instance '"
@@ -175,8 +175,8 @@ inline static data::DicomSeries::sptr read(
             size == 0
         );
 
-        auto bufferObject = core::memory::BufferObject::New(true);
-        core::memory::BufferObject::Lock lockerSource(bufferObject);
+        auto bufferObject = std::make_shared<core::memory::buffer_object>(true);
+        core::memory::buffer_object::lock_t lockerSource(bufferObject);
         bufferObject->allocate(size);
 
         // Create the istream from the input file inside the archive
@@ -186,8 +186,8 @@ inline static data::DicomSeries::sptr read(
         );
 
         istream->read(
-            static_cast<char*>(bufferObject->getBuffer()),
-            static_cast<std::streamsize>(bufferObject->getSize())
+            static_cast<char*>(bufferObject->buffer()),
+            static_cast<std::streamsize>(bufferObject->size())
         );
 
         dicomContainer[instanceNumber] = bufferObject;

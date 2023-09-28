@@ -24,17 +24,17 @@
 
 #include "ExNotifications/config.hpp"
 
-#include <service/INotifier.hpp>
+#include <service/notifier.hpp>
 
-#include <ui/base/dialog/NotificationDialog.hpp>
-#include <ui/base/IAction.hpp>
+#include <ui/__/action.hpp>
+#include <ui/__/dialog/notification.hpp>
 
 /**
  * Do not mark `EXNOTIFICATIONS` as incorrect.
  * cspell:ignore EXNOTIFICATIONS
  */
 
-namespace dial = sight::ui::base::dialog;
+namespace dial = sight::ui::dialog;
 
 namespace ExNotifications
 {
@@ -51,12 +51,12 @@ namespace ExNotifications
  * - \b setBoolParameterbool _val, std::string _key): call this slot when changing "m_useSNotifier" behavior.
  */
 class EXNOTIFICATIONS_CLASS_API SDisplayTestNotifications final :
-    public sight::ui::base::IAction,
-    public sight::service::INotifier
+    public sight::ui::action,
+    public sight::service::notifier
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, sight::ui::action);
 
     /// Constructor/Destructor
     /// @{
@@ -76,7 +76,7 @@ public:
 
 protected:
 
-    /// Initializes IAction.
+    /// Initializes action.
     void configuring() override;
 
     /// Starts action

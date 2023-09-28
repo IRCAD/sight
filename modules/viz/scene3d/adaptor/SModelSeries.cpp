@@ -25,8 +25,8 @@
 #include "modules/viz/scene3d/adaptor/SMesh.hpp"
 #include "modules/viz/scene3d/adaptor/SReconstruction.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/Boolean.hpp>
 #include <data/Material.hpp>
@@ -41,13 +41,13 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-static const core::com::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
+static const core::com::slots::key_t CHANGE_FIELD_SLOT = "changeField";
 
 //------------------------------------------------------------------------------
 
 SModelSeries::SModelSeries() noexcept
 {
-    newSlot(s_CHANGE_FIELD_SLOT, &SModelSeries::showReconstructionsOnFieldChanged, this);
+    new_slot(CHANGE_FIELD_SLOT, &SModelSeries::showReconstructionsOnFieldChanged, this);
 }
 
 //------------------------------------------------------------------------------
@@ -60,8 +60,8 @@ void SModelSeries::configuring()
 
     this->setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            this->getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            this->get_id() + "_transform"
         )
     );
 
@@ -106,15 +106,15 @@ void SModelSeries::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
+service::connections_t SModelSeries::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
+    service::connections_t connections;
+    connections.push(s_MODEL_INPUT, data::ModelSeries::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::ADDED_FIELDS_SIG, CHANGE_FIELD_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::REMOVED_FIELDS_SIG, CHANGE_FIELD_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::CHANGED_FIELDS_SIG, CHANGE_FIELD_SLOT);
     return connections;
 }
 
@@ -128,7 +128,7 @@ void SModelSeries::updating()
     this->stopping();
 
     // showRec indicates if we have to show the associated reconstructions or not
-    const bool showRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
+    const bool showRec = modelSeries->getField("ShowReconstructions", std::make_shared<data::Boolean>(true))->value();
 
     for(const auto& reconstruction : modelSeries->getReconstructionDB())
     {
@@ -138,7 +138,7 @@ void SModelSeries::updating()
         adaptor->setInput(reconstruction, "reconstruction", true);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
-        adaptor->setID(this->getID() + "_" + adaptor->getID());
+        adaptor->set_id(this->get_id() + "_" + adaptor->get_id());
 
         adaptor->setRenderService(this->getRenderService());
         adaptor->setLayerID(m_layerID);
@@ -179,7 +179,7 @@ void SModelSeries::setVisible(bool _visible)
     auto adaptors = this->getRegisteredServices();
     for(const auto& adaptor : adaptors)
     {
-        auto recAdaptor = module::viz::scene3d::adaptor::SReconstruction::dynamicCast(adaptor.lock());
+        auto recAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::SReconstruction>(adaptor.lock());
         recAdaptor->updateVisibility(!_visible);
     }
 }
@@ -190,12 +190,12 @@ void SModelSeries::showReconstructionsOnFieldChanged()
 {
     const auto modelSeries = m_model.lock();
 
-    const bool showRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
+    const bool showRec = modelSeries->getField("ShowReconstructions", std::make_shared<data::Boolean>(true))->value();
 
     auto adaptors = this->getRegisteredServices();
     for(const auto& adaptor : adaptors)
     {
-        auto recAdaptor = module::viz::scene3d::adaptor::SReconstruction::dynamicCast(adaptor.lock());
+        auto recAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::SReconstruction>(adaptor.lock());
         recAdaptor->updateVisibility(!showRec);
     }
 }

@@ -22,9 +22,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="2" />
                     <view proportion="7" />
@@ -37,9 +37,9 @@
             </registry>
         </service>
 
-        <service uid="leftPanelView" type="sight::module::ui::base::SView">
+        <service uid="leftPanelView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
@@ -51,10 +51,10 @@
             </registry>
         </service>
 
-        <service uid="toolboxView" type="sight::module::ui::base::SView">
+        <service uid="toolboxView" type="sight::module::ui::SView">
             <gui>
                 <toolBar />
-                <layout type="sight::ui::base::ToolboxLayoutManager">
+                <layout type="sight::ui::layout::toolbox">
                     <orientation value="vertical" />
                     <view proportion="3" caption="Calibration input" expanded="true" />
                     <view proportion="1" caption="Calibration result" expanded="true" />
@@ -67,7 +67,7 @@
             </registry>
         </service>
 
-        <service uid="videoToolbarView" type="sight::module::ui::base::SToolBar">
+        <service uid="videoToolbarView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <editor />
@@ -92,12 +92,12 @@
             </registry>
         </service>
 
-        <service uid="calibrationDataView" type="sight::module::ui::base::SView">
+        <service uid="calibrationDataView" type="sight::module::ui::SView">
             <gui>
                 <toolBar>
                     <toolBitmapSize height="24" width="24" />
                 </toolBar>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" />
                 </layout>
@@ -108,7 +108,7 @@
             </registry>
         </service>
 
-        <service uid="intrinsicCameraView" type="sight::module::ui::base::SToolBar">
+        <service uid="intrinsicCameraView" type="sight::module::ui::SToolBar">
             <gui>
                 <layout>
                     <editor />
@@ -135,9 +135,9 @@
             </registry>
         </service>
 
-        <service uid="cameraView" type="sight::module::ui::base::SView">
+        <service uid="cameraView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::OverlayLayoutManager">
+                <layout type="sight::ui::layout::overlay">
                     <view />
                     <view x="0" y="-1" height="35" width="100%" visible="false" />
                 </layout>
@@ -148,9 +148,9 @@
             </registry>
         </service>
 
-        <service uid="videoSliderView" type="sight::module::ui::base::SView">
+        <service uid="videoSliderView" type="sight::module::ui::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" />
@@ -164,46 +164,46 @@
         <!-- ************************************* Action ************************************ -->
 
         <!-- Start the frame grabber -->
-        <service uid="startVideoAct" type="sight::module::ui::base::SAction">
+        <service uid="startVideoAct" type="sight::module::ui::SAction">
             <state enabled="false" />
         </service>
 
         <!-- Pause the frame grabber -->
-        <service uid="pauseVideoAct" type="sight::module::ui::base::SAction">
+        <service uid="pauseVideoAct" type="sight::module::ui::SAction">
             <state visible="false" />
         </service>
 
         <!-- Resume the frame grabber -->
-        <service uid="resumeVideoAct" type="sight::module::ui::base::SAction">
+        <service uid="resumeVideoAct" type="sight::module::ui::SAction">
             <state visible="false" />
         </service>
 
         <!-- Stop the frame grabber -->
-        <service uid="stopVideoAct" type="sight::module::ui::base::SAction">
+        <service uid="stopVideoAct" type="sight::module::ui::SAction">
             <state enabled="false" />
         </service>
 
         <!-- Loop the frame grabber -->
-        <service uid="loopVideoAct" type="sight::module::ui::base::SAction">
+        <service uid="loopVideoAct" type="sight::module::ui::SAction">
             <state enabled="false" />
         </service>
 
-        <service uid="distortionAct" type="sight::module::ui::base::SAction">
+        <service uid="distortionAct" type="sight::module::ui::SAction">
             <state enabled="false" />
         </service>
 
-        <service uid="addAct" type="sight::module::ui::base::SAction" />
-        <service uid="resetAct" type="sight::module::ui::base::SAction" />
-        <service uid="removeAct" type="sight::module::ui::base::SAction" />
-        <service uid="editionAct" type="sight::module::ui::base::SAction" />
-        <service uid="goOpenCVAct" type="sight::module::ui::base::SAction" />
-        <service uid="displayImageAct" type="sight::module::ui::base::SAction" />
+        <service uid="addAct" type="sight::module::ui::SAction" />
+        <service uid="resetAct" type="sight::module::ui::SAction" />
+        <service uid="removeAct" type="sight::module::ui::SAction" />
+        <service uid="editionAct" type="sight::module::ui::SAction" />
+        <service uid="goOpenCVAct" type="sight::module::ui::SAction" />
+        <service uid="displayImageAct" type="sight::module::ui::SAction" />
 
-        <service uid="saveInputsAct" type="sight::module::ui::base::SAction">
+        <service uid="saveInputsAct" type="sight::module::ui::SAction">
             <sync>true</sync>
         </service>
 
-        <service uid="loadInputsAct" type="sight::module::ui::base::SAction">
+        <service uid="loadInputsAct" type="sight::module::ui::SAction">
             <sync>true</sync>
         </service>
 

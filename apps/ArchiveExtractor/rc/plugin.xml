@@ -2,7 +2,7 @@
 
 <plugin id="ArchiveExtractor" >
 
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
     <requirement id="sight::module::io::zip" />
 
     <extension implements="sight::service::extension::AppConfig" >
@@ -11,7 +11,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="sight::module::ui::base::SFrame" >
+            <service uid="mainView" type="sight::module::ui::SFrame" >
                 <gui>
                     <frame>
                         <name>Archive Extractor</name>
@@ -24,10 +24,10 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::base::SView" >
+            <service uid="containerView" type="sight::module::ui::SView" >
                 <gui>
                     <toolBar align="top" />
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
                     </layout>
                 </gui>
@@ -36,7 +36,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+            <service uid="toolBarView" type="sight::module::ui::SToolBar" >
                 <gui>
                     <layout style="ToolButtonTextBesideIcon">
                         <menuItem name="Extract archive" icon="sight::module::ui::flaticons/Volume.svg" />
@@ -47,11 +47,11 @@
                 </registry>
             </service>
 
-            <service uid="progressStatusbar" type="sight::module::ui::base::SJobBar" />
+            <service uid="progressStatusbar" type="sight::module::ui::SJobBar" />
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="extractArchiveAct" type="sight::module::ui::base::SAction" />
+            <service uid="extractArchiveAct" type="sight::module::ui::SAction" />
 
             <!-- ******************************* Services ***************************************** -->
 

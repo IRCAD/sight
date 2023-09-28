@@ -31,7 +31,7 @@ namespace sight::ui::qt::widget
 {
 
 /// This class allows to display a slide widget. The slide widget can be displayed over all others widgets.
-class UI_QT_CLASS_QT_API SlideBar : public QWidget
+class UI_QT_CLASS_API_QT SlideBar : public QWidget
 {
 Q_OBJECT
 
@@ -77,7 +77,7 @@ public:
      * @param _animatable defines if the animation is enable.
      * @param _animatableAlignment defines the animation direction.
      */
-    UI_QT_QT_API SlideBar(
+    UI_QT_API_QT SlideBar(
         QWidget* _parent,
         HAlignment _hAlign,
         VAlignment _vAlign,
@@ -95,13 +95,13 @@ public:
     );
 
     /// Destroyes the widget.
-    UI_QT_QT_API ~SlideBar() override;
+    UI_QT_API_QT ~SlideBar() override;
 
     /// Updates the widget position relative of the parent.
-    UI_QT_QT_API void updatePosition();
+    UI_QT_API_QT void updatePosition();
 
     /// Sets the widget visibility.
-    UI_QT_QT_API void setVisible(bool _visible) override;
+    UI_QT_API_QT void setVisible(bool _visible) override;
 
     /// Gets if the widget is shown.
     [[nodiscard]] inline bool isShown() const;

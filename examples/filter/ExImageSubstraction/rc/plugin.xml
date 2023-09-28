@@ -57,7 +57,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::AppConfig">
         <id>ExImageSubstraction_AppCfg</id>
@@ -75,7 +75,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::SFrame">
                 <gui>
                     <frame>
                         <name>ExImageSubstraction</name>
@@ -88,9 +88,9 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::base::SView">
+            <service uid="mainView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::CardinalLayoutManager">
+                    <layout type="sight::ui::layout::cardinal">
                         <view align="center" />
                     </layout>
                     <toolBar />
@@ -102,7 +102,7 @@
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
+            <service uid="toolBarView" type="sight::module::ui::SToolBar">
                 <gui>
                     <layout>
                         <menuItem name="Load image 1" icon="ExImageSubstraction/icons/icon-load1.png" />
@@ -122,9 +122,9 @@
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="sight::module::ui::base::SView">
+            <service uid="multiView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::TabLayoutManager">
+                    <layout type="sight::ui::layout::tab">
                         <view caption="Image 1" selected="true" border="5" backgroundColor="#2E3034" />
                         <view caption="Image 2" border="5" backgroundColor="#2E3034" />
                         <view caption="Substraction" border="5" backgroundColor="#2E3034" />
@@ -138,9 +138,9 @@
             </service>
 
             <!-- NEGATO 1 VIEW (Content of the first Tab) -->
-            <service uid="image1View" type="sight::module::ui::base::SView">
+            <service uid="image1View" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#36393E" />
@@ -152,9 +152,9 @@
                 </registry>
             </service>
 
-            <service uid="image1BottomView" type="sight::module::ui::base::SView">
+            <service uid="image1BottomView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="30" />
                         <view proportion="1" />
@@ -167,9 +167,9 @@
             </service>
 
             <!-- NEGATO 2 VIEW (Content of the second Tab) -->
-            <service uid="image2View" type="sight::module::ui::base::SView">
+            <service uid="image2View" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#36393E" />
@@ -181,9 +181,9 @@
                 </registry>
             </service>
 
-            <service uid="image2BottomView" type="sight::module::ui::base::SView">
+            <service uid="image2BottomView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="30" />
                         <view proportion="1" />
@@ -196,9 +196,9 @@
             </service>
 
             <!-- NEGATO 3 VIEW (Content of the third Tab) -->
-            <service uid="substractionView" type="sight::module::ui::base::SView">
+            <service uid="substractionView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#36393E" />
@@ -210,9 +210,9 @@
                 </registry>
             </service>
 
-            <service uid="substractionBottomView" type="sight::module::ui::base::SView">
+            <service uid="substractionBottomView" type="sight::module::ui::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager">
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="30" />
                         <view proportion="1" />
@@ -227,22 +227,22 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- Action to load an image in the Tab 1 -->
-            <service uid="openImage1Act" type="sight::module::ui::base::com::SStarter">
+            <service uid="openImage1Act" type="sight::module::ui::com::SStarter">
                 <start uid="readerFile1Srv" />
             </service>
 
             <!-- Action to load an image in the Tab 2 -->
-            <service uid="openImage2Act" type="sight::module::ui::base::com::SStarter">
+            <service uid="openImage2Act" type="sight::module::ui::com::SStarter">
                 <start uid="readerFile2Srv" />
             </service>
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="saveImageAct" type="sight::module::ui::base::com::SStarter">
+            <service uid="saveImageAct" type="sight::module::ui::com::SStarter">
                 <start uid="imageWriterSrv" />
             </service>
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="computeImageAct" type="sight::module::ui::base::SAction" />
+            <service uid="computeImageAct" type="sight::module::ui::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -352,7 +352,7 @@
                 </config>
             </service>
 
-            <service uid="readerFile1Srv" type="sight::module::ui::base::io::SSelector">
+            <service uid="readerFile1Srv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="image1" />
                 <type mode="reader" />
             </service>
@@ -363,7 +363,7 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="readerFile2Srv" type="sight::module::ui::base::io::SSelector">
+            <service uid="readerFile2Srv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="image2" />
                 <type mode="reader" />
             </service>
@@ -386,22 +386,22 @@
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector">
+            <service uid="imageWriterSrv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="imageResult" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter1Srv" type="sight::module::ui::base::io::SSelector">
+            <service uid="imageWriter1Srv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="snapshot1" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter2Srv" type="sight::module::ui::base::io::SSelector">
+            <service uid="imageWriter2Srv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="snapshot2" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageWriter3Srv" type="sight::module::ui::base::io::SSelector">
+            <service uid="imageWriter3Srv" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="snapshot3" />
                 <type mode="writer" />
             </service>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,17 +23,16 @@
 #include "DumpEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/memory/BufferManager.hpp>
-#include <core/memory/ByteSize.hpp>
-#include <core/memory/IPolicy.hpp>
-#include <core/memory/tools/MemoryMonitorTools.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/memory/buffer_manager.hpp>
+#include <core/memory/byte_size.hpp>
+#include <core/memory/policy/base.hpp>
+#include <core/memory/tools/memory_monitor_tools.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/IMessageDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QComboBox>
 #include <QFuture>
@@ -50,14 +49,14 @@ namespace sight::module::ui::debug
 
 //------------------------------------------------------------------------------
 
-core::memory::BufferManager::BufferInfoMapType m_bufferInfos;
-core::memory::BufferManager::BufferStats m_bufferStats = {0, 0};
+core::memory::buffer_manager::buffer_info_map_t m_bufferInfos;
+core::memory::buffer_manager::buffer_stats m_bufferStats = {0, 0};
 
 //------------------------------------------------------------------------------
 
-QString getHumanReadableSize(core::memory::ByteSize::SizeType bytes)
+QString getHumanReadableSize(core::memory::byte_size::size_t bytes)
 {
-    return QString::fromStdString(core::memory::ByteSize(bytes));
+    return QString::fromStdString(core::memory::byte_size(bytes));
 }
 
 //------------------------------------------------------------------------------
@@ -95,10 +94,9 @@ QWidget* PolicyComboBoxDelegate::createEditor(
 
     const std::string value = index.model()->data(index, Qt::DisplayRole).toString().toStdString();
 
-    const core::memory::policy::registry::Type::KeyVectorType& factories =
-        core::memory::policy::registry::get()->getFactoryKeys();
+    const auto& factories = core::memory::policy::registry::get()->get_factory_keys();
 
-    for(const core::memory::policy::registry::KeyType& policy : factories)
+    for(const auto& policy : factories)
     {
         policyComboBox->addItem(QString::fromStdString(policy));
         if(value == policy)
@@ -164,14 +162,14 @@ public:
 
 private:
 
-    core::memory::BufferManager::sptr m_buffManager;
+    core::memory::buffer_manager::sptr m_buffManager;
 };
 
 const int PolicyTableModel::s_EXTRA_INFO_NB = 1;
 
 PolicyTableModel::PolicyTableModel(QObject* parent) :
     QAbstractTableModel(parent),
-    m_buffManager(core::memory::BufferManager::getDefault())
+    m_buffManager(core::memory::buffer_manager::get())
 {
 }
 
@@ -183,9 +181,9 @@ int PolicyTableModel::rowCount(const QModelIndex& parent) const
     std::size_t nbParam = 0;
     if(m_buffManager)
     {
-        core::mt::ReadLock lock(m_buffManager->getMutex());
-        core::memory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
-        nbParam = currentPolicy->getParamNames().size();
+        core::mt::read_lock lock(m_buffManager->get_mutex());
+        auto currentPolicy = m_buffManager->get_dump_policy();
+        nbParam = currentPolicy->get_param_names().size();
     }
 
     return static_cast<int>(nbParam + s_EXTRA_INFO_NB);
@@ -208,10 +206,10 @@ QVariant PolicyTableModel::data(const QModelIndex& index, int role) const
         return {};
     }
 
-    core::mt::ReadLock lock(m_buffManager->getMutex());
-    core::memory::IPolicy::sptr currentPolicy = m_buffManager->getDumpPolicy();
+    core::mt::read_lock lock(m_buffManager->get_mutex());
+    auto currentPolicy = m_buffManager->get_dump_policy();
 
-    if(index.row() > int((s_EXTRA_INFO_NB + currentPolicy->getParamNames().size())) || index.row() < 0)
+    if(index.row() > int((s_EXTRA_INFO_NB + currentPolicy->get_param_names().size())) || index.row() < 0)
     {
         return {};
     }
@@ -220,17 +218,17 @@ QVariant PolicyTableModel::data(const QModelIndex& index, int role) const
     {
         if(index.column() == 0)
         {
-            const core::memory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
+            const auto& names = currentPolicy->get_param_names();
             if(index.row() == 0)
             {
-                return QString::fromStdString(currentPolicy->getLeafClassname());
+                return QString::fromStdString(currentPolicy->get_leaf_classname());
             }
 
             if((unsigned int) index.row() <= names.size())
             {
-                const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(std::size_t(index.row() - 1));
+                const auto& name = names.at(std::size_t(index.row() - 1));
 
-                return QString::fromStdString(currentPolicy->getParam(name));
+                return QString::fromStdString(currentPolicy->get_param(name));
             }
         }
     }
@@ -249,9 +247,9 @@ QVariant PolicyTableModel::headerData(int section, Qt::Orientation orientation, 
 
     if(m_buffManager && orientation == Qt::Vertical)
     {
-        core::mt::ReadLock lock(m_buffManager->getMutex());
-        core::memory::IPolicy::sptr currentPolicy          = m_buffManager->getDumpPolicy();
-        const core::memory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
+        core::mt::read_lock lock(m_buffManager->get_mutex());
+        auto currentPolicy = m_buffManager->get_dump_policy();
+        const auto& names  = currentPolicy->get_param_names();
         if(section <= 0)
         {
             return QString("Current policy");
@@ -259,7 +257,7 @@ QVariant PolicyTableModel::headerData(int section, Qt::Orientation orientation, 
 
         if((unsigned int) section <= names.size())
         {
-            const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(std::size_t(section - 1));
+            const core::memory::policy::base::param_names_type::value_type& name = names.at(std::size_t(section - 1));
             return QString::fromStdString(name);
         }
     }
@@ -277,22 +275,22 @@ bool PolicyTableModel::setData(const QModelIndex& index, const QVariant& value, 
         int col                    = index.column();
         const std::string strvalue = value.toString().toStdString();
 
-        core::mt::ReadLock lock(m_buffManager->getMutex());
-        core::memory::IPolicy::sptr currentPolicy          = m_buffManager->getDumpPolicy();
-        const core::memory::IPolicy::ParamNamesType& names = currentPolicy->getParamNames();
+        core::mt::read_lock lock(m_buffManager->get_mutex());
+        auto currentPolicy                                        = m_buffManager->get_dump_policy();
+        const core::memory::policy::base::param_names_type& names = currentPolicy->get_param_names();
 
         if(col == 0 && (unsigned int) row <= names.size())
         {
-            core::memory::IPolicy::sptr dumpPolicy;
+            core::memory::policy::base::sptr dumpPolicy;
             if(row == 0)
             {
-                if(strvalue != currentPolicy->getLeafClassname())
+                if(strvalue != currentPolicy->get_leaf_classname())
                 {
                     dumpPolicy = core::memory::policy::registry::get()->create(strvalue);
                     if(dumpPolicy)
                     {
-                        core::mt::ReadToWriteLock anotherLock(m_buffManager->getMutex());
-                        m_buffManager->setDumpPolicy(dumpPolicy);
+                        core::mt::read_to_write_lock anotherLock(m_buffManager->get_mutex());
+                        m_buffManager->set_dump_policy(dumpPolicy);
                     }
 
                     this->beginResetModel();
@@ -300,8 +298,9 @@ bool PolicyTableModel::setData(const QModelIndex& index, const QVariant& value, 
                 }
                 else
                 {
-                    const core::memory::IPolicy::ParamNamesType::value_type& name = names.at(std::size_t(row - 1));
-                    currentPolicy->setParam(name, strvalue);
+                    const core::memory::policy::base::param_names_type::value_type& name =
+                        names.at(std::size_t(row - 1));
+                    currentPolicy->set_param(name, strvalue);
                     return true;
                 }
             }
@@ -338,12 +337,12 @@ public:
 
 private:
 
-    core::memory::BufferManager::sptr m_buffManager;
+    core::memory::buffer_manager::sptr m_buffManager;
 };
 
 InfoTableModel::InfoTableModel(QObject* parent) :
     QAbstractTableModel(parent),
-    m_buffManager(core::memory::BufferManager::getDefault())
+    m_buffManager(core::memory::buffer_manager::get())
 {
 }
 
@@ -381,33 +380,36 @@ QVariant InfoTableModel::data(const QModelIndex& index, int role) const
     {
         if(index.column() == 0)
         {
-            std::uint64_t sysMem                                   = 0;
-            core::memory::BufferManager::SizeType bufferManagerMem = 0;
+            std::uint64_t sysMem                                  = 0;
+            core::memory::buffer_manager::size_t bufferManagerMem = 0;
             switch(index.row())
             {
                 case 0:
-                    sysMem = core::memory::tools::MemoryMonitorTools::getTotalSystemMemory();
+                    sysMem = core::memory::tools::memory_monitor_tools::get_total_system_memory();
                     return QString(getHumanReadableSize(sysMem));
 
                     break;
 
                 case 1:
-                    sysMem = core::memory::tools::MemoryMonitorTools::getFreeSystemMemory();
+                    sysMem = core::memory::tools::memory_monitor_tools::get_free_system_memory();
                     return QString(getHumanReadableSize(sysMem));
 
                     break;
 
                 case 2:
-                    bufferManagerMem = m_bufferStats.totalManaged;
+                    bufferManagerMem = m_bufferStats.total_managed;
                     return QString(getHumanReadableSize(bufferManagerMem));
 
                     break;
 
                 case 3:
-                    bufferManagerMem = m_bufferStats.totalDumped;
+                    bufferManagerMem = m_bufferStats.total_dumped;
                     return QString(getHumanReadableSize(bufferManagerMem));
 
                     break;
+
+                default:
+                    SIGHT_ASSERT("Unreachable code", false);
             }
         }
     }
@@ -465,9 +467,9 @@ DumpEditor::~DumpEditor() noexcept =
 
 void DumpEditor::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     m_updateTimer = new QTimer(qtContainer->getQtContainer());
     m_updateTimer->setInterval(300);
@@ -524,17 +526,17 @@ void DumpEditor::starting()
     QObject::connect(m_updateTimer, &QTimer::timeout, this, &DumpEditor::onRefreshButton);
     QObject::connect(
         &m_watcher,
-        &QFutureWatcher<core::memory::BufferManager::BufferInfoMapType>::finished,
+        &QFutureWatcher<core::memory::buffer_manager::buffer_info_map_t>::finished,
         this,
-        &DumpEditor::onBufferInfo
+        &DumpEditor::on_buffer_info
     );
 
-    core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
+    core::memory::buffer_manager::sptr buffManager = core::memory::buffer_manager::get();
     if(buffManager)
     {
-        m_updateSlot = core::com::newSlot(&DumpEditor::onUpdate, this);
-        m_updateSlot->setWorker(core::thread::getDefaultWorker());
-        m_connection = buffManager->getUpdatedSignal()->connect(m_updateSlot);
+        m_updateSlot = core::com::new_slot(&DumpEditor::onUpdate, this);
+        m_updateSlot->set_worker(core::thread::get_default_worker());
+        m_connection = buffManager->get_updated_signal()->connect(m_updateSlot);
     }
 
     this->updating();
@@ -554,7 +556,7 @@ void DumpEditor::stopping()
 
 void DumpEditor::configuring()
 {
-    this->sight::ui::base::IGuiContainer::initialize();
+    this->sight::ui::service::initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -578,13 +580,13 @@ public:
 
 //------------------------------------------------------------------------------
 
-core::memory::BufferManager::BufferInfoMapType getInfoMap()
+core::memory::buffer_manager::buffer_info_map_t getInfoMap()
 {
-    core::memory::BufferManager::BufferInfoMapType infoMap;
-    core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
+    core::memory::buffer_manager::buffer_info_map_t infoMap;
+    core::memory::buffer_manager::sptr buffManager = core::memory::buffer_manager::get();
     if(buffManager)
     {
-        infoMap = buffManager->getBufferInfos().get();
+        infoMap = buffManager->get_buffer_infos().get();
     }
 
     return infoMap;
@@ -597,18 +599,18 @@ void DumpEditor::updating()
     m_policyEditor->reset();
     m_policyEditor->resizeColumnsToContents();
 
-    QFuture<core::memory::BufferManager::BufferInfoMapType> qFuture = QtConcurrent::run(getInfoMap);
+    QFuture<core::memory::buffer_manager::buffer_info_map_t> qFuture = QtConcurrent::run(getInfoMap);
     m_watcher.setFuture(qFuture);
 }
 
 //------------------------------------------------------------------------------
 
-void DumpEditor::onBufferInfo()
+void DumpEditor::on_buffer_info()
 {
     m_bufferInfos = m_watcher.result();
-    m_bufferStats = core::memory::BufferManager::computeBufferStats(m_bufferInfos);
+    m_bufferStats = core::memory::buffer_manager::compute_buffer_stats(m_bufferInfos);
 
-    core::com::Connection::Blocker block(m_connection);
+    core::com::connection::blocker block(m_connection);
 
     m_list->clearContents();
     m_objectsUID.clear();
@@ -618,7 +620,7 @@ void DumpEditor::onBufferInfo()
     m_list->setRowCount(static_cast<int>(m_bufferInfos.size()));
     m_list->setColumnCount(5);
     QColor backColor;
-    for(const core::memory::BufferManager::BufferInfoMapType::value_type& elt : m_bufferInfos)
+    for(const core::memory::buffer_manager::buffer_info_map_t::value_type& elt : m_bufferInfos)
     {
         m_objectsUID.push_back(elt.first);
 
@@ -626,8 +628,8 @@ void DumpEditor::onBufferInfo()
         std::string date       = "?";
         std::string lockStatus = "?";
 
-        const core::memory::BufferInfo& dumpBuffInfo = elt.second;
-        bool loaded                                  = dumpBuffInfo.loaded;
+        const core::memory::buffer_info& dumpBuffInfo = elt.second;
+        bool loaded                                   = dumpBuffInfo.loaded;
         if(!loaded)
         {
             backColor = Qt::darkYellow;
@@ -639,17 +641,17 @@ void DumpEditor::onBufferInfo()
             status    = "-";
         }
 
-        bool isLock = dumpBuffInfo.lockCount() > 0;
+        bool isLock = dumpBuffInfo.lock_count() > 0;
         if(isLock)
         {
-            lockStatus = "locked(" + std::to_string(dumpBuffInfo.lockCount()) + ")";
+            lockStatus = "locked(" + std::to_string(dumpBuffInfo.lock_count()) + ")";
         }
         else
         {
             lockStatus = "unlocked";
         }
 
-        date = std::to_string(dumpBuffInfo.lastAccess.getLogicStamp());
+        date = std::to_string(dumpBuffInfo.last_access.get_logic_stamp());
 
         QTableWidgetItem* currentSizeItem = new SizeTableWidgetItem(getHumanReadableSize(dumpBuffInfo.size));
         currentSizeItem->setData(Qt::UserRole, (qulonglong) dumpBuffInfo.size);
@@ -711,38 +713,38 @@ void DumpEditor::onRefreshButton()
 
 void DumpEditor::changeStatus(int index)
 {
-    core::memory::BufferManager::sptr buffManager = core::memory::BufferManager::getDefault();
+    core::memory::buffer_manager::sptr buffManager = core::memory::buffer_manager::get();
     if(buffManager)
     {
-        const core::memory::BufferManager::BufferInfoMapType buffInfoMap = m_bufferInfos;
-        core::memory::BufferManager::ConstBufferPtrType selectedBuffer   = m_objectsUID[std::size_t(index)];
+        const core::memory::buffer_manager::buffer_info_map_t buffInfoMap = m_bufferInfos;
+        const auto* selectedBuffer                                        = m_objectsUID[std::size_t(index)];
 
-        core::memory::BufferManager::BufferInfoMapType::const_iterator iter;
+        core::memory::buffer_manager::buffer_info_map_t::const_iterator iter;
         iter = buffInfoMap.find(selectedBuffer);
         if(iter != buffInfoMap.end())
         {
-            sight::ui::base::Cursor cursor;
-            cursor.setCursor(sight::ui::base::ICursor::BUSY);
-            const core::memory::BufferInfo& dumpBuffInfo = iter->second;
+            sight::ui::cursor cursor;
+            cursor.setCursor(sight::ui::cursor_base::BUSY);
+            const core::memory::buffer_info& dumpBuffInfo = iter->second;
 
-            bool isLock = dumpBuffInfo.lockCount() > 0;
+            bool isLock = dumpBuffInfo.lock_count() > 0;
             if(!isLock)
             {
                 if(dumpBuffInfo.loaded)
                 {
-                    buffManager->dumpBuffer(selectedBuffer);
+                    buffManager->dump_buffer(selectedBuffer);
                 }
                 else
                 {
-                    buffManager->restoreBuffer(selectedBuffer);
+                    buffManager->restore_buffer(selectedBuffer);
                 }
             }
             else
             {
-                sight::ui::base::dialog::MessageDialog::show(
+                sight::ui::dialog::message::show(
                     "Dump process information",
                     "Dump process is locked. It is impossible to dump or restore this object.",
-                    sight::ui::base::dialog::IMessageDialog::WARNING
+                    sight::ui::dialog::message::WARNING
                 );
             }
 
@@ -754,10 +756,10 @@ void DumpEditor::changeStatus(int index)
         {
             std::stringstream stream;
             stream << "Object " << selectedBuffer << " not found, please refresh the grid.";
-            sight::ui::base::dialog::MessageDialog::show(
+            sight::ui::dialog::message::show(
                 "Dump process information",
                 stream.str(),
-                sight::ui::base::dialog::IMessageDialog::WARNING
+                sight::ui::dialog::message::WARNING
             );
         }
     }

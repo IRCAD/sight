@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/vtk/config.hpp"
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 #include <filesystem>
 #include <string>
@@ -39,7 +39,7 @@ class Image;
 namespace sight::core::jobs
 {
 
-class IJob;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -52,7 +52,7 @@ namespace sight::module::io::vtk
  * Service writing a VTK Image using the fwVtkIO lib.
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is written (it should be
+ * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
  * connected to a SJobBar).
  *
  * @section XML XML Configuration
@@ -69,7 +69,7 @@ namespace sight::module::io::vtk
  * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API SImageWriter : public sight::io::base::service::IWriter
+class MODULE_IO_VTK_CLASS_API SImageWriter : public sight::io::service::writer
 {
 public:
 
@@ -81,9 +81,9 @@ public:
     ~SImageWriter() noexcept override =
         default;
 
-    SIGHT_DECLARE_SERVICE(SImageWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SImageWriter, sight::io::service::writer);
 
-    typedef core::com::Signal<void (SPTR(core::jobs::IJob))> JobCreatedSignalType;
+    typedef core::com::signal<void (SPTR(core::jobs::base))> JobCreatedSignalType;
 
     /**
      * @brief Configure the image path.
@@ -111,7 +111,7 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VTK_API sight::io::service::IOPathType getIOPathType() const override;
 
     /**
      * @brief Starting method.

@@ -22,13 +22,13 @@
 
 #include "SClientSender.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/tools/Failed.hpp>
+#include <core/com/signal.hxx>
+#include <core/tools/failed.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/Preferences.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/Preferences.hpp>
 
 namespace sight::module::io::igtl
 {
@@ -47,7 +47,7 @@ SClientSender::~SClientSender()
 
 void SClientSender::configuring()
 {
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     const ConfigType configIn = config.get_child("in");
 
@@ -59,8 +59,8 @@ void SClientSender::configuring()
     const auto keyCfg = configIn.equal_range("key");
     for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
     {
-        const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>");
-        const std::string name                    = attr.get("deviceName", "Sight");
+        const service::config_t& attr = itCfg->second.get_child("<xmlattr>");
+        const std::string name        = attr.get("deviceName", "Sight");
         m_deviceNames.push_back(name);
     }
 
@@ -75,7 +75,7 @@ void SClientSender::configuring()
     }
     else
     {
-        throw core::tools::Failed("Server element not found");
+        throw core::tools::failed("Server element not found");
     }
 }
 
@@ -87,18 +87,18 @@ void SClientSender::starting()
     {
         try
         {
-            ui::base::Preferences preferences;
+            ui::Preferences preferences;
             const auto port     = preferences.delimited_get<std::uint16_t>(m_portConfig);
             const auto hostname = preferences.delimited_get<std::string>(m_hostnameConfig);
 
             m_client.connect(hostname, port);
-            m_sigConnected->asyncEmit();
+            m_sigConnected->async_emit();
         }
-        catch(core::Exception& ex)
+        catch(core::exception& ex)
         {
-            sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
+            sight::ui::dialog::message::show("Connection error", ex.what());
             SIGHT_ERROR(ex.what());
-            this->slot(IService::slots::s_STOP)->asyncRun();
+            this->slot(service::slots::STOP)->async_run();
         }
     }
 }
@@ -114,11 +114,11 @@ void SClientSender::stopping()
             m_client.disconnect();
         }
 
-        m_sigDisconnected->asyncEmit();
+        m_sigDisconnected->async_emit();
     }
-    catch(core::Exception& e)
+    catch(core::exception& e)
     {
-        sight::ui::base::dialog::MessageDialog::show("Error", e.what());
+        sight::ui::dialog::message::show("Error", e.what());
         SIGHT_ERROR(e.what());
     }
 }

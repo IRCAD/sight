@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,20 +21,20 @@
 
 #include "SSelectDialog.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 namespace sight::module::ui::qt::series
 {
 
-const core::com::Signals::SignalKeyType SSelectDialog::s_IMAGE_SELECTED_SIG = "imageSelected";
-const core::com::Signals::SignalKeyType SSelectDialog::s_MODEL_SELECTED_SIG = "modelSelected";
+const core::com::signals::key_t SSelectDialog::IMAGE_SELECTED_SIG = "imageSelected";
+const core::com::signals::key_t SSelectDialog::MODEL_SELECTED_SIG = "modelSelected";
 
 //------------------------------------------------------------------------------
 
 SSelectDialog::SSelectDialog()
 {
-    newSignal<SelectedSignalType>(s_IMAGE_SELECTED_SIG);
-    newSignal<SelectedSignalType>(s_MODEL_SELECTED_SIG);
+    new_signal<SelectedSignalType>(IMAGE_SELECTED_SIG);
+    new_signal<SelectedSignalType>(MODEL_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -66,18 +66,18 @@ void SSelectDialog::updating()
 
     auto firstElement = series_set->front();
 
-    if(auto modelSeries = sight::data::ModelSeries::dynamicCast(firstElement); modelSeries)
+    if(auto modelSeries = std::dynamic_pointer_cast<sight::data::ModelSeries>(firstElement); modelSeries)
     {
         m_modelSeries = modelSeries;
-        auto sig = this->signal<data::Object::ModifiedSignalType>(s_MODEL_SELECTED_SIG);
-        sig->asyncEmit();
+        auto sig = this->signal<data::Object::ModifiedSignalType>(MODEL_SELECTED_SIG);
+        sig->async_emit();
     }
-    else if(auto imageSeries = sight::data::ImageSeries::dynamicCast(firstElement); imageSeries)
+    else if(auto imageSeries = std::dynamic_pointer_cast<sight::data::ImageSeries>(firstElement); imageSeries)
     {
         m_imageSeries = imageSeries;
         m_image       = imageSeries;
-        auto sig = this->signal<data::Object::ModifiedSignalType>(s_IMAGE_SELECTED_SIG);
-        sig->asyncEmit();
+        auto sig = this->signal<data::Object::ModifiedSignalType>(IMAGE_SELECTED_SIG);
+        sig->async_emit();
     }
 }
 

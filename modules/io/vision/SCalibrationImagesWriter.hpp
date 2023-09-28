@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/vision/config.hpp"
 
-#include <io/base/service/IWriter.hpp>
+#include <io/__/service/writer.hpp>
 
 #include <string>
 
@@ -50,11 +50,11 @@ namespace sight::module::io::vision
  * - \b format (optional, values=.jpeg|.ppm|.png|.bmp|.tiff, default=.tiff): output file format.
  * - \b folder (optional): directory in which the files should be written.
  */
-class MODULE_IO_VISION_CLASS_API SCalibrationImagesWriter : public sight::io::base::service::IWriter
+class MODULE_IO_VISION_CLASS_API SCalibrationImagesWriter : public sight::io::service::writer
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SCalibrationImagesWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SCalibrationImagesWriter, sight::io::service::writer);
 
     /// Constructor.
     MODULE_IO_VISION_API SCalibrationImagesWriter() noexcept;
@@ -68,7 +68,7 @@ public:
 protected:
 
     /// Returns the folder path type.
-    MODULE_IO_VISION_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_VISION_API sight::io::service::IOPathType getIOPathType() const override;
 
     /// Configures the output file format.
     MODULE_IO_VISION_API void configuring() override;

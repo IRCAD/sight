@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,13 @@
 
 #include "modules/ui/qt/SStyleSelector.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 #include <core/macros.hpp>
 #include <core/runtime/path.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/Preferences.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <QApplication>
 #include <QFile>
@@ -41,13 +41,13 @@
 namespace sight::module::ui::qt
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_FROM_PREFS_SLOT = "updateFromPreferences";
+static const core::com::slots::key_t UPDATE_FROM_PREFS_SLOT = "updateFromPreferences";
 
 //-----------------------------------------------------------------------------
 
 SStyleSelector::SStyleSelector() noexcept
 {
-    newSlot(s_UPDATE_FROM_PREFS_SLOT, &SStyleSelector::updateFromPrefs, this);
+    new_slot(UPDATE_FROM_PREFS_SLOT, &SStyleSelector::updateFromPrefs, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void SStyleSelector::starting()
 {
     m_styleMap["DEFAULT"] = std::filesystem::path("");
 
-    const auto styleRc = core::runtime::getModuleResourcePath("sight::module::ui::qt");
+    const auto styleRc = core::runtime::get_module_resource_path("sight::module::ui::qt");
 
     // Stores each rcc & qss
     for(const auto& p : std::filesystem::directory_iterator(styleRc))
@@ -112,7 +112,7 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
 {
     auto path = m_styleMap[_styleName];
 
-    sight::ui::base::Preferences preferences;
+    sight::ui::Preferences preferences;
 
     // DEFAULT (no theme) case.
     if(path.empty())
@@ -150,13 +150,13 @@ void SStyleSelector::updateFromPrefs()
     // Apply previously saved style in preferences file.
     try
     {
-        sight::ui::base::Preferences preferences;
+        sight::ui::Preferences preferences;
         if(const auto& theme = preferences.get_optional<std::string>("THEME"); theme)
         {
             this->changeStyle(*theme);
         }
     }
-    catch(const sight::ui::base::PreferencesDisabled& /*e*/)
+    catch(const sight::ui::PreferencesDisabled& /*e*/)
     {
         // Nothing to do..
     }

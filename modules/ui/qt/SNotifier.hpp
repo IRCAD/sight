@@ -24,17 +24,17 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <service/IController.hpp>
-#include <service/INotifier.hpp>
+#include <service/controller.hpp>
+#include <service/notifier.hpp>
 
-#include <ui/base/dialog/NotificationDialog.hpp>
+#include <ui/__/dialog/notification.hpp>
 
 namespace sight::module::ui::qt
 {
 
 /**
  * @brief SNotifier is a general service used to display notification in a centralized way.
- * SNotifier needs to be connected to [Success/Failure/Info]Notified signals implemented in IService.
+ * SNotifier needs to be connected to [Success/Failure/Info]Notified signals implemented in base.
  *
  * @section Slots Slots
  * - \b pop(): Adds a popup in the queue & display it.
@@ -96,11 +96,11 @@ namespace sight::module::ui::qt
  *                   allow closing of permanent notification
  *
  */
-class MODULE_UI_QT_CLASS_API SNotifier final : public service::IController
+class MODULE_UI_QT_CLASS_API SNotifier final : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SNotifier, service::IController);
+    SIGHT_DECLARE_SERVICE(SNotifier, service::controller);
 
     /// Constructor, initializes position map & slots.
     MODULE_UI_QT_API SNotifier() noexcept;
@@ -121,7 +121,7 @@ public:
 
 protected:
 
-    /** @name Service methods ( override from service::IService )
+    /** @name Service methods ( override from service::base )
      * @{
      */
 
@@ -146,14 +146,14 @@ protected:
 private:
 
     /// Called when a notification is closed
-    void onNotificationClosed(const sight::ui::base::dialog::NotificationDialog::sptr& notif);
+    void onNotificationClosed(const sight::ui::dialog::notification::sptr& notif);
 
     /// Erase a notification from m_popups and move down the remaining
     /// @param position The stack where we need to erase a notification
     /// @param it the iterator pointing on the element to erase
-    std::list<sight::ui::base::dialog::NotificationDialog::sptr>::iterator eraseNotification(
+    std::list<sight::ui::dialog::notification::sptr>::iterator eraseNotification(
         const service::Notification::Position& position,
-        const std::list<sight::ui::base::dialog::NotificationDialog::sptr>::iterator& it
+        const std::list<sight::ui::dialog::notification::sptr>::iterator& it
     );
 
     /// Count the number of notifications and remove the oldest if > m_maxStackedNotifs
@@ -181,12 +181,12 @@ private:
 
     std::map<std::string, Configuration> m_channels {{"", {.max = {3}}}};
 
-    /// A stack of NotificationDialog
+    /// A stack of notification
     struct Stack final
     {
         std::optional<std::array<int, 2> > size {std::nullopt};
         std::optional<std::size_t> max {std::nullopt};
-        std::list<sight::ui::base::dialog::NotificationDialog::sptr> popups {};
+        std::list<sight::ui::dialog::notification::sptr> popups {};
     };
 
     /// Map of displayed Stack
@@ -200,8 +200,8 @@ private:
         {service::Notification::Position::CENTERED_BOTTOM, {}},
     };
 
-    /// fwContainer where notifications will be displayed in, nullptr by default.
-    sight::ui::base::container::fwContainer::csptr m_containerWhereToDisplayNotifs {nullptr};
+    /// widget where notifications will be displayed in, nullptr by default.
+    sight::ui::container::widget::csptr m_containerWhereToDisplayNotifs {nullptr};
 
     /// Parent container ID (SID or WID), empty by default.
     std::string m_parentContainerID;

@@ -23,10 +23,10 @@
 #include "SWizard.hpp"
 
 #include <activity/builder/data.hpp>
-#include <activity/IValidator.hpp>
+#include <activity/validator/base.hpp>
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
@@ -34,8 +34,8 @@
 #include <data/Composite.hpp>
 #include <data/Series.hpp>
 
-#include <ui/base/dialog/InputDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/input.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -49,11 +49,11 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SWizard::s_CREATE_ACTIVITY_SLOT     = "createActivity";
-const core::com::Slots::SlotKeyType SWizard::s_UPDATE_ACTIVITY_SLOT     = "updateActivity";
-const core::com::Signals::SignalKeyType SWizard::s_ACTIVITY_CREATED_SIG = "activityCreated";
-const core::com::Signals::SignalKeyType SWizard::s_ACTIVITY_UPDATED_SIG = "activityUpdated";
-const core::com::Signals::SignalKeyType SWizard::s_CANCELED_SIG         = "canceled";
+const core::com::slots::key_t SWizard::CREATE_ACTIVITY_SLOT   = "createActivity";
+const core::com::slots::key_t SWizard::UPDATE_ACTIVITY_SLOT   = "updateActivity";
+const core::com::signals::key_t SWizard::ACTIVITY_CREATED_SIG = "activityCreated";
+const core::com::signals::key_t SWizard::ACTIVITY_UPDATED_SIG = "activityUpdated";
+const core::com::signals::key_t SWizard::CANCELED_SIG         = "canceled";
 
 using sight::activity::extension::ActivityInfo;
 using sight::activity::extension::Activity;
@@ -64,12 +64,12 @@ using sight::activity::extension::Activity;
 
 SWizard::SWizard() noexcept
 {
-    newSlot(s_CREATE_ACTIVITY_SLOT, &SWizard::createActivity, this);
-    newSlot(s_UPDATE_ACTIVITY_SLOT, &SWizard::updateActivity, this);
+    new_slot(CREATE_ACTIVITY_SLOT, &SWizard::createActivity, this);
+    new_slot(UPDATE_ACTIVITY_SLOT, &SWizard::updateActivity, this);
 
-    m_sigActivityCreated = newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG);
-    m_sigActivityUpdated = newSignal<ActivityUpdatedSignalType>(s_ACTIVITY_UPDATED_SIG);
-    m_sigCanceled        = newSignal<CanceledSignalType>(s_CANCELED_SIG);
+    m_sigActivityCreated = new_signal<ActivityCreatedSignalType>(ACTIVITY_CREATED_SIG);
+    m_sigActivityUpdated = new_signal<ActivityUpdatedSignalType>(ACTIVITY_UPDATED_SIG);
+    m_sigCanceled        = new_signal<CanceledSignalType>(CANCELED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ SWizard::~SWizard() noexcept =
 
 void SWizard::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 
     const auto config = this->getConfiguration();
 
@@ -108,7 +108,7 @@ void SWizard::configuring()
         const auto icon = anotherIconCfg.get<std::string>("icon");
         SIGHT_ASSERT("'icon' attribute must not be empty", !icon.empty());
 
-        const auto file = core::runtime::getResourceFilePath(icon);
+        const auto file = core::runtime::get_resource_file_path(icon);
         m_objectIcons[type] = file.string();
     }
 
@@ -119,9 +119,9 @@ void SWizard::configuring()
 
 void SWizard::starting()
 {
-    sight::ui::base::IGuiContainer::create();
+    sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     QWidget* const container = qtContainer->getQtContainer();
 
@@ -234,9 +234,9 @@ void SWizard::createActivity(std::string activityID)
     info = Activity::getDefault()->getInfo(activityID);
 
     // load activity module
-    core::runtime::startModule(info.bundleId);
+    core::runtime::start_module(info.bundleId);
 
-    m_new_activity = data::Activity::New();
+    m_new_activity = std::make_shared<data::Activity>();
     m_new_activity->setActivityConfigId(info.id);
 
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
@@ -262,7 +262,7 @@ void SWizard::createActivity(std::string activityID)
             m_okButton->setText("Next");
         }
 
-        this->slot(slots::s_SHOW)->asyncRun();
+        this->slot(slots::SHOW)->async_run();
     }
     else
     {
@@ -279,7 +279,7 @@ void SWizard::createActivity(std::string activityID)
         const auto scoped_emitter = activity_set->scoped_emit();
         activity_set->push_back(m_new_activity);
 
-        m_sigActivityCreated->asyncEmit(m_new_activity);
+        m_sigActivityCreated->async_emit(m_new_activity);
     }
 }
 
@@ -291,7 +291,7 @@ void SWizard::updateActivity(data::Activity::sptr activity)
     info = Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
     // load activity module
-    core::runtime::startModule(info.bundleId);
+    core::runtime::start_module(info.bundleId);
 
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
     m_description->setText(QString::fromStdString(info.description));
@@ -323,9 +323,9 @@ void SWizard::updateActivity(data::Activity::sptr activity)
     {
         // Start immediately without popping any configuration UI
         data::Object::ModifiedSignalType::sptr sig;
-        sig = m_new_activity->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
-        m_sigActivityUpdated->asyncEmit(m_new_activity);
+        sig = m_new_activity->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+        sig->async_emit();
+        m_sigActivityUpdated->async_emit(m_new_activity);
     }
 }
 
@@ -365,7 +365,7 @@ void SWizard::onReset()
 void SWizard::onCancel()
 {
     m_DataView->clear();
-    m_sigCanceled->asyncEmit();
+    m_sigCanceled->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -425,7 +425,7 @@ void SWizard::onBuildActivity()
                     // Add the new activity in activity_set
                     ActivityInfo info = Activity::getDefault()->getInfo(m_new_activity->getActivityConfigId());
 
-                    const auto& [description, input_ok] = sight::ui::base::dialog::InputDialog::showInputDialog(
+                    const auto& [description, input_ok] = sight::ui::dialog::input::showInputDialog(
                         "Activity creation",
                         "Please, give a description of the activity.",
                         info.title
@@ -443,14 +443,14 @@ void SWizard::onBuildActivity()
                     const auto scoped_emitter = activity_set->scoped_emit();
                     activity_set->push_back(m_new_activity);
 
-                    m_sigActivityCreated->asyncEmit(m_new_activity);
+                    m_sigActivityCreated->async_emit(m_new_activity);
                 }
                 else // m_mode == Mode::UPDATE
                 {
                     data::Object::ModifiedSignalType::sptr sig;
-                    sig = m_new_activity->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-                    sig->asyncEmit();
-                    m_sigActivityUpdated->asyncEmit(m_new_activity);
+                    sig = m_new_activity->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+                    sig->async_emit();
+                    m_sigActivityUpdated->async_emit(m_new_activity);
                 }
             }
             else

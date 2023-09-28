@@ -24,8 +24,8 @@
 
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <geometry/data/Mesh.hpp>
 
@@ -44,19 +44,19 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_MODIFY_COLORS_SLOT           = "modifyColors";
-static const core::com::Slots::SlotKeyType s_MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
-static const core::com::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modifyVertices";
+static const core::com::slots::key_t MODIFY_COLORS_SLOT           = "modifyColors";
+static const core::com::slots::key_t MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
+static const core::com::slots::key_t MODIFY_VERTICES_SLOT         = "modifyVertices";
 
 //-----------------------------------------------------------------------------
 
 SMesh::SMesh() noexcept
 {
-    m_material = data::Material::New();
+    m_material = std::make_shared<data::Material>();
 
-    newSlot(s_MODIFY_COLORS_SLOT, &SMesh::modifyPointColors, this);
-    newSlot(s_MODIFY_POINT_TEX_COORDS_SLOT, &SMesh::modifyTexCoords, this);
-    newSlot(s_MODIFY_VERTICES_SLOT, &SMesh::modifyVertices, this);
+    new_slot(MODIFY_COLORS_SLOT, &SMesh::modifyPointColors, this);
+    new_slot(MODIFY_POINT_TEX_COORDS_SLOT, &SMesh::modifyTexCoords, this);
+    new_slot(MODIFY_VERTICES_SLOT, &SMesh::modifyVertices, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -105,8 +105,8 @@ void SMesh::configuring()
 
     this->setTransformId(
         config.get<std::string>(
-            sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG,
-            this->getID() + "_transform"
+            sight::viz::scene3d::transformable::s_TRANSFORM_CONFIG,
+            this->get_id() + "_transform"
         )
     );
 
@@ -135,10 +135,10 @@ void SMesh::starting()
 
     if(this->getTransformId().empty())
     {
-        this->setTransformId(this->getID() + "_TF");
+        this->setTransformId(this->get_id() + "_TF");
     }
 
-    m_meshGeometry = std::make_shared<sight::viz::scene3d::Mesh>(this->getID());
+    m_meshGeometry = std::make_shared<sight::viz::scene3d::Mesh>(this->get_id());
     m_meshGeometry->setDynamic(m_isDynamic);
     m_meshGeometry->setDynamicVertices(m_isDynamicVertices);
 
@@ -166,7 +166,7 @@ void SMesh::starting()
             "SMaterial adaptor managing material'" + m_materialName + "' is not found",
             result != mtlAdaptors.end()
         );
-        m_material = m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock().get_shared();
+        m_material = m_materialAdaptor->inout<data::Material>(SMaterial::s_MATERIAL_INOUT).lock().get_shared();
     }
 
     const auto mesh = m_mesh.lock();
@@ -175,14 +175,14 @@ void SMesh::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
+service::connections_t SMesh::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_MESH_IN, data::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT);
-    connections.push(s_MESH_IN, data::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
-    connections.push(s_MESH_IN, data::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
-    connections.push(s_MESH_IN, data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_MODIFY_POINT_TEX_COORDS_SLOT);
-    connections.push(s_MESH_IN, data::Mesh::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_MESH_IN, data::Mesh::VERTEX_MODIFIED_SIG, MODIFY_VERTICES_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::POINT_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::CELL_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::POINT_TEX_COORDS_MODIFIED_SIG, MODIFY_POINT_TEX_COORDS_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 
@@ -324,17 +324,17 @@ void SMesh::updateMesh(data::Mesh::csptr _mesh)
         {
             if(adaptor)
             {
-                auto r2vbMtlAdaptor = module::viz::scene3d::adaptor::SMaterial::dynamicCast(adaptor);
+                auto r2vbMtlAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::SMaterial>(adaptor);
                 m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
                 // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
-                r2vbMtlAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->run();
+                r2vbMtlAdaptor->slot(service::slots::UPDATE)->run();
             }
             else
             {
                 // Instantiate a material adaptor for the r2vb process for this primitive type
                 adaptor = this->createMaterialService(_mesh, renderable->getName());
 
-                auto r2vbMtlAdaptor = module::viz::scene3d::adaptor::SMaterial::dynamicCast(adaptor);
+                auto r2vbMtlAdaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::SMaterial>(adaptor);
                 r2vbMtlAdaptor->setR2VBObject(renderable);
                 r2vbMtlAdaptor->start();
                 m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
@@ -379,14 +379,14 @@ adaptor::SMaterial::sptr SMesh::createMaterialService(
     );
     materialAdaptor->setInOut(m_material, "material", true);
 
-    const std::string meshName = _mesh->getID();
-    const std::string mtlName  = meshName + "_" + (materialAdaptor->getID()) + _materialSuffix;
+    const std::string meshName = _mesh->get_id();
+    const std::string mtlName  = meshName + "_" + (materialAdaptor->get_id()) + _materialSuffix;
     const auto tplName         =
         !m_materialTemplateName.empty() ? m_materialTemplateName : sight::viz::scene3d::Material::
         DEFAULT_MATERIAL_TEMPLATE_NAME;
 
     materialAdaptor->configure(
-        this->getID() + "_" + materialAdaptor->getID(),
+        this->get_id() + "_" + materialAdaptor->get_id(),
         mtlName,
         this->getRenderService(),
         m_layerID,
@@ -420,7 +420,7 @@ void SMesh::updateNewMaterialAdaptor(data::Mesh::csptr _mesh)
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName(), sight::viz::scene3d::RESOURCE_GROUP);
         }
     }
-    else if(m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock() != m_material)
+    else if(m_materialAdaptor->inout<data::Material>(SMaterial::s_MATERIAL_INOUT).lock() != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
     }
@@ -428,7 +428,7 @@ void SMesh::updateNewMaterialAdaptor(data::Mesh::csptr _mesh)
     {
         m_entity->setMaterialName(m_materialAdaptor->getMaterialName(), sight::viz::scene3d::RESOURCE_GROUP);
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
-        m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->run();
+        m_materialAdaptor->slot(service::slots::UPDATE)->run();
     }
 }
 
@@ -441,7 +441,7 @@ void SMesh::updateXMLMaterialAdaptor()
         if(m_materialAdaptor->getMaterialName().empty())
         {
             const auto mesh      = m_mesh.lock();
-            std::string meshName = mesh->getID();
+            std::string meshName = mesh->get_id();
             m_materialAdaptor->setMaterialName(meshName + "_Material");
         }
 
@@ -450,10 +450,10 @@ void SMesh::updateXMLMaterialAdaptor()
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
             m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
 
-            m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->run();
+            m_materialAdaptor->slot(service::slots::UPDATE)->run();
         }
     }
-    else if(m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock() != m_material)
+    else if(m_materialAdaptor->inout<data::Material>(SMaterial::s_MATERIAL_INOUT).lock() != m_material)
     {
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
     }
@@ -483,7 +483,7 @@ void SMesh::modifyVertices()
     );
 
     // Necessary to update the bounding box in the adaptor
-    //m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->asyncRun();
+    //m_materialAdaptor->slot(service::slots::UPDATE)->async_run();
 
     if(m_autoResetCamera)
     {
@@ -563,7 +563,7 @@ void SMesh::requestRender()
 {
     m_meshGeometry->invalidateR2VB();
 
-    sight::viz::scene3d::IAdaptor::requestRender();
+    sight::viz::scene3d::adaptor::requestRender();
 }
 
 //-----------------------------------------------------------------------------

@@ -22,17 +22,17 @@
 
 #include "SPacsConfigurationEditor.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+#include <core/com/slots.hxx>
 
 #include <io/dimse/exceptions/Base.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -42,23 +42,23 @@
 namespace sight::module::io::dimse
 {
 
-static const core::com::Slots::SlotKeyType s_SHOW_DIALOG_SLOT = "showDialog";
+static const core::com::slots::key_t SHOW_DIALOG_SLOT = "showDialog";
 
-static const service::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
+static const service::base::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
 
 //------------------------------------------------------------------------------
 
 SPacsConfigurationEditor::SPacsConfigurationEditor() noexcept :
-    service::INotifier(m_signals)
+    sight::service::notifier(m_signals)
 {
-    m_slotShowDialog = this->newSlot(s_SHOW_DIALOG_SLOT, &SPacsConfigurationEditor::showDialog);
+    m_slotShowDialog = this->new_slot(SHOW_DIALOG_SLOT, &SPacsConfigurationEditor::showDialog);
 }
 
 //------------------------------------------------------------------------------
 
 void SPacsConfigurationEditor::configuring()
 {
-    sight::ui::base::IGuiContainer::initialize();
+    sight::ui::service::initialize();
 
     const ConfigType configType = this->getConfiguration();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
@@ -74,12 +74,12 @@ void SPacsConfigurationEditor::configuring()
 void SPacsConfigurationEditor::starting()
 {
     // Create the worker.
-    m_requestWorker = core::thread::Worker::New();
+    m_requestWorker = core::thread::worker::make();
 
     const auto pacsConfiguration = m_config.lock();
 
-    sight::ui::base::IGuiContainer::create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
+    sight::ui::service::create();
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(getContainer());
 
     auto* gridLayout = new QGridLayout();
 
@@ -264,7 +264,7 @@ void SPacsConfigurationEditor::pingPACS()
         {
             const auto pacsConfiguration = m_config.lock();
 
-            auto seriesEnquirer = sight::io::dimse::SeriesEnquirer::New();
+            auto seriesEnquirer = std::make_shared<sight::io::dimse::SeriesEnquirer>();
 
             bool success = false;
             try
@@ -293,22 +293,22 @@ void SPacsConfigurationEditor::pingPACS()
             {
                 if(success)
                 {
-                    m_slotShowDialog->asyncRun("Ping Pacs","Ping succeeded!");
+                    m_slotShowDialog->async_run("Ping Pacs","Ping succeeded!");
                 }
                 else
                 {
-                    m_slotShowDialog->asyncRun("Ping Pacs","Ping failed!");
+                    m_slotShowDialog->async_run("Ping Pacs","Ping failed!");
                 }
             }
 
             if(success)
             {
-                this->INotifier::info("Ping succeeded!");
+                this->notifier::info("Ping succeeded!");
                 SIGHT_INFO("Ping succeeded")
             }
             else
             {
-                this->INotifier::failure("Ping failed!");
+                this->notifier::failure("Ping failed!");
                 SIGHT_INFO("Ping failed")
             }
         });
@@ -318,10 +318,10 @@ void SPacsConfigurationEditor::pingPACS()
 
 void SPacsConfigurationEditor::modifiedNotify(sight::io::dimse::data::PacsConfiguration::sptr _pacsConfiguration)
 {
-    auto sig = _pacsConfiguration->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    auto sig = _pacsConfiguration->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 
@@ -411,11 +411,11 @@ void SPacsConfigurationEditor::onRetrieveMethodChanged(int _index)
 
 void SPacsConfigurationEditor::showDialog(const std::string _title,const std::string _message)
 {
-    sight::ui::base::dialog::MessageDialog messageBox;
+    sight::ui::dialog::message messageBox;
     messageBox.setTitle(_title);
     messageBox.setMessage(_message);
-    messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
-    messageBox.addButton(ui::base::dialog::IMessageDialog::OK);
+    messageBox.setIcon(ui::dialog::message::INFO);
+    messageBox.addButton(ui::dialog::message::OK);
     messageBox.show();
 }
 

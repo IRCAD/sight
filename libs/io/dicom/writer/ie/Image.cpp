@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ Image::Image(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Image::csptr& image,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -136,7 +136,7 @@ void Image::writeImagePixelModule()
     gdcmImage.SetNumberOfDimensions(dimension);
 
     // Image's dimension
-    const data::Image::Size& size = m_object->getSize();
+    const data::Image::Size& size = m_object->size();
     for(unsigned int i = 0 ; i < dimension ; ++i)
     {
         gdcmImage.SetDimension(i, static_cast<unsigned int>(size[i]));
@@ -154,13 +154,13 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
     gdcm::Image& gdcmImage         = imageWriter->GetImage();
 
     // Compute buffer size
-    const data::Image::Size& size = m_object->getSize();
+    const data::Image::Size& size = m_object->size();
     std::size_t bufferLength      = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
     bufferLength = (!m_instance->getIsMultiFiles()) ? (bufferLength * size[2]) : bufferLength;
 
     // Retrieve image buffer
     const auto dumpLock     = m_object->dump_lock();
-    const char* imageBuffer = static_cast<const char*>(m_object->getBuffer());
+    const char* imageBuffer = static_cast<const char*>(m_object->buffer());
 
     // Pixel Data - Type 1C
     gdcm::DataElement pixeldata(gdcm::Tag(0x7fe0, 0x0010));

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "filter/image/LineDrawer.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -41,7 +41,7 @@ LineDrawer::LineDrawer(data::Image::sptr img, data::Image::csptr roi) :
 
     m_imageTypeSize = std::uint8_t(m_image->getType().size());
     m_roiTypeSize   = m_useROI ? std::uint8_t(m_roiImage->getType().size()) : 0;
-    const auto& size = m_image->getSize();
+    const auto& size = m_image->size();
     m_yPitch = size[0];
     m_zPitch = size[1] * m_yPitch;
 }
@@ -61,7 +61,7 @@ bool LineDrawer::drawEllipse(
     bool modified = false;
 
     const auto& spacing = m_image->getSpacing();
-    const auto& size    = m_image->getSize();
+    const auto& size    = m_image->size();
 
     const double width  = radius / spacing[firstDim];
     const double height = radius / spacing[secondDim];

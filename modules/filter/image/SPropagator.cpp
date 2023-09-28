@@ -22,12 +22,12 @@
 
 #include "modules/filter/image/SPropagator.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -40,22 +40,22 @@
 namespace sight::module::filter::image
 {
 
-static const core::com::Signals::SignalKeyType s_DRAWN_SIG = "drawn";
+static const core::com::signals::key_t DRAWN_SIG = "drawn";
 
-static const core::com::Slots::SlotKeyType s_DRAW_SLOT            = "draw";
-static const core::com::Slots::SlotKeyType s_SET_ORIENTATION_SLOT = "setOrientation";
-static const core::com::Slots::SlotKeyType s_RESET_DRAWING        = "resetDrawing";
+static const core::com::slots::key_t DRAW_SLOT            = "draw";
+static const core::com::slots::key_t SET_ORIENTATION_SLOT = "setOrientation";
+static const core::com::slots::key_t RESET_DRAWING        = "resetDrawing";
 
 //-----------------------------------------------------------------------------
 
 SPropagator::SPropagator() :
-    IHasParameters(m_slots)
+    has_parameters(m_slots)
 {
-    newSlot(s_DRAW_SLOT, &SPropagator::draw, this);
-    newSlot(s_SET_ORIENTATION_SLOT, &SPropagator::setOrientation, this);
-    newSlot(s_RESET_DRAWING, &SPropagator::resetDrawing, this);
+    new_slot(DRAW_SLOT, &SPropagator::draw, this);
+    new_slot(SET_ORIENTATION_SLOT, &SPropagator::setOrientation, this);
+    new_slot(RESET_DRAWING, &SPropagator::resetDrawing, this);
 
-    m_sigDrawn = newSignal<DrawnSignalType>(s_DRAWN_SIG);
+    m_sigDrawn = new_signal<DrawnSignalType>(DRAWN_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ SPropagator::~SPropagator()
 
 void SPropagator::configuring()
 {
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     m_value     = config.get<int>("value", 1);
     m_overwrite = config.get<bool>("overwrite", true);
@@ -124,7 +124,7 @@ void SPropagator::starting()
     bool isValid = data::helper::MedicalImage::checkImageValidity(imgInLock.get_shared())
                    && data::helper::MedicalImage::checkImageValidity(imgOutLock.get_shared());
 
-    SIGHT_FATAL_IF("Input and output image must have the same size.", imgInLock->getSize() != imgOutLock->getSize());
+    SIGHT_FATAL_IF("Input and output image must have the same size.", imgInLock->size() != imgOutLock->size());
     SIGHT_WARN_IF(
         "Input and output image must have the same spacing.",
         imgInLock->getSpacing() != imgOutLock->getSpacing()
@@ -311,20 +311,20 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
                                                                 imgOutLock.get_shared(),
                                                                 m_diff
             ));
-            m_sigDrawn->asyncEmit(diffCommand);
+            m_sigDrawn->async_emit(diffCommand);
             m_diff.clear();
         }
 
         m_drawing = false;
 
-        m_sigComputed->asyncEmit();
+        m_sigComputed->async_emit();
     }
 
     if(imgBufferModified)
     {
-        auto sig = imgOutLock->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
-        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        auto sig = imgOutLock->signal<data::Image::BufferModifiedSignalType>(data::Image::BUFFER_MODIFIED_SIG);
+        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 
@@ -349,7 +349,7 @@ sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSee
     const auto imgOut = m_imageOut.lock();
     SIGHT_ASSERT(s_IMAGE_INOUT << " does not exist", imgOut);
 
-    const data::Image::Size& imgSize = imgOut->getSize();
+    const data::Image::Size& imgSize = imgOut->size();
 
     sight::filter::image::MinMaxPropagation::SeedsType seeds;
 
@@ -370,12 +370,12 @@ sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSee
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SPropagator::getAutoConnections() const
+service::connections_t SPropagator::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SET_ORIENTATION_SLOT},
-        {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_RESET_DRAWING}
+        {s_IMAGE_IN, data::Image::MODIFIED_SIG, service::slots::UPDATE},
+        {s_IMAGE_IN, data::Image::SLICE_TYPE_MODIFIED_SIG, SET_ORIENTATION_SLOT},
+        {s_IMAGE_IN, data::Image::SLICE_INDEX_MODIFIED_SIG, RESET_DRAWING}
     };
 }
 

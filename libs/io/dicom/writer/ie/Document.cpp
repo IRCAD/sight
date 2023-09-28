@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "io/dicom/helper/StructuredReport.hpp" // For graphviz dump
 #include "io/dicom/writer/tid/MeasurementReport.hpp"
 
-#include <core/tools/dateAndTime.hpp>
+#include <core/tools/date_and_time.hpp>
 
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
@@ -50,7 +50,7 @@ Document::Document(
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const data::Image::csptr& image,
     bool use3DSR,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -77,11 +77,11 @@ void Document::writeSRDocumentGeneralModule()
     io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0013>(0, dataset);
 
     // Content Date - Type 1 - FIXME: Keep series date ?
-    const std::string date = core::tools::getDate(ptime);
+    const std::string date = core::tools::get_date(ptime);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0023>(date, dataset);
 
     // Content Time - Type 1 - FIXME: Keep series time ?
-    const std::string time = core::tools::getTime(ptime);
+    const std::string time = core::tools::get_time(ptime);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0033>(time, dataset);
 
     // Performed Procedure Code Sequence (0040,A372) // Type 2 (FIXME: CID 7000 ?)

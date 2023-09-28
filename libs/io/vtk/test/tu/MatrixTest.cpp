@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,7 +40,7 @@ namespace sight::io::vtk::ut
 
 void MatrixTest::toVtkMatrixTest()
 {
-    auto matrix = data::Matrix4::New();
+    auto matrix = std::make_shared<data::Matrix4>();
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)
@@ -77,7 +77,7 @@ void MatrixTest::fromVtkMatrixTest()
         }
     }
 
-    auto matrix = data::Matrix4::New();
+    auto matrix = std::make_shared<data::Matrix4>();
     fromVTKMatrix(vtkMatrix, matrix);
 
     for(std::uint8_t i = 0 ; i < 4 ; i++)

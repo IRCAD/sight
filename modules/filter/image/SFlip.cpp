@@ -22,26 +22,26 @@
 
 #include "modules/filter/image/SFlip.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <filter/image/Flipper.hpp>
 
 namespace sight::module::filter::image
 {
 
-const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXIS_X_SLOT = "flipAxisX";
-const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXIS_Y_SLOT = "flipAxisY";
-const core::com::Slots::SlotKeyType SFlip::s_FLIP_AXIS_Z_SLOT = "flipAxisZ";
+const core::com::slots::key_t SFlip::FLIP_AXIS_X_SLOT = "flipAxisX";
+const core::com::slots::key_t SFlip::FLIP_AXIS_Y_SLOT = "flipAxisY";
+const core::com::slots::key_t SFlip::FLIP_AXIS_Z_SLOT = "flipAxisZ";
 
 //------------------------------------------------------------------------------
 
 SFlip::SFlip()
 {
     // Initialize the slots
-    newSlot(s_FLIP_AXIS_X_SLOT, &SFlip::flipAxisX, this);
-    newSlot(s_FLIP_AXIS_Y_SLOT, &SFlip::flipAxisY, this);
-    newSlot(s_FLIP_AXIS_Z_SLOT, &SFlip::flipAxisZ, this);
+    new_slot(FLIP_AXIS_X_SLOT, &SFlip::flipAxisX, this);
+    new_slot(FLIP_AXIS_Y_SLOT, &SFlip::flipAxisY, this);
+    new_slot(FLIP_AXIS_Z_SLOT, &SFlip::flipAxisZ, this);
 }
 
 //------------------------------------------------------------------------------
@@ -70,13 +70,13 @@ void SFlip::updating()
     SIGHT_ASSERT("No 'imageIn' found !", inImg);
     if(inImg)
     {
-        data::Image::sptr outImg = data::Image::New();
+        data::Image::sptr outImg = std::make_shared<data::Image>();
 
         sight::filter::image::Flipper::flip(inImg.get_shared(), outImg, m_flipAxes);
 
         m_target = outImg;
 
-        m_sigComputed->asyncEmit();
+        m_sigComputed->async_emit();
     }
     else
     {
@@ -117,11 +117,11 @@ void SFlip::flipAxisZ()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SFlip::getAutoConnections() const
+service::connections_t SFlip::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE}
+        {s_IMAGE_IN, data::Image::MODIFIED_SIG, service::slots::UPDATE},
+        {s_IMAGE_IN, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

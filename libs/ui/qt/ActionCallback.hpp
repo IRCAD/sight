@@ -24,7 +24,7 @@
 
 #include "ui/qt/config.hpp"
 
-#include <ui/base/ActionCallbackBase.hpp>
+#include <ui/__/ActionCallbackBase.hpp>
 
 #include <QObject>
 
@@ -34,18 +34,16 @@ namespace sight::ui::qt
 /**
  * @brief   Defines the menu item callback.
  */
-class UI_QT_CLASS_QT_API ActionCallback : public QObject,
-                                          public ui::base::ActionCallbackBase
+class UI_QT_CLASS_API_QT ActionCallback : public QObject,
+                                          public ui::ActionCallbackBase
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_CLASS(ActionCallback, ui::base::ActionCallbackBase, ui::base::factory::New<ActionCallback>);
+    SIGHT_DECLARE_CLASS(ActionCallback, ui::ActionCallbackBase, ui::factory::make<ActionCallback>);
 
-    UI_QT_QT_API ActionCallback(ui::base::GuiBaseObject::Key key);
-
-    UI_QT_QT_API ~ActionCallback() override;
+    UI_QT_API_QT ~ActionCallback() override = default;
 
 /**
  * @brief  Qt slot.

@@ -22,8 +22,8 @@
 
 #include "SResampler.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
 
 #include <filter/image/Resampler.hpp>
 
@@ -71,20 +71,20 @@ void SResampler::updating()
         inImg.get_shared(),
         outImg.get_shared(),
         transform.get_shared(),
-        std::make_tuple(target->getSize(), target->getOrigin(), target->getSpacing())
+        std::make_tuple(target->size(), target->getOrigin(), target->getSpacing())
     );
 
-    m_sigComputed->asyncEmit();
+    m_sigComputed->async_emit();
 
     auto imgBufModifiedSig = outImg->signal<data::Image::BufferModifiedSignalType>
-                                 (data::Image::s_BUFFER_MODIFIED_SIG);
+                                 (data::Image::BUFFER_MODIFIED_SIG);
 
-    imgBufModifiedSig->asyncEmit();
+    imgBufModifiedSig->async_emit();
 
     auto imgModifiedSig = outImg->signal<data::Image::ModifiedSignalType>
-                              (data::Image::s_MODIFIED_SIG);
+                              (data::Image::MODIFIED_SIG);
 
-    imgModifiedSig->asyncEmit();
+    imgModifiedSig->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -95,13 +95,13 @@ void SResampler::stopping()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SResampler::getAutoConnections() const
+service::connections_t SResampler::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_TRANSFORM_IN, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_TARGET_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_IMAGE_IN, data::Image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE_IN, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_TRANSFORM_IN, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_TARGET_IN, data::Image::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }

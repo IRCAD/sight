@@ -22,7 +22,7 @@
 
 #include "DicomAnonymizerTest.hpp"
 
-#include <core/os/TempPath.hpp>
+#include <core/os/temp_path.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -86,12 +86,12 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     data::ImageSeries::sptr imgSeries;
     imgSeries = utestData::generator::SeriesSet::createImageSeries();
 
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
 
     // Write ImageSeries
-    io::dicom::writer::Series::sptr writer = io::dicom::writer::Series::New();
+    io::dicom::writer::Series::sptr writer = std::make_shared<io::dicom::writer::Series>();
     writer->setObject(imgSeries);
-    writer->setFolder(tmpDir);
+    writer->set_folder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // Anonymize ImageSeries
@@ -99,17 +99,17 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(tmpDir));
 
     // Load ImageSeries
-    auto series_set = data::SeriesSet::New();
-    auto reader     = io::dicom::reader::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
+    auto reader     = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(tmpDir);
+    reader->set_folder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Check series
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     auto anonymizedSeries =
-        data::ImageSeries::dynamicCast(series_set->front());
+        std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
 
     CPPUNIT_ASSERT(anonymizedSeries);
 
@@ -254,20 +254,20 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
 
     m_uidContainer.erase("");
 
-    auto series_set = data::SeriesSet::New();
+    auto series_set = std::make_shared<data::SeriesSet>();
 
     // Read DicomSeries
-    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
     reader->setObject(series_set);
-    reader->setFolder(srcPath);
+    reader->set_folder(srcPath);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Write DicomSeries
-    core::os::TempDir tmpDir;
-    auto writer = io::dicom::helper::DicomSeriesWriter::New();
+    core::os::temp_dir tmpDir;
+    auto writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
     writer->setObject((*series_set)[0]);
-    writer->setFolder(tmpDir);
+    writer->set_folder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // Anonymize folder

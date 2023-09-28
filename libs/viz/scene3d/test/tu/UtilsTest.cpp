@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "UtilsTest.hpp"
 
-#include <core/data/Image.hpp>
+#include <data/Image.hpp>
 
 #include <utestData/generator/Image.hpp>
 
@@ -55,7 +55,7 @@ void UtilsTest::tearDown()
 
 void UtilsTest::convertOgreColorToFwColor()
 {
-    data::Color::sptr refColor = data::Color::New();
+    data::Color::sptr refColor = std::make_shared<data::Color>();
     refColor->setRGBA(1.F, 1.F, 1.F, 1.F);
 
     data::Color::sptr resultColor = viz::scene3d::Utils::convertOgreColorToFwColor(Ogre::ColourValue());
@@ -74,7 +74,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
     // Convert from Sight to ogre and back to Sight.
     {
-        data::Matrix4::sptr mat0 = data::Matrix4::New();
+        data::Matrix4::sptr mat0 = std::make_shared<data::Matrix4>();
 
         for(double& coeff : *mat0)
         {
@@ -92,7 +92,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         }
 
         // Convert back to TM3D.
-        data::Matrix4::sptr mat0Copy = data::Matrix4::New();
+        data::Matrix4::sptr mat0Copy = std::make_shared<data::Matrix4>();
 
         viz::scene3d::Utils::copyOgreMxToTM3D(ogreMat0, mat0Copy);
 
@@ -117,7 +117,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
             }
         }
 
-        data::Matrix4::sptr mat1Copy = data::Matrix4::New();
+        data::Matrix4::sptr mat1Copy = std::make_shared<data::Matrix4>();
         viz::scene3d::Utils::copyOgreMxToTM3D(ogreMat1, mat1Copy);
 
         for(std::uint8_t l = 0 ; l < 4 ; ++l)
@@ -145,20 +145,20 @@ void UtilsTest::convertOgreMatrixToTM3D()
 
 void UtilsTest::worldToSliceTest()
 {
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
 
     Ogre::Vector3 world_inside_im  = {20., 10., 5.};
     Ogre::Vector3 world_outside_im = {50., -1., 5.};
 
     // Spacing is 0, throw exception.
-    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_inside_im), core::Exception);
+    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_inside_im), core::exception);
 
     utestData::generator::Image::generateImage(
         image,
         {40, 40, 40},
         {1., 1., 1.},
         {0., 0., 0.},
-        core::Type::UINT8,
+        core::type::UINT8,
         data::Image::PixelFormat::GRAY_SCALE
     );
 
@@ -170,7 +170,7 @@ void UtilsTest::worldToSliceTest()
     CPPUNIT_ASSERT_EQUAL(10, slice_idx[1]);
     CPPUNIT_ASSERT_EQUAL(5, slice_idx[2]);
 
-    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_outside_im), core::Exception);
+    CPPUNIT_ASSERT_THROW(Utils::worldToSlices(*image, world_outside_im), core::exception);
 }
 
 //------------------------------------------------------------------------------

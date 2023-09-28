@@ -22,14 +22,14 @@
 
 #include "SRender.hpp"
 
-#include "viz/scene2d/IAdaptor.hpp"
+#include "viz/scene2d/adaptor.hpp"
 #include "viz/scene2d/registry/Adaptor.hpp"
 #include "viz/scene2d/Scene2DGraphicsView.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 
 #include <data/tools/Color.hpp>
 
@@ -37,7 +37,7 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QGraphicsRectItem>
 #include <QVBoxLayout>
@@ -94,15 +94,15 @@ void SRender::dispatchInteraction(scene2d::data::Event& _event)
     if(!_event.isAccepted())
     {
         // Get all started adaptors.
-        std::vector<viz::scene2d::IAdaptor::sptr> orderedAdaptors;
+        std::vector<viz::scene2d::adaptor::sptr> orderedAdaptors;
 
         const auto& registry = viz::scene2d::registry::getAdaptorRegistry();
         for(const auto& elt : registry)
         {
-            if(elt.second == this->getID())
+            if(elt.second == this->get_id())
             {
-                viz::scene2d::IAdaptor::sptr adaptor =
-                    viz::scene2d::IAdaptor::dynamicCast(core::tools::fwID::getObject(elt.first));
+                viz::scene2d::adaptor::sptr adaptor =
+                    std::dynamic_pointer_cast<viz::scene2d::adaptor>(core::tools::id::get_object(elt.first));
                 if(adaptor != nullptr && adaptor->isStarted())
                 {
                     orderedAdaptors.push_back(adaptor);
@@ -114,13 +114,13 @@ void SRender::dispatchInteraction(scene2d::data::Event& _event)
         std::sort(
             orderedAdaptors.begin(),
             orderedAdaptors.end(),
-            [&](viz::scene2d::IAdaptor::sptr _a1, viz::scene2d::IAdaptor::sptr _a2)
+            [&](viz::scene2d::adaptor::sptr _a1, viz::scene2d::adaptor::sptr _a2)
             {
                 return _a1->getZValue() > _a2->getZValue();
             });
 
         // Process interaction on all adaptors until one has accepted the event.
-        for(const viz::scene2d::IAdaptor::sptr& adaptor : orderedAdaptors)
+        for(const viz::scene2d::adaptor::sptr& adaptor : orderedAdaptors)
         {
             adaptor->processInteraction(_event);
             if(_event.isAccepted())
@@ -192,7 +192,7 @@ void SRender::configuring()
         }
         else
         {
-            SIGHT_ASSERT("Bad scene const IService&, unknown xml node : " + iter.first, false);
+            SIGHT_ASSERT("Bad scene const base&, unknown xml node : " + iter.first, false);
         }
     }
 }
@@ -226,7 +226,7 @@ void SRender::stopping()
 
 void SRender::startContext()
 {
-    auto qtContainer = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<ui::qt::container::widget>(this->getContainer());
 
     // Convert the background color
     std::array<std::uint8_t, 4> color {};
@@ -237,7 +237,7 @@ void SRender::startContext()
     m_scene->setFocus(Qt::MouseFocusReason);
 
     m_view = new Scene2DGraphicsView(m_scene, qtContainer->getQtContainer());
-    m_view->setSceneRender(viz::scene2d::SRender::dynamicCast(this->getSptr()));
+    m_view->setSceneRender(std::dynamic_pointer_cast<viz::scene2d::SRender>(this->get_sptr()));
     m_view->setRenderHint(QPainter::Antialiasing, m_antialiasing);
 
     auto* layout = new QVBoxLayout;
@@ -335,7 +335,7 @@ void SRender::configureAdaptor(const ConfigType& _conf)
     const auto adaptorId = _conf.get<std::string>("uid");
 
     auto& registry = viz::scene2d::registry::getAdaptorRegistry();
-    registry[adaptorId] = this->getID();
+    registry[adaptorId] = this->get_id();
 }
 
 //-----------------------------------------------------------------------------

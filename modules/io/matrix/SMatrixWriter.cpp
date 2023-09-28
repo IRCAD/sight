@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,17 @@
 
 #include "SMatrixWriter.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
-#include <core/location/SingleFile.hpp>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
+#include <core/location/single_file.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -41,19 +41,19 @@
 namespace sight::module::io::matrix
 {
 
-static const core::com::Slots::SlotKeyType s_SAVE_MATRIX  = "saveMatrix";
-static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
-static const core::com::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
-static const core::com::Slots::SlotKeyType s_WRITE        = "write";
+static const core::com::slots::key_t SAVE_MATRIX  = "saveMatrix";
+static const core::com::slots::key_t START_RECORD = "startRecord";
+static const core::com::slots::key_t STOP_RECORD  = "stopRecord";
+static const core::com::slots::key_t WRITE        = "write";
 
 //------------------------------------------------------------------------------
 
 SMatrixWriter::SMatrixWriter() noexcept
 {
-    newSlot(s_SAVE_MATRIX, &SMatrixWriter::saveMatrix, this);
-    newSlot(s_START_RECORD, &SMatrixWriter::startRecord, this);
-    newSlot(s_STOP_RECORD, &SMatrixWriter::stopRecord, this);
-    newSlot(s_WRITE, &SMatrixWriter::write, this);
+    new_slot(SAVE_MATRIX, &SMatrixWriter::saveMatrix, this);
+    new_slot(START_RECORD, &SMatrixWriter::startRecord, this);
+    new_slot(STOP_RECORD, &SMatrixWriter::stopRecord, this);
+    new_slot(WRITE, &SMatrixWriter::write, this);
 }
 
 //------------------------------------------------------------------------------
@@ -69,16 +69,16 @@ SMatrixWriter::~SMatrixWriter() noexcept
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SMatrixWriter::getIOPathType() const
+sight::io::service::IOPathType SMatrixWriter::getIOPathType() const
 {
-    return sight::io::base::service::FILE;
+    return sight::io::service::FILE;
 }
 
 //------------------------------------------------------------------------------
 
 void SMatrixWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -91,20 +91,20 @@ void SMatrixWriter::starting()
 
 void SMatrixWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
+    dialogFile.setOption(ui::dialog::location::WRITE);
+    dialogFile.setType(ui::dialog::location::SINGLE_FILE);
     dialogFile.addFilter(".csv file", "*.csv");
 
-    auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_file>(dialogFile.show());
     if(result)
     {
-        defaultDirectory->setFolder(result->getFile().parent_path());
+        defaultDirectory->set_folder(result->get_file().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
-        this->setFile(result->getFile());
+        this->set_file(result->get_file());
     }
     else
     {
@@ -123,13 +123,13 @@ void SMatrixWriter::stopping()
 
 void SMatrixWriter::updating()
 {
-    core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
+    core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
     this->saveMatrix(timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::saveMatrix(core::HiResClock::HiResClockType _timestamp)
+void SMatrixWriter::saveMatrix(core::hires_clock::type _timestamp)
 {
     this->startRecord();
     this->write(_timestamp);
@@ -138,7 +138,7 @@ void SMatrixWriter::saveMatrix(core::HiResClock::HiResClockType _timestamp)
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
+void SMatrixWriter::write(core::hires_clock::type timestamp)
 {
     if(m_isRecording)
     {
@@ -149,7 +149,7 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
             "The object is not a '"
             + data::MatrixTL::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             matrixTL
         );
@@ -201,7 +201,7 @@ void SMatrixWriter::startRecord()
     if(this->hasLocationDefined())
     {
         // Make sure the parent path exists
-        const std::filesystem::path dirname = this->getFile().parent_path();
+        const std::filesystem::path dirname = this->get_file().parent_path();
         if(!std::filesystem::exists(dirname))
         {
             std::filesystem::create_directories(dirname);
@@ -209,7 +209,7 @@ void SMatrixWriter::startRecord()
 
         if(!m_filestream.is_open())
         {
-            m_filestream.open(this->getFile().string(), std::ofstream::out | openMode);
+            m_filestream.open(this->get_file().string(), std::ofstream::out | openMode);
             m_filestream.precision(7);
             m_filestream << std::fixed;
             m_isRecording = true;
@@ -217,7 +217,7 @@ void SMatrixWriter::startRecord()
         else
         {
             SIGHT_WARN(
-                "The file " + this->getFile().string()
+                "The file " + this->get_file().string()
                 + " can't be opened. Please check if it is already open in another program."
             );
         }
@@ -238,10 +238,10 @@ void SMatrixWriter::stopRecord()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
+service::connections_t SMatrixWriter::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(sight::io::base::service::s_DATA_KEY, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    service::connections_t connections;
+    connections.push(sight::io::service::s_DATA_KEY, data::MatrixTL::OBJECT_PUSHED_SIG, WRITE);
     return connections;
 }
 

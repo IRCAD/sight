@@ -2,7 +2,7 @@
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
     <requirement id="sight::module::activity" />
 
     <xi:include href="configurations/ExActivitiesBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

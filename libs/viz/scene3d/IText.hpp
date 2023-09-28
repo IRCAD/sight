@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include "core/com/HasSignals.hpp"
+#include "core/com/has_signals.hpp"
 
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/factory/new.hpp"
 
-#include <core/BaseObject.hpp>
+#include <core/base_object.hpp>
 
 #include <viz/scene3d/SRender.hpp>
 
@@ -44,12 +44,12 @@ namespace sight::viz::scene3d
  * It can also be displayed in 2D if not attached to anything and it's position can be set and updated through
  * the 'setPosition' method.
  */
-class VIZ_SCENE3D_CLASS_API IText : public sight::core::BaseObject,
-                                    public core::com::HasSignals
+class VIZ_SCENE3D_CLASS_API IText : public sight::core::base_object,
+                                    public core::com::has_signals
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IText, sight::core::BaseObject);
+    SIGHT_DECLARE_CLASS(IText, sight::core::base_object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Class used to register a class factory in factory registry.
@@ -63,34 +63,32 @@ public:
             auto fact = [](const sight::viz::scene3d::Layer::sptr& _layer) -> std::shared_ptr<T>
                         {
                             // Capture the factory inside a lambda to distinguish it from overloaded methods.
-                            return viz::scene3d::textFactory::New<T>(_layer);
+                            return viz::scene3d::textFactory::make<T>(_layer);
                         };
-            viz::scene3d::registry::getTextRegistry()->addFactory(functorKey, fact);
+            viz::scene3d::registry::getTextRegistry()->add_factory(functorKey, fact);
         }
     };
 
     //------------------------------------------------------------------------------
 
-    static viz::scene3d::IText::sptr New(const sight::viz::scene3d::Layer::sptr& _layer)
+    static viz::scene3d::IText::sptr make(const sight::viz::scene3d::Layer::sptr& _layer)
     {
-        return viz::scene3d::textFactory::New(viz::scene3d::IText::REGISTRY_KEY, _layer);
+        return viz::scene3d::textFactory::make(viz::scene3d::IText::REGISTRY_KEY, _layer);
     }
 
     /// Defines the key used for the factory.
     VIZ_SCENE3D_API static inline const std::string REGISTRY_KEY {"sight::viz::scene3d::IText::REGISTRY_KEY"};
 
-    using Key = viz::scene3d::textFactory::Key;
+    static const inline std::string TEXT_EDITED_SIGNAL = "textEdited";
+    using TextEditedSignal = core::com::signal<void (std::string)>;
 
-    static const inline std::string s_TEXT_EDITED_SIGNAL = "textEdited";
-    using TextEditedSignal = core::com::Signal<void (std::string)>;
-
-    static const inline std::string s_EDITING_FINISHED_SIGNAL = "editingFinished";
-    using EditingFinishedSignal = core::com::Signal<void ()>;
+    static const inline std::string EDITING_FINISHED_SIGNAL = "editingFinished";
+    using EditingFinishedSignal = core::com::signal<void ()>;
 
     IText()
     {
-        newSignal<TextEditedSignal>(s_TEXT_EDITED_SIGNAL);
-        newSignal<EditingFinishedSignal>(s_EDITING_FINISHED_SIGNAL);
+        new_signal<TextEditedSignal>(TEXT_EDITED_SIGNAL);
+        new_signal<EditingFinishedSignal>(EDITING_FINISHED_SIGNAL);
     }
 
     /// Attach to a scene node.

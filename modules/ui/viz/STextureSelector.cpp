@@ -22,19 +22,19 @@
 
 #include "STextureSelector.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <data/Array.hpp>
 #include <data/Image.hpp>
 #include <data/Material.hpp>
 
-#include <io/base/service/ioTypes.hpp>
+#include <io/__/service/ioTypes.hpp>
 
 #include <service/macros.hpp>
-#include <service/op/Add.hpp>
+#include <service/op.hpp>
 
-#include <ui/base/IDialogEditor.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog_editor.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -61,9 +61,9 @@ void STextureSelector::starting()
 {
     this->create();
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
     qtContainer->getQtContainer()->setObjectName(serviceID);
@@ -126,29 +126,29 @@ void STextureSelector::onLoadButton()
     // We have to instantiate a new image if necessary
     if(!existingTexture)
     {
-        image = data::Image::New();
+        image = std::make_shared<data::Image>();
         material->setDiffuseTexture(image);
     }
 
-    auto srv = service::add<sight::ui::base::IDialogEditor>("sight::module::ui::base::io::SSelector");
-    srv->setInOut(image, io::base::service::s_DATA_KEY);
+    auto srv = sight::service::add<sight::ui::dialog_editor>("sight::module::ui::io::SSelector");
+    srv->setInOut(image, io::service::s_DATA_KEY);
 
     srv->configure();
     srv->start();
     srv->update();
     srv->stop();
-    service::unregisterService(srv);
+    sight::service::remove(srv);
 
     // If we didn't have to create a new texture, we can notify the associated image
     if(existingTexture)
     {
-        auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        auto sig = image->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
         sig->emit();
     }
     else
     {
         auto sig = material->signal<data::Material::AddedTextureSignalType>(
-            data::Material::s_ADDED_TEXTURE_SIG
+            data::Material::ADDED_TEXTURE_SIG
         );
         sig->emit(image);
     }
@@ -168,7 +168,7 @@ void STextureSelector::onDeleteButton()
     {
         material->setDiffuseTexture(nullptr);
         auto sig = material->signal<data::Material::RemovedTextureSignalType>(
-            data::Material::s_REMOVED_TEXTURE_SIG
+            data::Material::REMOVED_TEXTURE_SIG
         );
         sig->emit(image);
     }

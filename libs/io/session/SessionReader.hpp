@@ -23,13 +23,13 @@
 
 #include "io/session/config.hpp"
 
-#include <core/crypto/PasswordKeeper.hpp>
+#include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
-#include <core/location/SingleFile.hpp>
+#include <core/location/single_file.hpp>
 
 #include <data/Object.hpp>
 
-#include <io/base/reader/IObjectReader.hpp>
+#include <io/__/reader/IObjectReader.hpp>
 #include <io/zip/ArchiveReader.hpp>
 
 #include <boost/property_tree/ptree.hpp>
@@ -59,22 +59,21 @@ using deserializer_t = std::function<data::Object::sptr(
  *
  */
 class IO_SESSION_CLASS_API SessionReader final :
-    public base::reader::IObjectReader,
-    public core::location::SingleFile
+    public io::reader::IObjectReader,
+    public core::location::single_file
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SessionReader, base::reader::IObjectReader, base::reader::factory::New<SessionReader>);
+    SIGHT_DECLARE_CLASS(SessionReader, io::reader::IObjectReader, io::reader::factory::make<SessionReader>);
     SIGHT_ALLOW_SHARED_FROM_THIS()
     /// Delete default constructors and assignment operators
-    SessionReader()                                = delete;
     SessionReader(const SessionReader&)            = delete;
     SessionReader(SessionReader&&)                 = delete;
     SessionReader& operator=(const SessionReader&) = delete;
     SessionReader& operator=(SessionReader&&)      = delete;
 
     /// Constructor
-    IO_SESSION_API SessionReader(base::reader::IObjectReader::Key key);
+    IO_SESSION_API SessionReader();
 
     /// Default destructor
     IO_SESSION_API ~SessionReader() override;
@@ -90,8 +89,8 @@ public:
     IO_SESSION_API void setPassword(const core::crypto::secure_string& password);
 
     /// Sets the encryption policy
-    /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
-    IO_SESSION_API void setEncryptionPolicy(core::crypto::PasswordKeeper::EncryptionPolicy policy);
+    /// @param policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
+    IO_SESSION_API void setEncryptionPolicy(core::crypto::password_keeper::encryption_policy policy);
 
     /// Set archive format
     /// @param archiveFormat how files are stored in the archive: @see sight::io::zip::Archive::ArchiveFormat

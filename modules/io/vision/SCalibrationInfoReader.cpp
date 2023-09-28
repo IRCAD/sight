@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "SCalibrationInfoReader.hpp"
 
-#include <core/com/Slots.hxx>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/slots.hxx>
+#include <core/location/single_folder.hpp>
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Image.hpp>
@@ -34,23 +34,23 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/base/Preferences.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/__/Preferences.hpp>
 
 #include <opencv2/opencv.hpp>
 
 namespace sight::module::io::vision
 {
 
-static const core::com::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
 //------------------------------------------------------------------------------
 
 SCalibrationInfoReader::SCalibrationInfoReader() noexcept
 {
-    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SCalibrationInfoReader::updateChessboardSize, this);
+    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &SCalibrationInfoReader::updateChessboardSize, this);
 }
 
 //------------------------------------------------------------------------------
@@ -60,29 +60,29 @@ SCalibrationInfoReader::~SCalibrationInfoReader() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SCalibrationInfoReader::getIOPathType() const
+sight::io::service::IOPathType SCalibrationInfoReader::getIOPathType() const
 {
-    return sight::io::base::service::FOLDER;
+    return sight::io::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SCalibrationInfoReader::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Select a folder holding calibration inputs" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::READ);
-    dialogFile.setType(ui::base::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(ui::dialog::location::READ);
+    dialogFile.setType(ui::dialog::location::FOLDER);
 
-    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
 
     if(result)
     {
-        this->setFolder(result->getFolder());
-        defaultDirectory->setFolder(result->getFolder().parent_path());
+        this->set_folder(result->get_folder());
+        defaultDirectory->set_folder(result->get_folder().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -95,7 +95,7 @@ void SCalibrationInfoReader::openLocationDialog()
 
 void SCalibrationInfoReader::configuring()
 {
-    sight::io::base::service::IReader::configuring();
+    sight::io::service::reader::configuring();
 
     const ConfigType config      = this->getConfiguration();
     const ConfigType boardConfig = config.get_child("board");
@@ -126,12 +126,12 @@ void SCalibrationInfoReader::updating()
 
         data::mt::locked_ptr calibInfoLock(calibInfo);
 
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
+        sight::ui::cursor cursor;
+        cursor.setCursor(ui::cursor_base::BUSY);
 
         using DetectionPairType = std::pair<data::Image::sptr, data::PointList::sptr>;
 
-        const std::filesystem::path folder = this->getFolder();
+        const std::filesystem::path folder = this->get_folder();
 
         // Use a map to sort input images by their filename.
         std::map<std::string, DetectionPairType> filenameDetectionMap;
@@ -154,7 +154,7 @@ void SCalibrationInfoReader::updating()
 
                 if(chessboardPts)
                 {
-                    data::Image::sptr calibImg = data::Image::New();
+                    data::Image::sptr calibImg = std::make_shared<data::Image>();
                     sight::io::opencv::Image::copyFromCv(*calibImg.get(), img);
 
                     calibImg->setSpacing({{1., 1., 1.}});
@@ -179,12 +179,12 @@ void SCalibrationInfoReader::updating()
             if(!errorMessage.empty())
             {
                 errorMessage += "\n\n Abort reading?";
-                sight::ui::base::dialog::MessageDialog messageBox("Reading calibration inputs failed", errorMessage,
-                                                                  sight::ui::base::dialog::MessageDialog::WARNING);
+                sight::ui::dialog::message messageBox("Reading calibration inputs failed", errorMessage,
+                                                      sight::ui::dialog::message::WARNING);
 
-                messageBox.addButton(ui::base::dialog::IMessageDialog::YES_NO);
+                messageBox.addButton(ui::dialog::message::YES_NO);
 
-                if((messageBox.show() & sight::ui::base::dialog::IMessageDialog::YES) != 0)
+                if((messageBox.show() & sight::ui::dialog::message::YES) != 0)
                 {
                     filenameDetectionMap.clear();
                     m_readFailed = true;
@@ -206,9 +206,9 @@ void SCalibrationInfoReader::updating()
             }
 
             auto sig = calibInfo->signal<data::CalibrationInfo::AddedRecordSignalType>
-                           (data::CalibrationInfo::s_MODIFIED_SIG);
+                           (data::CalibrationInfo::MODIFIED_SIG);
 
-            sig->asyncEmit();
+            sig->async_emit();
         }
     }
     else
@@ -229,7 +229,7 @@ void SCalibrationInfoReader::updateChessboardSize()
 {
     try
     {
-        ui::base::Preferences preferences;
+        ui::Preferences preferences;
 
         if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_widthKey); saved)
         {
@@ -252,7 +252,7 @@ void SCalibrationInfoReader::updateChessboardSize()
             }
         }
     }
-    catch(const ui::base::PreferencesDisabled&)
+    catch(const ui::PreferencesDisabled&)
     {
         // Nothing to do..
     }

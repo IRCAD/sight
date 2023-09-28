@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "AlgoMeshDeformation.hpp"
 
-#include <core/tools/NumericRoundCast.hxx>
+#include <core/tools/numeric_round_cast.hxx>
 
 #include <geometry/data/Mesh.hpp>
 
@@ -153,7 +153,7 @@ void AlgoMeshDeformation::computeSimu()
         if(pt1.y - m_yCenter > 0)
         {
             pt2.y = pt1.y + (pt1.y - m_yCenter) * scale;
-            c2.r  = core::tools::numericRoundCast<data::Mesh::color_t>(255 * scale);
+            c2.r  = core::tools::numeric_round_cast<data::Mesh::color_t>(255 * scale);
         }
         else
         {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include <cmath>
 #include <core/base.hpp>
-#include <core/tools/random/Generator.hpp>
+#include <core/tools/random/generator.hpp>
 
 #define FW_PROFILING_DISABLED
-#include <core/Profiling.hpp>
+#include <core/profiling.hpp>
 
 #include <geometry/data/VectorFunctions.hpp>
 
@@ -37,7 +37,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::VectorFunctionsTest);
 namespace sight::geometry::data::ut
 {
 
-using core::tools::random::safeRand;
+using core::tools::random::safe_rand;
 
 //------------------------------------------------------------------------------
 
@@ -59,12 +59,12 @@ void VectorFunctionsTest::checkDot()
 {
     // Dot product
     const double V1_X = 0.1;
-    const double V1_Y = safeRand() % 30 + 0.1;
-    const double V1_Z = safeRand() % 20 + 0.4;
+    const double V1_Y = safe_rand() % 30 + 0.1;
+    const double V1_Z = safe_rand() % 20 + 0.4;
 
-    const double V2_X = safeRand() % 50 + 0.4;
+    const double V2_X = safe_rand() % 50 + 0.4;
     const double V2_Y = 0.5;
-    const double V2_Z = safeRand() % 10 + 0.8;
+    const double V2_Z = safe_rand() % 10 + 0.8;
 
     const fwVec3d V1 = {V1_X, V1_Y, V1_Z};
     const fwVec3d V2 = {V2_X, V2_Y, V2_Z};

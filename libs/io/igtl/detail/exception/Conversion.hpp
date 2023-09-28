@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,17 +24,17 @@
 
 #include "io/igtl/config.hpp"
 
-#include <core/Exception.hpp>
+#include <core/exception.hpp>
 
 namespace sight::io::igtl::detail::exception
 {
 
 /// Throw this exception when a conversion between data and igtl message is not possible (error message explains the
 /// reasons)
-struct IO_IGTL_CLASS_API Conversion : core::Exception
+struct IO_IGTL_CLASS_API Conversion : core::exception
 {
     IO_IGTL_API Conversion(const std::string& err) :
-        core::Exception(err)
+        core::exception(err)
     {
     }
 };

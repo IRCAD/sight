@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include "io/dicom/writer/ie/Series.hpp"
 #include "io/dicom/writer/ie/Study.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -45,7 +45,7 @@ namespace sight::io::dicom::writer::iod
 CTMRImageIOD::CTMRImageIOD(
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const std::filesystem::path& destinationPath,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -64,7 +64,7 @@ CTMRImageIOD::~CTMRImageIOD()
 void CTMRImageIOD::write(const data::Series::csptr& series)
 {
     // Retrieve image series
-    data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
+    data::ImageSeries::csptr imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create writer
@@ -126,7 +126,7 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
     const gdcm::DataSet datasetCopy = writer->GetFile().GetDataSet();
 
     // Compute number of frames
-    std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (imageSeries->getSize()[2]) : 1;
+    std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (imageSeries->size()[2]) : 1;
 
     // Write specific tags according to frame number
     for(unsigned int i = 0 ; i < nbFrames ; ++i)

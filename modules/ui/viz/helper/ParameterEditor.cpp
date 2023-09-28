@@ -71,19 +71,19 @@ std::pair<T, T> getRange(T _value)
 
 //-----------------------------------------------------------------------------
 
-service::IService::ConfigType ParameterEditor::createConfig(
+service::config_t ParameterEditor::createConfig(
     const sight::viz::scene3d::IParameter::csptr& _adaptor,
-    const service::IService::csptr& _paramSrv,
-    core::com::helper::SigSlotConnection& _connections
+    const service::base::csptr& _paramSrv,
+    core::com::helper::sig_slot_connection& _connections
 )
 {
-    service::IService::ConfigType paramConfig;
+    service::config_t paramConfig;
 
     /// Getting associated object infos
     const auto shaderObj =
-        _adaptor->getInOut(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
+        _adaptor->inout(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
 
-    const auto& objType = shaderObj->getClassname();
+    const auto& objType = shaderObj->get_classname();
 
     if(objType == "sight::data::Boolean")
     {
@@ -98,7 +98,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
     {
         _connections.connect(_paramSrv, "colorChanged", _adaptor, "setColorParameter");
 
-        auto colorValue = data::Color::dynamicCast(shaderObj.get_shared());
+        auto colorValue = std::dynamic_pointer_cast<data::Color>(shaderObj.get_shared());
 
         int r = static_cast<unsigned char>(colorValue->red() * 255);
         int g = static_cast<unsigned char>(colorValue->green() * 255);
@@ -121,7 +121,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
     {
         _connections.connect(_paramSrv, "doubleChanged", _adaptor, "setDoubleParameter");
 
-        auto floatValue         = data::Float::dynamicCast(shaderObj.get_shared());
+        auto floatValue         = std::dynamic_pointer_cast<data::Float>(shaderObj.get_shared());
         const auto defaultValue = static_cast<double>(floatValue->value());
         const auto minmax       = getRange(defaultValue);
         const double min        = minmax.first;
@@ -138,7 +138,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
     {
         _connections.connect(_paramSrv, "intChanged", _adaptor, "setIntParameter");
 
-        auto intValue          = data::Integer::dynamicCast(shaderObj.get_shared());
+        auto intValue          = std::dynamic_pointer_cast<data::Integer>(shaderObj.get_shared());
         const int defaultValue = int(intValue->value());
         const auto minmax      = getRange(defaultValue);
         const int min          = minmax.first;
@@ -153,14 +153,14 @@ service::IService::ConfigType ParameterEditor::createConfig(
     }
     else if(objType == "sight::data::Array")
     {
-        auto arrayObject         = data::Array::dynamicCast(shaderObj.get_shared());
-        const auto numComponents = arrayObject->getSize()[0];
+        auto arrayObject         = std::dynamic_pointer_cast<data::Array>(shaderObj.get_shared());
+        const auto numComponents = arrayObject->size()[0];
         if(numComponents <= 3)
         {
             std::string strSize = std::to_string(numComponents);
 
-            if(arrayObject->getType() == core::Type::FLOAT
-               || arrayObject->getType() == core::Type::DOUBLE)
+            if(arrayObject->getType() == core::type::FLOAT
+               || arrayObject->getType() == core::type::DOUBLE)
             {
                 _connections.connect(
                     _paramSrv,
@@ -174,7 +174,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
                 const auto dumpLock = arrayObject->dump_lock();
 
                 double defaultValue = NAN;
-                if(arrayObject->getType() == core::Type::FLOAT)
+                if(arrayObject->getType() == core::type::FLOAT)
                 {
                     defaultValue = static_cast<double>(arrayObject->at<float>(0));
                 }
@@ -194,7 +194,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
                 paramConfig.add("<xmlattr>.min", min);
                 paramConfig.add("<xmlattr>.max", max);
             }
-            else if(arrayObject->getType() == core::Type::INT32)
+            else if(arrayObject->getType() == core::type::INT32)
             {
                 _connections.connect(
                     _paramSrv,

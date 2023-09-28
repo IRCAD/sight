@@ -213,7 +213,7 @@ void Tester::doSomethingAsynchronously(std::function<void(T)> f)
 //------------------------------------------------------------------------------
 
 template<typename T>
-bool Tester::isA()
+bool Tester::is_a()
 {
     return qobject_cast<T>(m_graphicComponent) != nullptr;
 }

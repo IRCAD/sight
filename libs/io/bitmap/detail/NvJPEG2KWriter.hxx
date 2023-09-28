@@ -88,8 +88,8 @@ public:
         const auto& pixel_type = image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << pixel_type,
-            pixel_type != core::Type::UINT8
-            && pixel_type != core::Type::UINT16
+            pixel_type != core::type::UINT8
+            && pixel_type != core::type::UINT16
         );
 
         const auto& pixel_format = image.getPixelFormat();
@@ -107,14 +107,14 @@ public:
         SIGHT_THROW_IF(
             m_name << " - Unsupported format (" << pixel_format << ") and type (" << pixel_type << ") combination",
             (pixel_format == data::Image::PixelFormat::RGBA || pixel_format == data::Image::PixelFormat::BGRA)
-            && pixel_type == core::Type::UINT16
+            && pixel_type == core::type::UINT16
         );
 
         // Copy the image to the GPU and make it planar
         toGPU(image);
 
         // Fill nvjpeg2kImageComponentInfo_t
-        const auto& sizes          = image.getSize();
+        const auto& sizes          = image.size();
         const auto& num_components = image.numComponents();
         std::vector<nvjpeg2kImageComponentInfo_t> components_info(num_components);
         for(auto& component_info : components_info)
@@ -122,7 +122,7 @@ public:
             component_info.component_width  = std::uint32_t(sizes[0]);
             component_info.component_height = std::uint32_t(sizes[1]);
             component_info.precision        = std::uint8_t(pixel_type.size() * 8);
-            component_info.sgn              = pixel_type.isSigned() ? 1 : 0;
+            component_info.sgn              = pixel_type.is_signed() ? 1 : 0;
         }
 
         // Fill component pitches
@@ -138,7 +138,7 @@ public:
         nvjpeg2kImage_t input_image {
             .pixel_data     = m_planar_gpu_buffers.data(),
             .pitch_in_bytes = pitches_in_bytes.data(),
-            .pixel_type     = pixel_type == core::Type::INT16 || pixel_type == core::Type::UINT16
+            .pixel_type     = pixel_type == core::type::INT16 || pixel_type == core::type::UINT16
                               ? NVJPEG2K_UINT16
                               : NVJPEG2K_UINT8,
             .num_components = std::uint32_t(num_components)
@@ -344,7 +344,7 @@ private:
         CHECK_CUDA(
             cudaMemcpy(
                 m_packed_gpu_buffer,
-                image.getBuffer(),
+                image.buffer(),
                 size_in_bytes,
                 cudaMemcpyHostToDevice
             ),
@@ -392,12 +392,12 @@ private:
             }
 
             const auto& type  = image.getType();
-            const auto& sizes = image.getSize();
+            const auto& sizes = image.size();
             const int width   = int(sizes[0]);
             const int height  = int(sizes[1]);
             const NppiSize nppi_size {.width = width, .height = height};
 
-            if(type == core::Type::INT8 || type == core::Type::UINT8)
+            if(type == core::type::INT8 || type == core::type::UINT8)
             {
                 const auto* in_buffer = reinterpret_cast<const Npp8u*>(m_packed_gpu_buffer);
                 const int out_step    = width * int(sizeof(Npp8u));
@@ -495,7 +495,7 @@ private:
                     }
                 }
             }
-            else if(type == core::Type::UINT16)
+            else if(type == core::type::UINT16)
             {
                 const auto* in_buffer = reinterpret_cast<const Npp16u*>(m_packed_gpu_buffer);
                 const int out_step    = width * int(sizeof(Npp16u));
@@ -593,7 +593,7 @@ private:
                     }
                 }
             }
-            else if(type == core::Type::INT16)
+            else if(type == core::type::INT16)
             {
                 const auto* in_buffer = reinterpret_cast<const Npp16s*>(m_packed_gpu_buffer);
                 const int out_step    = width * int(sizeof(Npp16s));

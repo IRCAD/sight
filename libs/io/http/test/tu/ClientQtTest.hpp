@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/thread/Worker.hpp>
+#include <core/thread/worker.hpp>
 
 #include <io/http/ClientQt.hpp>
 
@@ -60,7 +60,7 @@ public:
 private:
 
     // Application thread
-    core::thread::Worker::sptr m_worker;
+    core::thread::worker::sptr m_worker;
     // HTTP client
     sight::io::http::ClientQt m_client;
     // Local server that will communicate with the client

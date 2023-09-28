@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "filter/dicom/config.hpp"
-#include "filter/dicom/splitter/ISplitter.hpp"
+#include "filter/dicom/splitter/base.hpp"
 
 #include <data/DicomSeries.hpp>
 
@@ -34,26 +34,23 @@ namespace sight::filter::dicom::splitter
  * @brief Filter that uses the ImagePositionPatient tag to split the instances.
  * For this filter to work properly, the instances must already be sorted.
  */
-class FILTER_DICOM_CLASS_API ImagePositionPatientSplitter : public ISplitter
+class FILTER_DICOM_CLASS_API ImagePositionPatientSplitter : public base
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         ImagePositionPatientSplitter,
-        ISplitter,
-        filter::dicom::factory::New<ImagePositionPatientSplitter>
+        base,
+        sight::filter::dicom::factory::make<ImagePositionPatientSplitter>
     );
 
-    /// Constructor
-    FILTER_DICOM_API ImagePositionPatientSplitter(filter::dicom::IFilter::Key key);
-
     /// Destructor
-    FILTER_DICOM_API ~ImagePositionPatientSplitter() override;
+    FILTER_DICOM_API ~ImagePositionPatientSplitter() override = default;
 
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
         const data::DicomSeries::sptr& series,
-        const core::log::Logger::sptr& logger
+        const core::log::logger::sptr& logger
     ) const override;
     /// Return the name of the filter
     FILTER_DICOM_API std::string getName() const override;

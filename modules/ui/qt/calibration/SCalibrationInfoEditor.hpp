@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/CalibrationInfo.hpp>
 #include <data/PointList.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QLabel>
 #include <QListWidget>
@@ -57,21 +57,21 @@ namespace sight::module::ui::qt::calibration
  * - \b calInfo2 [sight::data::CalibrationInfo] (optional): calibration information for optional second camera.
  */
 class MODULE_UI_QT_CLASS_API SCalibrationInfoEditor : public QObject,
-                                                      public sight::ui::base::IEditor
+                                                      public sight::ui::editor
 {
 Q_OBJECT;
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SCalibrationInfoEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SCalibrationInfoEditor, sight::ui::editor);
 
     /**
      * @name Slots API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_REMOVE_SLOT;
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_RESET_SLOT;
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_GET_SELECTION_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t REMOVE_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t RESET_SLOT;
+    MODULE_UI_QT_API static const core::com::slots::key_t GET_SELECTION_SLOT;
     ///@}
 
     /**
@@ -124,7 +124,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      */
-    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_UI_QT_API connections_t getAutoConnections() const override;
 
 private Q_SLOTS:
 

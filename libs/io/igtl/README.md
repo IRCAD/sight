@@ -9,7 +9,7 @@ Please refer to [OpenIGTLink official website](http://openigtlink.org/) for more
 
 The library proposes different base classes to implement services. They bring a semantic on top of `IService`, which allows to query services that match an interface.
 
-- **INetwork**: generic interface meant to handle the protocol for both client and server sides
+- **network**: generic interface meant to handle the protocol for both client and server sides
 - **Server**: defines a network igtl server which supports sight native data transfer
 - **Client**: defines a network igtl client which supports sight native data transfer
 - **Exception**: defines the igtl network exceptions
@@ -26,7 +26,7 @@ These classes are used for the lib internal mechanism:
 The purpose of the library is to facilitate the transfer through igtl network protocol of sight native data formats. 
 The present converters transform (forward and backward) various sight native data toward igtl specific data format.
 
-- **IConverter**: generic interface meant to convert `sight::data` to `::igtl::MessageBase`
+- **base**: generic interface meant to convert `sight::data` to `::igtl::MessageBase`
 - **TrackingStartConverter**: starts the conversion between the sight data and the igtl message
 - **TrackingStopConverter**: tops the conversion between the sight data and the igtl message
 - **AtomConverter**: manages the conversion between `data::Object` and `igtl::RawMessage` (contain serialized atom)

@@ -22,7 +22,7 @@
 
 #include "modules/viz/scene3d/adaptor/SCamera.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <viz/scene3d/helper/Camera.hpp>
 #include <viz/scene3d/SRender.hpp>
@@ -37,8 +37,8 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
-static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTransformation";
+static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
+static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTransformation";
 
 //-----------------------------------------------------------------------------
 
@@ -65,8 +65,8 @@ struct SCamera::CameraNodeListener : public Ogre::MovableObject::Listener
 
 SCamera::SCamera() noexcept
 {
-    newSlot(s_UPDATE_TF_SLOT, &SCamera::updateTF3D, this);
-    newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
+    new_slot(UPDATE_TF_SLOT, &SCamera::updateTF3D, this);
+    new_slot(CALIBRATE_SLOT, &SCamera::calibrate, this);
 }
 
 //------------------------------------------------------------------------------
@@ -120,15 +120,15 @@ void SCamera::starting()
 
     m_layerConnection.connect(
         this->getLayer(),
-        sight::viz::scene3d::Layer::s_CAMERA_RANGE_UPDATED_SIG,
-        this->getSptr(),
-        s_CALIBRATE_SLOT
+        sight::viz::scene3d::Layer::CAMERA_RANGE_UPDATED_SIG,
+        this->get_sptr(),
+        CALIBRATE_SLOT
     );
     m_layerConnection.connect(
         this->getLayer(),
-        sight::viz::scene3d::Layer::s_RESIZE_LAYER_SIG,
-        this->getSptr(),
-        s_CALIBRATE_SLOT
+        sight::viz::scene3d::Layer::RESIZE_LAYER_SIG,
+        this->get_sptr(),
+        CALIBRATE_SLOT
     );
 
     this->updating();
@@ -136,14 +136,14 @@ void SCamera::starting()
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SCamera::getAutoConnections() const
+service::connections_t SCamera::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_CALIBRATION_INPUT, data::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_CALIBRATION_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_CAMERA_SET_INPUT, data::CameraSet::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_CAMERA_SET_INPUT, data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
+    service::connections_t connections;
+    connections.push(s_TRANSFORM_INOUT, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_CALIBRATION_INPUT, data::Camera::MODIFIED_SIG, CALIBRATE_SLOT);
+    connections.push(s_CALIBRATION_INPUT, data::Camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
+    connections.push(s_CAMERA_SET_INPUT, data::CameraSet::MODIFIED_SIG, CALIBRATE_SLOT);
+    connections.push(s_CAMERA_SET_INPUT, data::CameraSet::EXTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
 
     return connections;
 }
@@ -272,10 +272,10 @@ void SCamera::updateTF3D()
         }
     }
 
-    auto sig = transform->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    auto sig = transform->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
     {
-        core::com::Connection::Blocker blocker(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
+        core::com::connection::blocker blocker(sig->get_connection(slot(service::slots::UPDATE)));
+        sig->async_emit();
     }
 }
 

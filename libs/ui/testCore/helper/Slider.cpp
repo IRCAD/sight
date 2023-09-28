@@ -76,7 +76,7 @@ static QPoint positionOf(Slider::Position pos, const QWidget* widget)
 static QSlider* take(Tester& tester, const Select& slider)
 {
     slider.select(tester);
-    if(!tester.isA<QSlider*>())
+    if(!tester.is_a<QSlider*>())
     {
         tester.yields<QSlider*>('"' + slider.getDescription(tester) + "\" actual slider");
     }

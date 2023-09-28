@@ -22,7 +22,7 @@
 
 #include "modules/filter/image/SImageExtruder.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Reconstruction.hpp>
@@ -32,13 +32,13 @@
 namespace sight::module::filter::image
 {
 
-static const core::com::Slots::SlotKeyType s_ADD_RECONSTRUCTIONS_SLOT = "addReconstructions";
+static const core::com::slots::key_t ADD_RECONSTRUCTIONS_SLOT = "addReconstructions";
 
 //------------------------------------------------------------------------------
 
 SImageExtruder::SImageExtruder()
 {
-    newSlot(s_ADD_RECONSTRUCTIONS_SLOT, &SImageExtruder::addReconstructions, this);
+    new_slot(ADD_RECONSTRUCTIONS_SLOT, &SImageExtruder::addReconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -60,16 +60,16 @@ void SImageExtruder::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SImageExtruder::getAutoConnections() const
+service::connections_t SImageExtruder::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_MESHES_INPUT, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_MESHES_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_ADD_RECONSTRUCTIONS_SLOT);
-    connections.push(s_MESHES_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_MESHES_INPUT, data::ModelSeries::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_MESHES_INPUT, data::ModelSeries::RECONSTRUCTIONS_ADDED_SIG, ADD_RECONSTRUCTIONS_SLOT);
+    connections.push(s_MESHES_INPUT, data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
 
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_TRANSFORM_INPUT, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE_INPUT, data::Image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_IMAGE_INPUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_TRANSFORM_INPUT, data::Matrix4::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -87,7 +87,7 @@ void SImageExtruder::updating()
             const auto imageOut = m_extrudedImage.lock();
             SIGHT_ASSERT("The image must be in 3 dimensions", image->numDimensions() == 3);
 
-            imageOut->resize(image->getSize(), core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+            imageOut->resize(image->size(), core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
             imageOut->setSpacing(image->getSpacing());
             imageOut->setOrigin(image->getOrigin());
             std::fill(imageOut->begin(), imageOut->end(), std::uint8_t(255));
@@ -134,10 +134,10 @@ void SImageExtruder::addReconstructions(data::ModelSeries::ReconstructionVectorT
     }
 
     // Send signals.
-    const auto sig = imageOut->signal<data::Image::BufferModifiedSignalType>(data::Image::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    const auto sig = imageOut->signal<data::Image::BufferModifiedSignalType>(data::Image::MODIFIED_SIG);
+    sig->async_emit();
 
-    m_sigComputed->asyncEmit();
+    m_sigComputed->async_emit();
 }
 
 //------------------------------------------------------------------------------

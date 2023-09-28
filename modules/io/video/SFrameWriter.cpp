@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,20 +24,20 @@
 
 #include "SFrameWriter.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
-#include <core/location/SingleFolder.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hpp>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
+#include <core/location/single_folder.hpp>
 
 #include <data/Composite.hpp>
 
 #include <service/macros.hpp>
 
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -49,13 +49,13 @@
 namespace sight::module::io::video
 {
 
-static const core::com::Slots::SlotKeyType s_SAVE_FRAME           = "saveFrame";
-static const core::com::Slots::SlotKeyType s_START_RECORD         = "startRecord";
-static const core::com::Slots::SlotKeyType s_STOP_RECORD          = "stopRecord";
-static const core::com::Slots::SlotKeyType s_RECORD               = "record";
-static const core::com::Slots::SlotKeyType s_TOGGLE_RECORDING     = "toggleRecording";
-static const core::com::Slots::SlotKeyType s_WRITE                = "write";
-static const core::com::Slots::SlotKeyType s_SET_FORMAT_PARAMETER = "setFormatParameter";
+static const core::com::slots::key_t SAVE_FRAME           = "saveFrame";
+static const core::com::slots::key_t START_RECORD         = "startRecord";
+static const core::com::slots::key_t STOP_RECORD          = "stopRecord";
+static const core::com::slots::key_t RECORD               = "record";
+static const core::com::slots::key_t TOGGLE_RECORDING     = "toggleRecording";
+static const core::com::slots::key_t WRITE                = "write";
+static const core::com::slots::key_t SET_FORMAT_PARAMETER = "setFormatParameter";
 
 //------------------------------------------------------------------------------
 
@@ -63,13 +63,13 @@ SFrameWriter::SFrameWriter() noexcept :
 
     m_format(".tiff")
 {
-    newSlot(s_SAVE_FRAME, &SFrameWriter::saveFrame, this);
-    newSlot(s_START_RECORD, &SFrameWriter::startRecord, this);
-    newSlot(s_STOP_RECORD, &SFrameWriter::stopRecord, this);
-    newSlot(s_RECORD, &SFrameWriter::record, this);
-    newSlot(s_TOGGLE_RECORDING, &SFrameWriter::toggleRecording, this);
-    newSlot(s_WRITE, &SFrameWriter::write, this);
-    newSlot(s_SET_FORMAT_PARAMETER, &SFrameWriter::setFormatParameter, this);
+    new_slot(SAVE_FRAME, &SFrameWriter::saveFrame, this);
+    new_slot(START_RECORD, &SFrameWriter::startRecord, this);
+    new_slot(STOP_RECORD, &SFrameWriter::stopRecord, this);
+    new_slot(RECORD, &SFrameWriter::record, this);
+    new_slot(TOGGLE_RECORDING, &SFrameWriter::toggleRecording, this);
+    new_slot(WRITE, &SFrameWriter::write, this);
+    new_slot(SET_FORMAT_PARAMETER, &SFrameWriter::setFormatParameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -79,18 +79,18 @@ SFrameWriter::~SFrameWriter() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SFrameWriter::getIOPathType() const
+sight::io::service::IOPathType SFrameWriter::getIOPathType() const
 {
-    return sight::io::base::service::FOLDER;
+    return sight::io::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SFrameWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 
-    service::IService::ConfigType config = this->getConfiguration();
+    service::config_t config = this->getConfiguration();
 
     m_format = config.get<std::string>("format", ".tiff");
 }
@@ -105,18 +105,18 @@ void SFrameWriter::starting()
 
 void SFrameWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the frames" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(ui::base::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(ui::dialog::location::WRITE);
+    dialogFile.setType(ui::dialog::location::FOLDER);
 
-    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
     if(result)
     {
-        this->setFolder(result->getFolder());
-        defaultDirectory->setFolder(result->getFolder().parent_path());
+        this->set_folder(result->get_folder());
+        defaultDirectory->set_folder(result->get_folder().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -136,13 +136,13 @@ void SFrameWriter::stopping()
 
 void SFrameWriter::updating()
 {
-    core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
+    core::hires_clock::type timestamp = core::hires_clock::get_time_in_milli_sec();
     this->saveFrame(timestamp);
 }
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::saveFrame(core::HiResClock::HiResClockType _timestamp)
+void SFrameWriter::saveFrame(core::hires_clock::type _timestamp)
 {
     this->startRecord();
     this->write(_timestamp);
@@ -151,7 +151,7 @@ void SFrameWriter::saveFrame(core::HiResClock::HiResClockType _timestamp)
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
+void SFrameWriter::write(core::hires_clock::type timestamp)
 {
     if(m_isRecording)
     {
@@ -163,9 +163,9 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
         // between frames and timestamps.
         // TODO: experiment with queuing frames and writing them from a worker thread.
         const auto sig = frameTL->signal<data::FrameTL::ObjectPushedSignalType>(
-            data::FrameTL::s_OBJECT_PUSHED_SIG
+            data::FrameTL::OBJECT_PUSHED_SIG
         );
-        core::com::Connection::Blocker writeBlocker(sig->getConnection(m_slots[s_WRITE]));
+        core::com::connection::blocker writeBlocker(sig->get_connection(m_slots[WRITE]));
 
         // Get the buffer of the copied timeline
         const auto buffer = frameTL->getClosestBuffer(timestamp);
@@ -182,7 +182,7 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 
             const auto time = static_cast<std::size_t>(timestamp);
             const std::string filename("img_" + std::to_string(time) + m_format);
-            const std::filesystem::path path = this->getFolder() / filename;
+            const std::filesystem::path path = this->get_folder() / filename;
 
             if(image.type() == CV_8UC3)
             {
@@ -225,24 +225,24 @@ void SFrameWriter::startRecord()
             "The object is not a '"
             + data::FrameTL::classname()
             + "' or '"
-            + sight::io::base::service::s_DATA_KEY
+            + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             frameTL
         );
 
-        if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 3)
+        if(frameTL->getType() == core::type::UINT8 && frameTL->numComponents() == 3)
         {
             m_imageType = CV_8UC3;
         }
-        else if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 4)
+        else if(frameTL->getType() == core::type::UINT8 && frameTL->numComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
-        else if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 1)
+        else if(frameTL->getType() == core::type::UINT8 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_8UC1;
         }
-        else if(frameTL->getType() == core::Type::UINT16 && frameTL->numComponents() == 1)
+        else if(frameTL->getType() == core::type::UINT16 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_16UC1;
         }
@@ -255,7 +255,7 @@ void SFrameWriter::startRecord()
             return;
         }
 
-        std::filesystem::path path = this->getFolder();
+        std::filesystem::path path = this->get_folder();
 
         if(!std::filesystem::exists(path))
         {
@@ -328,10 +328,10 @@ void SFrameWriter::setFormatParameter(std::string val, std::string key)
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
+service::connections_t SFrameWriter::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(sight::io::base::service::s_DATA_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
+    service::connections_t connections;
+    connections.push(sight::io::service::s_DATA_KEY, data::FrameTL::OBJECT_PUSHED_SIG, WRITE);
     return connections;
 }
 

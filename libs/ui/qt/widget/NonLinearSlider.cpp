@@ -21,7 +21,7 @@
 
 #include "NonLinearSlider.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <QResizeEvent>
 

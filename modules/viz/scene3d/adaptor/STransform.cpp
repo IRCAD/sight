@@ -22,8 +22,8 @@
 
 #include "modules/viz/scene3d/adaptor/STransform.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
@@ -34,10 +34,10 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap STransform::getAutoConnections() const
+service::connections_t STransform::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_TRANSFORM_INOUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

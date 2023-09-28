@@ -22,12 +22,12 @@
 
 #include "ui/qt/App.hpp"
 
-#include <core/runtime/ExitException.hpp>
+#include <core/runtime/exit_exception.hpp>
 #include <core/runtime/path.hpp>
-#include <core/runtime/profile/Profile.hpp>
-#include <core/tools/Os.hpp>
+#include <core/runtime/profile/profile.hpp>
+#include <core/tools/os.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -55,11 +55,11 @@ App::App(int& argc, char** argv, bool guiEnabled) :
 
     std::string appName = "No name";
 
-    core::runtime::Profile::sptr profile = core::runtime::getCurrentProfile();
+    core::runtime::profile::sptr profile = core::runtime::get_current_profile();
 
     if(profile)
     {
-        appName = profile->getName();
+        appName = profile->name();
     }
 
     sight::ui::qt::App::setApplicationName(QString::fromStdString(appName));
@@ -67,7 +67,7 @@ App::App(int& argc, char** argv, bool guiEnabled) :
     QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
 
     // Parse all font in rc/fonts folder.
-    const auto fonts_folder = core::runtime::getLibraryResourceFilePath("sight::ui::qt/fonts");
+    const auto fonts_folder = core::runtime::get_library_resource_file_path("sight::ui::qt/fonts");
 
     for(const auto& font : std::filesystem::recursive_directory_iterator {fonts_folder})
     {
@@ -102,10 +102,10 @@ bool App::notify(QObject* receiver, QEvent* e)
     {
         return QApplication::notify(receiver, e);
     }
-    catch(const core::runtime::ExitException& e)
+    catch(const core::runtime::exit_exception& e)
     {
         SIGHT_DEBUG("Exit exception caught. Exit code:" << e.what());
-        qApp->exit(e.exitCode());
+        qApp->exit(e.exit_code());
         return false;
     }
 }

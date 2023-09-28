@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "viz/qt3d/config.hpp"
 
-#include <core/FactoryRegistry.hpp>
+#include <core/factory_registry.hpp>
 #include <core/macros.hpp>
 
 #include <string>
@@ -32,14 +32,14 @@
 namespace sight::viz::qt3d
 {
 
-class IWindowInteractor;
+class window_interactor;
 
 namespace registry
 {
 
 typedef std::string KeyType;
 
-typedef sight::core::FactoryRegistry<SPTR(sight::viz::qt3d::IWindowInteractor)(), KeyType> Type;
+typedef sight::core::factory_registry<SPTR(sight::viz::qt3d::window_interactor)(), KeyType> Type;
 
 VIZ_QT3D_API SPTR(Type) get();
 

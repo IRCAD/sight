@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/Layer.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
@@ -52,12 +52,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b width (optional, float, default=1.f): new viewport width relatively to the window.
  * - \b height (optional, float, default=1.f): new viewport height relatively to the window.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SResizeViewport final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API SResizeViewport final : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SResizeViewport, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SResizeViewport, sight::viz::scene3d::adaptor);
 
     /// Initializes slots.
     MODULE_VIZ_SCENE3D_API SResizeViewport() noexcept;

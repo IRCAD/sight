@@ -21,7 +21,7 @@
 
 #include "modules/viz/scene3d/adaptor/SPredefinedCamera.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <geometry/data/Matrix4.hpp>
 
@@ -32,9 +32,9 @@ namespace sight::module::viz::scene3d::adaptor
 
 SPredefinedCamera::SPredefinedCamera() noexcept
 {
-    newSlot(slots::s_SET_PARAMETER, &SPredefinedCamera::setParameter, this);
-    newSlot(
-        slots::s_NEXT_POSITION,
+    new_slot(slots::SET_PARAMETER, &SPredefinedCamera::setParameter, this);
+    new_slot(
+        slots::NEXT_POSITION,
         [this]()
         {
             if(m_interactor)
@@ -43,8 +43,8 @@ SPredefinedCamera::SPredefinedCamera() noexcept
             }
         });
 
-    newSlot(
-        slots::s_PREVIOUS_POSITION,
+    new_slot(
+        slots::PREVIOUS_POSITION,
         [this]()
         {
             if(m_interactor)
@@ -52,7 +52,7 @@ SPredefinedCamera::SPredefinedCamera() noexcept
                 m_interactor->previousPosition();
             }
         });
-    newSlot(slots::s_UPDATE_TRANSFORM, &SPredefinedCamera::updateTransform, this);
+    new_slot(slots::UPDATE_TRANSFORM, &SPredefinedCamera::updateTransform, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -143,7 +143,7 @@ void SPredefinedCamera::stopping()
 
 //------------------------------------------------------------------------------
 
-void SPredefinedCamera::setParameter(ui::base::parameter_t value, std::string key)
+void SPredefinedCamera::setParameter(ui::parameter_t value, std::string key)
 {
     if(m_interactor)
     {
@@ -165,9 +165,9 @@ void SPredefinedCamera::updateTransform()
 
 //-----------------------------------------------------------------------------
 
-SPredefinedCamera::KeyConnectionsMap SPredefinedCamera::getAutoConnections() const
+SPredefinedCamera::connections_t SPredefinedCamera::getAutoConnections() const
 {
-    return {{s_REGISTRATION_TRANSFORM_IN, sight::data::Matrix4::s_MODIFIED_SIG, slots::s_UPDATE_TRANSFORM}};
+    return {{s_REGISTRATION_TRANSFORM_IN, sight::data::Matrix4::MODIFIED_SIG, slots::UPDATE_TRANSFORM}};
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ namespace data
 /**
  * @brief Manages a generic mesh.
  */
-class VIZ_QT3D_CLASS_QT_API Mesh : public Qt3DCore::QEntity
+class VIZ_QT3D_CLASS_API_QT Mesh : public Qt3DCore::QEntity
 {
 Q_OBJECT
 
@@ -72,31 +72,31 @@ Q_PROPERTY(
 public:
 
     /// Constructs an empty mesh.
-    VIZ_QT3D_QT_API Mesh(Qt3DCore::QNode* _parent = nullptr);
+    VIZ_QT3D_API_QT Mesh(Qt3DCore::QNode* _parent = nullptr);
 
     /// Destroys the mesh.
-    VIZ_QT3D_QT_API ~Mesh() override;
+    VIZ_QT3D_API_QT ~Mesh() override;
 
     /// @returns mesh material.
-    [[nodiscard]] VIZ_QT3D_QT_API viz::qt3d::data::Material* getMaterial() const;
+    [[nodiscard]] VIZ_QT3D_API_QT viz::qt3d::data::Material* getMaterial() const;
 
     /// @returns the scene associated with the mesh.
-    [[nodiscard]] VIZ_QT3D_QT_API sight::viz::qt3d::core::GenericScene* getScene() const;
+    [[nodiscard]] VIZ_QT3D_API_QT sight::viz::qt3d::core::GenericScene* getScene() const;
 
     /// Updates mesh material.
-    VIZ_QT3D_QT_API void setMaterial(viz::qt3d::data::Material* _material);
+    VIZ_QT3D_API_QT void setMaterial(viz::qt3d::data::Material* _material);
 
     /// Updates the scene associated with the mesh.
-    VIZ_QT3D_QT_API void setScene(sight::viz::qt3d::core::GenericScene* _scene);
+    VIZ_QT3D_API_QT void setScene(sight::viz::qt3d::core::GenericScene* _scene);
 
     /// Constructs position and normal buffers according to _mesh.
-    VIZ_QT3D_QT_API void buildBuffers(sight::data::Mesh::sptr _mesh);
+    VIZ_QT3D_API_QT void buildBuffers(sight::data::Mesh::sptr _mesh);
 
     /// Updates the mesh according to _mesh.
-    VIZ_QT3D_QT_API Q_INVOKABLE void setMesh(sight::data::Mesh::sptr _mesh);
+    VIZ_QT3D_API_QT Q_INVOKABLE void setMesh(sight::data::Mesh::sptr _mesh);
 
     /// Centers camera on mesh.
-    VIZ_QT3D_QT_API Q_INVOKABLE void centerCameraOnMesh();
+    VIZ_QT3D_API_QT Q_INVOKABLE void centerCameraOnMesh();
 
 Q_SIGNALS:
 

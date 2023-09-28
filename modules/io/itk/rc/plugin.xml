@@ -1,42 +1,42 @@
 <plugin id="sight::module::io::itk" library="true" >
 
     <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
+        <type>sight::io::service::reader</type>
         <service>sight::module::io::itk::SImageReader</service>
         <object>sight::data::Image</object>
         <desc>ITK Reader (ITK/Ircad)</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
+        <type>sight::io::service::writer</type>
         <service>sight::module::io::itk::SImageWriter</service>
         <object>sight::data::Image</object>
         <desc>ITK Writer (ITK/Ircad)</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
+        <type>sight::io::service::writer</type>
         <service>sight::module::io::itk::SSlicedImageSeriesWriter</service>
         <object>sight::data::ImageSeries</object>
         <desc>ImageSeries sliced to jpg Writer (ITK)</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
+        <type>sight::io::service::reader</type>
         <service>sight::module::io::itk::SSeriesSetReader</service>
         <object>sight::data::SeriesSet</object>
         <desc>SeriesSet image Reader (ITK)</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
+        <type>sight::io::service::writer</type>
         <service>sight::module::io::itk::SImageSeriesWriter</service>
         <object>sight::data::ImageSeries</object>
         <desc>ImageSeries Writer (ITK)</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
+        <type>sight::io::service::reader</type>
         <service>sight::module::io::itk::SImageSeriesReader</service>
         <object>sight::data::ImageSeries</object>
         <desc>ImageSeries Reader (ITK)</desc>

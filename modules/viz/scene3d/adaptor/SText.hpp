@@ -24,7 +24,7 @@
 
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/IText.hpp>
 
 #include <OGRE/OgreColourValue.h>
@@ -72,12 +72,12 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b x (optional, float, default=0.): horizontal coordinate relatively to the screen.
  * - \b y (optional, float, default=0.): vertical coordinate relatively to the screen.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SText final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API SText final : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SText, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SText, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor.
     MODULE_VIZ_SCENE3D_API SText() noexcept;
@@ -97,9 +97,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Object::s_OBJECT_INPUT of s_POINTLIST_INPUT to IService::slots::s_UPDATE
+     * Connect data::Object::s_OBJECT_INPUT of s_POINTLIST_INPUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API connections_t getAutoConnections() const final;
 
     /// Updates the displayed text from the input object.
     MODULE_VIZ_SCENE3D_API void updating() final;

@@ -22,16 +22,16 @@
 
 #include "SSelector.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/Series.hpp>
 #include <data/SeriesSet.hpp>
 
-#include <ui/base/dialog/MessageDialog.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/dialog/message.hpp>
+#include <ui/qt/container/widget.hpp>
 #include <ui/qt/series/Selector.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
@@ -43,10 +43,10 @@ namespace sight::module::ui::qt::series
 
 //------------------------------------------------------------------------------
 
-static const core::com::Signals::SignalKeyType s_SERIES_DOUBLE_CLICKED_SIG = "seriesDoubleClicked";
+static const core::com::signals::key_t SERIES_DOUBLE_CLICKED_SIG = "seriesDoubleClicked";
 
-static const core::com::Slots::SlotKeyType s_ADD_SERIES_SLOT    = "addSeries";
-static const core::com::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries";
+static const core::com::slots::key_t ADD_SERIES_SLOT    = "addSeries";
+static const core::com::slots::key_t REMOVE_SERIES_SLOT = "removeSeries";
 
 static const std::string s_SELECTION_MODE_CONFIG    = "selectionMode";
 static const std::string s_ALLOWED_REMOVE_CONFIG    = "allowedRemove";
@@ -59,10 +59,10 @@ static const std::string s_DISPLAYED_COLUMN_CONFIG  = "displayedColumns";
 
 SSelector::SSelector()
 {
-    m_sigSeriesDoubleClicked = newSignal<SeriesDoubleClickedSignalType>(s_SERIES_DOUBLE_CLICKED_SIG);
+    m_sigSeriesDoubleClicked = new_signal<SeriesDoubleClickedSignalType>(SERIES_DOUBLE_CLICKED_SIG);
 
-    newSlot(s_ADD_SERIES_SLOT, &SSelector::addSeries, this);
-    m_slotRemoveSeries = newSlot(s_REMOVE_SERIES_SLOT, &SSelector::removeSeries, this);
+    new_slot(ADD_SERIES_SLOT, &SSelector::addSeries, this);
+    m_slotRemoveSeries = new_slot(REMOVE_SERIES_SLOT, &SSelector::removeSeries, this);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ SSelector::~SSelector() noexcept =
 
 void SSelector::configuring()
 {
-    this->sight::ui::base::IGuiContainer::initialize();
+    this->sight::ui::service::initialize();
 
     const ConfigType tree = this->getConfiguration();
 
@@ -88,7 +88,7 @@ void SSelector::configuring()
             const auto icon = elt.second.get<std::string>("<xmlattr>.icon");
             SIGHT_ASSERT("'icon' attribute is missing", !icon.empty());
 
-            const auto file = core::runtime::getResourceFilePath(icon);
+            const auto file = core::runtime::get_resource_file_path(icon);
             m_seriesIcons[series] = file.string();
         }
     }
@@ -102,13 +102,13 @@ void SSelector::configuring()
         const auto removeStudyIconCfg = configAttr->get_optional<std::string>(s_REMOVE_STUDY_ICON_CONFIG);
         if(removeStudyIconCfg)
         {
-            m_removeStudyIcon = core::runtime::getModuleResourceFilePath(removeStudyIconCfg.value());
+            m_removeStudyIcon = core::runtime::get_module_resource_file_path(removeStudyIconCfg.value());
         }
 
         const auto removeSerieIconCfg = configAttr->get_optional<std::string>(s_REMOVE_SERIE_ICON_CONFIG);
         if(removeSerieIconCfg)
         {
-            m_removeSeriesIcon = core::runtime::getModuleResourceFilePath(removeSerieIconCfg.value());
+            m_removeSeriesIcon = core::runtime::get_module_resource_file_path(removeSerieIconCfg.value());
         }
 
         const auto selectionMode = configAttr->get<std::string>(s_SELECTION_MODE_CONFIG, "extended");
@@ -139,9 +139,9 @@ void SSelector::configuring()
 
 void SSelector::starting()
 {
-    this->sight::ui::base::IGuiContainer::create();
+    this->sight::ui::service::create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->getContainer()
     );
 
@@ -200,11 +200,11 @@ void SSelector::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SSelector::getAutoConnections() const
+service::connections_t SSelector::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_SERIES_SET,data::SeriesSet::s_ADDED_OBJECTS_SIG,s_ADD_SERIES_SLOT);
-    connections.push(s_SERIES_SET,data::SeriesSet::s_REMOVED_OBJECTS_SIG,s_REMOVE_SERIES_SLOT);
+    connections_t connections;
+    connections.push(s_SERIES_SET,data::SeriesSet::ADDED_OBJECTS_SIG,ADD_SERIES_SLOT);
+    connections.push(s_SERIES_SET,data::SeriesSet::REMOVED_OBJECTS_SIG,REMOVE_SERIES_SLOT);
 
     return connections;
 }
@@ -264,10 +264,10 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
     {
         SIGHT_ASSERT("There must be only one object selected",selectionVector->size() == 1);
         data::Object::sptr obj    = selectionVector->front();
-        data::Series::sptr series = data::Series::dynamicCast(obj);
+        data::Series::sptr series = std::dynamic_pointer_cast<data::Series>(obj);
         SIGHT_ASSERT("Object must be a 'data::Series'",series);
 
-        m_sigSeriesDoubleClicked->asyncEmit(series);
+        m_sigSeriesDoubleClicked->async_emit(series);
     }
 }
 
@@ -277,8 +277,8 @@ void SSelector::onRemoveSeries(QVector<data::Series::sptr> _selection)
 {
     const auto series_set = m_series_set.lock();
 
-    auto sig = series_set->signal<data::SeriesSet::removed_signal_t>(data::SeriesSet::s_REMOVED_OBJECTS_SIG);
-    core::com::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
+    auto sig = series_set->signal<data::SeriesSet::removed_signal_t>(data::SeriesSet::REMOVED_OBJECTS_SIG);
+    core::com::connection::blocker block(sig->get_connection(m_slotRemoveSeries));
 
     {
         const auto scoped_emitter = series_set->scoped_emit();

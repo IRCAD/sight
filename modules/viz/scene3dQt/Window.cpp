@@ -24,7 +24,7 @@
 #include "modules/viz/scene3dQt/init.hpp"
 
 #define FW_PROFILING_DISABLED
-#include <core/Profiling.hpp>
+#include <core/profiling.hpp>
 
 #include <core/tools/compare.hpp>
 
@@ -45,9 +45,9 @@ namespace sight::module::viz::scene3dQt
 
 // ----------------------------------------------------------------------------
 
-static inline sight::viz::scene3d::interactor::IInteractor::Modifier convertModifiers(Qt::KeyboardModifiers _modifiers)
+static inline sight::viz::scene3d::interactor::base::Modifier convertModifiers(Qt::KeyboardModifiers _modifiers)
 {
-    using SightOgreModType = sight::viz::scene3d::interactor::IInteractor::Modifier;
+    using SightOgreModType = sight::viz::scene3d::interactor::base::Modifier;
     SightOgreModType mods = SightOgreModType::NONE;
     mods |= (_modifiers& Qt::ShiftModifier) != 0U ? SightOgreModType::SHIFT : SightOgreModType::NONE;
     mods |= (_modifiers& Qt::ControlModifier) != 0U ? SightOgreModType::CONTROL : SightOgreModType::NONE;
@@ -206,8 +206,8 @@ bool Window::event(QEvent* _e)
 
 void Window::keyPressEvent(QKeyEvent* _e)
 {
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::KEYPRESS;
+    sight::viz::scene3d::window_interactor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::KEYPRESS;
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = _e->key();
 
@@ -224,8 +224,8 @@ void Window::keyPressEvent(QKeyEvent* _e)
 
 void Window::keyReleaseEvent(QKeyEvent* _e)
 {
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::KEYRELEASE;
+    sight::viz::scene3d::window_interactor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::KEYRELEASE;
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = _e->key();
 
@@ -254,37 +254,37 @@ Window::InteractionInfo Window::convertMouseEvent(
         case Qt::NoButton:
             if((activeButtons& Qt::LeftButton) == Qt::LeftButton)
             {
-                info.button = sight::viz::scene3d::interactor::IInteractor::LEFT;
+                info.button = sight::viz::scene3d::interactor::base::LEFT;
             }
             else if((activeButtons& Qt::MiddleButton) == Qt::MiddleButton)
             {
-                info.button = sight::viz::scene3d::interactor::IInteractor::MIDDLE;
+                info.button = sight::viz::scene3d::interactor::base::MIDDLE;
             }
             else if((activeButtons& Qt::RightButton) == Qt::RightButton)
             {
-                info.button = sight::viz::scene3d::interactor::IInteractor::RIGHT;
+                info.button = sight::viz::scene3d::interactor::base::RIGHT;
             }
             else
             {
-                info.button = sight::viz::scene3d::interactor::IInteractor::UNKNOWN;
+                info.button = sight::viz::scene3d::interactor::base::UNKNOWN;
             }
 
             break;
 
         case Qt::LeftButton:
-            info.button = sight::viz::scene3d::interactor::IInteractor::LEFT;
+            info.button = sight::viz::scene3d::interactor::base::LEFT;
             break;
 
         case Qt::MiddleButton:
-            info.button = sight::viz::scene3d::interactor::IInteractor::MIDDLE;
+            info.button = sight::viz::scene3d::interactor::base::MIDDLE;
             break;
 
         case Qt::RightButton:
-            info.button = sight::viz::scene3d::interactor::IInteractor::RIGHT;
+            info.button = sight::viz::scene3d::interactor::base::RIGHT;
             break;
 
         default:
-            info.button = sight::viz::scene3d::interactor::IInteractor::UNKNOWN;
+            info.button = sight::viz::scene3d::interactor::base::UNKNOWN;
             break;
     }
 
@@ -333,8 +333,8 @@ void Window::mouseMoveEvent(QMouseEvent* _e)
 
 void Window::wheelEvent(QWheelEvent* _e)
 {
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::WHEELMOVE;
+    sight::viz::scene3d::window_interactor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::WHEELMOVE;
 
     // Only manage vertical wheel scroll.
     const auto ratio = devicePixelRatioF();
@@ -396,8 +396,8 @@ void Window::mouseReleaseEvent(QMouseEvent* _e)
 
 void Window::leaveEvent(QEvent* /*_e*/)
 {
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::LEAVE;
+    sight::viz::scene3d::window_interactor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::LEAVE;
 
     Q_EMIT interacted(info);
 }
@@ -406,8 +406,8 @@ void Window::leaveEvent(QEvent* /*_e*/)
 
 void Window::enterEvent(QEvent* /*_e*/)
 {
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::ENTER;
+    sight::viz::scene3d::window_interactor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::ENTER;
 
     Q_EMIT interacted(info);
 }
@@ -450,17 +450,17 @@ void Window::gestureEvent(QGestureEvent* _e)
         if(const auto& delta = panGesture->delta();
            core::tools::is_greater(std::abs(delta.x()), 0.0F) || core::tools::is_greater(std::abs(delta.y()), 0.0F))
         {
-            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+            sight::viz::scene3d::window_interactor::InteractionInfo info {};
 
             switch(panGesture->state())
             {
                 case Qt::GestureStarted:
                 case Qt::GestureUpdated:
-                    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_MOVE;
+                    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::PAN_GESTURE_MOVE;
                     break;
 
                 default:
-                    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_RELEASE;
+                    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::PAN_GESTURE_RELEASE;
                     break;
             }
 
@@ -498,8 +498,8 @@ void Window::gestureEvent(QGestureEvent* _e)
         if(const auto scale = pinchGesture->scaleFactor();
            !core::tools::is_equal(scale, 0) && !core::tools::is_less(std::abs(scale - 1.0F), 0.01F))
         {
-            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-            info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::PINCH_GESTURE;
+            sight::viz::scene3d::window_interactor::InteractionInfo info {};
+            info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::PINCH_GESTURE;
 
             // scaleFactor is a positive number, where a number inferior to 1 means that the distance between the
             // fingers increases, and a number superior to 1 means that the distance between the fingers decreases.
@@ -543,8 +543,8 @@ void Window::ogreResize(const QSize& _newSize)
 
     createRenderTextures(newWidth, newHeight);
 
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
+    sight::viz::scene3d::window_interactor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::RESIZE;
     info.x               = newWidth;
     info.y               = newHeight;
     info.dx              = 0;
@@ -708,8 +708,8 @@ void Window::initializeGL()
 
     m_init = true;
 
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
+    sight::viz::scene3d::window_interactor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::window_interactor::InteractionInfo::RESIZE;
     info.x               = width;
     info.y               = height;
     info.dx              = 0;

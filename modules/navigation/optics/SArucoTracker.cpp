@@ -24,8 +24,8 @@
 
 #include "SArucoTracker.hpp"
 
-#include <core/com/Signal.hxx>
-#include <core/com/Slots.hxx>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <io/opencv/Camera.hpp>
 #include <io/opencv/FrameTL.hpp>
@@ -46,19 +46,19 @@ namespace sight::module::navigation::optics
 
 //-----------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG  = "detectionDone";
-const core::com::Signals::SignalKeyType SArucoTracker::s_MARKER_DETECTED_SIG = "markerDetected";
+const core::com::signals::key_t SArucoTracker::DETECTION_DONE_SIG  = "detectionDone";
+const core::com::signals::key_t SArucoTracker::MARKER_DETECTED_SIG = "markerDetected";
 
-const core::com::Slots::SlotKeyType SArucoTracker::s_SET_PARAMETER_SLOT = "setParameter";
+const core::com::slots::key_t SArucoTracker::SET_PARAMETER_SLOT = "setParameter";
 
 //-----------------------------------------------------------------------------
 
 SArucoTracker::SArucoTracker() noexcept :
-    m_sigDetectionDone(newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG))
+    m_sigDetectionDone(new_signal<DetectionDoneSignalType>(DETECTION_DONE_SIG))
 {
-    newSignal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG);
+    new_signal<MarkerDetectedSignalType>(MARKER_DETECTED_SIG);
 
-    newSlot(s_SET_PARAMETER_SLOT, &SArucoTracker::setParameter, this);
+    new_slot(SET_PARAMETER_SLOT, &SArucoTracker::setParameter, this);
 
     // Initialize detector parameters
     m_detectorParams = cv::aruco::DetectorParameters::create();
@@ -87,12 +87,12 @@ SArucoTracker::~SArucoTracker() noexcept =
 
 //-----------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
+service::connections_t SArucoTracker::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
+    connections_t connections;
 
-    connections.push(s_FRAME_INOUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    connections.push(s_FRAME_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_FRAME_INOUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_FRAME_INOUT, data::Image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }
@@ -101,7 +101,7 @@ service::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
 
 void SArucoTracker::configuring()
 {
-    this->service::ITracker::configuring();
+    this->service::tracker::configuring();
 
     const auto config = this->getConfiguration();
 
@@ -155,13 +155,13 @@ void SArucoTracker::updating()
     // When working with a frame (newest design), we do not rely on the timestamp
     // So we can just send the current one.
     // When removing timelines from the service then we could get rid of it
-    auto timestamp = core::HiResClock::getTimeInMilliSec();
+    auto timestamp = core::hires_clock::get_time_in_milli_sec();
     this->tracking(timestamp);
 }
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
+void SArucoTracker::tracking(core::hires_clock::type& timestamp)
 {
     if(!m_isInitialized)
     {
@@ -287,22 +287,22 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
             auto markerMap = m_markerMap[tagTLIndex].lock();
             // Always send the signal even if we did not find anything.
             // This allows to keep updating the whole processing pipeline.
-            auto sig = markerMap->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-            sig->asyncEmit();
+            auto sig = markerMap->signal<data::Object::ModifiedSignalType>(data::Object::MODIFIED_SIG);
+            sig->async_emit();
 
-            this->signal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG)->asyncEmit(foundMarker);
+            this->signal<MarkerDetectedSignalType>(MARKER_DETECTED_SIG)->async_emit(foundMarker);
 
             ++tagTLIndex;
         }
 
         // Emit
-        m_sigDetectionDone->asyncEmit(timestamp);
+        m_sigDetectionDone->async_emit(timestamp);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::setParameter(sight::ui::base::parameter_t _val, std::string _key)
+void SArucoTracker::setParameter(sight::ui::parameter_t _val, std::string _key)
 {
     if(_key == "adaptiveThreshWinSizeMin")
     {

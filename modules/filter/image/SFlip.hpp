@@ -24,12 +24,12 @@
 
 #include "modules/filter/image/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Slots.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/slots.hpp>
 
 #include <data/Image.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -55,15 +55,15 @@ namespace sight::module::filter::image
  * @subsection Output Output:
  * - \b target [sight::data::Image]: New flipped image.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SFlip : public service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SFlip : public service::filter
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFlip, sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SFlip, sight::service::filter);
 
-    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXIS_X_SLOT;
-    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXIS_Y_SLOT;
-    MODULE_FILTER_IMAGE_API static const core::com::Slots::SlotKeyType s_FLIP_AXIS_Z_SLOT;
+    MODULE_FILTER_IMAGE_API static const core::com::slots::key_t FLIP_AXIS_X_SLOT;
+    MODULE_FILTER_IMAGE_API static const core::com::slots::key_t FLIP_AXIS_Y_SLOT;
+    MODULE_FILTER_IMAGE_API static const core::com::slots::key_t FLIP_AXIS_Z_SLOT;
 
     /// Constructor, does nothing.
     MODULE_FILTER_IMAGE_API SFlip();
@@ -88,10 +88,10 @@ protected:
     /**
      * @brief Signal-slot auto-connection proposals
      *
-     * Connect Image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect Image::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect Image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
      */
-    MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_FILTER_IMAGE_API connections_t getAutoConnections() const override;
 
 private:
 

@@ -51,7 +51,7 @@
         <config>
             <object uid="${series}" src="ref" />
 
-            <service uid="export_selection" type="sight::module::ui::base::io::SSelector">
+            <service uid="export_selection" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="${series}" />
                 <type mode="writer" />
                 <selection mode="exclude" />
@@ -71,7 +71,7 @@
         <config>
             <object uid="${modelSeries}" type="sight::data::ModelSeries" src="ref" />
 
-            <service uid="exportSelection" type="sight::module::ui::base::io::SSelector">
+            <service uid="exportSelection" type="sight::module::ui::io::SSelector">
                 <inout key="data" uid="${modelSeries}" />
                 <type mode="writer" />
                 <selection mode="include" />
@@ -86,7 +86,7 @@
     <!-- Service config used to read SeriesSet without using session. -->
     <extension implements="sight::service::extension::Config">
         <id>SDBReaderIOSelectorConfig</id>
-        <service>sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::io::SSelector</service>
         <desc>IOSelectorService config for SeriesSet reader</desc>
         <config>
             <type mode="reader" />
@@ -99,7 +99,7 @@
     <!-- Service config used to read SeriesSet using Session. -->
     <extension implements="sight::service::extension::Config">
         <id>SDBSessionReaderIOSelectorConfig</id>
-        <service>sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::io::SSelector</service>
         <desc>Session SeriesSet reader.</desc>
         <config>
             <type mode="reader" />
@@ -112,7 +112,7 @@
     <!-- Service config used to write a SeriesSet using Session. -->
     <extension implements="sight::service::extension::Config">
         <id>SDBSessionWriterIOSelectorConfig</id>
-        <service>sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::io::SSelector</service>
         <desc>Session SeriesSet writer.</desc>
         <config>
             <type mode="writer" />
@@ -125,7 +125,7 @@
     <!-- Service config used to read SeriesSet with all the available reader for SeriesSet. -->
     <extension implements="sight::service::extension::Config">
         <id>FullSDBReaderIOSelectorConfig</id>
-        <service>sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::io::SSelector</service>
         <desc>IOSelectorService config for SeriesSet reader</desc>
         <config>
             <type mode="reader" />
@@ -147,7 +147,7 @@
 
     <extension implements="sight::service::extension::Config">
         <id>ActivityReaderConfig</id>
-        <service>sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::io::SSelector</service>
         <desc>Activity reader</desc>
         <config>
             <type mode="reader" />
@@ -159,7 +159,7 @@
 
     <extension implements="sight::service::extension::Config">
         <id>ActivityWriterConfig</id>
-        <service>sight::module::ui::base::io::SSelector</service>
+        <service>sight::module::ui::io::SSelector</service>
         <desc>Activity writer</desc>
         <config>
             <type mode="writer" />

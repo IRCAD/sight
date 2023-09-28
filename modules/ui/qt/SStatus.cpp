@@ -25,14 +25,14 @@
 #include "SStatus.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hpp>
+#include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -46,27 +46,27 @@
 namespace sight::module::ui::qt
 {
 
-const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT      = "changeToGreen";
-const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT        = "changeToRed";
-const core::com::Slots::SlotKeyType SStatus::s_CHANGE_TO_ORANGE_SLOT     = "changeToOrange";
-const core::com::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED_SLOT     = "toggleGreenRed";
-const core::com::Slots::SlotKeyType SStatus::s_CHANGE_NTH_TO_GREEN_SLOT  = "changeNthToGreen";
-const core::com::Slots::SlotKeyType SStatus::s_CHANGE_NTH_TO_RED_SLOT    = "changeNthToRed";
-const core::com::Slots::SlotKeyType SStatus::s_CHANGE_NTH_TO_ORANGE_SLOT = "changeNthToOrange";
-const core::com::Slots::SlotKeyType SStatus::s_TOGGLE_NTH_GREEN_RED_SLOT = "toggleNthGreenRed";
+const core::com::slots::key_t SStatus::CHANGE_TO_GREEN_SLOT      = "changeToGreen";
+const core::com::slots::key_t SStatus::CHANGE_TO_RED_SLOT        = "changeToRed";
+const core::com::slots::key_t SStatus::CHANGE_TO_ORANGE_SLOT     = "changeToOrange";
+const core::com::slots::key_t SStatus::TOGGLE_GREEN_RED_SLOT     = "toggleGreenRed";
+const core::com::slots::key_t SStatus::CHANGE_NTH_TO_GREEN_SLOT  = "changeNthToGreen";
+const core::com::slots::key_t SStatus::CHANGE_NTH_TO_RED_SLOT    = "changeNthToRed";
+const core::com::slots::key_t SStatus::CHANGE_NTH_TO_ORANGE_SLOT = "changeNthToOrange";
+const core::com::slots::key_t SStatus::TOGGLE_NTH_GREEN_RED_SLOT = "toggleNthGreenRed";
 
 //-----------------------------------------------------------------------------
 
 SStatus::SStatus() noexcept
 {
-    newSlot(s_CHANGE_TO_GREEN_SLOT, &SStatus::changeToGreen, this);
-    newSlot(s_CHANGE_TO_RED_SLOT, &SStatus::changeToRed, this);
-    newSlot(s_CHANGE_TO_ORANGE_SLOT, &SStatus::changeToOrange, this);
-    newSlot(s_TOGGLE_GREEN_RED_SLOT, &SStatus::toggleGreenRed, this);
-    newSlot(s_CHANGE_NTH_TO_GREEN_SLOT, &SStatus::changeNthToGreen, this);
-    newSlot(s_CHANGE_NTH_TO_RED_SLOT, &SStatus::changeNthToRed, this);
-    newSlot(s_CHANGE_NTH_TO_ORANGE_SLOT, &SStatus::changeNthToOrange, this);
-    newSlot(s_TOGGLE_NTH_GREEN_RED_SLOT, &SStatus::toggleNthGreenRed, this);
+    new_slot(CHANGE_TO_GREEN_SLOT, &SStatus::changeToGreen, this);
+    new_slot(CHANGE_TO_RED_SLOT, &SStatus::changeToRed, this);
+    new_slot(CHANGE_TO_ORANGE_SLOT, &SStatus::changeToOrange, this);
+    new_slot(TOGGLE_GREEN_RED_SLOT, &SStatus::toggleGreenRed, this);
+    new_slot(CHANGE_NTH_TO_GREEN_SLOT, &SStatus::changeNthToGreen, this);
+    new_slot(CHANGE_NTH_TO_RED_SLOT, &SStatus::changeNthToRed, this);
+    new_slot(CHANGE_NTH_TO_ORANGE_SLOT, &SStatus::changeNthToOrange, this);
+    new_slot(TOGGLE_NTH_GREEN_RED_SLOT, &SStatus::toggleNthGreenRed, this);
 }
 
 //------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ void SStatus::starting()
 {
     this->create();
 
-    auto qtContainer   = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer   = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
     QBoxLayout* layout = nullptr;
     if(m_layout == "horizontal")
     {
@@ -91,7 +91,7 @@ void SStatus::starting()
         layout = new QVBoxLayout();
     }
 
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     for(std::size_t i = 0 ; i < m_count ; ++i)
     {
@@ -172,7 +172,7 @@ void SStatus::configuring()
             const auto labelStatusConfig = configLabels.get().equal_range("labelStatus");
             // Fill the labelStatus vector
             // NOLINTNEXTLINE(bugprone-branch-clone)
-            BOOST_FOREACH(const service::IService::ConfigType::value_type& v, labelStatusConfig)
+            BOOST_FOREACH(const service::config_t::value_type& v, labelStatusConfig)
             {
                 const auto label      = v.second.get<std::string>("");
                 QPointer<QLabel> qLab = new QLabel();

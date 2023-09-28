@@ -23,10 +23,10 @@
 
 #include "modules/io/bitmap/config.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/jobs/IJob.hpp>
+#include <core/com/signal.hpp>
+#include <core/jobs/base.hpp>
 
-#include <io/base/service/IReader.hpp>
+#include <io/__/service/reader.hpp>
 #include <io/bitmap/Reader.hpp>
 
 #include <set>
@@ -43,7 +43,7 @@ class Image;
 namespace sight::core::jobs
 {
 
-class IJob;
+class base;
 
 } // namespace sight::core::jobs
 
@@ -58,7 +58,7 @@ namespace sight::module::io::bitmap
  * @copydoc sight::io::bitmap::Reader
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is read
+ * - \b jobCreated(SPTR(core::jobs::base)): emitted to display a progress bar while the image is read
  *
  * @section XML XML Configuration
  *
@@ -100,13 +100,13 @@ namespace sight::module::io::bitmap
  *      - \b nvjpeg (optional): enable nvjpeg backend
  *      - \b nvjpeg2k (optional): enable nvjpeg2k backend
  */
-class MODULE_IO_BITMAP_CLASS_API SReader final : public sight::io::base::service::IReader
+class MODULE_IO_BITMAP_CLASS_API SReader final : public sight::io::service::reader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SReader, sight::io::base::service::IReader);
+    SIGHT_DECLARE_SERVICE(SReader, sight::io::service::reader);
 
-    using JobCreatedSignal = core::com::Signal<void (core::jobs::IJob::sptr)>;
+    using JobCreatedSignal = core::com::signal<void (core::jobs::base::sptr)>;
 
     /// Trivial constructor / destructor
     /// @{
@@ -119,7 +119,7 @@ public:
 
 protected:
 
-    MODULE_IO_BITMAP_API sight::io::base::service::IOPathType getIOPathType() const override;
+    MODULE_IO_BITMAP_API sight::io::service::IOPathType getIOPathType() const override;
 
     /// Does nothing
     MODULE_IO_BITMAP_API void starting() override;
@@ -144,7 +144,7 @@ private:
     DialogPolicy m_dialog_policy {DialogPolicy::NEVER};
 
     /// Signal emitted when job created.
-    JobCreatedSignal::sptr m_job_created_signal {newSignal<JobCreatedSignal>("jobCreated")};
+    JobCreatedSignal::sptr m_job_created_signal {new_signal<JobCreatedSignal>("jobCreated")};
 
     /// Selected backend
     sight::io::bitmap::Backend m_selected_backend {sight::io::bitmap::Backend::LIBTIFF};

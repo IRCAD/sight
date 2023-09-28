@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,10 @@
 
 #include <core/base.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 #include <service/macros.hpp>
 
-#include <ui/history/ICommand.hpp>
+#include <ui/history/command.hpp>
 #include <ui/history/UndoRedoManager.hpp>
 
 namespace sight::module::ui::history
@@ -44,7 +44,7 @@ namespace sight::module::ui::history
  * - \b canRedo(bool) : sent when the history is modified, notifies if an redo is still possible.
  *
  * @section Slots Slots
- * - \b enqueue(ui::history::ICommand::sptr) : add a command to the history.
+ * - \b enqueue(ui::history::command::sptr) : add a command to the history.
  * - \b undo() : undo the last command.
  * - \b redo() : redo the next command.
  * - \b clear() : clear the history (delete all commands).
@@ -63,11 +63,11 @@ namespace sight::module::ui::history
  * - \b maxMemory (optional) : The maximum amount of memory (in bytes) used available to store commands.
  * Unlimited by default.
  */
-class MODULE_UI_HISTORY_CLASS_API SCommandHistory : public service::IService
+class MODULE_UI_HISTORY_CLASS_API SCommandHistory : public service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SCommandHistory, service::IService);
+    SIGHT_DECLARE_SERVICE(SCommandHistory, service::base);
 
     /// Constructor.
     MODULE_UI_HISTORY_API SCommandHistory();
@@ -91,10 +91,10 @@ protected:
 
 private:
 
-    typedef core::com::Signal<void (bool)> CanDoSignalType;
+    typedef core::com::signal<void (bool)> CanDoSignalType;
 
     /// SLOT: add a command to the history.
-    void enqueue(sight::ui::history::ICommand::sptr command);
+    void enqueue(sight::ui::history::command::sptr command);
 
     /// SLOT: undo the last command.
     void undo();

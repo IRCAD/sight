@@ -22,11 +22,11 @@
 
 #include "STextStatus.hpp"
 
-#include <core/com/Slots.hxx>
+#include <core/com/slots.hxx>
 
 #include <service/macros.hpp>
 
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -35,10 +35,10 @@
 namespace sight::module::ui::qt
 {
 
-static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-static const core::com::Slots::SlotKeyType s_SET_STRING_PARAMETER_SLOT = "setStringParameter";
+static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+static const core::com::slots::key_t SET_INT_PARAMETER_SLOT    = "setIntParameter";
+static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+static const core::com::slots::key_t SET_STRING_PARAMETER_SLOT = "setStringParameter";
 
 //-----------------------------------------------------------------------------
 
@@ -47,10 +47,10 @@ STextStatus::STextStatus() :
 {
     m_labelStaticText->setStyleSheet("font-weight: bold;");
 
-    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &STextStatus::setDoubleParameter, this);
-    newSlot(s_SET_INT_PARAMETER_SLOT, &STextStatus::setIntParameter, this);
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &STextStatus::setBoolParameter, this);
-    newSlot(s_SET_STRING_PARAMETER_SLOT, &STextStatus::setStringParameter, this);
+    new_slot(SET_DOUBLE_PARAMETER_SLOT, &STextStatus::setDoubleParameter, this);
+    new_slot(SET_INT_PARAMETER_SLOT, &STextStatus::setIntParameter, this);
+    new_slot(SET_BOOL_PARAMETER_SLOT, &STextStatus::setBoolParameter, this);
+    new_slot(SET_STRING_PARAMETER_SLOT, &STextStatus::setStringParameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ STextStatus::~STextStatus()
 
 void STextStatus::configuring()
 {
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+    const QString serviceID = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
 
     m_labelValue = new QLabel();
     m_labelValue->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
@@ -97,7 +97,7 @@ void STextStatus::configuring()
 void STextStatus::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->getContainer());
 
     auto* const layout = new QHBoxLayout();
     layout->addWidget(m_labelStaticText);
@@ -118,10 +118,10 @@ void STextStatus::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
+service::connections_t STextStatus::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_STRING_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    service::connections_t connections;
+    connections.push(s_STRING_INPUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }

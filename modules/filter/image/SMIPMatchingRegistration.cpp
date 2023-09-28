@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "SMIPMatchingRegistration.hpp"
 
-#include <core/tools/Dispatcher.hpp>
+#include <core/tools/dispatcher.hpp>
 
 #include <filter/image/MIPMatchingRegistration.hpp>
 #include <filter/image/Resampler.hpp>
@@ -80,16 +80,16 @@ void SMIPMatchingRegistration::updating()
     params.moving    = moving.get_shared();
     params.transform = transform.get_shared();
 
-    core::Type type = moving->getType();
-    core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, sight::filter::image::RegistrationDispatch>
+    core::type type = moving->getType();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, sight::filter::image::RegistrationDispatch>
     ::invoke(type, params);
 
-    transform->signal<data::Matrix4::ModifiedSignalType>(data::Matrix4::s_MODIFIED_SIG)->asyncEmit();
+    transform->signal<data::Matrix4::ModifiedSignalType>(data::Matrix4::MODIFIED_SIG)->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-void SMIPMatchingRegistration::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
+void SMIPMatchingRegistration::computeRegistration(core::hires_clock::type /*timestamp*/)
 {
     this->updating();
 }

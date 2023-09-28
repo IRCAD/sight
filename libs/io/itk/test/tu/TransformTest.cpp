@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ void TransformTest::tearDown()
 void TransformTest::testConversion()
 {
     ::itk::Matrix<double, 4, 4> mat;
-    data::Matrix4::sptr sightMat = data::Matrix4::New();
+    data::Matrix4::sptr sightMat = std::make_shared<data::Matrix4>();
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {

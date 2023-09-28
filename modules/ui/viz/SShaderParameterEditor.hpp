@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,15 +24,15 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <core/com/helper/SigSlotConnection.hpp>
+#include <core/com/helper/sig_slot_connection.hpp>
 
 #include <data/Reconstruction.hpp>
 #include <data/String.hpp>
 
-#include <service/IService.hpp>
+#include <service/base.hpp>
 
-#include <ui/base/IEditor.hpp>
-#include <ui/qt/container/QtContainer.hpp>
+#include <ui/__/editor.hpp>
+#include <ui/qt/container/widget.hpp>
 
 #include <QVBoxLayout>
 
@@ -52,11 +52,11 @@ namespace sight::module::ui::viz
  * @subsection In-Out In-Out:
  * - \b reconstruction [sight::data::Reconstruction]: reconstruction whose paremeters should be edited.
  */
-class MODULE_UI_VIZ_CLASS_API SShaderParameterEditor : public sight::ui::base::IEditor
+class MODULE_UI_VIZ_CLASS_API SShaderParameterEditor : public sight::ui::editor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SShaderParameterEditor, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SShaderParameterEditor, sight::ui::editor);
 
     typedef std::string EditorImplementationType;
     typedef std::string ObjectClassnameType;
@@ -74,7 +74,7 @@ protected:
     /// Initialize the container
     MODULE_UI_VIZ_API void configuring() override;
 
-    /// Start the service, slot connections, QtContainer initialization .
+    /// Start the service, slot connections, widget initialization .
     MODULE_UI_VIZ_API void starting() override;
 
     /// Destroy the service and the container.
@@ -96,15 +96,15 @@ private:
     struct ShaderEditorInfo
     {
         std::string uuid;
-        sight::ui::qt::container::QtContainer::sptr editorPanel;
-        service::IService::wptr service;
-        core::com::helper::SigSlotConnection connections;
+        sight::ui::qt::container::widget::sptr editorPanel;
+        service::base::wptr srv;
+        core::com::helper::sig_slot_connection connections;
     };
 
     ShaderEditorInfo m_editorInfo;
 
     /// Connection to the material
-    core::com::helper::SigSlotConnection m_connections;
+    core::com::helper::sig_slot_connection m_connections;
 
     QVBoxLayout* m_sizer {};
 

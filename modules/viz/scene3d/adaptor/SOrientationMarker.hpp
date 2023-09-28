@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "modules/viz/scene3d/adaptor/SMaterial.hpp"
 #include "modules/viz/scene3d/config.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/transformable.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -53,12 +53,12 @@ namespace sight::module::viz::scene3d::adaptor
  * to zoom-out.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SOrientationMarker final :
-    public sight::viz::scene3d::IAdaptor
+    public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SOrientationMarker, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SOrientationMarker, sight::viz::scene3d::adaptor);
 
     /// Constructor
     MODULE_VIZ_SCENE3D_API SOrientationMarker() noexcept = default;
@@ -84,7 +84,7 @@ protected:
     MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
 
     /// Connects input matrix S_MODIFIED to UPDATE slot.
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
+    MODULE_VIZ_SCENE3D_API service::connections_t getAutoConnections() const final;
 
 private:
 

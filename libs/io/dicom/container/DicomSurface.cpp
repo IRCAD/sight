@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,7 +125,7 @@ DicomSurface::~DicomSurface()
 
 data::Mesh::sptr DicomSurface::convertToData()
 {
-    data::Mesh::sptr mesh = data::Mesh::New();
+    data::Mesh::sptr mesh = std::make_shared<data::Mesh>();
     const auto lock       = mesh->dump_lock();
 
     // Initialize number of points

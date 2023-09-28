@@ -37,14 +37,14 @@ namespace sight::io::dicom::ut
 
 void FiducialsReaderWriterTest::basicTest()
 {
-    auto original = data::SeriesSet::New();
-    auto reader   = io::dicom::Reader::New();
+    auto original = std::make_shared<data::SeriesSet>();
+    auto reader   = std::make_shared<io::dicom::Reader>();
     reader->setObject(original);
-    reader->setFolder(utestData::Data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
+    reader->set_folder(utestData::Data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
     CPPUNIT_ASSERT_NO_THROW(reader->read());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), original->size());
 
-    auto originalImageSeries = data::ImageSeries::dynamicCast(original->at(0));
+    auto originalImageSeries = std::dynamic_pointer_cast<data::ImageSeries>(original->at(0));
     CPPUNIT_ASSERT(originalImageSeries);
     CPPUNIT_ASSERT(!originalImageSeries->hasFiducials());
     data::FiducialsSeries::sptr originalFiducialsSeries = originalImageSeries->getFiducials();
@@ -98,19 +98,19 @@ void FiducialsReaderWriterTest::basicTest()
     );
     originalFiducialsSeries->appendFiducialSet(fiducialSet);
 
-    auto writer = io::dicom::Writer::New();
+    auto writer = std::make_shared<io::dicom::Writer>();
     writer->setObject(original);
     std::filesystem::create_directories("/tmp/FiducialsReaderWriterTest");
-    writer->setFolder("/tmp/FiducialsReaderWriterTest");
+    writer->set_folder("/tmp/FiducialsReaderWriterTest");
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    auto actual = data::SeriesSet::New();
+    auto actual = std::make_shared<data::SeriesSet>();
     reader->setObject(actual);
-    reader->setFolder("/tmp/FiducialsReaderWriterTest");
+    reader->set_folder("/tmp/FiducialsReaderWriterTest");
     CPPUNIT_ASSERT_NO_THROW(reader->read());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual->size());
 
-    auto actualImageSeries = data::ImageSeries::dynamicCast(actual->at(0));
+    auto actualImageSeries = std::dynamic_pointer_cast<data::ImageSeries>(actual->at(0));
     CPPUNIT_ASSERT(actualImageSeries);
     auto actualFiducialsSeries = actualImageSeries->getFiducials();
     CPPUNIT_ASSERT(actualFiducialsSeries);

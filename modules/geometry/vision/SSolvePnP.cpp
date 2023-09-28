@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "SSolvePnP.hpp"
 
-#include <core/com/Signal.hxx>
+#include <core/com/signal.hxx>
 
 #include <geometry/vision/helper.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::module::geometry::vision
 
 //-----------------------------------------------------------------------------
 
-void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
+void SSolvePnP::computeRegistration(core::hires_clock::type /*timestamp*/)
 {
     const auto camera = m_calibration.lock();
 
@@ -113,13 +113,13 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType /*timestamp
         cvMat = cvMat.inv();
     }
 
-    data::Matrix4::sptr matrix = data::Matrix4::New();
+    data::Matrix4::sptr matrix = std::make_shared<data::Matrix4>();
     io::opencv::Matrix::copyFromCv(cvMat, matrix);
 
-    fwMatrix->deepCopy(matrix);
+    fwMatrix->deep_copy(matrix);
 
-    const auto sig = fwMatrix->signal<data::Matrix4::ModifiedSignalType>(data::Matrix4::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    const auto sig = fwMatrix->signal<data::Matrix4::ModifiedSignalType>(data::Matrix4::MODIFIED_SIG);
+    sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------

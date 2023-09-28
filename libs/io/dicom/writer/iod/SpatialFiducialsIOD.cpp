@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include "io/dicom/writer/ie/SpatialFiducials.hpp"
 #include "io/dicom/writer/ie/Study.hpp"
 
-#include <core/spyLog.hpp>
+#include <core/spy_log.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -47,7 +47,7 @@ namespace sight::io::dicom::writer::iod
 SpatialFiducialsIOD::SpatialFiducialsIOD(
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const std::filesystem::path& destinationPath,
-    const core::log::Logger::sptr& logger,
+    const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
@@ -65,7 +65,7 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 void SpatialFiducialsIOD::write(const data::Series::csptr& series)
 {
     // Retrieve image series
-    data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
+    data::ImageSeries::csptr imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     const data::Vector::sptr distances = data::helper::MedicalImage::getDistances(*imageSeries);

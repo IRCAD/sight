@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ImageDiffTest.hpp"
 
-#include <core/Type.hpp>
+#include <core/type.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -174,7 +174,7 @@ void ImageDiffTest::storeDiffsTest()
     // Clear the diff, test if it's really empty.
     diff.clear();
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), diff.getSize());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), diff.size());
     CPPUNIT_ASSERT_EQUAL(std::size_t(0), diff.numElements());
 }
 
@@ -185,10 +185,10 @@ void ImageDiffTest::undoRedoTest()
     const data::Image::Size SIZE          = {{32, 32, 32}};
     const data::Image::Spacing SPACING    = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
-    const core::Type TYPE                 = core::Type::UINT8;
+    const core::type TYPE                 = core::type::UINT8;
     const data::Image::PixelFormat FORMAT = data::Image::PixelFormat::GRAY_SCALE;
 
-    data::Image::sptr image = data::Image::New();
+    data::Image::sptr image = std::make_shared<data::Image>();
 
     utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, FORMAT);
 

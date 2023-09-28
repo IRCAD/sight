@@ -26,7 +26,7 @@
 
 #include <data/String.hpp>
 
-#include <ui/base/IDialogEditor.hpp>
+#include <ui/__/dialog_editor.hpp>
 
 namespace sight::module::ui::dicom
 {
@@ -53,11 +53,11 @@ namespace sight::module::ui::dicom
  *  - \b addSelection
  *      - \b filter (mandatory) : Name of the filter to include/exclude to the choice list of the selector.
  */
-class MODULE_UI_DICOM_CLASS_API SFilterSelectorDialog : public sight::ui::base::IDialogEditor
+class MODULE_UI_DICOM_CLASS_API SFilterSelectorDialog : public sight::ui::dialog_editor
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SFilterSelectorDialog, sight::ui::base::IDialogEditor);
+    SIGHT_DECLARE_SERVICE(SFilterSelectorDialog, sight::ui::dialog_editor);
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).

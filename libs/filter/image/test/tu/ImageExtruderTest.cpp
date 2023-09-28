@@ -33,7 +33,7 @@ namespace sight::filter::image::ut
 
 void ImageExtruderTest::setUp()
 {
-    m_image = data::Image::New();
+    m_image = std::make_shared<data::Image>();
     const auto dumpLock = m_image->dump_lock();
     m_image->setSpacing(m_spacing);
     m_image->setOrigin(m_origin);
@@ -58,7 +58,7 @@ void ImageExtruderTest::tearDown()
 void ImageExtruderTest::extrudeTriangleMesh()
 {
     // Create a cube.
-    const data::Mesh::sptr mesh = data::Mesh::New();
+    const data::Mesh::sptr mesh = std::make_shared<data::Mesh>();
     const auto lock             = mesh->dump_lock();
     mesh->resize(8, 12, data::Mesh::CellType::TRIANGLE);
 
@@ -115,9 +115,9 @@ void ImageExtruderTest::extrudeTriangleMesh()
         }
     }
 
-    const data::Image::sptr image = data::Image::New();
+    const data::Image::sptr image = std::make_shared<data::Image>();
 
-    image->resize(m_image->getSize(), core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    image->resize(m_image->size(), core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
     image->setSpacing(m_image->getSpacing());
 
     const auto dumpLock = image->dump_lock();
@@ -153,7 +153,7 @@ void ImageExtruderTest::extrudeTriangleMesh()
 void ImageExtruderTest::extrudeQuadMesh()
 {
     // Create a cube.
-    const data::Mesh::sptr mesh = data::Mesh::New();
+    const data::Mesh::sptr mesh = std::make_shared<data::Mesh>();
     const auto lock             = mesh->dump_lock();
 
     mesh->resize(8, 6, data::Mesh::CellType::QUAD);
@@ -210,8 +210,8 @@ void ImageExtruderTest::extrudeQuadMesh()
         }
     }
 
-    const data::Image::sptr image = data::Image::New();
-    image->resize(m_image->getSize(), core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    const data::Image::sptr image = std::make_shared<data::Image>();
+    image->resize(m_image->size(), core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
     image->setSpacing(m_image->getSpacing());
 
     const auto dumpLock = image->dump_lock();

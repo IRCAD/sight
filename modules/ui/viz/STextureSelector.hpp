@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Reconstruction.hpp>
 
-#include <ui/base/IEditor.hpp>
+#include <ui/__/editor.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -50,13 +50,13 @@ namespace sight::module::ui::viz
  * - \b reconstruction [sight::data::Reconstruction]: reconstruction where the texture should be applied.
  */
 class MODULE_UI_VIZ_CLASS_API STextureSelector : public QObject,
-                                                 public sight::ui::base::IEditor
+                                                 public sight::ui::editor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(STextureSelector, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(STextureSelector, sight::ui::editor);
 
     MODULE_UI_VIZ_API STextureSelector() noexcept;
     MODULE_UI_VIZ_API ~STextureSelector() noexcept override;

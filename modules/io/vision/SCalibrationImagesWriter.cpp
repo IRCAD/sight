@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "SCalibrationImagesWriter.hpp"
 
-#include <core/location/SingleFolder.hpp>
+#include <core/location/single_folder.hpp>
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Image.hpp>
@@ -31,9 +31,9 @@
 
 #include <service/macros.hpp>
 
-#include <ui/base/Cursor.hpp>
-#include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
+#include <ui/__/cursor.hpp>
+#include <ui/__/dialog/location.hpp>
+#include <ui/__/dialog/message.hpp>
 
 #include <opencv2/opencv.hpp>
 
@@ -55,29 +55,29 @@ SCalibrationImagesWriter::~SCalibrationImagesWriter() noexcept =
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SCalibrationImagesWriter::getIOPathType() const
+sight::io::service::IOPathType SCalibrationImagesWriter::getIOPathType() const
 {
-    return sight::io::base::service::FOLDER;
+    return sight::io::service::FOLDER;
 }
 
 //------------------------------------------------------------------------------
 
 void SCalibrationImagesWriter::openLocationDialog()
 {
-    static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
+    static auto defaultDirectory = std::make_shared<core::location::single_folder>();
 
-    sight::ui::base::dialog::LocationDialog dialogFile;
+    sight::ui::dialog::location dialogFile;
     dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the images" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(ui::base::dialog::ILocationDialog::FOLDER);
+    dialogFile.setOption(ui::dialog::location::WRITE);
+    dialogFile.setType(ui::dialog::location::FOLDER);
 
-    auto result = core::location::SingleFolder::dynamicCast(dialogFile.show());
+    auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialogFile.show());
 
     if(result)
     {
-        this->setFolder(result->getFolder());
-        defaultDirectory->setFolder(result->getFolder().parent_path());
+        this->set_folder(result->get_folder());
+        defaultDirectory->set_folder(result->get_folder().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }
     else
@@ -90,7 +90,7 @@ void SCalibrationImagesWriter::openLocationDialog()
 
 void SCalibrationImagesWriter::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::service::writer::configuring();
 
     const auto configTree = this->getConfiguration();
     m_fileExtension = configTree.get("format", ".tiff");
@@ -112,8 +112,8 @@ void SCalibrationImagesWriter::updating()
         const auto calibInfo = std::dynamic_pointer_cast<const data::CalibrationInfo>(data.get_shared());
         SIGHT_ASSERT("Missing calibration info input.", calibInfo);
 
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
+        sight::ui::cursor cursor;
+        cursor.setCursor(ui::cursor_base::BUSY);
 
         std::size_t count(0);
         for(const auto& calibImg : calibInfo->getImageContainer())
@@ -122,7 +122,7 @@ void SCalibrationImagesWriter::updating()
             imageNumber << std::setw(4) << std::setfill('0') << count++;
 
             const std::string filename       = "img_" + imageNumber.str() + m_fileExtension;
-            const std::filesystem::path path = this->getFolder() / filename;
+            const std::filesystem::path path = this->get_folder() / filename;
 
             cv::Mat cvImg = sight::io::opencv::Image::copyToCv(calibImg);
 
@@ -146,10 +146,10 @@ void SCalibrationImagesWriter::updating()
             catch(const cv::Exception& e)
             {
                 m_writeFailed = true;
-                sight::ui::base::dialog::MessageDialog::show(
+                sight::ui::dialog::message::show(
                     "Error writing calibration images.",
                     e.what(),
-                    sight::ui::base::dialog::MessageDialog::CRITICAL
+                    sight::ui::dialog::message::CRITICAL
                 );
             }
         }

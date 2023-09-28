@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #pragma once
 
 #include "filter/dicom/config.hpp"
-#include "filter/dicom/custom/ICustom.hpp"
+#include "filter/dicom/custom/base.hpp"
 
 #include <data/DicomSeries.hpp>
 
@@ -33,22 +33,19 @@ namespace sight::filter::dicom::custom
 /**
  * @brief Default DICOM Filter
  */
-class FILTER_DICOM_CLASS_API DefaultDicomFilter : public ICustom
+class FILTER_DICOM_CLASS_API DefaultDicomFilter : public base
 {
 public:
 
-    SIGHT_DECLARE_CLASS(DefaultDicomFilter, ICustom, filter::dicom::factory::New<DefaultDicomFilter>);
-
-    /// Constructor
-    FILTER_DICOM_API DefaultDicomFilter(filter::dicom::IFilter::Key key);
+    SIGHT_DECLARE_CLASS(DefaultDicomFilter, base, sight::filter::dicom::factory::make<DefaultDicomFilter>);
 
     /// Destructor
-    FILTER_DICOM_API ~DefaultDicomFilter() override;
+    FILTER_DICOM_API ~DefaultDicomFilter() override = default;
 
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
         const data::DicomSeries::sptr& series,
-        const core::log::Logger::sptr& logger
+        const core::log::logger::sptr& logger
     ) const override;
 
     /// Return the name of the filter

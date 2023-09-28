@@ -4,13 +4,13 @@ add_dependencies(
     ExActivities
     sightrun
     module_appXml
-    module_ui_base
+    module_ui
     module_ui_qt
     module_activity
     data
     module_service
     module_filter_image
-    module_ui_base
+    module_ui
     module_ui_flaticons
     module_io_vtk
     module_io_activity
@@ -31,7 +31,7 @@ module_param(
 module_param(module_appXml PARAM_LIST config parameters PARAM_VALUES ExActivities_Base_AppCfg ExActivities_AppCfgParam)
 
 module_param(
-    module_ui_base
+    module_ui
     PARAM_LIST preferences_enabled
                preferences_password_policy
                preferences_encryption_policy

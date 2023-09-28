@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "io/dicom/config.hpp"
 
-#include <core/log/Logger.hpp>
+#include <core/log/logger.hpp>
 #include <core/macros.hpp>
 
 #include <gdcmMediaStorage.h>
@@ -72,7 +72,7 @@ public:
      */
     IO_DICOM_API DicomInstance(
         const CSPTR(data::Series)& series,
-        SPTR(core::log::Logger)logger = nullptr,
+        SPTR(core::log::logger)logger = nullptr,
         bool isMultiFiles             = true
     );
 
@@ -83,7 +83,7 @@ public:
      */
     IO_DICOM_API DicomInstance(
         const CSPTR(data::DicomSeries)& dicomSeries,
-        SPTR(core::log::Logger)logger = nullptr
+        SPTR(core::log::logger)logger = nullptr
     );
 
     /// Copy constructor
@@ -211,7 +211,7 @@ private:
     SOPInstanceUIDContainerType m_SOPInstanceUIDContainer;
 
     /// Logger
-    SPTR(core::log::Logger) m_logger;
+    SPTR(core::log::logger) m_logger;
 };
 
 } // namespace sight::io::dicom::container

@@ -53,15 +53,14 @@ void IoPacsTest::tearDown()
 void IoPacsTest::pacsConfigurationInitializer()
 {
     // Pacs Configuration
-    sight::io::dimse::data::PacsConfiguration::sptr pacsConfiguration =
-        sight::io::dimse::data::PacsConfiguration::New();
+    auto pacsConfiguration = std::make_shared<sight::io::dimse::data::PacsConfiguration>();
 
     // Create service
-    service::IService::sptr srv = service::add("sight::module::io::dimse::SPacsConfigurationInitializer");
+    service::base::sptr srv = service::add("sight::module::io::dimse::SPacsConfigurationInitializer");
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration
-    service::IService::ConfigType configSrv;
+    service::config_t configSrv;
     std::stringstream config_string;
     config_string << "<config localApplicationTitle=\"VRRender\""
                      "pacsHostName=\"mypacs.mycompany.com\""

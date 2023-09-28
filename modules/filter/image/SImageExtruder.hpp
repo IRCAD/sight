@@ -28,7 +28,7 @@
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 
-#include <service/IFilter.hpp>
+#include <service/filter.hpp>
 
 namespace sight::module::filter::image
 {
@@ -66,12 +66,12 @@ namespace sight::module::filter::image
  * @subsection In-Out In-Out
  * - \b mask [sight::data::Image]: resulting mask. Cropped regions are zeroed and full regions are marked with 255.
  */
-class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public service::IFilter
+class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public service::filter
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SImageExtruder, sight::service::IFilter);
+    SIGHT_DECLARE_SERVICE(SImageExtruder, sight::service::filter);
 
     /// Initializes the slot.
     MODULE_FILTER_IMAGE_API SImageExtruder();
@@ -91,14 +91,14 @@ private:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::ModelSeries::s_MODIFIED_SIG of s_MESHES_INPUT to IService::slots::s_UPDATE.
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MESHES_INPUT to s_ADD_RECONSTRUCTIONS_SLOT.
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MESHES_INPUT to IService::slots::s_UPDATE.
-     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INPUT to IService::slots::s_UPDATE.
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE.
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE.
+     * Connect data::ModelSeries::MODIFIED_SIG of s_MESHES_INPUT to service::slots::UPDATE.
+     * Connect data::ModelSeries::RECONSTRUCTIONS_ADDED_SIG of s_MESHES_INPUT to ADD_RECONSTRUCTIONS_SLOT.
+     * Connect data::ModelSeries::RECONSTRUCTIONS_REMOVED_SIG of s_MESHES_INPUT to service::slots::UPDATE.
+     * Connect data::Matrix4::MODIFIED_SIG of s_TRANSFORM_INPUT to service::slots::UPDATE.
+     * Connect data::Image::MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE.
+     * Connect data::Image::BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to service::slots::UPDATE.
      */
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
     /// Extrudes all mesh of the model series from the image.
     void updating() override;

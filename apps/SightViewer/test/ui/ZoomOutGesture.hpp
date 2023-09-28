@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include "ITest.hpp"
+#include "test.hpp"
 
 namespace sight::sightviewer::test::ui
 {
 
-class ZoomOutGesture : public ITest
+class ZoomOutGesture : public test
 {
 CPPUNIT_TEST_SUITE(ZoomOutGesture);
 CPPUNIT_TEST(test);

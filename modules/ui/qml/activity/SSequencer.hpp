@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,12 @@
 
 #include "modules/ui/qml/config.hpp"
 
-#include <activity/IActivitySequencer.hpp>
+#include <activity/sequencer.hpp>
 
 #include <data/Activity.hpp>
 #include <data/ActivitySet.hpp>
 
-#include <ui/qml/IQmlEditor.hpp>
+#include <ui/qml/editor.hpp>
 
 #include <QStringList>
 
@@ -87,15 +87,15 @@ namespace sight::module::ui::qml::activity
  *  @subsubsection In-Out In-Out
  * - \b activity_set [sight::data::ActivitySet]: used to store the Activity of the managed activities
  */
-class MODULE_UI_QML_CLASS_API SSequencer : public sight::ui::qml::IQmlEditor,
-                                           public sight::activity::IActivitySequencer
+class MODULE_UI_QML_CLASS_API SSequencer : public sight::ui::qml::editor,
+                                           public sight::activity::sequencer
 {
 Q_OBJECT
 Q_PROPERTY(QStringList activityIds MEMBER m_qActivityIds)
 
 public:
 
-    SIGHT_DECLARE_SERVICE(SSequencer, sight::ui::qml::IQmlEditor);
+    SIGHT_DECLARE_SERVICE(SSequencer, sight::ui::qml::editor);
 
     /// Constructor. Do nothing.
     MODULE_UI_QML_API SSequencer();
@@ -108,8 +108,8 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal<void (data::Activity::sptr)> ActivityCreatedSignalType;
-    typedef core::com::Signal<void (data::Activity::sptr)> DataRequiredSignalType;
+    typedef core::com::signal<void (data::Activity::sptr)> ActivityCreatedSignalType;
+    typedef core::com::signal<void (data::Activity::sptr)> DataRequiredSignalType;
 /**
  * @}
  */
@@ -146,7 +146,7 @@ protected:
     void updating() override;
 
     /// Connect the service to the ActivitySet signals
-    KeyConnectionsMap getAutoConnections() const override;
+    connections_t getAutoConnections() const override;
 
 private:
 

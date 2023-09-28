@@ -22,10 +22,10 @@
 
 #include "SessionTest.hpp"
 
-#include <core/crypto/AES256.hpp>
-#include <core/crypto/Base64.hpp>
-#include <core/os/TempPath.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/crypto/aes256.hpp>
+#include <core/crypto/base64.hpp>
+#include <core/os/temp_path.hpp>
+#include <core/tools/uuid.hpp>
 
 #include <data/Activity.hpp>
 #include <data/ActivitySet.hpp>
@@ -88,7 +88,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::session::ut::SessionTest);
 namespace sight::io::session::ut
 {
 
-// For UUID::generateUUID();
+// For UUID::generate();
 using core::tools::UUID;
 
 //------------------------------------------------------------------------------
@@ -96,11 +96,11 @@ using core::tools::UUID;
 template<typename T>
 inline T random()
 {
-    using uniform_distribution = typename std::conditional<
-        std::is_floating_point<T>::value,
+    using uniform_distribution = std::conditional_t<
+        std::is_floating_point_v<T>,
         std::uniform_real_distribution<T>,
         std::uniform_int_distribution<T>
-                                 >::type;
+    >;
 
     static uniform_distribution distributor(std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
     static std::mt19937 generator {std::random_device {}()};
@@ -167,7 +167,7 @@ void SessionTest::tearDown()
 template<typename T>
 inline typename T::sptr generate(const std::size_t /*unused*/)
 {
-    return T::New(static_cast<typename T::ValueType>(random<typename T::ValueType>()));
+    return std::make_shared<T>(static_cast<typename T::ValueType>(random<typename T::ValueType>()));
 }
 
 //------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ inline const typename T::csptr& getExpected(const std::size_t variant)
     if(it == MAP.cend())
     {
         const auto& object = generate<T>(variant);
-        object->setDescription(UUID::generateUUID());
+        object->setDescription(UUID::generate());
 
         return MAP.insert_or_assign(variant, object).first->second;
     }
@@ -194,8 +194,8 @@ inline const typename T::csptr& getExpected(const std::size_t variant)
 template<typename T>
 inline typename T::sptr create(const std::size_t variant)
 {
-    const auto& object = T::New();
-    object->deepCopy(getExpected<T>(variant));
+    const auto& object = std::make_shared<T>();
+    object->deep_copy(getExpected<T>(variant));
     return object;
 }
 
@@ -215,10 +215,10 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
 {
     static constexpr auto password = "password";
 
-    const auto& test_id = T::leafClassname() + "_" + std::to_string(encrypt) + "_" + std::to_string(raw);
+    const auto& test_id = T::leaf_classname() + "_" + std::to_string(encrypt) + "_" + std::to_string(raw);
 
     // Create a temporary directory
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto testPath = tmpDir / (test_id + (raw ? ".json" : ".zip"));
 
     static constexpr auto fieldName = "field";
@@ -226,18 +226,18 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
     // Test serialization
     {
         // Create the data object
-        auto object = empty_obj ? T::New() : create<T>(0);
+        auto object = empty_obj ? std::make_shared<T>() : create<T>(0);
 
         // Add a field
         object->setField(fieldName, create<T>(1));
 
         // Create the session writer
-        auto sessionWriter = io::session::SessionWriter::New();
+        auto sessionWriter = std::make_shared<io::session::SessionWriter>();
         CPPUNIT_ASSERT(sessionWriter);
 
         // Configure the session writer
         sessionWriter->setObject(object);
-        sessionWriter->setFile(testPath);
+        sessionWriter->set_file(testPath);
 
         if(raw)
         {
@@ -256,11 +256,11 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
 
     // Test deserialization
     {
-        auto sessionReader = io::session::SessionReader::New();
+        auto sessionReader = std::make_shared<io::session::SessionReader>();
         CPPUNIT_ASSERT(sessionReader);
 
         // Configure the session reader
-        sessionReader->setFile(testPath);
+        sessionReader->set_file(testPath);
 
         if(raw)
         {
@@ -278,7 +278,7 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
         auto actual_object = std::dynamic_pointer_cast<T>(sessionReader->getObject());
 
         // Create the data object
-        auto expected_object = empty_obj ? T::New() : create<T>(0);
+        auto expected_object = empty_obj ? std::make_shared<T>() : create<T>(0);
 
         // Add a field
         expected_object->setField(fieldName, create<T>(1));
@@ -305,7 +305,7 @@ inline void testCombine()
 template<>
 inline data::Boolean::sptr generate<data::Boolean>(const std::size_t variant)
 {
-    return data::Boolean::New(variant % 2 == 0);
+    return std::make_shared<data::Boolean>(variant % 2 == 0);
 }
 
 //------------------------------------------------------------------------------
@@ -334,7 +334,7 @@ void SessionTest::floatTest()
 template<>
 inline data::String::sptr generate<data::String>(const std::size_t /*unused*/)
 {
-    return data::String::New(UUID::generateUUID());
+    return std::make_shared<data::String>(UUID::generate());
 }
 
 //------------------------------------------------------------------------------
@@ -349,7 +349,7 @@ void SessionTest::stringTest()
 template<>
 inline data::Composite::sptr generate<data::Composite>(const std::size_t variant)
 {
-    auto object = data::Composite::New();
+    auto object = std::make_shared<data::Composite>();
     (*object)[data::Boolean::classname()] = create<data::Boolean>(variant);
     (*object)[data::Integer::classname()] = create<data::Integer>(variant);
     (*object)[data::Float::classname()]   = create<data::Float>(variant);
@@ -370,8 +370,8 @@ void SessionTest::compositeTest()
 template<>
 inline data::Mesh::sptr create<data::Mesh>(const std::size_t variant)
 {
-    const auto& object = data::Mesh::New();
-    object->deepCopy(getExpected<data::Mesh>(variant));
+    const auto& object = std::make_shared<data::Mesh>();
+    object->deep_copy(getExpected<data::Mesh>(variant));
     object->shrinkToFit();
     return object;
 }
@@ -381,7 +381,7 @@ inline data::Mesh::sptr create<data::Mesh>(const std::size_t variant)
 template<>
 inline data::Mesh::sptr generate<data::Mesh>(const std::size_t /*unused*/)
 {
-    auto object = data::Mesh::New();
+    auto object = std::make_shared<data::Mesh>();
 
     utestData::generator::Mesh::generateTriangleQuadMesh(object);
     geometry::data::Mesh::shakePoint(object);
@@ -406,49 +406,49 @@ void SessionTest::meshTest()
 template<>
 inline data::Series::sptr generate<data::Series>(const std::size_t variant)
 {
-    auto object = data::Series::New();
+    auto object = std::make_shared<data::Series>();
 
     // Fill trivial attributes
     object->setSOPKeyword(sight::data::dicom::sop::Keyword::CTImageStorage);
-    object->setModality(UUID::generateUUID());
-    object->setSeriesDescription(UUID::generateUUID());
-    object->setSeriesInstanceUID(UUID::generateUUID());
+    object->setModality(UUID::generate());
+    object->setSeriesDescription(UUID::generate());
+    object->setSeriesInstanceUID(UUID::generate());
     object->setSeriesNumber(std::int32_t(variant));
-    object->setLaterality(UUID::generateUUID());
+    object->setLaterality(UUID::generate());
     object->setSeriesDate(generateDA(variant));
     object->setSeriesTime(generateTM(variant));
-    object->setPerformingPhysicianName(UUID::generateUUID() + "\\" + UUID::generateUUID());
-    object->setProtocolName(UUID::generateUUID());
-    object->setBodyPartExamined(UUID::generateUUID());
-    object->setPatientPosition(UUID::generateUUID());
-    object->setAnatomicalOrientationType(UUID::generateUUID());
-    object->setPerformedProcedureStepID(UUID::generateUUID());
+    object->setPerformingPhysicianName(UUID::generate() + "\\" + UUID::generate());
+    object->setProtocolName(UUID::generate());
+    object->setBodyPartExamined(UUID::generate());
+    object->setPatientPosition(UUID::generate());
+    object->setAnatomicalOrientationType(UUID::generate());
+    object->setPerformedProcedureStepID(UUID::generate());
     object->setPerformedProcedureStepStartDate(generateDA(variant));
     object->setPerformedProcedureStepStartTime(generateTM(variant));
     object->setPerformedProcedureStepEndDate(generateDA(variant));
     object->setPerformedProcedureStepEndTime(generateTM(variant));
-    object->setPerformedProcedureStepDescription(UUID::generateUUID());
-    object->setCommentsOnThePerformedProcedureStep(UUID::generateUUID());
+    object->setPerformedProcedureStepDescription(UUID::generate());
+    object->setCommentsOnThePerformedProcedureStep(UUID::generate());
 
     // Equipment Module
-    object->setInstitutionName(UUID::generateUUID());
+    object->setInstitutionName(UUID::generate());
 
     // Patient Module
-    object->setPatientName(UUID::generateUUID());
-    object->setPatientID(UUID::generateUUID());
+    object->setPatientName(UUID::generate());
+    object->setPatientID(UUID::generate());
     object->setPatientBirthDate(generateDA(variant));
-    object->setPatientSex(UUID::generateUUID());
+    object->setPatientSex(UUID::generate());
 
     // Study Module
-    object->setStudyDescription(UUID::generateUUID());
-    object->setStudyInstanceUID(UUID::generateUUID());
-    object->setStudyID(UUID::generateUUID());
+    object->setStudyDescription(UUID::generate());
+    object->setStudyInstanceUID(UUID::generate());
+    object->setStudyID(UUID::generate());
     object->setStudyDate(generateDA(variant));
     object->setStudyTime(generateTM(variant));
-    object->setReferringPhysicianName(UUID::generateUUID());
+    object->setReferringPhysicianName(UUID::generate());
 
     // Patient Study Module
-    object->setPatientAge(UUID::generateUUID());
+    object->setPatientAge(UUID::generate());
     object->setPatientSize(double(variant));
     object->setPatientWeight(double(variant));
 
@@ -473,13 +473,13 @@ inline data::Series::sptr generate<data::Series>(const std::size_t variant)
         );
 
         object->setFrameAcquisitionDateTime(generateDT(variant + i), i);
-        object->setFrameComments(UUID::generateUUID(), i);
-        object->setFrameLabel(UUID::generateUUID(), i);
+        object->setFrameComments(UUID::generate(), i);
+        object->setFrameLabel(UUID::generate(), i);
     }
 
     // Test private tag...
-    object->setPrivateValue(UUID::generateUUID(), 0x10);
-    object->setMultiFramePrivateValue(UUID::generateUUID(), 0x15, 0);
+    object->setPrivateValue(UUID::generate(), 0x10);
+    object->setMultiFramePrivateValue(UUID::generate(), 0x15, 0);
 
     return object;
 }
@@ -496,7 +496,7 @@ void SessionTest::seriesTest()
 template<>
 inline data::Activity::sptr generate<data::Activity>(const std::size_t variant)
 {
-    auto object = data::Activity::New();
+    auto object = std::make_shared<data::Activity>();
 
     (*object)[data::Boolean::classname()] = create<data::Boolean>(variant);
     (*object)[data::Integer::classname()] = create<data::Integer>(variant);
@@ -518,7 +518,7 @@ void SessionTest::activityTest()
 template<>
 inline data::Array::sptr generate<data::Array>(const std::size_t variant)
 {
-    auto object = data::Array::New();
+    auto object = std::make_shared<data::Array>();
 
     const auto lock = object->dump_lock();
 
@@ -529,27 +529,27 @@ inline data::Array::sptr generate<data::Array>(const std::size_t variant)
 
             object->resize(
                 {variant + 2, variant + 2},
-                std::is_same<T, double>::value
-                ? core::Type::DOUBLE
-                : std::is_same<T, float>::value
-                ? core::Type::FLOAT
-                : std::is_same<T, std::uint8_t>::value
-                ? core::Type::UINT8
-                : std::is_same<T, std::uint16_t>::value
-                ? core::Type::UINT16
-                : std::is_same<T, std::uint32_t>::value
-                ? core::Type::UINT32
-                : std::is_same<T, std::uint64_t>::value
-                ? core::Type::UINT64
-                : std::is_same<T, std::int8_t>::value
-                ? core::Type::INT8
-                : std::is_same<T, std::int16_t>::value
-                ? core::Type::INT16
-                : std::is_same<T, std::int32_t>::value
-                ? core::Type::INT32
-                : std::is_same<T, std::int64_t>::value
-                ? core::Type::INT64
-                : core::Type::NONE,
+                std::is_same_v<T, double>
+                ? core::type::DOUBLE
+                : std::is_same_v<T, float>
+                ? core::type::FLOAT
+                : std::is_same_v<T, std::uint8_t>
+                ? core::type::UINT8
+                : std::is_same_v<T, std::uint16_t>
+                ? core::type::UINT16
+                : std::is_same_v<T, std::uint32_t>
+                ? core::type::UINT32
+                : std::is_same_v<T, std::uint64_t>
+                ? core::type::UINT64
+                : std::is_same_v<T, std::int8_t>
+                ? core::type::INT8
+                : std::is_same_v<T, std::int16_t>
+                ? core::type::INT16
+                : std::is_same_v<T, std::int32_t>
+                ? core::type::INT32
+                : std::is_same_v<T, std::int64_t>
+                ? core::type::INT64
+                : core::type::NONE,
                 true
             );
 
@@ -605,7 +605,7 @@ void SessionTest::arrayTest()
 template<>
 inline data::Image::sptr generate<data::Image>(const std::size_t variant)
 {
-    auto object = data::Image::New();
+    auto object = std::make_shared<data::Image>();
 
     const auto lock = object->dump_lock();
 
@@ -629,47 +629,47 @@ inline data::Image::sptr generate<data::Image>(const std::size_t variant)
                 0.5 + static_cast<double>(variant),
                 0.6 + static_cast<double>(variant)
             },
-                std::is_same<T, double>::value
-                ? core::Type::DOUBLE
-                : std::is_same<T, float>::value
-                ? core::Type::FLOAT
-                : std::is_same<T, std::uint8_t>::value
-                ? core::Type::UINT8
-                : std::is_same<T, std::uint16_t>::value
-                ? core::Type::UINT16
-                : std::is_same<T, std::uint32_t>::value
-                ? core::Type::UINT32
-                : std::is_same<T, std::uint64_t>::value
-                ? core::Type::UINT64
-                : std::is_same<T, std::int8_t>::value
-                ? core::Type::INT8
-                : std::is_same<T, std::int16_t>::value
-                ? core::Type::INT16
-                : std::is_same<T, std::int32_t>::value
-                ? core::Type::INT32
-                : std::is_same<T, std::int64_t>::value
-                ? core::Type::INT64
-                : core::Type::NONE,
+                std::is_same_v<T, double>
+                ? core::type::DOUBLE
+                : std::is_same_v<T, float>
+                ? core::type::FLOAT
+                : std::is_same_v<T, std::uint8_t>
+                ? core::type::UINT8
+                : std::is_same_v<T, std::uint16_t>
+                ? core::type::UINT16
+                : std::is_same_v<T, std::uint32_t>
+                ? core::type::UINT32
+                : std::is_same_v<T, std::uint64_t>
+                ? core::type::UINT64
+                : std::is_same_v<T, std::int8_t>
+                ? core::type::INT8
+                : std::is_same_v<T, std::int16_t>
+                ? core::type::INT16
+                : std::is_same_v<T, std::int32_t>
+                ? core::type::INT32
+                : std::is_same_v<T, std::int64_t>
+                ? core::type::INT64
+                : core::type::NONE,
 
-                std::is_same<T, double>::value
+                std::is_same_v<T, double>
                 ? data::Image::PixelFormat::GRAY_SCALE
-                : std::is_same<T, float>::value
+                : std::is_same_v<T, float>
                 ? data::Image::PixelFormat::GRAY_SCALE
-                : std::is_same<T, std::uint8_t>::value
+                : std::is_same_v<T, std::uint8_t>
                 ? data::Image::PixelFormat::BGR
-                : std::is_same<T, std::uint16_t>::value
+                : std::is_same_v<T, std::uint16_t>
                 ? data::Image::PixelFormat::BGRA
-                : std::is_same<T, std::uint32_t>::value
+                : std::is_same_v<T, std::uint32_t>
                 ? data::Image::PixelFormat::RGB
-                : std::is_same<T, std::uint64_t>::value
+                : std::is_same_v<T, std::uint64_t>
                 ? data::Image::PixelFormat::RGBA
-                : std::is_same<T, std::int8_t>::value
+                : std::is_same_v<T, std::int8_t>
                 ? data::Image::PixelFormat::GRAY_SCALE
-                : std::is_same<T, std::int16_t>::value
+                : std::is_same_v<T, std::int16_t>
                 ? data::Image::PixelFormat::BGR
-                : std::is_same<T, std::int32_t>::value
+                : std::is_same_v<T, std::int32_t>
                 ? data::Image::PixelFormat::BGRA
-                : std::is_same<T, std::int64_t>::value
+                : std::is_same_v<T, std::int64_t>
                 ? data::Image::PixelFormat::RGB
                 : data::Image::PixelFormat::UNDEFINED,
                 std::uint32_t(variant)
@@ -718,7 +718,7 @@ void SessionTest::imageTest()
 template<>
 inline data::Vector::sptr generate<data::Vector>(const std::size_t variant)
 {
-    auto object = data::Vector::New();
+    auto object = std::make_shared<data::Vector>();
 
     object->push_back(create<data::Boolean>(variant));
     object->push_back(create<data::Integer>(variant));
@@ -741,7 +741,7 @@ void SessionTest::vectorTest()
 template<>
 inline data::Point::sptr generate<data::Point>(const std::size_t /*unused*/)
 {
-    auto object = data::Point::New();
+    auto object = std::make_shared<data::Point>();
 
     object->setCoord({random<double>(), random<double>(), random<double>()});
 
@@ -760,7 +760,7 @@ void SessionTest::pointTest()
 template<>
 inline data::PointList::sptr generate<data::PointList>(const std::size_t variant)
 {
-    auto object = data::PointList::New();
+    auto object = std::make_shared<data::PointList>();
 
     auto& points = object->getPoints();
     for(std::size_t i = 0, end = variant + 3 ; i < end ; ++i)
@@ -783,7 +783,7 @@ void SessionTest::pointListTest()
 template<>
 inline data::CalibrationInfo::sptr generate<data::CalibrationInfo>(const std::size_t variant)
 {
-    auto object = data::CalibrationInfo::New();
+    auto object = std::make_shared<data::CalibrationInfo>();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
@@ -811,7 +811,7 @@ void SessionTest::calibrationInfoTest()
 template<>
 inline data::Camera::sptr generate<data::Camera>(const std::size_t variant)
 {
-    auto object = data::Camera::New();
+    auto object = std::make_shared<data::Camera>();
 
     object->setWidth(random<std::size_t>());
     object->setHeight(random<std::size_t>());
@@ -828,7 +828,7 @@ inline data::Camera::sptr generate<data::Camera>(const std::size_t variant)
     );
     object->setSkew(random<double>());
     object->setIsCalibrated(variant % 2 == 0);
-    object->setCameraID(UUID::generateUUID());
+    object->setCameraID(UUID::generate());
     object->setMaximumFrameRate(random<float>());
     constexpr std::array pixelFormats {
         data::Camera::PixelFormat::ADOBEDNG,
@@ -869,8 +869,8 @@ inline data::Camera::sptr generate<data::Camera>(const std::size_t variant)
         data::Camera::PixelFormat::INVALID
     };
     object->setPixelFormat(pixelFormats[variant % 35]);
-    object->setVideoFile("/" + UUID::generateUUID());
-    object->setStreamUrl(UUID::generateUUID());
+    object->setVideoFile("/" + UUID::generate());
+    object->setStreamUrl(UUID::generate());
     object->setCameraSource(
         variant % 3 == 0
         ? data::Camera::SourceType::DEVICE
@@ -897,7 +897,7 @@ void SessionTest::cameraTest()
 template<>
 inline data::Color::sptr generate<data::Color>(const std::size_t /*unused*/)
 {
-    auto object = data::Color::New();
+    auto object = std::make_shared<data::Color>();
 
     object->setRGBA(random<float>(), random<float>(), random<float>(), random<float>());
 
@@ -916,11 +916,11 @@ void SessionTest::colorTest()
 template<>
 inline data::Landmarks::sptr generate<data::Landmarks>(const std::size_t variant)
 {
-    auto object = data::Landmarks::New();
+    auto object = std::make_shared<data::Landmarks>();
 
     for(std::size_t i = 0, i_end = variant + 2 ; i < i_end ; ++i)
     {
-        const std::string name = UUID::generateUUID();
+        const std::string name = UUID::generate();
 
         object->addGroup(
             name,
@@ -953,7 +953,7 @@ void SessionTest::landmarksTest()
 template<>
 inline data::Line::sptr generate<data::Line>(const std::size_t variant)
 {
-    auto object = data::Line::New();
+    auto object = std::make_shared<data::Line>();
 
     object->setPosition(create<data::Point>(variant));
     object->setDirection(create<data::Point>(variant + 1));
@@ -973,7 +973,7 @@ void SessionTest::lineTest()
 template<>
 inline data::Material::sptr generate<data::Material>(const std::size_t variant)
 {
-    auto object = data::Material::New();
+    auto object = std::make_shared<data::Material>();
 
     std::array shading {
         data::Material::ShadingType::AMBIENT,
@@ -1033,7 +1033,7 @@ void SessionTest::materialTest()
 template<>
 inline data::Matrix4::sptr generate<data::Matrix4>(const std::size_t /*unused*/)
 {
-    auto object = data::Matrix4::New();
+    auto object = std::make_shared<data::Matrix4>();
 
     for(double& coefficient : *object)
     {
@@ -1055,7 +1055,7 @@ void SessionTest::matrix4Test()
 template<>
 inline data::Plane::sptr generate<data::Plane>(const std::size_t variant)
 {
-    auto object = data::Plane::New();
+    auto object = std::make_shared<data::Plane>();
 
     auto& points = object->getPoints();
     for(std::size_t i = 0, end = points.size() ; i < end ; ++i)
@@ -1078,7 +1078,7 @@ void SessionTest::planeTest()
 template<>
 inline data::PlaneList::sptr generate<data::PlaneList>(const std::size_t variant)
 {
-    auto object = data::PlaneList::New();
+    auto object = std::make_shared<data::PlaneList>();
 
     auto& planes = object->getPlanes();
 
@@ -1102,11 +1102,11 @@ void SessionTest::planeListTest()
 template<>
 inline data::Reconstruction::sptr generate<data::Reconstruction>(const std::size_t variant)
 {
-    auto object = data::Reconstruction::New();
+    auto object = std::make_shared<data::Reconstruction>();
 
     object->setIsVisible(variant % 3 == 0);
-    object->setOrganName(UUID::generateUUID());
-    object->setStructureType(UUID::generateUUID());
+    object->setOrganName(UUID::generate());
+    object->setStructureType(UUID::generate());
     object->setComputedMaskVolume(random<double>());
 
     // Material
@@ -1133,7 +1133,7 @@ void SessionTest::reconstructionTest()
 template<>
 inline data::StructureTraits::sptr generate<data::StructureTraits>(const std::size_t variant)
 {
-    auto object = data::StructureTraits::New();
+    auto object = std::make_shared<data::StructureTraits>();
 
     const std::array CLASSES {
         data::StructureTraits::StructureClass::ENVIRONMENT,
@@ -1158,14 +1158,14 @@ inline data::StructureTraits::sptr generate<data::StructureTraits>(const std::si
         data::StructureTraits::Category::THORAX
     };
 
-    object->setType(UUID::generateUUID());
+    object->setType(UUID::generate());
     object->setClass(CLASSES[variant % std::size(CLASSES)]);
-    object->setNativeExp(UUID::generateUUID());
-    object->setNativeGeometricExp(UUID::generateUUID());
-    object->setAttachmentType(UUID::generateUUID());
-    object->setAnatomicRegion(UUID::generateUUID());
-    object->setPropertyCategory(UUID::generateUUID());
-    object->setPropertyType(UUID::generateUUID());
+    object->setNativeExp(UUID::generate());
+    object->setNativeGeometricExp(UUID::generate());
+    object->setAttachmentType(UUID::generate());
+    object->setAnatomicRegion(UUID::generate());
+    object->setPropertyCategory(UUID::generate());
+    object->setPropertyType(UUID::generate());
 
     // Categories
 
@@ -1197,7 +1197,7 @@ void SessionTest::structureTraitsTest()
 template<>
 inline data::StructureTraitsDictionary::sptr generate<data::StructureTraitsDictionary>(const std::size_t variant)
 {
-    auto object = data::StructureTraitsDictionary::New();
+    auto object = std::make_shared<data::StructureTraitsDictionary>();
 
     auto organ = create<data::StructureTraits>(variant);
     organ->setClass(data::StructureTraits::ORGAN);
@@ -1238,9 +1238,9 @@ void SessionTest::structureTraitsDictionaryTest()
 template<>
 inline data::Resection::sptr generate<data::Resection>(const std::size_t variant)
 {
-    auto object = data::Resection::New();
+    auto object = std::make_shared<data::Resection>();
 
-    object->setName(UUID::generateUUID());
+    object->setName(UUID::generate());
     object->setIsSafePart(variant % 2 == 0);
     object->setIsValid(variant % 3 == 0);
     object->setIsVisible(variant % 4 == 0);
@@ -1268,7 +1268,7 @@ void SessionTest::resectionTest()
 template<>
 inline data::ResectionDB::sptr generate<data::ResectionDB>(const std::size_t variant)
 {
-    auto object = data::ResectionDB::New();
+    auto object = std::make_shared<data::ResectionDB>();
 
     object->setSafeResection(create<data::Resection>(variant));
 
@@ -1292,11 +1292,11 @@ void SessionTest::resectionDBTest()
 template<>
 inline data::TransferFunction::sptr generate<data::TransferFunction>(const std::size_t variant)
 {
-    auto object = data::TransferFunction::New();
+    auto object = std::make_shared<data::TransferFunction>();
 
     object->setLevel(random<double>());
     object->setWindow(random<double>());
-    object->setName(UUID::generateUUID());
+    object->setName(UUID::generate());
     object->setBackgroundColor(
         data::TransferFunction::color_t(
             random<double>(),
@@ -1306,7 +1306,7 @@ inline data::TransferFunction::sptr generate<data::TransferFunction>(const std::
         )
     );
 
-    auto tfData = object->pieces().emplace_back(data::TransferFunctionPiece::New());
+    auto tfData = object->pieces().emplace_back(std::make_shared<data::TransferFunctionPiece>());
     tfData->setInterpolationMode(
         variant % 3 == 0
         ? data::TransferFunction::InterpolationMode::LINEAR
@@ -1349,7 +1349,7 @@ inline data::DicomSeries::sptr generate<data::DicomSeries>(const std::size_t var
     if(variant == 0)
     {
         // Setup the SeriesSet to be able to read
-        auto series_set                  = data::SeriesSet::New();
+        auto series_set                  = std::make_shared<data::SeriesSet>();
         const std::filesystem::path path = utestData::Data::dir()
                                            / "sight/Patient/Dicom/DicomDB/86-CT-Skull";
 
@@ -1359,9 +1359,9 @@ inline data::DicomSeries::sptr generate<data::DicomSeries>(const std::size_t var
         );
 
         // Read source Dicom
-        auto reader = io::dicom::reader::SeriesSet::New();
+        auto reader = std::make_shared<io::dicom::reader::SeriesSet>();
         reader->setObject(series_set);
-        reader->setFolder(path);
+        reader->set_folder(path);
 
         CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), series_set->size());
@@ -1371,19 +1371,19 @@ inline data::DicomSeries::sptr generate<data::DicomSeries>(const std::size_t var
     else
     {
         // Take the first variant as basis
-        dicomSeries = data::DicomSeries::New();
-        dicomSeries->shallowCopy(getExpected<data::DicomSeries>(0));
+        dicomSeries = std::make_shared<data::DicomSeries>();
+        dicomSeries->shallow_copy(getExpected<data::DicomSeries>(0));
     }
 
     // Randomize a bit the dicomSeries
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
-        dicomSeries->addSOPClassUID(UUID::generateUUID());
-        dicomSeries->addComputedTagValue(UUID::generateUUID(), UUID::generateUUID());
+        dicomSeries->addSOPClassUID(UUID::generate());
+        dicomSeries->addComputedTagValue(UUID::generate(), UUID::generate());
     }
 
     // Inherited attributes
-    dicomSeries->Series::shallowCopy(getExpected<data::Series>(variant));
+    dicomSeries->Series::shallow_copy(getExpected<data::Series>(variant));
 
     return dicomSeries;
 }
@@ -1405,14 +1405,14 @@ void SessionTest::dicomSeriesTest()
 template<>
 inline data::ImageSeries::sptr generate<data::ImageSeries>(const std::size_t variant)
 {
-    auto object = data::ImageSeries::New();
+    auto object = std::make_shared<data::ImageSeries>();
 
     // Inherited attributes
-    object->Image::shallowCopy(getExpected<data::Image>(variant));
-    object->Series::shallowCopy(getExpected<data::Series>(variant));
+    object->Image::shallow_copy(getExpected<data::Image>(variant));
+    object->Series::shallow_copy(getExpected<data::Series>(variant));
 
-    object->setContrastBolusAgent(UUID::generateUUID());
-    object->setContrastBolusRoute(UUID::generateUUID());
+    object->setContrastBolusAgent(UUID::generate());
+    object->setContrastBolusRoute(UUID::generate());
     object->setContrastBolusVolume(double(variant));
     object->setContrastBolusStartTime(generateTM(variant));
     object->setContrastBolusStopTime(generateTM(variant));
@@ -1434,7 +1434,7 @@ inline data::ImageSeries::sptr generate<data::ImageSeries>(const std::size_t var
         + std::to_string(variant + 6)
     );
 
-    object->setContrastBolusIngredient(UUID::generateUUID());
+    object->setContrastBolusIngredient(UUID::generate());
     object->setContrastBolusIngredientConcentration(double(variant));
     object->setAcquisitionDate(generateDA(variant));
     object->setAcquisitionTime(generateTM(variant));
@@ -1461,7 +1461,7 @@ void SessionTest::imageSeriesTest()
 template<>
 inline data::ModelSeries::sptr generate<data::ModelSeries>(const std::size_t variant)
 {
-    auto object = data::ModelSeries::New();
+    auto object = std::make_shared<data::ModelSeries>();
 
     object->setDicomReference(create<data::DicomSeries>(variant));
 
@@ -1474,7 +1474,7 @@ inline data::ModelSeries::sptr generate<data::ModelSeries>(const std::size_t var
     object->setReconstructionDB(reconstructionDB);
 
     // Inherited attributes
-    object->Series::shallowCopy(getExpected<data::Series>(variant));
+    object->Series::shallow_copy(getExpected<data::Series>(variant));
 
     return object;
 }
@@ -1496,7 +1496,7 @@ void SessionTest::modelSeriesTest()
 template<>
 inline data::ActivitySet::sptr generate<data::ActivitySet>(const std::size_t variant)
 {
-    auto object = data::ActivitySet::New();
+    auto object = std::make_shared<data::ActivitySet>();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
@@ -1518,7 +1518,7 @@ void SessionTest::activitySetTest()
 template<>
 inline data::CameraSet::sptr generate<data::CameraSet>(const std::size_t variant)
 {
-    auto object = data::CameraSet::New();
+    auto object = std::make_shared<data::CameraSet>();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
@@ -1542,7 +1542,7 @@ void SessionTest::cameraSetTest()
 template<>
 inline data::SeriesSet::sptr generate<data::SeriesSet>(const std::size_t variant)
 {
-    auto object = data::SeriesSet::New();
+    auto object = std::make_shared<data::SeriesSet>();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
@@ -1564,7 +1564,7 @@ void SessionTest::seriesSetTest()
 template<>
 inline data::Set::sptr generate<data::Set>(const std::size_t variant)
 {
-    auto object = data::Set::New();
+    auto object = std::make_shared<data::Set>();
 
     for(std::size_t i = 0, end = variant + 2 ; i < end ; ++i)
     {
@@ -1627,7 +1627,7 @@ inline static data::String::sptr customDeserialize(
 void SessionTest::customSerializerTest()
 {
     // Create a temporary directory
-    core::os::TempDir tmpDir;
+    core::os::temp_dir tmpDir;
     const auto testPath = tmpDir / "customSerializerTest.zip";
 
     // Test serialization
@@ -1636,12 +1636,12 @@ void SessionTest::customSerializerTest()
         auto object = create<data::String>(0);
 
         // Create the session writer
-        auto sessionWriter = io::session::SessionWriter::New();
+        auto sessionWriter = std::make_shared<io::session::SessionWriter>();
         CPPUNIT_ASSERT(sessionWriter);
 
         // Configure the session writer
         sessionWriter->setObject(object);
-        sessionWriter->setFile(testPath);
+        sessionWriter->set_file(testPath);
 
         // Test serializer getter
         CPPUNIT_ASSERT(sessionWriter->serializer(data::String::classname()));
@@ -1657,14 +1657,14 @@ void SessionTest::customSerializerTest()
 
     // Test deserialization
     {
-        auto sessionReader = io::session::SessionReader::New();
+        auto sessionReader = std::make_shared<io::session::SessionReader>();
         CPPUNIT_ASSERT(sessionReader);
 
         // Configure the session reader
-        sessionReader->setFile(testPath);
+        sessionReader->set_file(testPath);
 
         // Read the session: it should fail since the serializer has been modified by a custom one
-        CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
+        CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::exception);
 
         // Test deserializer getter
         CPPUNIT_ASSERT(sessionReader->deserializer(data::String::classname()));
