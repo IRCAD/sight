@@ -122,6 +122,8 @@ void SPredefinedCamera::starting()
 
         m_interactor->setTransform(ogre_mat);
     }
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -136,6 +138,7 @@ void SPredefinedCamera::stopping()
 {
     const auto layer = this->getLayer();
     layer->removeInteractor(m_interactor);
+    m_interactor.reset();
 }
 
 //------------------------------------------------------------------------------

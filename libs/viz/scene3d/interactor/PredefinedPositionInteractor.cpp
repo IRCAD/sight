@@ -67,8 +67,6 @@ PredefinedPositionInteractor::PredefinedPositionInteractor(
             toPredefinedPosition(std::size_t(found - m_predefined_positions.begin()), false);
         }
     }
-
-    _layer->requestRender();
 }
 
 // ----------------------------------------------------------------------------

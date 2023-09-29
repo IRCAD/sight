@@ -302,6 +302,9 @@ private:
     /// Slot: interacts with the scene.
     void interaction(viz::scene3d::IWindowInteractor::InteractionInfo /*info*/);
 
+    /// Compute the scene size, notably in order to determine the zoom scale
+    float computeSceneLength(const Ogre::AxisAlignedBox& worldBoundingBox);
+
     /// Setups default compositor for a layer's 3D scene.
     void setupCore();
 

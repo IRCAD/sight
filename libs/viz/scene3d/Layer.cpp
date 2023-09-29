@@ -729,6 +729,26 @@ void Layer::removeDefaultLight()
     m_lightAdaptor.reset();
 }
 
+//------------------------------------------------------------------------------
+
+float Layer::computeSceneLength(const Ogre::AxisAlignedBox& worldBoundingBox)
+{
+    // Arbitrary coefficient
+    const Ogre::Real boundingBoxLength = worldBoundingBox.getSize().length() > 0
+                                         ? worldBoundingBox.getSize().length() : 0;
+
+    SIGHT_DEBUG("Zoom coefficient : " << boundingBoxLength);
+
+    // Update interactor's mouse scale
+    this->forAllInteractors(
+        [boundingBoxLength](const interactor::IInteractor::sptr& _i)
+        {
+            _i->setSceneLength(boundingBoxLength);
+        });
+
+    return boundingBoxLength;
+}
+
 //-----------------------------------------------------------------------------
 
 void Layer::resetCameraCoordinates()
@@ -747,11 +767,7 @@ void Layer::resetCameraCoordinates()
         else
         {
             // Arbitrary coefficient
-            const Ogre::Real boundingBoxLength = worldBoundingBox.getSize().length() > 0
-                                                 ? worldBoundingBox.getSize().length() : 0;
-
-            auto coeffZoom = static_cast<float>(boundingBoxLength);
-            SIGHT_DEBUG("Zoom coefficient : " << coeffZoom);
+            const float boundingBoxLength = computeSceneLength(worldBoundingBox);
 
             // Set the direction of the camera
             Ogre::SceneNode* camNode      = m_camera->getParentSceneNode();
@@ -759,14 +775,7 @@ void Layer::resetCameraCoordinates()
             const Ogre::Vector3 direction = quat.zAxis();
 
             // Set the position of the camera
-            camNode->setPosition((worldBoundingBox.getCenter() + coeffZoom * direction));
-
-            // Update interactor's mouse scale
-            this->forAllInteractors(
-                [coeffZoom](const interactor::IInteractor::sptr& _i)
-                {
-                    _i->setSceneLength(coeffZoom);
-                });
+            camNode->setPosition((worldBoundingBox.getCenter() + boundingBoxLength * direction));
         }
 
         m_renderService.lock()->requestRender();
@@ -785,20 +794,7 @@ void Layer::computeCameraParameters()
         if(worldBoundingBox != Ogre::AxisAlignedBox::EXTENT_NULL
            && worldBoundingBox != Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
-            Ogre::SceneNode* camNode      = m_camera->getParentSceneNode();
-            const Ogre::Quaternion quat   = camNode->getOrientation();
-            const Ogre::Vector3 direction = quat.zAxis();
-            const Ogre::Vector3 position  = camNode->getPosition();
-
-            const Ogre::Vector3 div = (position - worldBoundingBox.getCenter()) / direction;
-            const float distance    = div.z;
-
-            // Update interactor's mouse scale
-            this->forAllInteractors(
-                [distance](const interactor::IInteractor::sptr& _i)
-                {
-                    _i->setSceneLength(distance);
-                });
+            computeSceneLength(worldBoundingBox);
         }
     }
 }

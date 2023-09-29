@@ -156,7 +156,7 @@
             <in key="mask" uid="mask" />
             <in key="tf" uid="${volumeTF}" />
             <inout key="clippingMatrix" uid="clippingMatrix" />
-            <config widgets="false" preintegration="false" autoresetcamera="false" samples="1200" />
+            <config widgets="false" preintegration="false" autoresetcamera="true" samples="1200" />
         </service>
 
         <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D">
