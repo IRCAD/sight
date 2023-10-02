@@ -68,27 +68,11 @@ static const bool NVJPEG_AVAILABLE =
     {
         try
         {
-            int count                    = 0;
-            auto cuDeviceGetCount_result = cuDeviceGetCount(&count);
+            int count = 0;
 
-            // cspell:ignore deinitialized
-            if(cuDeviceGetCount_result == CUDA_ERROR_DEINITIALIZED
-               || cuDeviceGetCount_result == CUDA_ERROR_NOT_INITIALIZED)
+            if(const auto result = cudaGetDeviceCount(&count); result != cudaSuccess)
             {
-                // The cuda driver is not yet initialized, we try to initialize it
-                if(const auto cuInit_result = cuInit(0); cuInit_result != CUDA_SUCCESS)
-                {
-                    SIGHT_ERROR("cuInit failed: " << cuInit_result);
-                    return false;
-                }
-
-                // Retry
-                cuDeviceGetCount_result = cuDeviceGetCount(&count);
-            }
-
-            if(cuDeviceGetCount_result != CUDA_SUCCESS)
-            {
-                SIGHT_ERROR("cuDeviceGetCount failed: " << cuDeviceGetCount_result);
+                SIGHT_ERROR("cudaGetDeviceCount failed: " << result);
                 return false;
             }
 
