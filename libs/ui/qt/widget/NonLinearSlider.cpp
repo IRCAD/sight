@@ -46,6 +46,13 @@ NonLinearSlider::NonLinearSlider(QWidget* parent) :
 
 //------------------------------------------------------------------------------
 
+void NonLinearSlider::setOrientation(Qt::Orientation orientation)
+{
+    m_slider->setOrientation(orientation);
+}
+
+//------------------------------------------------------------------------------
+
 void NonLinearSlider::setValues(const std::vector<int>& values)
 {
     SIGHT_ASSERT("The values list should be sorted", std::ranges::is_sorted(values));

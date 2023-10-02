@@ -36,6 +36,8 @@ public:
 
     UI_QT_QT_API NonLinearSlider(QWidget* parent = nullptr);
 
+    UI_QT_QT_API void setOrientation(Qt::Orientation orientation);
+
     UI_QT_QT_API void setValues(const std::vector<int>& values);
     UI_QT_QT_API void setValue(int value);
 

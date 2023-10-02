@@ -349,7 +349,8 @@ private:
         double max,
         std::uint8_t decimals,
         bool resetButton,
-        bool onRelease
+        bool onRelease,
+        bool orientation
     );
 
     /// Create a slider widget associated with an integer type
@@ -361,7 +362,8 @@ private:
         int min,
         int max,
         bool resetButton,
-        bool onRelease
+        bool onRelease,
+        bool orientation
     );
 
     /// Create a spin widget associated with an integer type
@@ -401,7 +403,8 @@ private:
         const std::string& key,
         const std::string& defaultValue,
         const std::vector<std::string>& values,
-        bool onRelease
+        bool onRelease,
+        bool orientation
     );
 
     void createButtonBarEnumWidget(

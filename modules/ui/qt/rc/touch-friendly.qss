@@ -30,11 +30,15 @@ QPushButton.buttonBarTouchFriendly {
     icon-size: 48px 48px;
 }
 
-QSlider {
+QSlider:horizontal {
     height: 2em;
 }
 
-QSlider::handle:horizontal {
+QSlider:vertical {
+    width: 2em;
+}
+
+QSlider::handle {
     width: 2em;
     height: 2em;
     border-radius: 0.74em;
@@ -42,6 +46,11 @@ QSlider::handle:horizontal {
 
 QSlider::groove:horizontal {
     height: 2em;
+    border-radius: 0.74em;
+}
+
+QSlider::groove:vertical {
+    width: 2em;
     border-radius: 0.74em;
 }
 
