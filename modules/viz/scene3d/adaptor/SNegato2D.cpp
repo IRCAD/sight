@@ -145,7 +145,8 @@ void SNegato2D::starting()
         getSceneManager(),
         m_3DOgreTexture,
         m_filtering,
-        m_border
+        m_border,
+        m_slicesCross
     );
 
     this->newImage();
