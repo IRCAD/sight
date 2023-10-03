@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,6 +89,7 @@ void LineLayoutManagerBase::initialize(const ui::base::config_t& configuration)
                 vi.m_visible      = viewCfg->get<bool>("visible", vi.m_visible);
                 vi.m_useScrollBar = viewCfg->get<bool>("useScrollBar", vi.m_useScrollBar);
                 vi.m_toolTip      = viewCfg->get<std::string>("toolTip", vi.m_toolTip);
+                vi.m_qssKey       = viewCfg->get<std::string>("QSSClass", "");
 
                 if(auto caption = viewCfg->get_optional<std::string>("caption"); caption.has_value())
                 {

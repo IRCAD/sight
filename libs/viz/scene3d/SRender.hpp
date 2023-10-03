@@ -95,6 +95,7 @@ class Layer;
  *      - \b bottomColor (optional, hexadecimal, default=#000000): top color of the background.
  *      - \b topScale (optional, float, default=0): top background scale.
  *      - \b bottomScale (optional, float, default=1): bottom background scale.
+ *      - \b material (optional): overrides the default gradient material. Provide the name of the Ogre material.
  *  - \b layer (mandatory): defines the scene's layer.
  *      - \b viewport (optional):
  *          - \b hAlign (optional, left|center|right, default=left): defines the horizontal origin of the viewport.

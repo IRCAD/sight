@@ -36,6 +36,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
+#include <QVariant>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -79,11 +80,12 @@ void SliceIndexPositionEditor::starting()
     auto* layout = new QVBoxLayout();
 
     m_sliceSelectorPanel = new sight::ui::qt::SliceSelector(m_displayAxisSelector, m_displayStepButtons);
+    m_sliceSelectorPanel->setProperty("class", "SliceSelector");
     m_sliceSelectorPanel->setEnable(false);
     m_sliceSelectorPanel->setObjectName(serviceID);
 
     sight::ui::qt::SliceSelector::ChangeIndexCallback changeIndexCallback;
-    changeIndexCallback = [this](unsigned&& PH1, auto&& ...){sliceIndexNotification(std::forward<decltype(PH1)>(PH1));};
+    changeIndexCallback = [this](unsigned PH1, auto&& ...){sliceIndexNotification(std::forward<decltype(PH1)>(PH1));};
     m_sliceSelectorPanel->setChangeIndexCallback(changeIndexCallback);
 
     sight::ui::qt::SliceSelector::ChangeIndexCallback changeTypeCallback;

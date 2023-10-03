@@ -10,9 +10,9 @@
         <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" default="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL"/>
         <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
         <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
-        <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
-        <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
-        <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
+        <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" default="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL"/>
+        <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" default="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL"/>
+        <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" default="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL"/>
     </parameters>
     <config>
 
@@ -23,6 +23,20 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
+        <service uid="mainView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::OverlayLayoutManager">
+                    <view />
+                    <view x="0" y="0" width="72" height="64" minHeight="0" minWidth="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="sceneView" start="true" />
+                <view sid="toolbarView" start="true" />
+            </registry>
+        </service>
+
         <service uid="sceneView" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::LineLayoutManager">
@@ -32,10 +46,43 @@
                 </layout>
             </gui>
             <registry>
-                <parent wid="${WID_PARENT}" />
                 <view sid="sceneSrv" start="true"/>
                 <view wid="negatoSliderView" />
             </registry>
+        </service>
+
+        <service uid="toolbarView" type="sight::module::ui::base::SView">
+            <gui>
+                <toolBar backgroundColor="#00000000" />
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                </layout>
+            </gui>
+            <registry>
+                <toolBar sid="toolbar" start="true" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="sight::module::ui::base::SToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Maximize" icon="sight::module::ui::flaticons/YellowMaximize.svg" />
+                    <menuItem name="Minimize" icon="sight::module::ui::flaticons/YellowRestore.svg" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="maximizeAct" start="true" />
+                <menuItem sid="minimizeAct" start="true" />
+            </registry>
+        </service>
+
+        <service uid="maximizeAct" type="sight::module::ui::base::SAction">
+            <state visible="true" />
+        </service>
+
+        <service uid="minimizeAct" type="sight::module::ui::base::SAction">
+            <state visible="false" />
         </service>
 
         <service uid="sceneSrv" type="sight::viz::scene3d::SRender">
@@ -113,14 +160,7 @@
             <slot>pickedVoxelTextAdp/setText</slot>
         </connect>
 
-        <!-- Enlarge CT view by double-clicking it -->
-
-        <connect channel="${TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL}">
-            <signal>eventAdp/triggered</signal>
-        </connect>
-
         <!-- distance channels -->
-
         <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
             <slot>negatoMultiDistancesAdp/activateDistanceTool</slot>
         </connect>
@@ -141,9 +181,33 @@
             <signal>landmarksAdp/editModeChanged</signal>
         </connect>
 
+        <connect channel="${TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL}">
+            <signal>minimizeAct/clicked</signal>
+            <signal>maximizeAct/clicked</signal>
+            <signal>eventAdp/triggered</signal>
+        </connect>
+
+        <connect>
+            <signal>eventAdp/triggered</signal>
+            <slot>maximizeAct/toggleVisibility</slot>
+            <slot>minimizeAct/toggleVisibility</slot>
+        </connect>
+
+        <connect>
+            <signal>maximizeAct/clicked</signal>
+            <slot>maximizeAct/hide</slot>
+            <slot>minimizeAct/show</slot>
+        </connect>
+
+        <connect>
+            <signal>minimizeAct/clicked</signal>
+            <slot>minimizeAct/hide</slot>
+            <slot>maximizeAct/show</slot>
+        </connect>
+
         <!-- ******************************* Start/Stop services ***************************************** -->
 
-        <start uid="sceneView" />
+        <start uid="mainView" />
 
         <start uid="negatoCameraAdp" />
         <start uid="negatoAdp" />

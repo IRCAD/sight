@@ -23,12 +23,15 @@
 #include "ui/qt/App.hpp"
 
 #include <core/runtime/ExitException.hpp>
+#include <core/runtime/path.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
 #include <boost/tokenizer.hpp>
+
+#include <QFontDatabase>
 
 #include <clocale>
 #include <filesystem>
@@ -62,6 +65,17 @@ App::App(int& argc, char** argv, bool guiEnabled) :
     sight::ui::qt::App::setApplicationName(QString::fromStdString(appName));
 
     QObject::connect(this, SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
+
+    // Parse all font in rc/fonts folder.
+    const auto fonts_folder = core::runtime::getLibraryResourceFilePath("sight::ui::qt/fonts");
+
+    for(const auto& font : std::filesystem::recursive_directory_iterator {fonts_folder})
+    {
+        if(font.path().extension() == ".ttf")
+        {
+            QFontDatabase::addApplicationFont(QString::fromStdString(font.path().string()));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

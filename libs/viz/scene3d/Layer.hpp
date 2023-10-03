@@ -208,6 +208,9 @@ public:
     /// Sets background scale : specific to background Layer.
     VIZ_SCENE3D_API void setBackgroundScale(float topScale, float botScale);
 
+    /// Sets background scale : specific to background Layer.
+    VIZ_SCENE3D_API void setBackgroundMaterial(const std::string& background);
+
     /// Sets if this layer need a layer's 3D scene.
     VIZ_SCENE3D_API void setCoreCompositorEnabled(
         bool enabled,
@@ -353,6 +356,9 @@ private:
 
     /// Defines the bottom background scale : specific to background Layer.
     float m_bottomScale {1.F};
+
+    /// Defines the bottom background scale : specific to background Layer.
+    std::string m_backgroundMaterial {};
 
     /// Contains the Ogre camera.
     Ogre::Camera* m_camera {nullptr};

@@ -48,8 +48,14 @@ qt5_add_binary_resources(
     "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/module_ui_qt/flatdark.rcc"
 )
 
+qt5_add_binary_resources(
+    module_ui_qt_IRCAD_RCC "rc/ircad_style.qrc" DESTINATION
+    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/module_ui_qt/ircad_style.rcc"
+)
+
 add_dependencies(module_ui_qt module_ui_qt_DARKSTYLE_RCC)
 add_dependencies(module_ui_qt module_ui_qt_FLATDARK_RCC)
+add_dependencies(module_ui_qt module_ui_qt_IRCAD_RCC)
 
 target_link_libraries(
     module_ui_qt

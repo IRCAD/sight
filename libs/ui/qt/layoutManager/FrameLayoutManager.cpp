@@ -65,6 +65,10 @@ void FrameLayoutManager::createFrame()
     auto* mainframe = new ui::qt::QtMainFrame();
     m_qtWindow = mainframe;
     m_qtWindow->setObjectName(QString::fromStdString(frameInfo.m_name));
+    if(!frameInfo.m_qssClass.empty())
+    {
+        m_qtWindow->setProperty("class", QString::fromStdString(frameInfo.m_qssClass));
+    }
 
     ui::qt::QtMainFrame::CloseCallback fct = [this](auto&& ...){onCloseFrame();};
     mainframe->setCloseCallback(fct);

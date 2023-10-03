@@ -235,35 +235,39 @@ void Layer::createScene()
         // FIXME : background isn't shown when using compositor with a clear pass
         // We must blend the input previous in each compositor
         Ogre::MaterialPtr defaultMaterial = Ogre::MaterialManager::getSingleton().getByName(
-            "Background",
+            m_backgroundMaterial.empty() ? "Background" : m_backgroundMaterial,
             RESOURCE_GROUP
         );
+        SIGHT_ASSERT("Could not find material ", defaultMaterial);
         Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().create(
             this->getName() + "backgroundMat",
             RESOURCE_GROUP
         );
         defaultMaterial.get()->copyDetailsTo(material);
 
-        std::array<std::uint8_t, 4> color {};
-        Ogre::Pass* pass                           = material->getTechnique(0)->getPass(0);
-        Ogre::GpuProgramParametersSharedPtr params = pass->getFragmentProgramParameters();
+        if(m_backgroundMaterial.empty())
+        {
+            std::array<std::uint8_t, 4> color {};
+            Ogre::Pass* pass                           = material->getTechnique(0)->getPass(0);
+            Ogre::GpuProgramParametersSharedPtr params = pass->getFragmentProgramParameters();
 
-        data::tools::Color::hexaStringToRGBA(m_topColor, color);
-        Ogre::ColourValue ogreTopColor(static_cast<float>(color[0]) / 255.F,
-                                       static_cast<float>(color[1]) / 255.F,
-                                       static_cast<float>(color[2]) / 255.F,
-                                       1.F);
-        params->setNamedConstant("topColour", ogreTopColor);
+            data::tools::Color::hexaStringToRGBA(m_topColor, color);
+            Ogre::ColourValue ogreTopColor(static_cast<float>(color[0]) / 255.F,
+                                           static_cast<float>(color[1]) / 255.F,
+                                           static_cast<float>(color[2]) / 255.F,
+                                           1.F);
+            params->setNamedConstant("topColour", ogreTopColor);
 
-        data::tools::Color::hexaStringToRGBA(m_bottomColor, color);
-        Ogre::ColourValue ogreBotColor(static_cast<float>(color[0]) / 255.F,
-                                       static_cast<float>(color[1]) / 255.F,
-                                       static_cast<float>(color[2]) / 255.F,
-                                       1.F);
-        params->setNamedConstant("bottomColour", ogreBotColor);
+            data::tools::Color::hexaStringToRGBA(m_bottomColor, color);
+            Ogre::ColourValue ogreBotColor(static_cast<float>(color[0]) / 255.F,
+                                           static_cast<float>(color[1]) / 255.F,
+                                           static_cast<float>(color[2]) / 255.F,
+                                           1.F);
+            params->setNamedConstant("bottomColour", ogreBotColor);
 
-        params->setNamedConstant("topScale", m_topScale);
-        params->setNamedConstant("bottomScale", m_bottomScale);
+            params->setNamedConstant("topScale", m_topScale);
+            params->setNamedConstant("bottomScale", m_bottomScale);
+        }
 
         // Create background rectangle covering the whole screen
         auto* rect = new Ogre::Rectangle2D();
@@ -954,6 +958,13 @@ void Layer::setBackgroundScale(float topScale, float botScale)
 {
     m_topScale    = topScale;
     m_bottomScale = botScale;
+}
+
+//-----------------------------------------------------------------------------
+
+void Layer::setBackgroundMaterial(const std::string& background)
+{
+    m_backgroundMaterial = background;
 }
 
 //-------------------------------------------------------------------------------------

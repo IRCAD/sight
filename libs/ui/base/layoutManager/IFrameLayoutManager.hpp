@@ -108,6 +108,8 @@ public:
 
         /// Frame visibility
         bool m_visibility {true};
+
+        std::string m_qssClass;
     };
 
     /// Constructor. Do nothing.

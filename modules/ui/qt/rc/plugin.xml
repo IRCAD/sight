@@ -79,6 +79,12 @@
      </extension>
 
      <extension implements="sight::service::extension::Factory">
+          <type>sight::ui::base::IEditor</type>
+          <service>sight::module::ui::qt::SText</service>
+          <desc>This service is used to display a label.</desc>
+     </extension>
+
+     <extension implements="sight::service::extension::Factory">
           <type>sight::ui::base::view::IActivityView</type>
           <service>sight::module::ui::qt::activity::SDynamicView</service>
           <desc>This editor manages tabs containing activities.</desc>

@@ -142,6 +142,11 @@ void IFrameLayoutManager::initialize(const ui::base::config_t& configuration)
         }
     }
 
+    if(const auto qssClass = configuration.get_optional<std::string>("style.<xmlattr>.QSSClass"); qssClass.has_value())
+    {
+        m_frameInfo.m_qssClass = qssClass.get();
+    }
+
     this->readConfig();
 }
 
@@ -185,7 +190,7 @@ void IFrameLayoutManager::readConfig()
     }
     catch(const ui::base::PreferencesDisabled&)
     {
-        // Nothing to do..
+        return;
     }
 }
 
@@ -209,7 +214,7 @@ void IFrameLayoutManager::writeConfig() const
     }
     catch(const ui::base::PreferencesDisabled&)
     {
-        // Nothing to do..
+        return;
     }
 }
 

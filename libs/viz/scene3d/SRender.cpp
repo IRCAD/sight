@@ -364,7 +364,12 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg)
     ogreLayer->setWorker(this->worker());
     ogreLayer->setHasDefaultLight(false);
 
-    if(attributes.count("color") != 0U)
+    if(attributes.count("material") != 0U)
+    {
+        const auto material = attributes.get<std::string>("material");
+        ogreLayer->setBackgroundMaterial(material);
+    }
+    else if(attributes.count("color") != 0U)
     {
         const auto color = attributes.get<std::string>("color");
         ogreLayer->setBackgroundColor(color, color);
