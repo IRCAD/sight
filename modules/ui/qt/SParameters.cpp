@@ -125,8 +125,6 @@ SParameters::~SParameters() noexcept =
 void SParameters::configuring()
 {
     this->initialize();
-
-    const ConfigType configTree = this->getConfiguration();
 }
 
 //-----------------------------------------------------------------------------
@@ -225,6 +223,8 @@ void SParameters::starting()
         // If orientation is false => vertical
         const bool orientation = cfg.get<std::string>("<xmlattr>.orientation", "horizontal") != "vertical";
 
+        const bool hideMinMax = cfg.get<bool>("<xmlattr>.hideMinMax", false);
+
         if(!name.empty())
         {
             auto* parameterLabel = new QLabel(QString::fromStdString(name));
@@ -272,7 +272,8 @@ void SParameters::starting()
                     decimals,
                     resetButton,
                     onRelease,
-                    orientation
+                    orientation,
+                    hideMinMax
                 );
             }
             else
@@ -312,7 +313,8 @@ void SParameters::starting()
                     max,
                     resetButton,
                     onRelease,
-                    orientation
+                    orientation,
+                    hideMinMax
                 );
             }
             else
@@ -346,7 +348,16 @@ void SParameters::starting()
 
                 sight::module::ui::qt::SParameters::parseEnumString(options, values, data);
                 const bool onRelease = cfg.get<bool>("<xmlattr>.emitOnRelease", false);
-                this->createSliderEnumWidget(*layout, row, key, defaultValue, values, onRelease, orientation);
+                this->createSliderEnumWidget(
+                    *layout,
+                    row,
+                    key,
+                    defaultValue,
+                    values,
+                    onRelease,
+                    orientation,
+                    hideMinMax
+                );
             }
             else if(widget == "buttonBar")
             {
@@ -1420,7 +1431,8 @@ void SParameters::createDoubleSliderWidget(
     std::uint8_t decimals,
     bool addResetButton,
     bool onRelease,
-    bool orientation
+    bool orientation,
+    bool hideMinMax
 )
 {
     auto* subLayout = new QGridLayout();
@@ -1487,10 +1499,14 @@ void SParameters::createDoubleSliderWidget(
     }
     else
     {
-        subLayout->addWidget(maxValueLabel, 0, 0);
+        subLayout->addWidget(maxValueLabel, 0, 0, Qt::AlignCenter);
         subLayout->addWidget(slider, 1, 0);
-        subLayout->addWidget(minValueLabel, 2, 0);
-        subLayout->addWidget(valueLabel, 3, 0);
+        subLayout->addWidget(minValueLabel, 2, 0, Qt::AlignCenter);
+        subLayout->addWidget(valueLabel, 3, 0, Qt::AlignCenter);
+
+        minValueLabel->setAlignment(Qt::AlignCenter);
+        maxValueLabel->setAlignment(Qt::AlignCenter);
+        valueLabel->setAlignment(Qt::AlignCenter);
     }
 
     // Connect slider value with our editor
@@ -1538,6 +1554,12 @@ void SParameters::createDoubleSliderWidget(
         // Connect reset button to the slider
         QObject::connect(resetButton, &QPushButton::clicked, this, [this, slider]{onResetDoubleMapped(slider);});
     }
+
+    if(hideMinMax)
+    {
+        minValueLabel->hide();
+        maxValueLabel->hide();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1551,7 +1573,8 @@ void SParameters::createIntegerSliderWidget(
     int max,
     bool addResetButton,
     bool onRelease,
-    bool orientation
+    bool orientation,
+    bool hideMinMax
 )
 {
     auto* subLayout = new QGridLayout();
@@ -1607,10 +1630,14 @@ void SParameters::createIntegerSliderWidget(
     }
     else
     {
-        subLayout->addWidget(maxValueLabel, 0, 0);
+        subLayout->addWidget(maxValueLabel, 0, 0, Qt::AlignCenter);
         subLayout->addWidget(slider, 1, 0);
-        subLayout->addWidget(minValueLabel, 2, 0);
-        subLayout->addWidget(valueLabel, 3, 0);
+        subLayout->addWidget(minValueLabel, 2, 0, Qt::AlignCenter);
+        subLayout->addWidget(valueLabel, 3, 0, Qt::AlignCenter);
+
+        minValueLabel->setAlignment(Qt::AlignCenter);
+        maxValueLabel->setAlignment(Qt::AlignCenter);
+        valueLabel->setAlignment(Qt::AlignCenter);
     }
 
     slider->setProperty("key", QString(key.c_str()));
@@ -1661,6 +1688,12 @@ void SParameters::createIntegerSliderWidget(
 
         // Connect reset button to the slider
         QObject::connect(resetButton, &QPushButton::clicked, this, [this, slider]{onResetIntegerMapped(slider);});
+    }
+
+    if(hideMinMax)
+    {
+        minValueLabel->hide();
+        maxValueLabel->hide();
     }
 }
 
@@ -1860,7 +1893,8 @@ void SParameters::createSliderEnumWidget(
     const std::string& defaultValue,
     const std::vector<std::string>& values,
     bool onRelease,
-    bool orientation
+    bool orientation,
+    bool hideMinMax
 )
 {
     auto* subLayout = new QGridLayout();
@@ -1917,10 +1951,14 @@ void SParameters::createSliderEnumWidget(
     }
     else
     {
-        subLayout->addWidget(maxValueLabel, 0, 0);
+        subLayout->addWidget(maxValueLabel, 0, 0, Qt::AlignCenter);
         subLayout->addWidget(slider, 1, 0);
-        subLayout->addWidget(minValueLabel, 2, 0);
-        subLayout->addWidget(valueLabel, 3, 0);
+        subLayout->addWidget(minValueLabel, 2, 0, Qt::AlignCenter);
+        subLayout->addWidget(valueLabel, 3, 0, Qt::AlignCenter);
+
+        minValueLabel->setAlignment(Qt::AlignCenter);
+        maxValueLabel->setAlignment(Qt::AlignCenter);
+        valueLabel->setAlignment(Qt::AlignCenter);
     }
 
     QObject::connect(
@@ -1952,6 +1990,12 @@ void SParameters::createSliderEnumWidget(
             minValueLabel->setText(QString::number(min));
             maxValueLabel->setText(QString::number(max));
         });
+
+    if(hideMinMax)
+    {
+        minValueLabel->hide();
+        maxValueLabel->hide();
+    }
 }
 
 //-----------------------------------------------------------------------------
