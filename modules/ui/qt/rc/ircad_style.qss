@@ -219,10 +219,11 @@ QMenu::indicator:exclusive:checked:disabled
 
 QToolBar
 {
-    border: none;
-    background: #303A65;
+    background: rgba(255, 255, 255, 10%);
     padding: 3px;
     icon-size: 32px 32px;
+    margin:5px;
+    border-radius: 30%;
 }
 
 QToolBar > QWidget
@@ -347,7 +348,7 @@ QLineEdit
 QLineEdit:disabled
 {
     background: #56608B;
-    color: #FFFFFF88
+    color: #AAAAAA
 }
 
 QLineEdit[type="error"]
@@ -465,12 +466,12 @@ QGroupBox
 {
     border: 2px solid #FFFFFF;
     border-radius: 4px;
-    margin-top: 9px;
+    margin-top: 1px;
 }
 
 QGroupBox::indicator
 {
-    border: 2px solid #FFFFFF;;
+    border: 2px solid #FFFFFF;
     border-radius: 4px;
     width: 14px;
     height: 14px;
@@ -481,7 +482,7 @@ QGroupBox::indicator:unchecked:pressed,
 QGroupBox::indicator:checked:hover,
 QGroupBox::indicator:checked:pressed
 {
-    border-color: #FFFFFF;;
+    border-color: #FFFFFF;
 }
 
 QGroupBox::indicator:checked:hover,
@@ -509,11 +510,11 @@ QGroupBox::indicator:checked:disabled
 QGroupBox::title
 {
     color: rgb(255, 255, 255);
-    font: bold;
+    font: bolder;
     subcontrol-origin: margin;
     subcontrol-position: top center;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 /************************************************************************/
@@ -1343,9 +1344,30 @@ QProgressBar::chunk
 
 /************************** Custom class *****************************/
 
+.AccordionMenu[folded="false"]
+{
+    background: rgba(255, 255, 255, 20%);
+    padding: 10%;
+    border-radius: 10%;
+}
+
+.ImageSlider
+{
+    background: rgba(255, 255, 255, 10%);
+    padding: 20%;
+    border-radius: 10%;
+}
+
+#Bracket 
+{
+    padding: 0;
+    background: none;
+}
+
 .Background
 {
-    background-image: url(:/resources/ircad_style/background.jpg);
+   border-image: url(:/resources/ircad_style/background.jpg) 0 0 0 0 stretch stretch;
+   border-width: 0px;
 }
 
 .Welcome_panel
@@ -1368,12 +1390,14 @@ QProgressBar::chunk
 .SelectorView::title
 {
     font-weight: bold;
+    font-size: 160pt;
 }
 
 .SliceSelector
 {
     background: rgb(255,255,255);
 }
+
 /************************************************************************/
 /************************** SActivityWizard *****************************/
 /************************************************************************/

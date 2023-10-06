@@ -83,6 +83,8 @@ void IToolBarBuilder::initialize(const ui::base::config_t& configuration)
 
     m_toolBitmapSize.first  = configuration.get<int>("toolBitmapSize.<xmlattr>.width", m_toolBitmapSize.first);
     m_toolBitmapSize.second = configuration.get<int>("toolBitmapSize.<xmlattr>.height", m_toolBitmapSize.second);
+
+    m_spacing = configuration.get<int>("<xmlattr>.spacing", m_spacing);
 }
 
 //-----------------------------------------------------------------------------

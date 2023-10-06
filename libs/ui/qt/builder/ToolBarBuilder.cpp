@@ -69,6 +69,7 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
 
     toolBar->setFloatable(false);
 
+    QString style;
     if(!m_backgroundColor.empty())
     {
         std::array<std::uint8_t, 4> rgba {};
@@ -78,9 +79,26 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
         << static_cast<std::int16_t>(rgba[1]) << ','
         << static_cast<std::int16_t>(rgba[2]) << ','
         << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
-        const QString style = QString::fromStdString(ss.str());
-        toolBar->setStyleSheet(qApp->styleSheet() + style);
+        style = QString::fromStdString(ss.str());
     }
+
+    if(m_spacing != 0)
+    {
+        switch(m_alignment)
+        {
+            case TOP:
+            case BOTTOM:
+                style += QString("QToolButton{ padding-left: %1px; padding-right: %1px; }").arg(m_spacing);
+                break;
+
+            case RIGHT:
+            default: // LEFT
+                style += QString("QToolButton{ padding-top: %1px; padding-bottom: %1px; }").arg(m_spacing);
+                break;
+        }
+    }
+
+    toolBar->setStyleSheet(qApp->styleSheet() + style);
 
     ui::qt::container::QtToolBarContainer::sptr toolBarContainer = ui::qt::container::QtToolBarContainer::New();
     if(window != nullptr)

@@ -1432,3 +1432,21 @@ QProgressBar::chunk
     border-bottom: 4px solid rgb(46, 48, 52);
     border-radius: 0px;
 }
+
+
+/************************** Custom class *****************************/
+
+.AccordionMenu[folded="false"]
+{
+    background-color: rgba(0, 0, 0, 15%);
+    border: 1px solid rgba(0, 0, 0, 40%);
+    border-radius: 4px;
+    margin: 1px;
+}
+
+#Bracket
+{
+  padding: 0;
+  background: none;
+}
+

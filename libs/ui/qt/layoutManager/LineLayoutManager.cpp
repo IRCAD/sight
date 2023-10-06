@@ -111,7 +111,6 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
             if(viewInfo.m_caption.first)
             {
                 auto* groupbox = new QGroupBox();
-                groupbox->setProperty("class", "my-label-style");
                 groupbox->setObjectName(qId + '/' + viewInfo.m_caption.second.c_str());
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
                 panel         = groupbox;

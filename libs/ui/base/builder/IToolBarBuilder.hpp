@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,12 +67,13 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-        <toolBar align="top" backgroundColor="default" >
+        <toolBar align="top" backgroundColor="default" spacing="10">
             <toolBitmapSize height= "50" width="50" />
         </toolBar>
        @endcode
         - \b align : toolbar alignment (top, bottom, left, right).
         - \b backgroundColor (optional) : (hexa) background color.
+        - \b spacing (optional) : (int) spacing between each button, in pixels.
      *  - \<toolBitmapSize height= "50" width="50"/\> : give the size of the icon.
      */
 
@@ -97,6 +98,8 @@ protected:
     ui::base::container::fwToolBar::sptr m_toolBar;
 
     std::pair<int, int> m_toolBitmapSize;
+
+    int m_spacing {0};
 
     Alignment m_alignment {TOP};
 

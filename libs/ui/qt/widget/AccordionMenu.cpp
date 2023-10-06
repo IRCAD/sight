@@ -46,30 +46,21 @@ AccordionMenu::AccordionMenu(QWidget* parent, Qt::Orientation orientation) :
     QWidget(parent),
     m_orientation(orientation)
 {
-
     m_bracket->setObjectName("Bracket");
     // TODO: load bracket.svg or bracket_white following current stylesheet ?
     m_pixmap =
-        QPixmap(QString::fromStdString(core::runtime::getLibraryResourceFilePath("sight::ui::qt/Bracket_white.svg").string()));
+        QPixmap(
+            QString::fromStdString(
+                core::runtime::getLibraryResourceFilePath("sight::ui::qt/Bracket_white.svg").
+                string()
+            )
+        );
     m_pixmap = m_pixmap.scaled(m_pixmap.size() / 20);
     m_bracket->setIcon(m_pixmap);
     m_bracket->setParent(this);
     m_bracket->setAttribute(Qt::WA_TransparentForMouseEvents);
     setProperty("folded", true);
-    setStyleSheet(
-        R"(
-        [folded="false"] {
-            background-color: rgba(0, 0, 0, 15%);
-            border: 1px solid rgba(0, 0, 0, 40%);
-            border-radius: 4px;
-            margin: 1px;
-        }
-        #Bracket {
-            padding: 0;
-            background: none;
-        }
-    )"
-    );
+    setProperty("class", "AccordionMenu");
     QObject::connect(
         m_animationGroup,
         &QAnimationGroup::finished,

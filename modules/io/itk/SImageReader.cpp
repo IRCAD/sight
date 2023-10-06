@@ -164,21 +164,17 @@ bool SImageReader::loadImage(
     std::string ext = imgFile.extension().string();
     boost::algorithm::to_lower(ext);
 
-    sight::ui::base::dialog::ProgressDialog progressMeterGUI("Loading Image ");
-
     sight::io::base::reader::IObjectReader::sptr imageReader;
     if(boost::algorithm::ends_with(imgFile.string(), ".inr.gz"))
     {
         auto inrReader = sight::io::itk::InrImageReader::New();
         inrReader->setFile(imgFile);
-        inrReader->addHandler(progressMeterGUI);
         imageReader = inrReader;
     }
     else if(ext == ".nii" || boost::algorithm::ends_with(imgFile.string(), ".nii.gz"))
     {
         auto niftiReader = sight::io::itk::NiftiImageReader::New();
         niftiReader->setFile(imgFile);
-        niftiReader->addHandler(progressMeterGUI);
         imageReader = niftiReader;
     }
     else
