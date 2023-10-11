@@ -132,7 +132,7 @@ void sequencer::starting()
     }
 
     m_widget->setClearColor(clear);
-
+    m_widget->setAttribute(Qt::WA_AlwaysStackOnTop);
     QString theme = QString::fromStdString(m_theme);
     if(theme.isEmpty())
     {

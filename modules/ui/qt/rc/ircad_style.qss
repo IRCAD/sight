@@ -17,8 +17,9 @@ QWidget
 QMainWindow
 {
     border: none;
-    background: #0F164D;
+    background: #303A65;
     padding: 3px;
+
     
     
 }
@@ -33,15 +34,17 @@ QFrame
 QDialog
 {
     border: none;
-    background: #0F164D;
+    background: #303A65;
     padding: 3px;
     color: rgb(255, 255, 255);
+    border-image: url(:/resources/ircad_style/background.jpg) 0 0 0 0 stretch stretch;
+    border-width: 0px;
 }
 
 QColorDialog
 {
     border: none;
-    background: #0F164D;
+    background: #303A65;
     padding: 3px;
 }
 
@@ -338,16 +341,16 @@ QLabel[type="error"]
 
 QLineEdit
 {
-    border-radius: 4px;
+    border-radius: 15%;
     border: none;
-    background: #56608B;
+    background: rgba(255, 255, 255, 10%);
     color: rgb(255, 255, 255);
     padding: 3px;
 }
 
 QLineEdit:disabled
 {
-    background: #56608B;
+    background: rgba(255, 255, 255, 50%);
     color: #AAAAAA
 }
 
@@ -362,10 +365,10 @@ QLineEdit[type="error"]
 
 QTextEdit
 {
-    border-radius: 4px;
+    border-radius: 10px;
     border: none;
     color: rgb(255, 255, 255);
-    background: #303A65;
+    background: rgba(255, 255, 255, 10%);
 }
 /************************************************************************/
 /**************************** QPlainTextEdit ****************************/
@@ -373,10 +376,9 @@ QTextEdit
 
 QPlainTextEdit
 {
-    border-radius: 4px;
-    background: #303A65;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 10%);
     color: rgb(255, 255, 255);
-    border-radius: 4px;
     border: 2px solid rgb(255, 255, 255);
 }
 
@@ -387,16 +389,17 @@ QPlainTextEdit
 QPushButton
 {
     border-radius: 4px;
-    border: none;
-    background: #C0B3D8;
+    border: 1px solid rgba(255, 255, 255, 50%);
+    background: rgba(255, 255, 255, 10%);
     padding: 5px;
     color: rgb(255, 255, 255);
 }
 
 QPushButton:disabled
 {
-    background: #AAA4BD;
+    background: transparent;
     color: rgba(255,255,255,50%);
+    border: 1px solid rgba(255, 255, 255, 10%);
 }
 
 QPushButton:hover
@@ -690,7 +693,7 @@ QComboBox:hover
 
 QComboBox:on
 {
-    background: rgb(102, 108, 123);
+    background: #AAA4BD;
 }
 
 QComboBox::drop-down
@@ -719,7 +722,7 @@ QComboBox QAbstractItemView
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     color: rgb(255, 255, 255);
-    selection-background-color: rgb(102, 108, 123);
+    selection-background-color: #AAA4BD;
     outline: 0;
 }
 
@@ -972,7 +975,7 @@ QListView
 
 QListView::indicator
 {
-    border: 2px solid rgb(86, 90, 94);
+    border: 2px solid #AAA4BD;
     border-radius: 4px;
     width: 14px;
     height: 14px;
@@ -983,7 +986,7 @@ QListView::indicator:unchecked:pressed,
 QListView::indicator:checked:hover,
 QListView::indicator:checked:pressed
 {
-    border-color: rgb(106, 110, 114);
+    border-color: #AAA4BD;
 }
 
 QListView::indicator:checked:hover,
@@ -1021,8 +1024,7 @@ QTreeWidget
 
 QTreeView
 {
-    border: 2px solid rgb(46, 48, 52);
-    background: rgb(54, 57, 62);
+    background: rgba(255, 255, 255, 10%);
     padding: 0px;
 }
 
@@ -1036,13 +1038,17 @@ QTreeView::item:selected:hover,
 QTreeView::item:!selected:hover
 {
     padding: 3px;
-    background: rgb(82, 88, 103);
+    background: rgba(255, 255, 255, 15%);
 }
-
 QTreeView::item:selected
 {
     padding: 3px;
-    background: rgb(102, 108, 123);
+    background: rgba(255, 255, 255, 15%);
+}
+
+QTreeView::branch
+{
+    background: transparent;
 }
 
 /******************************* Checkbox *******************************/
@@ -1230,9 +1236,8 @@ QTabBar::tab:!selected:hover
 
 QHeaderView
 {
-    background: rgb(62, 68, 83);
+    background: rgba(255,255,255,15%);
     margin: 0px;
-    border-radius: 0px;
 }
 
 QHeaderView::section
@@ -1247,8 +1252,8 @@ QHeaderView::section
 
 QHeaderView::section::vertical
 {
-    border-top: 1px solid rgb(46, 48, 52);
-    border-bottom: 1px solid rgb(46, 48, 52);
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
 }
 
 QHeaderView::section::vertical::first,
@@ -1265,8 +1270,8 @@ QHeaderView::section::vertical::only-one
 
 QHeaderView::section::horizontal
 {
-    border-left: 1px solid rgb(46, 48, 52);
-    border-right: 1px solid rgb(46, 48, 52);
+    border-left: 1px solid white;
+    border-right: 1px solid white;
 }
 
 QHeaderView::section::horizontal::first,
@@ -1314,14 +1319,14 @@ QDockWidget::float-button
 QDockWidget::close-button:hover,
 QDockWidget::float-button:hover
 {
-    background: rgba(255, 255, 255, 10);
+    background: rgba(255, 255, 255, 10%);
 }
 
 QDockWidget::close-button:pressed,
 QDockWidget::float-button:pressed
 {
     padding: 1px -1px -1px 1px;
-    background: rgba(255, 255, 255, 10);
+    background: rgba(255, 255, 255, 10%);
 }
 
 /************************************************************************/
@@ -1339,7 +1344,7 @@ QProgressBar
 
 QProgressBar::chunk
 {
-    background-color: #51AF3B;
+    background-color: #303A65;
 }
 
 /************************** Custom class *****************************/
@@ -1362,6 +1367,7 @@ QProgressBar::chunk
 {
     padding: 0;
     background: none;
+    border: none;
 }
 
 .Background
