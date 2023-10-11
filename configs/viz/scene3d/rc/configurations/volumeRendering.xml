@@ -110,7 +110,12 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="defaultLayer" order="1" transparency="Default">
+                <layer id="gridLayer" order="1" >
+                    <adaptor uid="gridCameraAdp" />
+                    <adaptor uid="gridAdp" />
+                </layer>
+
+                <layer id="defaultLayer" order="2" transparency="Default">
                     <adaptor uid="globalCameraAdp" />
                     <adaptor uid="trackballInteractorAdp" />
                     <adaptor uid="pickerInteractorAdp" />
@@ -126,7 +131,7 @@
                     <adaptor uid="eventAdp" />
                 </layer>
 
-                <layer id="orientationMarkerLayer" order="2">
+                <layer id="orientationMarkerLayer" order="3">
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom" />
                     <adaptor uid="orientationMarkerAdp" />
                 </layer>
@@ -135,6 +140,10 @@
         </service>
 
         <service uid="globalCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera">
+            <inout key="transform" uid="globalCamera" />
+        </service>
+
+        <service uid="gridCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera">
             <inout key="transform" uid="globalCamera" />
         </service>
 
@@ -199,6 +208,10 @@
 
         <service uid="orientationMarkerAdp" type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="true">
             <in key="matrix" uid="globalCamera" />
+        </service>
+
+        <service uid="gridAdp" type="sight::module::viz::scene3d::adaptor::SGrid">
+            <config size="5000" step="50" color="#555555" elevation="400" dashLength="10"/>
         </service>
 
         <!-- Reset the clipping box matreix -->
@@ -434,6 +447,8 @@
         <start uid="eventAdp" />
         <start uid="orientationMarkerAdp" />
         <start uid="3DNegatoAdp" />
+        <start uid="gridCameraAdp" />
+        <start uid="gridAdp" />
         <start uid="sliderCfg" />
 
         <update uid="imageExtruderSrv" />
