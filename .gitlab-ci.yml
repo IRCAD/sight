@@ -65,7 +65,7 @@ lint:sheldon:
     # Print CCache statistics (Cache hit rate should have raised)
     - ccache -s
     # Clone sight-data.
-    - SIGHT_DATA_DIR=$(cmake -DOUTPUT_FOLDER=/cache/sight-data -DBRANCH=negato-test-update -P "${CI_PROJECT_DIR}/cmake/build/download_test_data.cmake" 2>&1 | grep sight-data)
+    - SIGHT_DATA_DIR=$(cmake -DOUTPUT_FOLDER=/cache/sight-data -DBRANCH=dev -P "${CI_PROJECT_DIR}/cmake/build/download_test_data.cmake" 2>&1 | grep sight-data)
     - export FWTEST_DATA_DIR=${SIGHT_DATA_DIR}
     - export IMAGE_OUTPUT_PATH=$CI_PROJECT_DIR/.build/testImages
     - mkdir -p $IMAGE_OUTPUT_PATH
@@ -300,8 +300,8 @@ deploy:apps-linux-release:
     - $env:TEMP="$CACHE\tmp"
     - ninja
     # Clone sight-data.
-    - cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=negato-test-update -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake"
-    - $env:FWTEST_DATA_DIR=cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=negato-test-update -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake" '2>&1' | Select-String sight-data
+    - cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake"
+    - $env:FWTEST_DATA_DIR=cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake" '2>&1' | Select-String sight-data
     - $env:IMAGE_OUTPUT_PATH="${env:CI_PROJECT_DIR}/build/testImages"
     - md "${env:IMAGE_OUTPUT_PATH}"
     - $env:DISABLE_ABORT_DIALOG="1"
