@@ -79,7 +79,7 @@ bool TagValueSplitter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr& logger
 ) const
 {
@@ -137,7 +137,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     for(const InstanceGroupContainer::value_type& group : groupContainer)
     {
         // Copy the series
-        data::DicomSeries::sptr dicomSeries = std::make_shared<data::DicomSeries>();
+        data::dicom_series::sptr dicomSeries = std::make_shared<data::dicom_series>();
         dicomSeries->shallow_copy(series);
         dicomSeries->clearDicomContainer();
 

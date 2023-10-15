@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "OrganListModel.hpp"
 
-#include <data/Reconstruction.hpp>
+#include <data/reconstruction.hpp>
 
 namespace sight::module::ui::qml::model
 {
@@ -48,7 +48,7 @@ QHash<int, QByteArray> OrganListModel::roleNames() const
 
 //------------------------------------------------------------------------------
 
-void OrganListModel::updateModelSeries(const data::ModelSeries::sptr& modelSeries)
+void OrganListModel::updateModelSeries(const data::model_series::sptr& modelSeries)
 {
     beginResetModel();
     m_modelSeries = modelSeries;

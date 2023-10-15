@@ -47,7 +47,7 @@ namespace sight::io::bitmap::ut
 inline static void testBackend(
     const std::filesystem::path& file,
     Backend backend,
-    data::Image::sptr expected_image = data::Image::sptr()
+    data::image::sptr expected_image = data::image::sptr()
 )
 {
     core::os::temp_dir temp_dir;
@@ -80,12 +80,12 @@ inline static void testBackend(
         CPPUNIT_FAIL("File not found: " + file.string());
     }
 
-    auto actual_image = std::make_shared<data::Image>();
+    auto actual_image = std::make_shared<data::image>();
 
     // Read the image from disk
     {
         auto reader = std::make_shared<Reader>();
-        reader->setObject(actual_image);
+        reader->set_object(actual_image);
         reader->set_file(filepath);
 
         CPPUNIT_ASSERT_NO_THROW(reader->read(backend));
@@ -114,7 +114,7 @@ inline static void testBackend(
         constexpr auto path = "<<[{:}]>>";
 
         auto reader = std::make_shared<Reader>();
-        reader->setObject(actual_image);
+        reader->set_object(actual_image);
         reader->set_file(path);
 
         CPPUNIT_ASSERT_THROW(reader->read(backend), core::exception);
@@ -127,7 +127,7 @@ inline static void testBackend(
         corrupted_file.stream().close();
 
         auto reader = std::make_shared<Reader>();
-        reader->setObject(actual_image);
+        reader->set_object(actual_image);
         reader->set_file(corrupted_file);
 
         CPPUNIT_ASSERT_THROW(reader->read(backend), core::exception);
@@ -137,7 +137,7 @@ inline static void testBackend(
     if(std::filesystem::exists(filepath))
     {
         auto reader = std::make_shared<Reader>();
-        reader->setObject(actual_image);
+        reader->set_object(actual_image);
         reader->set_file(filepath.replace_extension(".bad"));
 
         CPPUNIT_ASSERT_THROW(reader->read(backend), core::exception);
@@ -153,11 +153,11 @@ inline static void profileReader(
 {
     auto reader = std::make_shared<Reader>();
 
-    auto actual_image = std::make_shared<data::Image>();
-    reader->setObject(actual_image);
+    auto actual_image = std::make_shared<data::image>();
+    reader->set_object(actual_image);
 
     const auto& filename = "wild" + extensions(backend).front();
-    const auto& filepath = utestData::Data::dir() / "sight" / "image" / "bitmap" / filename;
+    const auto& filepath = utest_data::Data::dir() / "sight" / "image" / "bitmap" / filename;
     reader->set_file(filepath);
 
     const std::string backend_name =
@@ -350,7 +350,7 @@ void ReaderTest::nvJPEG2KTest()
     testBackend(
         // Pure synthetic images cannot be read/written correctly with JASPER and openCV.
         // For that reason, we use a real image.
-        utestData::Data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
+        utest_data::Data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
         Backend::NVJPEG2K
     );
 }
@@ -364,7 +364,7 @@ void ReaderTest::libPNGTest()
     testBackend(
         "libPNG_RGBA_UINT8.png",
         Backend::LIBPNG,
-        getSyntheticImage(1, core::type::UINT8, data::Image::PixelFormat::RGBA)
+        getSyntheticImage(1, core::type::UINT8, data::image::PixelFormat::RGBA)
     );
 }
 
@@ -382,7 +382,7 @@ void ReaderTest::openJPEGTest()
     testBackend(
         // Pure synthetic images cannot be read/written correctly with JASPER and openCV.
         // For that reason, we use a real image.
-        utestData::Data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
+        utest_data::Data::dir() / "sight" / "image" / "bitmap" / "wild.jp2",
         Backend::OPENJPEG
     );
 }
@@ -396,13 +396,13 @@ void ReaderTest::libTIFFTest()
     testBackend(
         "libTIFF_RGBA_UINT16.tiff",
         Backend::LIBTIFF,
-        getSyntheticImage(1, core::type::UINT16, data::Image::PixelFormat::RGBA)
+        getSyntheticImage(1, core::type::UINT16, data::image::PixelFormat::RGBA)
     );
 
     testBackend(
         "libTIFF_GRAYSCALE_DOUBLE.tiff",
         Backend::LIBTIFF,
-        getSyntheticImage(2, core::type::DOUBLE, data::Image::PixelFormat::GRAY_SCALE)
+        getSyntheticImage(2, core::type::DOUBLE, data::image::PixelFormat::GRAY_SCALE)
     );
 }
 

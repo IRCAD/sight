@@ -26,7 +26,7 @@
 #include "filter/dicom/composite/CTImageStorageDefaultComposite.hpp"
 #include "filter/dicom/exceptions/FilterFailure.hpp"
 #include "filter/dicom/registry/macros.hpp"
-#include "filter/dicom/splitter/SOPClassUIDSplitter.hpp"
+#include "filter/dicom/splitter/sop_class_uid_splitter.hpp"
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -59,25 +59,26 @@ std::string DefaultDicomFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr& logger
 )
 const
 {
     DicomSeriesContainerType result;
 
-    //Split series depending on SOPClassUIDs
-    auto sopFilter                           = std::make_shared<sight::filter::dicom::splitter::SOPClassUIDSplitter>();
+    //Split series depending on sop_classUIDs
+    auto sopFilter =
+        std::make_shared<sight::filter::dicom::splitter::sop_class_uid_splitter>();
     DicomSeriesContainerType seriesContainer = sopFilter->apply(series, logger);
 
-    // Apply default filters depending on SOPClassUIDs
-    for(const data::DicomSeries::sptr& s : seriesContainer)
+    // Apply default filters depending on sop_classUIDs
+    for(const data::dicom_series::sptr& s : seriesContainer)
     {
         DicomSeriesContainerType tempo;
 
-        // Create filter depending on SOPClassUID
-        data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = s->getSOPClassUIDs();
-        std::string sopClassUID                                          = *sopClassUIDContainer.begin();
+        // Create filter depending on sop_classUID
+        data::dicom_series::sop_classUIDContainerType sopClassUIDContainer = s->getSOPClassUIDs();
+        std::string sopClassUID                                            = *sopClassUIDContainer.begin();
         if(sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Remove hard coded string
         {
             sopClassUID = "Comprehensive3DSR";
@@ -103,11 +104,11 @@ const
         }
         else
         {
-            logger->information("Can't apply any filter : \"" + sopClassUID + "\" SOPClassUID is not supported.");
+            logger->information("Can't apply any filter : \"" + sopClassUID + "\" sop_classUID is not supported.");
             tempo.push_back(s);
         }
 
-        for(const data::DicomSeries::sptr& filteredSeries : tempo)
+        for(const data::dicom_series::sptr& filteredSeries : tempo)
         {
             result.push_back(filteredSeries);
         }

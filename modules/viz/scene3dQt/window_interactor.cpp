@@ -30,7 +30,7 @@
 #include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/registry/macros.hpp>
-#include <viz/scene3d/SRender.hpp>
+#include <viz/scene3d/render.hpp>
 
 #include <QDesktopWidget>
 #include <QEvent>
@@ -112,20 +112,20 @@ void window_interactor::createContainer(
                             {
                                 this->setFullscreen(!m_isFullScreen, -1);
 
-                                service::base::sptr renderService                    = m_renderService.lock();
-                                sight::viz::scene3d::SRender::sptr ogreRenderService =
-                                    std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(renderService);
+                                service::base::sptr renderService                   = m_renderService.lock();
+                                sight::viz::scene3d::render::sptr ogreRenderService =
+                                    std::dynamic_pointer_cast<sight::viz::scene3d::render>(renderService);
                                 if(m_isFullScreen)
                                 {
                                     auto enableFullScreenSlot = ogreRenderService->slot(
-                                        sight::viz::scene3d::SRender::ENABLE_FULLSCREEN
+                                        sight::viz::scene3d::render::ENABLE_FULLSCREEN
                                     );
                                     enableFullScreenSlot->run(0);
                                 }
                                 else
                                 {
                                     auto disableFullScreenSlot = ogreRenderService->slot(
-                                        sight::viz::scene3d::SRender::DISABLE_FULLSCREEN
+                                        sight::viz::scene3d::render::DISABLE_FULLSCREEN
                                     );
                                     disableFullScreenSlot->run();
                                 }
@@ -134,7 +134,7 @@ void window_interactor::createContainer(
     auto* toggleFullscreenShortcut = new QShortcut(QString("F11"), m_qOgreWidget);
     QObject::connect(toggleFullscreenShortcut, &QShortcut::activated, toggleFullscreen);
 
-    const auto renderService = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(m_renderService.lock());
+    const auto renderService = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_renderService.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", renderService);
 
     std::map<int, sight::viz::scene3d::Layer::wptr> orderedLayers;
@@ -157,7 +157,7 @@ void window_interactor::createContainer(
 void window_interactor::connectToContainer()
 {
     // Connect widget window render to render service start adaptors
-    const auto renderService = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(m_renderService.lock());
+    const auto renderService = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_renderService.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", renderService);
 
     QObject::connect(
@@ -226,8 +226,8 @@ float window_interactor::getLogicalDotsPerInch() const
 
 void window_interactor::onInteracted(sight::viz::scene3d::window_interactor::InteractionInfo _info)
 {
-    service::base::sptr renderService                    = m_renderService.lock();
-    sight::viz::scene3d::SRender::sptr ogreRenderService = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(
+    service::base::sptr renderService                   = m_renderService.lock();
+    sight::viz::scene3d::render::sptr ogreRenderService = std::dynamic_pointer_cast<sight::viz::scene3d::render>(
         renderService
     );
 

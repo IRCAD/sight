@@ -24,10 +24,10 @@
 
 #include "io/igtl/detail/DataConverter.hpp"
 
-#include <data/Boolean.hpp>
-#include <data/Composite.hpp>
-#include <data/Integer.hpp>
-#include <data/String.hpp>
+#include <data/boolean.hpp>
+#include <data/composite.hpp>
+#include <data/integer.hpp>
+#include <data/string.hpp>
 
 #include <igtlTrackingDataMessage.h>
 
@@ -35,7 +35,7 @@ namespace sight::io::igtl::detail::converter
 {
 
 const std::string TrackingStartConverter::s_IGTL_TYPE          = "STT_TDATA";
-const std::string TrackingStartConverter::s_FWDATA_OBJECT_TYPE = data::Composite::classname();
+const std::string TrackingStartConverter::s_FWDATA_OBJECT_TYPE = data::composite::classname();
 const std::string s_statusKey                                  = "Status";
 const std::string s_resolutionKey                              = "Resolution";
 const std::string s_coordinateNameKey                          = "CoordinateName";
@@ -52,7 +52,7 @@ TrackingStartConverter::~TrackingStartConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(data::Object::csptr /*src*/) const
+::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(data::object::csptr /*src*/) const
 {
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::New();
 
@@ -64,27 +64,27 @@ TrackingStartConverter::~TrackingStartConverter()
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     auto* msg = dynamic_cast< ::igtl::StartTrackingDataMessage*>(src.GetPointer());
 
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::Pointer(msg);
 
-    data::Composite::sptr composite = std::make_shared<data::Composite>();
+    data::composite::sptr composite = std::make_shared<data::composite>();
     {
-        data::Boolean::sptr status = std::make_shared<data::Boolean>();
+        data::boolean::sptr status = std::make_shared<data::boolean>();
         (*composite)[s_statusKey] = status;
 
         status->setValue(true);
     }
     {
-        data::Integer::sptr resolution = std::make_shared<data::Integer>();
+        data::integer::sptr resolution = std::make_shared<data::integer>();
         (*composite)[s_resolutionKey] = resolution;
 
         resolution->setValue(trackingMsg->GetResolution());
     }
     {
-        data::String::sptr coordinateName = std::make_shared<data::String>();
+        data::string::sptr coordinateName = std::make_shared<data::string>();
         (*composite)[s_coordinateNameKey] = coordinateName;
 
         coordinateName->setValue(trackingMsg->GetCoordinateName());

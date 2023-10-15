@@ -22,15 +22,15 @@
 
 #include "AcquisitionNumberSplitterTest.hpp"
 
-#include <data/SeriesSet.hpp>
+#include <data/series_set.hpp>
 
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 
-#include <io/dicom/reader/SeriesSet.hpp>
+#include <io/dicom/reader/series_set.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <filesystem>
 
@@ -58,10 +58,10 @@ void AcquisitionNumberSplitterTest::tearDown()
 
 void AcquisitionNumberSplitterTest::simpleApplication()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "08-CT-PACS";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
@@ -69,16 +69,16 @@ void AcquisitionNumberSplitterTest::simpleApplication()
     );
 
     // Read DicomSeries
-    auto reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    auto reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
+    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
+    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter
@@ -88,8 +88,8 @@ void AcquisitionNumberSplitterTest::simpleApplication()
     CPPUNIT_ASSERT(filter);
     sight::filter::dicom::helper::Filter::applyFilter(dicomSeriesContainer, filter, true);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), dicomSeriesContainer.size());
-    data::DicomSeries::sptr dicomSeriesA = dicomSeriesContainer[0];
-    data::DicomSeries::sptr dicomSeriesB = dicomSeriesContainer[1];
+    data::dicom_series::sptr dicomSeriesA = dicomSeriesContainer[0];
+    data::dicom_series::sptr dicomSeriesB = dicomSeriesContainer[1];
 
     // Check number of instances in series
     CPPUNIT_ASSERT_EQUAL(std::size_t(233), dicomSeriesA->getDicomContainer().size());

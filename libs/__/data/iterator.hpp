@@ -47,8 +47,8 @@ namespace sight::data
  *
  * Example:
  * @code{.cpp}
-    data::Image::sptr img = std::make_shared<data::Image>();
-    img->resize(1920, 1080, 0, core::type::UINT8, data::Image::PixelFormat::RGBA);
+    data::image::sptr img = std::make_shared<data::image>();
+    img->resize(1920, 1080, 0, core::type::UINT8, data::image::PixelFormat::RGBA);
     auto iter    = img->begin<RGBA>();
     const auto iterEnd = img->end<RGBA>();
 

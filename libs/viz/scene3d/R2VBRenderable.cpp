@@ -37,7 +37,7 @@ viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::make(
     const std::string& _name,
     Ogre::SubEntity* _sourceObject,
     Ogre::SceneManager* _sceneManager,
-    data::Mesh::CellType _primitiveType,
+    data::mesh::CellType _primitiveType,
     const std::string& _mtlName
 )
 {
@@ -80,9 +80,9 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(
         m_r2vbBuffer->setOperationType(Ogre::RenderOperation::OT_TRIANGLE_LIST);
         m_r2vbBuffer->setResetsEveryUpdate(true);
 
-        const std::size_t numVertices = m_inputPrimitiveType == data::Mesh::CellType::QUAD ? _vertexCount * 2
+        const std::size_t numVertices = m_inputPrimitiveType == data::mesh::CellType::QUAD ? _vertexCount * 2
                                                                                            : m_inputPrimitiveType
-                                        == data::Mesh::CellType::TETRA ? _vertexCount * 4
+                                        == data::mesh::CellType::TETRA ? _vertexCount * 4
                                                                        :
                                         _vertexCount;
         m_r2vbBuffer->setMaxVertexCount(static_cast<unsigned int>(numVertices));

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,12 @@
 #include "io/dicom/container/sr/DicomSRNode.hpp"
 #include "io/dicom/writer/tid/TemplateID.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 namespace sight::data
 {
 
-class PointList;
+class point_list;
 
 } // namespace sight::data
 
@@ -41,7 +41,7 @@ namespace sight::io::dicom::writer::tid
  * @brief Measurement TID
  * @see TID 300
  */
-class IO_DICOM_CLASS_API Measurement : public io::dicom::writer::tid::TemplateID<data::Image>
+class IO_DICOM_CLASS_API Measurement : public io::dicom::writer::tid::TemplateID<data::image>
 {
 public:
 
@@ -54,7 +54,7 @@ public:
     IO_DICOM_API Measurement(
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Image::csptr& image
+        const data::image::csptr& image
     );
 
     /// Destructor
@@ -81,7 +81,7 @@ protected:
      */
     void createMeasurement(
         const SPTR(io::dicom::container::sr::DicomSRNode)& parent,
-        const CSPTR(data::PointList)& pointList,
+        const CSPTR(data::point_list)& pointList,
         unsigned int id,
         bool useSCoord3D
     );

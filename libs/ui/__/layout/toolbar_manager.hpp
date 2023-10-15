@@ -25,7 +25,7 @@
  *
  * @section XML XML Configuration
  * @code{.xml}
-   <service uid="toolbar2" type="ui::toolbar" autoConnect="false">
+   <service uid="toolbar2" type="ui::toolbar" auto_connect="false">
        <gui>
            <layout style="ToolButtonIconOnly" uniformSize="true">
                <menuItem name="My item 2" style="check" icon="TutoGui/system.png" icon2="TutoGui/monkey.png" />

@@ -29,7 +29,7 @@
 #include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include <io/__/reader/registry/macros.hpp>
 
@@ -49,7 +49,7 @@ struct NiftiLoaderFunctor
 {
     struct Parameter
     {
-        data::Image::sptr dataImage;
+        data::image::sptr dataImage;
         std::string filename;
         io::itk::NiftiImageReader::sptr reader;
     };
@@ -116,7 +116,7 @@ void NiftiImageReader::read()
 
     core::tools::dispatcher<core::tools::intrinsic_types, NiftiLoaderFunctor>::invoke(type, param);
 
-    SIGHT_ASSERT("sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
+    SIGHT_ASSERT("sight::data::image is not well produced", m_object.lock()); // verify that data::image is well
     // produced
     // Post Condition image with a pixel type
     SIGHT_ASSERT(

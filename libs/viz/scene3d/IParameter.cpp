@@ -24,15 +24,15 @@
 
 #include <core/com/slots.hxx>
 
-#include <data/Array.hpp>
-#include <data/Boolean.hpp>
-#include <data/Color.hpp>
-#include <data/Float.hpp>
-#include <data/Image.hpp>
-#include <data/Integer.hpp>
-#include <data/Matrix4.hpp>
-#include <data/Point.hpp>
-#include <data/PointList.hpp>
+#include <data/array.hpp>
+#include <data/boolean.hpp>
+#include <data/color.hpp>
+#include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/matrix4.hpp>
+#include <data/point.hpp>
+#include <data/point_list.hpp>
+#include <data/real.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 
@@ -97,9 +97,9 @@ const std::string& IParameter::getParamName() const
 
 //------------------------------------------------------------------------------
 
-service::connections_t IParameter::getAutoConnections() const
+service::connections_t IParameter::auto_connections() const
 {
-    return {{s_PARAMETER_INOUT, data::Object::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{s_PARAMETER_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
 }
 
 //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void IParameter::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfiguration();
+    const config_t config = this->get_config();
 
     m_paramName = config.get<std::string>(s_CONFIG + "parameter", "");
     SIGHT_ERROR_IF("parameter attribute not set", m_paramName.empty());
@@ -238,30 +238,30 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
         // Set shader parameters
         std::string objClass = obj->get_classname();
-        if(objClass == "sight::data::Integer")
+        if(objClass == "sight::data::integer")
         {
-            const auto intValue = std::dynamic_pointer_cast<const data::Integer>(obj.get_shared());
+            const auto intValue = std::dynamic_pointer_cast<const data::integer>(obj.get_shared());
             SIGHT_ASSERT("The given integer object is null", intValue);
 
             params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
         }
-        else if(objClass == "sight::data::Float")
+        else if(objClass == "sight::data::real")
         {
-            const auto floatValue = std::dynamic_pointer_cast<const data::Float>(obj.get_shared());
+            const auto floatValue = std::dynamic_pointer_cast<const data::real>(obj.get_shared());
             SIGHT_ASSERT("The given float object is null", floatValue);
 
-            params->setNamedConstant(m_paramName, floatValue->value());
+            params->setNamedConstant(m_paramName, static_cast<float>(floatValue->value()));
         }
-        else if(objClass == "sight::data::Boolean")
+        else if(objClass == "sight::data::boolean")
         {
-            const auto booleanValue = std::dynamic_pointer_cast<const data::Boolean>(obj.get_shared());
+            const auto booleanValue = std::dynamic_pointer_cast<const data::boolean>(obj.get_shared());
             SIGHT_ASSERT("The given boolean object is null", booleanValue);
 
             params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
         }
-        else if(objClass == "sight::data::Color")
+        else if(objClass == "sight::data::color")
         {
-            const auto colorValue = std::dynamic_pointer_cast<const data::Color>(obj.get_shared());
+            const auto colorValue = std::dynamic_pointer_cast<const data::color>(obj.get_shared());
             SIGHT_ASSERT("The given color object is null", colorValue);
 
             std::array<float, 4> paramValues {};
@@ -275,12 +275,12 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
             params->setNamedConstant(m_paramName, color);
         }
-        else if(objClass == "sight::data::PointList")
+        else if(objClass == "sight::data::point_list")
         {
-            const auto pointListValue = std::dynamic_pointer_cast<const data::PointList>(obj.get_shared());
+            const auto pointListValue = std::dynamic_pointer_cast<const data::point_list>(obj.get_shared());
             SIGHT_ASSERT("The given pointList object is null", pointListValue);
 
-            std::vector<data::Point::sptr> points = pointListValue->getPoints();
+            std::vector<data::point::sptr> points = pointListValue->getPoints();
             int nbPoints                          = static_cast<int>(points.size());
 
             auto* paramValues = new float [static_cast<std::uint64_t>(nbPoints * 3)];
@@ -301,9 +301,9 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
             delete[] paramValues;
         }
-        else if(objClass == "sight::data::Matrix4")
+        else if(objClass == "sight::data::matrix4")
         {
-            const auto transValue = std::dynamic_pointer_cast<const data::Matrix4>(obj.get_shared());
+            const auto transValue = std::dynamic_pointer_cast<const data::matrix4>(obj.get_shared());
             SIGHT_ASSERT("The given Matrix4 object is null", transValue);
 
             std::array<float, 16> paramValues {};
@@ -320,9 +320,9 @@ bool IParameter::setParameter(Ogre::Technique& technique)
                 static_cast<std::size_t>(1)
             );
         }
-        else if(objClass == "sight::data::Array")
+        else if(objClass == "sight::data::array")
         {
-            const auto arrayObject = std::dynamic_pointer_cast<const data::Array>(obj.get_shared());
+            const auto arrayObject = std::dynamic_pointer_cast<const data::array>(obj.get_shared());
             SIGHT_ASSERT("The object is nullptr", arrayObject);
 
             const std::size_t numComponents = arrayObject->size()[0];
@@ -355,9 +355,9 @@ bool IParameter::setParameter(Ogre::Technique& technique)
                 SIGHT_ERROR("Array size not handled: " << arrayObject->size()[0]);
             }
         }
-        else if(objClass == "sight::data::Image")
+        else if(objClass == "sight::data::image")
         {
-            const auto image = std::dynamic_pointer_cast<const data::Image>(obj.get_shared());
+            const auto image = std::dynamic_pointer_cast<const data::image>(obj.get_shared());
             SIGHT_ASSERT("The object is nullptr", image);
 
             if(!m_texture)
@@ -374,8 +374,8 @@ bool IParameter::setParameter(Ogre::Technique& technique)
                 updateTexture = true;
             }
         }
-        // We allow to work on the SRender composite and interact with slots instead
-        else if(objClass != "sight::data::Composite")
+        // We allow to work on the render composite and interact with slots instead
+        else if(objClass != "sight::data::composite")
         {
             SIGHT_ERROR("This Type " << objClass << " isn't supported.");
         }
@@ -414,8 +414,8 @@ void IParameter::setBoolParameter(bool value, std::string name)
         m_dirty = true;
         {
             auto paramObject = m_parameter.lock();
-            auto boolObject  = std::dynamic_pointer_cast<data::Boolean>(paramObject.get_shared());
-            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Boolean", boolObject);
+            auto boolObject  = std::dynamic_pointer_cast<data::boolean>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::boolean", boolObject);
             boolObject->setValue(value);
         }
         this->updating();
@@ -432,8 +432,8 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
 
         {
             auto paramObject = m_parameter.lock();
-            auto colorObject = std::dynamic_pointer_cast<data::Color>(paramObject.get_shared());
-            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Color", colorObject);
+            auto colorObject = std::dynamic_pointer_cast<data::color>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::color", colorObject);
             colorObject->setRGBA(
                 float(color[0]) / 255.F,
                 float(color[1]) / 255.F,
@@ -455,8 +455,8 @@ void IParameter::setIntParameter(int value, std::string name)
 
         {
             auto paramObject = m_parameter.lock();
-            auto intObject   = std::dynamic_pointer_cast<data::Integer>(paramObject.get_shared());
-            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Integer", intObject);
+            auto intObject   = std::dynamic_pointer_cast<data::integer>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::integer", intObject);
             intObject->setValue(value);
         }
         this->updating();
@@ -473,8 +473,8 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
 
         {
             auto paramObject = m_parameter.lock();
-            auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
-            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
+            auto arrayObject = std::dynamic_pointer_cast<data::array>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::array", arrayObject);
 
             if(arrayObject->empty())
             {
@@ -499,8 +499,8 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
 
         {
             auto paramObject = m_parameter.lock();
-            auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
-            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
+            auto arrayObject = std::dynamic_pointer_cast<data::array>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::array", arrayObject);
 
             if(arrayObject->empty())
             {
@@ -527,8 +527,8 @@ void IParameter::setDoubleParameter(double value, std::string name)
 
         {
             auto paramObject = m_parameter.lock();
-            auto floatObject = std::dynamic_pointer_cast<data::Float>(paramObject.get_shared());
-            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Float", floatObject);
+            auto floatObject = std::dynamic_pointer_cast<data::real>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::real", floatObject);
             floatObject->setValue(static_cast<float>(value));
         }
 
@@ -546,8 +546,8 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
 
         {
             auto paramObject = m_parameter.lock();
-            auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
-            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
+            auto arrayObject = std::dynamic_pointer_cast<data::array>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::array", arrayObject);
             if(arrayObject->empty())
             {
                 arrayObject->resize({2}, core::type::DOUBLE);
@@ -581,8 +581,8 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
 
         {
             auto paramObject = m_parameter.lock();
-            auto arrayObject = std::dynamic_pointer_cast<data::Array>(paramObject.get_shared());
-            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
+            auto arrayObject = std::dynamic_pointer_cast<data::array>(paramObject.get_shared());
+            SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::array", arrayObject);
 
             if(arrayObject->empty())
             {

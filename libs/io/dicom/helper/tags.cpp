@@ -22,7 +22,7 @@
 
 #include "io/dicom/helper/tags.hpp"
 
-#include "io/__/reader/CsvReader.hpp"
+#include "io/__/reader/csv_reader.hpp"
 #include "io/dicom/exception/InvalidTag.hpp"
 
 #include <core/exceptionmacros.hpp>
@@ -94,8 +94,8 @@ PrivateTagVecType loadPrivateTags(const std::filesystem::path& tagsPath)
     );
 
     PrivateTagVecType privateTags;
-    io::reader::CsvReader reader(tagsPath);
-    io::reader::CsvReader::TokenContainerType tag = reader.getLine();
+    io::reader::csv_reader reader(tagsPath);
+    io::reader::csv_reader::TokenContainerType tag = reader.getLine();
 
     while(!tag.empty())
     {

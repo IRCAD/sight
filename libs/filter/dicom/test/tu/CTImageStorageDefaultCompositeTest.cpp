@@ -26,9 +26,9 @@
 #include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 
-#include <io/dicom/reader/SeriesSet.hpp>
+#include <io/dicom/reader/series_set.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <filesystem>
 
@@ -56,10 +56,10 @@ void CTImageStorageDefaultCompositeTest::tearDown()
 
 void CTImageStorageDefaultCompositeTest::simpleApplication()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "08-CT-PACS";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
@@ -67,20 +67,20 @@ void CTImageStorageDefaultCompositeTest::simpleApplication()
     );
 
     // Read DicomSeries
-    auto reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    auto reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeriesA = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
-    data::DicomSeries::sptr dicomSeriesB = std::make_shared<data::DicomSeries>();
+    data::dicom_series::sptr dicomSeriesA = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
+    data::dicom_series::sptr dicomSeriesB = std::make_shared<data::dicom_series>();
     dicomSeriesB->deep_copy(dicomSeriesA);
     CPPUNIT_ASSERT(dicomSeriesA);
     CPPUNIT_ASSERT(dicomSeriesB);
-    std::vector<data::DicomSeries::sptr> dicomSeriesContainerA;
-    std::vector<data::DicomSeries::sptr> dicomSeriesContainerB;
+    std::vector<data::dicom_series::sptr> dicomSeriesContainerA;
+    std::vector<data::dicom_series::sptr> dicomSeriesContainerB;
     dicomSeriesContainerA.push_back(dicomSeriesA);
     dicomSeriesContainerB.push_back(dicomSeriesB);
 

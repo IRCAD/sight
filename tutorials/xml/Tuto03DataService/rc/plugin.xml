@@ -4,14 +4,14 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>Tuto03DataService_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <!-- The root data object in tutoDataService is a sight::data::Image. -->
-            <object uid="image" type="sight::data::Image" />
+            <!-- The root data object in tutoDataService is a sight::data::image. -->
+            <object uid="image" type="sight::data::image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -20,7 +20,7 @@
                 In this tutorial, the gui services will automatically start the services they register using the
                 'start="true"' attribute.
             -->
-            <service uid="mainFrame" type="sight::module::ui::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::frame" >
                 <gui>
                     <frame>
                         <name>Tuto03DataService</name>
@@ -43,7 +43,7 @@
                 The <layout> tags defines the displayed information, whereas the <registry> tags defines the
                 services information.
             -->
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::menu_bar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -65,7 +65,7 @@
                 In this tutorial, the attribute 'specialAction' has the value "QUIT". On MS Windows, there's no
                 impact, but on Linux this value installs the default 'Quit' system icon in the menuItem.
             -->
-            <service uid="menuView" type="sight::module::ui::SMenu" >
+            <service uid="menuView" type="sight::module::ui::menu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -83,18 +83,18 @@
 
             <!--
                 Quit action:
-                The action service (sight::module::ui::SQuit) is a generic action that will close the application
+                The action service (sight::module::ui::quit) is a generic action that will close the application
                 when the user click on the menuItem "Quit".
             -->
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
             <!--
                 Open file action:
-                This service (sight::module::ui::com::SStarter) is a generic action, it starts and updates the
+                This service (sight::module::ui::com::starter) is a generic action, it starts and updates the
                 services given in the configuration when the user clicks on the action.
                 Here, the reader selector will be called when the action is clicked.
             -->
-            <service uid="openImageAct" type="sight::module::ui::com::SStarter" >
+            <service uid="openImageAct" type="sight::module::ui::com::starter" >
                 <start uid="imageReaderSrv" />
             </service>
 
@@ -105,21 +105,21 @@
                 This is a generic service that shows a dialog to display all the readers or writers available for its
                 associated data. By default it is configured to show readers. (Note: if there is only one reading
                 service, it is directly selected without prompting.)
-                Here, the only reader available to read a sight::data::Image is sight::module::io::vtk::ImageReaderService (see
+                Here, the only reader available to read a sight::data::image is sight::module::io::vtk::ImageReaderService (see
                 Tuto02DataServiceBasic), so the selector will not be displayed.
                 When the service is chosen, it is started, updated and stopped, so the data is read.
             -->
-            <service uid="imageReaderSrv" type="sight::module::ui::io::SSelector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector" >
                 <inout key="data" uid="image" />
             </service>
 
             <!--
                 3D visualization service of medical images:
-                Here, the service attribute 'autoConnect="true"' allows the rendering to listen the modification of
+                Here, the service attribute 'auto_connect="true"' allows the rendering to listen the modification of
                 the data image. So, when the image is loaded, the visualization will be updated.
             -->
-            <service uid="imageRenderSrv" type="sight::module::viz::sample::SImage" >
-                <in key="image" uid="image" autoConnect="true" />
+            <service uid="imageRenderSrv" type="sight::module::viz::sample::image" >
+                <in key="image" uid="image" auto_connect="true" />
             </service>
 
             <!-- ******************************* Start services ***************************************** -->

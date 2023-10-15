@@ -61,16 +61,10 @@ class Action;
  * - \b setDisabled(bool): opposite of setEnabled(bool).
  * - \b enable(): make the action interactive.
  * - \b disable(): make the action not interactive.
- * - \b setIsActive(bool): deprecated, synonym of setChecked().
- * - \b activate(): deprecated, synonym of check().
- * - \b deactivate(): deprecated, synonym of uncheck().
- * - \b setIsExecutable(bool): deprecated, synonym of setEnabled()
- * - \b setExecutable(): deprecated, synonym of enable().
- * - \b setInexecutable(): deprecated, synonym of disable().
  *
  * Example of configuration
  * @code{.xml}
-    <service uid="item" type="sight::module::ui::SDefaultAction" autoConnect="false" >
+    <service uid="item" type="sight::module::ui::default_action" auto_connect="false" >
         <state checked="false" enabled="false" inverse="true" visible="true" />
         <confirmation message="..." />
     </service>
@@ -142,15 +136,6 @@ public:
     static const core::com::slots::key_t TOGGLE_VISIBILITY_SLOT;
     /// @}
 
-    /// Deprecated: Slot to check or uncheck the action
-    static const core::com::slots::key_t SET_IS_ACTIVE_SLOT;
-
-    /// Deprecated: Slot to check the action
-    static const core::com::slots::key_t ACTIVATE_SLOT;
-
-    /// Deprecated: Slot to check the action
-    static const core::com::slots::key_t DEACTIVATE_SLOT;
-
     /// Slot to check or uncheck the action
     static const core::com::slots::key_t SET_CHECKED_SLOT;
 
@@ -159,15 +144,6 @@ public:
 
     /// Slot to check the action
     static const core::com::slots::key_t UNCHECK_SLOT;
-
-    /// Deprecated: Slot to enable/disable the action
-    static const core::com::slots::key_t SET_IS_EXECUTABLE_SLOT;
-
-    /// Deprecated: Slot to enable the action
-    static const core::com::slots::key_t SET_EXECUTABLE_SLOT;
-
-    /// Deprecated: Slot to disable the action
-    static const core::com::slots::key_t SET_INEXECUTABLE_SLOT;
 
     /// Slot to enable or disable the action
     static const core::com::slots::key_t SET_ENABLED_SLOT;
@@ -196,23 +172,11 @@ public:
     /// Sets the action service executable or not.
     [[nodiscard]] UI_API bool checked() const;
 
-    /// Sets the action service is active/inactive.
-    [[deprecated("Removed in sight 23.0.")]] UI_API virtual void setIsActive(bool isActive);
-
-    /// Returns true if action service is active.
-    [[deprecated("Removed in sight 23.0.")]] UI_API bool getIsActive() const;
-
     /// Enables or disables the action service.
     UI_API void setEnabled(bool enabled);
 
     /// Sets the action service executable or not.
     [[nodiscard]] UI_API bool enabled() const;
-
-    /// Sets the action service executable or not.
-    [[deprecated("Removed in sight 23.0.")]] UI_API void setIsExecutable(bool isExecutable);
-
-    /// Returns action service is executable.
-    [[deprecated("Removed in sight 23.0.")]] UI_API bool getIsExecutable() const;
 
     /// Shows or hides the action.
     UI_API void setVisible(bool isVisible);
@@ -224,13 +188,7 @@ public:
     UI_API void hide();
 
     /// Returns true if action is visible
-    [[deprecated("Removed in sight 23.0.")]] UI_API bool isVisible() const;
-
-    /// Returns true if action is visible
     [[nodiscard]] UI_API bool visible() const;
-
-    /// Returns true if the active state is inverted.
-    [[deprecated("Removed in sight 23.0.")]] UI_API bool isInverted() const;
 
     /// Returns true if the active state is inverted.
     [[nodiscard]] UI_API bool inverted() const;

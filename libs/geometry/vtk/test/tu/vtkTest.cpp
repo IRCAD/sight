@@ -22,8 +22,8 @@
 
 #include "vtkTest.hpp"
 
-#include <data/Mesh.hpp>
-#include <data/Point.hpp>
+#include <data/mesh.hpp>
+#include <data/point.hpp>
 
 #include <geometry/vtk/mesh.hpp>
 
@@ -49,7 +49,7 @@ void vtkTest::tearDown()
 
 void vtkTest::computeCenterOfMass()
 {
-    sight::data::Mesh::sptr mesh             = std::make_shared<sight::data::Mesh>();
+    sight::data::mesh::sptr mesh             = std::make_shared<sight::data::mesh>();
     const auto dumpLock                      = mesh->dump_lock();
     const std::array<double, 3> centerOfMass = {0.5, 1.5, 2.5};
 
@@ -68,7 +68,7 @@ void vtkTest::computeCenterOfMass()
     mesh->pushCell(4, 5, 6, 7);
     mesh->pushCell(0, 4, 7, 3);
     mesh->pushCell(3, 7, 6, 2);
-    sight::data::Point::sptr computedCenterOfMass = geometry::vtk::computeCenterOfMass(mesh);
+    sight::data::point::sptr computedCenterOfMass = geometry::vtk::computeCenterOfMass(mesh);
 
     CPPUNIT_ASSERT_EQUAL(centerOfMass[0], computedCenterOfMass->getCoord()[0]);
     CPPUNIT_ASSERT_EQUAL(centerOfMass[1], computedCenterOfMass->getCoord()[1]);

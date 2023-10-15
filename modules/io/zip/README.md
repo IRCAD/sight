@@ -5,7 +5,7 @@ compression. It can be password protected using AES256.
 
 ## Services
 
-- **SExtract**: read an archive and output to the specified directory
+- **extract**: read an archive and output to the specified directory
 
 ## How to use it
 

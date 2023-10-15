@@ -5,49 +5,49 @@ matrix optimization, image filtering, drawing functions, etc...
 
 ## Classes:
 
-- **AutomaticRegistration**
+- **automatic_registration**
   Performs automatic image registration using ITKv4 registration framework.
 
-- **BresenhamLine**
+- **bresenham_line**
   Draws a Bresenham line.
 
 - **filters**
   Various image filters (threshold, median, ...).
 
-- **Flipper**
+- **flipper**
   Flips an image according to a given axis.
 
-- **Image**
+- **image**
   Applies a mask to an image, zeroing data outside the mask.
 
-- **ImageDiff**
+- **image_diff**
   Computes difference between two images.
 
-- **ImageExtruder**
+- **image_extruder**
   Extrudes voxels from an image that are inside a given mesh.
 
-- **ItkImageCaster**
+- **itk_image_caster**
   Casts from/to different image type.
 
-- **Labeling**
+- **labeling**
   Filters image using labels
 
-- **LineDrawer**
+- **line_drawer**
   Draws line.
 
-- **MatrixRegressor**
-  Computes an 'average' matrix from a matrix list. Uses PowellOptimizer.
+- **matrix_regressor**
+  Computes an 'average' matrix from a matrix list. Uses powell_optimizer.
 
-- **MinMaxPropagation**
+- **min_max_propagation**
   Flood fills an image as long as the neighboring voxels are greater than the smallest seed value.
 
-- **MIPMatchingRegistration**
+- **mip_matching_registration**
   Fast approximate registration, made of pure translation roughly matching two 3-dimensional images
 
-- **Resampler**
+- **resampler**
   Transforms and resamples an image.
 
-- **SpheroidExtraction**
+- **spheroid_extraction**
   Extracts spheres centers in an image with a given radius and above a given intensity value.
 
 

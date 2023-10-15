@@ -3,7 +3,7 @@ sight_add_target(Tuto10LaunchBasicConfig TYPE APP)
 add_dependencies(
     Tuto10LaunchBasicConfig
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     data
@@ -21,6 +21,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto10LaunchBasicConfig_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES Tuto10LaunchBasicConfig_AppCfg)
 
 sight_generate_profile(Tuto10LaunchBasicConfig)

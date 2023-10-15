@@ -1,6 +1,6 @@
 #version 150
 
-uniform sampler2D Image;
+uniform sampler2D image;
 uniform float scale;
 uniform float pixelSize;
 in vec2 oUv0;
@@ -25,12 +25,12 @@ void main()
 	samples[2] = vec2(1, 0);
 	samples[3] = vec2(0, 1);
 
-    mediump vec4 tc = texture(Image, oUv0);
+    vec4 tc = texture(image, oUv0);
     vec4 laplace = -4.0 * tc;
 
     // Sample the neighbor pixels
     for (int i = 0; i < 4; i++){
-       laplace += texture(Image, oUv0 + pixelSize * samples[i]);
+       laplace += texture(image, oUv0 + pixelSize * samples[i]);
     }
 
     fragColour = (0.5 + scale * laplace);

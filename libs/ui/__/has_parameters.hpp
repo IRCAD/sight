@@ -37,9 +37,9 @@ namespace sight::ui
 /**
  * @brief   This interface defines default slots to receive parameter values from signals.
  *
- * It is designed to be used in conjunction with sight::module::ui::editor::SParameters, to help receiving
+ * It is designed to be used in conjunction with sight::module::ui::editor::parameters, to help receiving
  * parameters. Instead of redefining all slots, thus you can simply inherit from this interface and override the virtual
- * function you need. Then connect the module::ui::editor::SParameters signal(s) with the slot(s) of this
+ * function you need. Then connect the module::ui::editor::parameters signal(s) with the slot(s) of this
  * interface in the* configuration.
 
  * @section Slots Slots

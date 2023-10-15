@@ -21,9 +21,9 @@
 
 #include "ArrayReaderTest.hpp"
 
-#include <data/Array.hpp>
+#include <data/array.hpp>
 
-#include <io/__/reader/ArrayReader.hpp>
+#include <io/__/reader/array_reader.hpp>
 
 #include <filesystem>
 #include <numeric>
@@ -37,7 +37,7 @@ namespace sight::io::ut
 
 void ArrayReaderTest::basicTest()
 {
-    auto arrayReader               = std::make_shared<reader::ArrayReader>();
+    auto arrayReader               = std::make_shared<reader::array_reader>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + arrayReader->extension());
     std::array<std::uint8_t, 16> arrayIn {};
     std::iota(arrayIn.begin(), arrayIn.end(), std::uint8_t(0));
@@ -45,9 +45,9 @@ void ArrayReaderTest::basicTest()
         std::ofstream out(filepath, std::ios::binary);
         out.write(reinterpret_cast<char*>(arrayIn.data()), 16);
     }
-    auto arrayOut = std::make_shared<data::Array>();
+    auto arrayOut = std::make_shared<data::array>();
     arrayOut->resize({16}, core::type::UINT8);
-    arrayReader->setObject(arrayOut);
+    arrayReader->set_object(arrayOut);
     arrayReader->set_file(filepath);
     CPPUNIT_ASSERT_NO_THROW(arrayReader->read());
     std::uint8_t i = 0;

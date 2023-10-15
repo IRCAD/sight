@@ -1,22 +1,22 @@
 <plugin id="sight::module::ui::dicom" library="true" >
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
-        <service>sight::module::ui::dicom::SFilterSelectionEditor</service>
-        <object>sight::data::Vector</object>
+        <service>sight::module::ui::dicom::filter_selection_editor</service>
+        <object>sight::data::vector</object>
         <desc>Filter Selection Editor</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
         <type>sight::ui::dialog_editor</type>
-        <service>sight::module::ui::dicom::SFilterSelectorDialog</service>
-        <object>sight::data::String</object>
+        <service>sight::module::ui::dicom::filter_selector_dialog</service>
+        <object>sight::data::string</object>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
-        <service>sight::module::ui::dicom::SSliceIndexDicomEditor</service>
-        <object>sight::data::DicomSeries</object>
+        <service>sight::module::ui::dicom::slice_index_dicom_editor</service>
+        <object>sight::data::dicom_series</object>
         <desc>Slice Index Dicom Editor</desc>
     </extension>
 

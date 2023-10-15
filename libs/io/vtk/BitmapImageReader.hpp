@@ -26,9 +26,9 @@
 
 #include <core/location/single_file.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <io/__/reader/GenericObjectReader.hpp>
+#include <io/__/reader/generic_object_reader.hpp>
 
 #include <vector>
 
@@ -46,16 +46,16 @@ namespace sight::io::vtk
 /**
  * @brief   Read a bitmap image.
  *
- * Read a Bitmap Image using the VTK library
+ * Read a Bitmap image using the VTK library
  */
-class BitmapImageReader : public reader::GenericObjectReader<data::Image>,
+class BitmapImageReader : public reader::generic_object_reader<data::image>,
                           public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         BitmapImageReader,
-        io::reader::GenericObjectReader<data::Image>,
+        io::reader::generic_object_reader<data::image>,
         io::reader::factory::make<BitmapImageReader>
     );
 

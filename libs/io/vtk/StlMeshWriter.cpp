@@ -22,7 +22,7 @@
 
 #include "io/vtk/StlMeshWriter.hpp"
 
-#include "io/vtk/helper/Mesh.hpp"
+#include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/helper/vtkLambdaCommand.hpp"
 
 #include <core/base.hpp>
@@ -64,11 +64,11 @@ void StlMeshWriter::write()
 
     SIGHT_ASSERT("Object Lock null.", objectLock);
 
-    const data::Mesh::csptr pMesh = getConcreteObject();
+    const data::mesh::csptr pMesh = getConcreteObject();
 
     vtkSmartPointer<vtkSTLWriter> writer = vtkSmartPointer<vtkSTLWriter>::New();
     vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::Mesh::toVTKMesh(pMesh, vtkMesh);
+    io::vtk::helper::mesh::toVTKMesh(pMesh, vtkMesh);
     writer->SetInputData(vtkMesh);
     writer->SetFileName(this->get_file().string().c_str());
     writer->SetFileTypeToBinary();

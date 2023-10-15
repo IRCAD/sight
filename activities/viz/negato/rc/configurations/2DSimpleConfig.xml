@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>2DSimpleConfig</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -6,9 +6,9 @@
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
     </parameters>
     <config>
-        <object uid="${objectID}" type="sight::data::ImageSeries" src="ref" />
-        <object uid="tf" type="sight::data::TransferFunction" />
-        <service uid="mainview" type="sight::module::ui::SView">
+        <object uid="${objectID}" type="sight::data::image_series" src="ref" />
+        <object uid="tf" type="sight::data::transfer_function" />
+        <service uid="mainview" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
@@ -24,7 +24,7 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="sight::viz::scene3d::SRender">
+        <service uid="gs" type="sight::viz::scene3d::render">
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -36,13 +36,13 @@
             </scene>
         </service>
 
-        <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true">
+        <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
             <inout key="image" uid="${objectID}" />
             <inout key="tf" uid="tf" />
             <config priority="0" orientation="${orientation}" />
         </service>
 
-        <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true">
+        <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
             <in key="image" uid="${objectID}" />
             <in key="tf" uid="tf" />
             <config autoresetcamera="true" sliceIndex="${orientation}" />
@@ -54,7 +54,7 @@
             <inout key="target" uid="${objectID}" />
         </service>
 
-        <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
+        <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
             <inout key="image" uid="${objectID}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>

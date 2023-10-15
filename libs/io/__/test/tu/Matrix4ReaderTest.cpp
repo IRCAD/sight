@@ -21,9 +21,9 @@
 
 #include "Matrix4ReaderTest.hpp"
 
-#include <data/Matrix4.hpp>
+#include <data/matrix4.hpp>
 
-#include <io/__/reader/Matrix4Reader.hpp>
+#include <io/__/reader/matrix4_reader.hpp>
 
 #include <filesystem>
 
@@ -42,15 +42,15 @@ void Matrix4ReaderTest::basicTest()
 20 21 22 23
 30 31 32 33
 )";
-    auto matrixReader                      = std::make_shared<reader::Matrix4Reader>();
+    auto matrixReader                      = std::make_shared<reader::matrix4_reader>();
     std::filesystem::path filepath         = std::filesystem::temp_directory_path()
                                              / ("test" + matrixReader->extension());
     {
         std::ofstream out(filepath);
         out << fileContent;
     }
-    auto matrixOut = std::make_shared<data::Matrix4>();
-    matrixReader->setObject(matrixOut);
+    auto matrixOut = std::make_shared<data::matrix4>();
+    matrixReader->set_object(matrixOut);
     matrixReader->set_file(filepath);
     CPPUNIT_ASSERT_NO_THROW(matrixReader->read());
     for(std::uint8_t i = 0 ; i < 4 ; i++)

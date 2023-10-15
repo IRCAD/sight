@@ -25,25 +25,25 @@
 #include <core/log/logger.hpp>
 #include <core/memory/buffer_manager.hpp>
 
-#include <data/Color.hpp>
-#include <data/DicomSeries.hpp>
+#include <data/color.hpp>
+#include <data/dicom_series.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/Material.hpp>
-#include <data/Mesh.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/PointList.hpp>
-#include <data/Reconstruction.hpp>
-#include <data/String.hpp>
-#include <data/Vector.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
+#include <data/material.hpp>
+#include <data/mesh.hpp>
+#include <data/model_series.hpp>
+#include <data/point_list.hpp>
+#include <data/reconstruction.hpp>
+#include <data/string.hpp>
+#include <data/vector.hpp>
 
-#include <io/dicom/reader/SeriesSet.hpp>
+#include <io/dicom/reader/series_set.hpp>
 
 #include <utest/Filter.hpp>
 
-#include <utestData/Data.hpp>
-#include <utestData/DicomReaderTest.hpp>
+#include <utest_data/Data.hpp>
+#include <utest_data/DicomReaderTest.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -95,17 +95,17 @@ std::string getValue(
 /**
  * @brief Verify tag values according to JSON files generated from DICOM dump
  * @param filename DICOM folder name
- * @param series_set SeriesSet object containing DICOM series
+ * @param series_set series_set object containing DICOM series
  */
-void verifyTagValues(const std::string& filename, const data::SeriesSet::sptr& series_set)
+void verifyTagValues(const std::string& filename, const data::series_set::sptr& series_set)
 {
     const double delta                    = 0.001;
-    const std::filesystem::path dicomPath = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB";
+    const std::filesystem::path dicomPath = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB";
     const std::filesystem::path metaPath  = dicomPath / "META";
 
     for(const auto& object : *series_set)
     {
-        auto series = std::dynamic_pointer_cast<data::ImageSeries>(object);
+        auto series = std::dynamic_pointer_cast<data::image_series>(object);
 
         // Parse META File
         const std::string metaName           = filename + "/" + series->getSeriesInstanceUID() + ".json";
@@ -411,27 +411,27 @@ void SeriesSetReaderTest::readCTSeriesSetIssue01Test()
 
 void SeriesSetReaderTest::readJMSSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
     // cspell: ignore Genou
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou";
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/JMSGenou";
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
-    data::ImageSeries::sptr series = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
+    data::image_series::sptr series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
 
     // Check trimmed values
-    CPPUNIT_ASSERT(utestData::DicomReaderTest::checkSeriesJMSGenouTrimmed(series));
+    CPPUNIT_ASSERT(utest_data::DicomReaderTest::checkSeriesJMSGenouTrimmed(series));
 
     // Read image in lazy mode
     const auto dumpLock = series->dump_lock();
@@ -441,18 +441,18 @@ void SeriesSetReaderTest::readJMSSeries()
 
 void SeriesSetReaderTest::readCTSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "01-CT-DICOM_LIVER";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -465,26 +465,26 @@ void SeriesSetReaderTest::readCTSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Read image buffer
-    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), series->numDimensions());
 
     // Check size
-    const data::Image::Size size = series->size();
+    const data::image::Size size = series->size();
     CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[0]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[1]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(129), size[2]);
 
     // Check spacing
-    const data::Image::Spacing spacing = series->getSpacing();
+    const data::image::Spacing spacing = series->getSpacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.57), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.57), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.6), spacing[2], delta);
 
     // Check origin
-    const data::Image::Origin origin = series->getOrigin();
+    const data::image::Origin origin = series->getOrigin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[2], delta);
@@ -506,18 +506,18 @@ void SeriesSetReaderTest::readCTSeries()
 
 void SeriesSetReaderTest::readMRSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -530,7 +530,7 @@ void SeriesSetReaderTest::readMRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Read image buffer
-    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
@@ -538,19 +538,19 @@ void SeriesSetReaderTest::readMRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), series->numDimensions());
 
     // Check size
-    const data::Image::Size size = series->size();
+    const data::image::Size size = series->size();
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[0]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1024), size[1]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1024), size[2]);
 
     // Check spacing
-    const data::Image::Spacing spacing = series->getSpacing();
+    const data::image::Spacing spacing = series->getSpacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(6), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), spacing[2], delta);
 
     // Check origin
-    const data::Image::Origin origin = series->getOrigin();
+    const data::image::Origin origin = series->getOrigin();
     SIGHT_WARN("ORIGIN : " << origin[0] << " " << origin[1] << " " << origin[2]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-112.828), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-180.058), origin[1], delta);
@@ -573,18 +573,18 @@ void SeriesSetReaderTest::readMRSeries()
 
 void SeriesSetReaderTest::readOTSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "42-OT-BARRE-MONO2-8-colon";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -597,7 +597,7 @@ void SeriesSetReaderTest::readOTSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Read image buffer
-    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization
@@ -605,19 +605,19 @@ void SeriesSetReaderTest::readOTSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), series->numDimensions());
 
     // Check size
-    data::Image::Size size = series->size();
+    data::image::Size size = series->size();
     CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[0]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(512), size[1]);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), size[2]);
 
     // Check spacing
-    data::Image::Spacing spacing = series->getSpacing();
+    data::image::Spacing spacing = series->getSpacing();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1), spacing[2], delta);
 
     // Check origin
-    data::Image::Origin origin = series->getOrigin();
+    data::image::Origin origin = series->getOrigin();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[2], delta);
@@ -639,18 +639,18 @@ void SeriesSetReaderTest::readOTSeries()
 
 void SeriesSetReaderTest::readSEGSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "71-CT-DICOM_SEG";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -662,24 +662,24 @@ void SeriesSetReaderTest::readSEGSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
     //Retrieve ImageSeries
-    data::ModelSeries::sptr series = std::dynamic_pointer_cast<data::ModelSeries>((*series_set)[1]);
+    data::model_series::sptr series = std::dynamic_pointer_cast<data::model_series>((*series_set)[1]);
     CPPUNIT_ASSERT(series);
 
-    data::ModelSeries::ReconstructionVectorType reconstructionDB = series->getReconstructionDB();
+    data::model_series::ReconstructionVectorType reconstructionDB = series->getReconstructionDB();
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), reconstructionDB.size());
 
     // Check reconstruction
-    data::Reconstruction::sptr reconstruction = reconstructionDB[0];
+    data::reconstruction::sptr reconstruction = reconstructionDB[0];
     CPPUNIT_ASSERT_EQUAL(std::string("Liver"), reconstruction->getOrganName());
 
     // Check mesh
-    data::Mesh::sptr mesh = reconstruction->getMesh();
-    CPPUNIT_ASSERT_EQUAL(data::Mesh::size_t(2498), mesh->numPoints());
-    CPPUNIT_ASSERT_EQUAL(data::Mesh::size_t(5000), mesh->numCells());
+    data::mesh::sptr mesh = reconstruction->getMesh();
+    CPPUNIT_ASSERT_EQUAL(data::mesh::size_t(2498), mesh->numPoints());
+    CPPUNIT_ASSERT_EQUAL(data::mesh::size_t(5000), mesh->numCells());
 
     // Check material
-    data::Material::sptr material = reconstruction->getMaterial();
-    data::Color::sptr color       = material->diffuse();
+    data::material::sptr material = reconstruction->getMaterial();
+    data::color::sptr color       = material->diffuse();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.8), color->red(), delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), color->green(), delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.2), color->blue(), delta);
@@ -690,18 +690,18 @@ void SeriesSetReaderTest::readSEGSeries()
 
 void SeriesSetReaderTest::readSFSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "71-CT-DICOM_SF";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -713,14 +713,14 @@ void SeriesSetReaderTest::readSFSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve ImageSeries
-    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Retrieve landmarks
-    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*series);
+    data::point_list::sptr pointList = data::helper::MedicalImage::getLandmarks(*series);
 
     // Verify first landmark
-    const data::Point::sptr& pointA = pointList->getPoints()[0];
+    const data::point::sptr& pointA = pointList->getPoints()[0];
     const std::string labelA        = pointA->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
@@ -728,7 +728,7 @@ void SeriesSetReaderTest::readSFSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), pointA->getCoord()[2], delta);
 
     // Verify second landmark
-    const data::Point::sptr& pointB = pointList->getPoints()[1];
+    const data::point::sptr& pointB = pointList->getPoints()[1];
     const std::string labelB        = pointB->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
@@ -740,18 +740,18 @@ void SeriesSetReaderTest::readSFSeries()
 
 void SeriesSetReaderTest::readSRSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "71-CT-DICOM_SR";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -763,15 +763,15 @@ void SeriesSetReaderTest::readSRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve ImageSeries
-    auto series = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
+    auto series = std::dynamic_pointer_cast<data::image_series>(series_set->front());
     CPPUNIT_ASSERT(series);
     const auto dumpLock = series->dump_lock();
 
     // Retrieve landmarks
-    data::PointList::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*series);
+    data::point_list::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*series);
 
     // Verify first landmark
-    const data::Point::sptr& pointA = landmarkPointList->getPoints()[0];
+    const data::point::sptr& pointA = landmarkPointList->getPoints()[0];
     const std::string labelA        = pointA->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
@@ -779,7 +779,7 @@ void SeriesSetReaderTest::readSRSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), pointA->getCoord()[2], delta);
 
     // Verify second landmark
-    const data::Point::sptr& pointB = landmarkPointList->getPoints()[1];
+    const data::point::sptr& pointB = landmarkPointList->getPoints()[1];
     const std::string labelB        = pointB->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
@@ -787,15 +787,15 @@ void SeriesSetReaderTest::readSRSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointB->getCoord()[2], delta);
 
     // Retrieve distances
-    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*series);
+    data::vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*series);
 
     // Verify first distance
-    auto distancePointList          = std::dynamic_pointer_cast<data::PointList>((*distanceVector)[0]);
-    const data::Point::sptr& pointC = distancePointList->getPoints()[0];
+    auto distancePointList          = std::dynamic_pointer_cast<data::point_list>((*distanceVector)[0]);
+    const data::point::sptr& pointC = distancePointList->getPoints()[0];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(38.34), pointC->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(116.67), pointC->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointC->getCoord()[2], delta);
-    const data::Point::sptr& pointD = distancePointList->getPoints()[1];
+    const data::point::sptr& pointD = distancePointList->getPoints()[1];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), pointD->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), pointD->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointD->getCoord()[2], delta);
@@ -805,18 +805,18 @@ void SeriesSetReaderTest::readSRSeries()
 
 void SeriesSetReaderTest::read3DSRSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "71-CT-DICOM_3DSR";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -828,13 +828,13 @@ void SeriesSetReaderTest::read3DSRSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve ImageSeries
-    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Retrieve landmarks
-    data::PointList::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*series);
+    data::point_list::sptr landmarkPointList = data::helper::MedicalImage::getLandmarks(*series);
     // Verify first landmark
-    const data::Point::sptr& pointA = landmarkPointList->getPoints()[0];
+    const data::point::sptr& pointA = landmarkPointList->getPoints()[0];
     const std::string labelA        = pointA->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), labelA);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), pointA->getCoord()[0], delta);
@@ -842,7 +842,7 @@ void SeriesSetReaderTest::read3DSRSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), pointA->getCoord()[2], delta);
 
     // Verify second landmark
-    const data::Point::sptr& pointB = landmarkPointList->getPoints()[1];
+    const data::point::sptr& pointB = landmarkPointList->getPoints()[1];
     const std::string labelB        = pointB->getLabel();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), labelB);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointB->getCoord()[0], delta);
@@ -850,15 +850,15 @@ void SeriesSetReaderTest::read3DSRSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointB->getCoord()[2], delta);
 
     // Retrieve distances
-    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*series);
+    data::vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*series);
 
     // Verify first distance
-    auto distancePointList          = std::dynamic_pointer_cast<data::PointList>((*distanceVector)[0]);
-    const data::Point::sptr& pointC = distancePointList->getPoints()[0];
+    auto distancePointList          = std::dynamic_pointer_cast<data::point_list>((*distanceVector)[0]);
+    const data::point::sptr& pointC = distancePointList->getPoints()[0];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), pointC->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(99.30), pointC->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(87.26), pointC->getCoord()[2], delta);
-    const data::Point::sptr& pointD = distancePointList->getPoints()[1];
+    const data::point::sptr& pointD = distancePointList->getPoints()[1];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), pointD->getCoord()[0], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), pointD->getCoord()[1], delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), pointD->getCoord()[2], delta);
@@ -868,10 +868,10 @@ void SeriesSetReaderTest::read3DSRSeries()
 
 void SeriesSetReaderTest::readDisabledSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
@@ -881,11 +881,11 @@ void SeriesSetReaderTest::readDisabledSeries()
     std::vector<std::string> supportedSOPClassContainer;
     supportedSOPClassContainer.emplace_back("1.2.840.10008.5.1.4.1.1.2"); // CT Image Storage
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
-    reader->setSupportedSOPClassContainer(supportedSOPClassContainer);
+    reader->setsupportedSOPClassContainer(supportedSOPClassContainer);
 
     // Read DICOM
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -899,18 +899,18 @@ void SeriesSetReaderTest::readDisabledSeries()
 
 void SeriesSetReaderTest::readMRSeriesWithDicomDir()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "82-MR-SAGITTAL-KNEE-DICOMDIR";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
     reader->setDicomdirActivated(true);
@@ -927,18 +927,18 @@ void SeriesSetReaderTest::readMRSeriesWithDicomDir()
 
 void SeriesSetReaderTest::readMultipleRescaleSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "83-CT-MultipleRescale";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -947,7 +947,7 @@ void SeriesSetReaderTest::readMultipleRescaleSeries()
 
     // Retrieve ImageSeries
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
-    auto series         = std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
+    auto series         = std::dynamic_pointer_cast<data::image_series>(series_set->front());
     const auto dumpLock = series->dump_lock();
 
     // Get internal buffer
@@ -972,18 +972,18 @@ void SeriesSetReaderTest::readMultipleRescaleSeries()
 
 void SeriesSetReaderTest::readCTWithSurviewSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "84-CT-Surview";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -999,18 +999,18 @@ void SeriesSetReaderTest::readCTWithSurviewSeries()
 
 void SeriesSetReaderTest::readMRWithTemporalPositionSeries()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "85-MR-TemporalPosition";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 
@@ -1026,18 +1026,18 @@ void SeriesSetReaderTest::readMRWithTemporalPositionSeries()
 
 void SeriesSetReaderTest::readCTSeriesSetIssue01()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "86-CT-Skull";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     reader->setDicomFilterType("sight::filter::dicom::custom::DefaultDicomFilter");
 

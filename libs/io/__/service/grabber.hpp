@@ -26,9 +26,9 @@
 
 #include <core/jobs/base.hpp>
 
-#include <data/Camera.hpp>
-#include <data/FrameTL.hpp>
-#include <data/Point.hpp>
+#include <data/camera.hpp>
+#include <data/frame_tl.hpp>
+#include <data/point.hpp>
 
 #include <service/base.hpp>
 #include <service/notifier.hpp>
@@ -65,8 +65,8 @@ namespace sight::io::service
  * - \b setParameters(parameters_t, std::string): Sets a parameters with value (variant) and key.
  * - \b requestSettings(): Requests the grabber internal settings.
  * - \b optimize(): Calls grabber-specific optimization function (e.g. hardware related).
- * - \b addROICenter(sight::data::Point::sptr): Adds a new region fo interest center.
- * - \b removeROICenter(sight::data::Point::sptr): Removes a region of interest via its center.
+ * - \b addROICenter(sight::data::point::sptr): Adds a new region fo interest center.
+ * - \b removeROICenter(sight::data::point::sptr): Removes a region of interest via its center.
  */
 class IO_CLASS_API grabber : public sight::service::base,
                              public sight::service::notifier
@@ -191,10 +191,10 @@ public:
     IO_API virtual void optimize();
 
     /// SLOT: Adds a region of interest center.
-    IO_API virtual void addROICenter(sight::data::Point::sptr p);
+    IO_API virtual void addROICenter(sight::data::point::sptr p);
 
     /// SLOT: Removes a region of interest center.
-    IO_API virtual void removeROICenter(sight::data::Point::sptr p);
+    IO_API virtual void removeROICenter(sight::data::point::sptr p);
 
     /// SLOT: Sets a parameter value with its key.
     IO_API virtual void setParameter(ui::parameter_t value, std::string key);
@@ -208,7 +208,7 @@ protected:
      * @brief Helper function intended to be used in derived services. Clears the supplied timeline, emits the cleared
      * signal, pushes a black frame and emits the object pushed signal.
      */
-    IO_API static void clearTimeline(data::FrameTL& tl);
+    IO_API static void clearTimeline(data::frame_tl& tl);
 
     /**
      * @brief sets the current start state of the grabber.
@@ -216,7 +216,7 @@ protected:
     IO_API void setStartState(bool state);
     bool started() const;
 
-    data::ptr<data::FrameTL, data::Access::inout> m_frame {this, s_FRAMETL_INOUT};
+    data::ptr<data::frame_tl, data::Access::inout> m_frame {this, s_FRAMETL_INOUT};
 
 private:
 

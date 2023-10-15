@@ -36,7 +36,7 @@
 namespace sight::data
 {
 
-class DicomSeries;
+class dicom_series;
 
 } // namespace sight::data
 
@@ -70,7 +70,7 @@ class IO_DICOM_CLASS_API DicomSeries
 public:
 
     typedef std::vector<std::filesystem::path> FilenameContainerType;
-    typedef std::vector<SPTR(data::DicomSeries)> DicomSeriesContainerType;
+    typedef std::vector<SPTR(data::dicom_series)> DicomSeriesContainerType;
 
     /// Constructor
     IO_DICOM_API DicomSeries() noexcept = default;

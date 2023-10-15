@@ -151,26 +151,26 @@ void grabber::optimize()
 
 //------------------------------------------------------------------------------
 
-void grabber::addROICenter(sight::data::Point::sptr /*unused*/)
+void grabber::addROICenter(sight::data::point::sptr /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void grabber::removeROICenter(sight::data::Point::sptr /*unused*/)
+void grabber::removeROICenter(sight::data::point::sptr /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void grabber::clearTimeline(data::FrameTL& _tl)
+void grabber::clearTimeline(data::frame_tl& _tl)
 {
     if(_tl.isAllocated())
     {
         // Clear the timeline: send a black frame
         const core::hires_clock::type timestamp = _tl.getNewerTimestamp() + 1;
 
-        SPTR(data::FrameTL::BufferType) buffer = _tl.createBuffer(timestamp);
+        SPTR(data::frame_tl::BufferType) buffer = _tl.createBuffer(timestamp);
         auto* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
         std::memset(destBuffer, 0, _tl.getWidth() * _tl.getHeight() * _tl.numComponents());
@@ -179,8 +179,8 @@ void grabber::clearTimeline(data::FrameTL& _tl)
         _tl.clearTimeline();
         _tl.pushObject(buffer);
 
-        auto sigTL = _tl.signal<data::TimeLine::ObjectPushedSignalType>(
-            data::TimeLine::OBJECT_PUSHED_SIG
+        auto sigTL = _tl.signal<data::timeline::signals::pushed_t>(
+            data::timeline::signals::PUSHED
         );
         sigTL->async_emit(timestamp);
     }

@@ -32,7 +32,7 @@
 #include <core/tools/id.hpp>
 
 #include <service/macros.hpp>
-#include <service/op/Get.hpp>
+#include <service/op.hpp>
 
 namespace sight::ui
 {
@@ -53,7 +53,7 @@ void toolbar::initialize()
 {
     m_registry = ui::detail::registry::ToolBar::make(this->get_id());
 
-    const auto& config = this->getConfiguration();
+    const auto& config = this->get_config();
 
     // find ViewRegistryManager configuration
     if(const auto registryConfig = config.get_child_optional("registry"); registryConfig.has_value())

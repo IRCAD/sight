@@ -26,7 +26,7 @@
 #include <core/tools/compare.hpp>
 
 #include <data/container.hxx>
-#include <data/Integer.hpp>
+#include <data/integer.hpp>
 
 #include <array>
 #include <deque>
@@ -224,12 +224,12 @@ void containerTest::array_test()
     );
 
     testContainer(
-        std::array<Integer::sptr, 3>(
-            {std::make_shared<Integer>(1), std::make_shared<Integer>(2), std::make_shared<Integer>(3)
+        std::array<integer::sptr, 3>(
+            {std::make_shared<integer>(1), std::make_shared<integer>(2), std::make_shared<integer>(3)
             }),
-        std::array<Integer::sptr, 3>(
-            {std::make_shared<Integer>(4), std::make_shared<Integer>(5),
-             std::make_shared<Integer>(6)
+        std::array<integer::sptr, 3>(
+            {std::make_shared<integer>(4), std::make_shared<integer>(5),
+             std::make_shared<integer>(6)
             })
     );
 
@@ -258,16 +258,16 @@ void containerTest::generic_test()
         {4, 5, 6
         });
 
-    testDispatcher<Integer::sptr>(
+    testDispatcher<integer::sptr>(
         {
-            std::make_shared<Integer>(1),
-            std::make_shared<Integer>(2),
-            std::make_shared<Integer>(3)
+            std::make_shared<integer>(1),
+            std::make_shared<integer>(2),
+            std::make_shared<integer>(3)
         },
         {
-            std::make_shared<Integer>(4),
-            std::make_shared<Integer>(5),
-            std::make_shared<Integer>(6)
+            std::make_shared<integer>(4),
+            std::make_shared<integer>(5),
+            std::make_shared<integer>(6)
         });
 
     testDispatcher<std::shared_ptr<int> >(
@@ -289,16 +289,16 @@ void containerTest::map_test()
 {
     mapTestDispatcher<int, int>({{1, 1}, {2, 2}, {3, 3}}, {{4, 4}, {5, 5}, {6, 6}});
 
-    mapTestDispatcher<int, Integer::sptr>(
+    mapTestDispatcher<int, integer::sptr>(
         {
-            {1, std::make_shared<Integer>(1)},
-            {2, std::make_shared<Integer>(2)},
-            {3, std::make_shared<Integer>(3)}
+            {1, std::make_shared<integer>(1)},
+            {2, std::make_shared<integer>(2)},
+            {3, std::make_shared<integer>(3)}
         },
         {
-            {4, std::make_shared<Integer>(4)},
-            {5, std::make_shared<Integer>(5)},
-            {6, std::make_shared<Integer>(6)}
+            {4, std::make_shared<integer>(4)},
+            {5, std::make_shared<integer>(5)},
+            {6, std::make_shared<integer>(6)}
         });
 
     mapTestDispatcher<int, std::shared_ptr<int> >(

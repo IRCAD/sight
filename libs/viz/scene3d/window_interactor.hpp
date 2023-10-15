@@ -85,7 +85,7 @@ public:
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' )
      *
-     * @tparam T Factory product type
+     * @tparam T factory product type
      */
     template<typename T>
     class Registry
@@ -101,7 +101,7 @@ public:
     /**
      * @brief Class used to register an offscreen window interactor factory in the factory registry.
      *
-     * @tparam T Factory product type
+     * @tparam T factory product type
      */
     template<typename T>
     class OffscreenMgrRegistry
@@ -159,7 +159,7 @@ public:
         const std::string& id
     ) = 0;
 
-    /// Connects widget and SRender signals and slots.
+    /// Connects widget and render signals and slots.
     VIZ_SCENE3D_API virtual void connectToContainer() = 0;
 
     /// Deletes interactor and manage correctly the window (removing layout).

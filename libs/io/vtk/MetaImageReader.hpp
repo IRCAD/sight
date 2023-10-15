@@ -26,9 +26,9 @@
 
 #include <core/location/single_file.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <io/__/reader/GenericObjectReader.hpp>
+#include <io/__/reader/generic_object_reader.hpp>
 
 #include <filesystem>
 
@@ -48,14 +48,14 @@ namespace sight::io::vtk
  *
  * Read a MetaImage using the VTK lib
  */
-class IO_VTK_CLASS_API MetaImageReader : public reader::GenericObjectReader<data::Image>,
+class IO_VTK_CLASS_API MetaImageReader : public reader::generic_object_reader<data::image>,
                                          public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         MetaImageReader,
-        io::reader::GenericObjectReader<data::Image>,
+        io::reader::generic_object_reader<data::image>,
         io::reader::factory::make<MetaImageReader>
     );
 

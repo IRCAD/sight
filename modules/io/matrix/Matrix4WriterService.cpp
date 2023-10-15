@@ -28,9 +28,9 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <data/Matrix4.hpp>
+#include <data/matrix4.hpp>
 
-#include <io/__/writer/Matrix4Writer.hpp>
+#include <io/__/writer/matrix4_writer.hpp>
 
 #include <service/macros.hpp>
 
@@ -114,19 +114,19 @@ void Matrix4WriterService::updating()
     {
         // Retrieve object
         const auto locked = m_data.lock();
-        const auto matrix = std::dynamic_pointer_cast<const data::Matrix4>(locked.get_shared());
+        const auto matrix = std::dynamic_pointer_cast<const data::matrix4>(locked.get_shared());
 
         SIGHT_ASSERT(
             "The object is not a '"
-            + data::Matrix4::classname()
+            + data::matrix4::classname()
             + "' or '"
             + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             matrix
         );
 
-        const auto writer = std::make_shared<sight::io::writer::Matrix4Writer>();
-        writer->setObject(matrix);
+        const auto writer = std::make_shared<sight::io::writer::matrix4_writer>();
+        writer->set_object(matrix);
         writer->set_file(this->get_file());
         writer->write();
         m_writeFailed = false;

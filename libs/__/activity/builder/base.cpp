@@ -22,19 +22,19 @@
 
 #include "activity/builder/base.hpp"
 
-#include <data/Vector.hpp>
+#include <data/vector.hpp>
 
 namespace sight::activity::builder
 {
 
 //------------------------------------------------------------------------------
 
-data::Vector::sptr base::getType(const data::Vector::csptr& currentSelection, const std::string& type) const
+data::vector::sptr base::getType(const data::vector::csptr& currentSelection, const std::string& type) const
 {
     SIGHT_ASSERT("currentSelection not instanced", currentSelection);
 
-    data::Vector::sptr subSelection = std::make_shared<data::Vector>();
-    for(const data::Vector::value_type& obj : *currentSelection)
+    data::vector::sptr subSelection = std::make_shared<data::vector>();
+    for(const data::vector::value_type& obj : *currentSelection)
     {
         SIGHT_ASSERT("Object not instanced in selection", obj);
         if(obj->is_a(type))

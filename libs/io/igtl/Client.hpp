@@ -29,7 +29,7 @@
 
 #include <core/exception.hpp>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 #include <igtlClientSocket.h>
 #include <igtlMessageHeader.h>

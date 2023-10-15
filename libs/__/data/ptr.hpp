@@ -60,12 +60,12 @@ public:
     DATA_API virtual ~base_ptr();
 
     [[nodiscard]] std::string_view key() const;
-    [[nodiscard]] bool autoConnect() const;
+    [[nodiscard]] bool auto_connect() const;
     [[nodiscard]] bool optional() const;
     [[nodiscard]] Access access() const;
 
     // Generic getter
-    DATA_API virtual sight::data::Object::csptr get() = 0;
+    DATA_API virtual sight::data::object::csptr get() = 0;
 
 protected:
 
@@ -74,14 +74,14 @@ protected:
 
     /// Internal setter of the pointer
     DATA_API virtual void set(
-        const sight::data::Object::sptr& _obj,
-        std::optional<bool> autoConnect,
+        const sight::data::object::sptr& _obj,
+        std::optional<bool> auto_connect,
         std::optional<bool> optional,
         std::optional<std::size_t> index = std::nullopt,
         bool signal                      = false
     )                                    = 0;
 
-    DATA_API virtual void setDeferredId(const std::string& _id, std::optional<std::size_t> index = std::nullopt) = 0;
+    DATA_API virtual void set_deferred_id(const std::string& _id, std::optional<std::size_t> index = std::nullopt) = 0;
 
     has_data* m_holder {nullptr};
     std::string_view m_key;
@@ -99,7 +99,7 @@ inline std::string_view base_ptr::key() const
 
 //------------------------------------------------------------------------------
 
-inline bool base_ptr::autoConnect() const
+inline bool base_ptr::auto_connect() const
 {
     return m_autoConnect;
 }
@@ -177,15 +177,15 @@ private:
 
     //------------------------------------------------------------------------------
 
-    sight::data::Object::csptr get() final
+    sight::data::object::csptr get() final
     {
-        return std::dynamic_pointer_cast<const data::Object>(base_ptr_t::get_shared());
+        return std::dynamic_pointer_cast<const data::object>(base_ptr_t::get_shared());
     }
 
     /// Assign the content of the pointer
     void set(
-        const sight::data::Object::sptr& _obj,
-        std::optional<bool> autoConnect,
+        const sight::data::object::sptr& _obj,
+        std::optional<bool> auto_connect,
         std::optional<bool> optional,
         std::optional<std::size_t> /*index*/ = std::nullopt,
         bool signal                          = false
@@ -198,7 +198,7 @@ private:
                 const auto ptr = this->lock();
                 if(ptr)
                 {
-                    m_holder->notifyUnregisterOut(ptr.get_shared(), m_deferredId);
+                    m_holder->notify_unregister_out(ptr.get_shared(), m_deferredId);
                 }
             }
         }
@@ -218,9 +218,9 @@ private:
             );
             base_ptr_t::operator=(typedObj);
 
-            if(autoConnect.has_value())
+            if(auto_connect.has_value())
             {
-                m_autoConnect = autoConnect.value();
+                m_autoConnect = auto_connect.value();
             }
 
             if(optional.has_value())
@@ -232,7 +232,7 @@ private:
             {
                 if(signal)
                 {
-                    m_holder->notifyRegisterOut(_obj, m_deferredId);
+                    m_holder->notify_register_out(_obj, m_deferredId);
                 }
             }
         }
@@ -240,7 +240,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    void setDeferredId(const std::string& _id, std::optional<std::size_t> = std::nullopt) final
+    void set_deferred_id(const std::string& _id, std::optional<std::size_t> = std::nullopt) final
     {
         m_deferredId = _id;
     }
@@ -346,15 +346,15 @@ private:
 
     //------------------------------------------------------------------------------
 
-    sight::data::Object::csptr get() final
+    sight::data::object::csptr get() final
     {
         return nullptr;
     }
 
     /// Pointer assignment
     void set(
-        const sight::data::Object::sptr& _obj,
-        std::optional<bool> autoConnect,
+        const sight::data::object::sptr& _obj,
+        std::optional<bool> auto_connect,
         std::optional<bool> optional,
         std::optional<std::size_t> _index = std::nullopt,
         bool signal                       = false
@@ -379,16 +379,16 @@ private:
 
             if(m_ptrs.find(index) == m_ptrs.end())
             {
-                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, *autoConnect, *optional, index)));
+                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, *auto_connect, *optional, index)));
             }
 
-            m_ptrs[index]->set(_obj, autoConnect, optional, signal);
+            m_ptrs[index]->set(_obj, auto_connect, optional, signal);
         }
     }
 
     //------------------------------------------------------------------------------
 
-    void setDeferredId(const std::string& _id, std::optional<std::size_t> index = std::nullopt) final
+    void set_deferred_id(const std::string& _id, std::optional<std::size_t> index = std::nullopt) final
     {
         if(m_ptrs.find(*index) == m_ptrs.end())
         {

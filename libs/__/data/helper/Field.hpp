@@ -24,20 +24,20 @@
 
 #include "data/config.hpp"
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 namespace sight::data::helper
 {
 
 /**
- * @brief   Defines a helper to modify field on a data::Object and create a message notifying this modification.
+ * @brief   Defines a helper to modify field on a data::object and create a message notifying this modification.
  */
 class DATA_CLASS_API Field
 {
 public:
 
     /// Constructor. Initialize parameters.
-    DATA_API Field(data::Object::sptr object);
+    DATA_API Field(data::object::sptr object);
 
     /// Destructor. Call notify if changes has been made.
     DATA_API ~Field();
@@ -50,45 +50,45 @@ public:
      * @return pointer to corresponding field.
      */
     template<typename DATA_TYPE>
-    SPTR(DATA_TYPE) setDefaultField(const data::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue);
+    SPTR(DATA_TYPE) setDefaultField(const data::object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue);
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
      * * @deprecated use addOrSwap() instead
      */
-    DATA_API void setField(const data::Object::FieldNameType& name, data::Object::sptr obj);
+    DATA_API void setField(const data::object::FieldNameType& name, data::object::sptr obj);
 
     /**
      * @brief Replace the field map content.
      */
-    DATA_API void setFields(const data::Object::FieldMapType& newFields);
+    DATA_API void setFields(const data::object::FieldMapType& newFields);
 
     /**
      * @brief Removes field with specified name.
      * @deprecated use remove() instead
      */
-    DATA_API void removeField(const data::Object::FieldNameType& name);
+    DATA_API void removeField(const data::object::FieldNameType& name);
 
     /**
      * @brief Add a field in the object.
      * @param[in] _name key of the field.
      * @param[in] _obj object to add as a field
      *
-     * @throw data::Exception if the field already exists
+     * @throw data::exception if the field already exists
      * Prepare the message to announce the modification.
      */
-    DATA_API void add(const data::Object::FieldNameType& _name, data::Object::sptr _obj);
+    DATA_API void add(const data::object::FieldNameType& _name, data::object::sptr _obj);
 
     /**
      * @brief Replace a field in the object.
      * @param[in] _name key of the field.
      * @param[in] _obj object to add  as a field
      *
-     * @throw data::Exception if the field does not exist.
+     * @throw data::exception if the field does not exist.
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void swap(const data::Object::FieldNameType& _name, data::Object::sptr _obj);
+    DATA_API void swap(const data::object::FieldNameType& _name, data::object::sptr _obj);
 
     /**
      * @brief Add or replace a field in the object.
@@ -97,17 +97,17 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void addOrSwap(const data::Object::FieldNameType& _name, data::Object::sptr _obj);
+    DATA_API void addOrSwap(const data::object::FieldNameType& _name, data::object::sptr _obj);
 
     /**
      * @brief Remove a field from the object.
      * @param[in] _name  key of the field.
      *
-     * @throw data::Exception if the field does not exist.
+     * @throw data::exception if the field does not exist.
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void remove(const data::Object::FieldNameType& _name);
+    DATA_API void remove(const data::object::FieldNameType& _name);
 
     /**
      * @brief Clear all fields in the object.
@@ -122,29 +122,29 @@ public:
 protected:
 
     DATA_API void buildMessage(
-        const data::Object::FieldMapType& oldFields,
-        const data::Object::FieldMapType& newFields
+        const data::object::FieldMapType& oldFields,
+        const data::object::FieldMapType& newFields
     );
 
     /// Map of added objects, send on notify
-    data::Object::FieldsContainerType m_addedFields;
+    data::object::FieldsContainerType m_addedFields;
     /// Map of new changed objects, send on notify
-    data::Object::FieldsContainerType m_newChangedFields;
+    data::object::FieldsContainerType m_newChangedFields;
     /// Map of old changed objects, send on notify
-    data::Object::FieldsContainerType m_oldChangedFields;
+    data::object::FieldsContainerType m_oldChangedFields;
     /// Map of removed objects, send on notify
-    data::Object::FieldsContainerType m_removedFields;
+    data::object::FieldsContainerType m_removedFields;
     /// Composite to add/remove/change objects
 
-    data::Object::wptr m_object;
+    data::object::wptr m_object;
 };
 
 template<typename DATA_TYPE>
-inline SPTR(DATA_TYPE) Field::setDefaultField(const data::Object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue)
+inline SPTR(DATA_TYPE) Field::setDefaultField(const data::object::FieldNameType& name, SPTR(DATA_TYPE) defaultValue)
 {
     SIGHT_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
-    data::Object::sptr object = m_object.lock();
-    data::Object::sptr field  = object->getField(name);
+    data::object::sptr object = m_object.lock();
+    data::object::sptr field  = object->getField(name);
     if(!field)
     {
         m_addedFields[name] = defaultValue;

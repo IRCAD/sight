@@ -23,7 +23,7 @@
 
 #include <data/factory/new.hpp>
 
-#include <service/extension/Factory.hpp>
+#include <service/extension/factory.hpp>
 #include <service/object_parser.hpp>
 
 namespace sight::activity::detail::data
@@ -31,12 +31,12 @@ namespace sight::activity::detail::data
 
 //------------------------------------------------------------------------------
 
-sight::data::Object::sptr create(const std::string& _type, const activity::extension::ConfigType& _config)
+sight::data::object::sptr create(const std::string& _type, const activity::extension::config_t& _config)
 {
     auto object = sight::data::factory::make(_type);
 
     // Get the object parser associated with the object type
-    const auto srvFactory = service::extension::Factory::getDefault();
+    const auto srvFactory = service::extension::factory::get();
 
     const std::string srvImpl = srvFactory->getDefaultImplementationIdFromObjectAndType(
         object->get_classname(),

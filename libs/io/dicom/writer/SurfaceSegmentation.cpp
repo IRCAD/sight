@@ -28,13 +28,13 @@
 #include <core/jobs/job.hpp>
 #include <core/jobs/observer.hpp>
 
-#include <data/DicomSeries.hpp>
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/PointList.hpp>
-#include <data/Series.hpp>
-#include <data/Vector.hpp>
+#include <data/dicom_series.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
+#include <data/model_series.hpp>
+#include <data/point_list.hpp>
+#include <data/series.hpp>
+#include <data/vector.hpp>
 
 #include <io/__/writer/registry/macros.hpp>
 
@@ -60,10 +60,10 @@ SurfaceSegmentation::~SurfaceSegmentation()
 
 void SurfaceSegmentation::write()
 {
-    const data::ModelSeries::csptr srcModelSeries        = this->getConcreteObject();
-    const data::DicomSeries::csptr associatedDicomSeries = srcModelSeries->getDicomReference();
+    const data::model_series::csptr srcModelSeries        = this->getConcreteObject();
+    const data::dicom_series::csptr associatedDicomSeries = srcModelSeries->getDicomReference();
 
-    SIGHT_ASSERT("sight::data::ModelSeries not instanced", srcModelSeries);
+    SIGHT_ASSERT("sight::data::model_series not instanced", srcModelSeries);
 
     if(!associatedDicomSeries)
     {
@@ -106,8 +106,8 @@ void SurfaceSegmentation::write()
         );
     }
 
-    // Complete Model Series with information from associated Image Series
-    const data::ModelSeries::sptr modelSeries = std::make_shared<data::ModelSeries>();
+    // Complete Model Series with information from associated image Series
+    const data::model_series::sptr modelSeries = std::make_shared<data::model_series>();
     modelSeries->shallow_copy(srcModelSeries);
 
     // Copy Study and Patient

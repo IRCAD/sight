@@ -3,7 +3,7 @@ sight_add_target(ExDicomSegmentation TYPE APP UNIQUE ON)
 add_dependencies(
     ExDicomSegmentation
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_viz_scene3d
     module_ui_qt
@@ -31,6 +31,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES ExDicomSegmentation_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES ExDicomSegmentation_AppCfg)
 
 sight_generate_profile(ExDicomSegmentation)

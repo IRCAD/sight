@@ -5,4 +5,4 @@ if(VCPKG_TARGET_TRIPLET)
     target_link_libraries(io_igtlTest PRIVATE OpenIGTLink)
 endif()
 
-target_link_libraries(io_igtlTest PUBLIC core data utestData io_igtl)
+target_link_libraries(io_igtlTest PUBLIC core data utest_data io_igtl)

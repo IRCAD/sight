@@ -59,7 +59,7 @@ public:
      *
      * Example of configuration with overlay layout.
      * @code{.xml}
-       <service uid="mainView" type="sight::module::ui::SView">
+       <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />

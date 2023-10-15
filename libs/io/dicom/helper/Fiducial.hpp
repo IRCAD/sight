@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 namespace sight::data
 {
 
-class SeriesSet;
+class series_set;
 
 } // namespace sight::data
 
@@ -47,21 +47,21 @@ public:
 
     /**
      * @brief Return true if the series contains at least one image containing landmarks.
-     * @param[in] seriesSet SeriesSet where to look for landmarks
+     * @param[in] seriesSet series_set where to look for landmarks
      */
-    IO_DICOM_API static bool containsLandmarks(const SPTR(data::SeriesSet)& seriesSet);
+    IO_DICOM_API static bool containsLandmarks(const SPTR(data::series_set)& seriesSet);
 
     /**
      * @brief Return true if the series contains at least one image containing distances.
-     * @param[in] seriesSet SeriesSet where to look for distances
+     * @param[in] seriesSet series_set where to look for distances
      */
-    IO_DICOM_API static bool containsDistances(const SPTR(data::SeriesSet)& seriesSet);
+    IO_DICOM_API static bool containsDistances(const SPTR(data::series_set)& seriesSet);
 
     /**
      * @brief Return true if the series contains at least one image containing 3D distances.
-     * @param[in] seriesSet SeriesSet where to look for 3D distances
+     * @param[in] seriesSet series_set where to look for 3D distances
      */
-    IO_DICOM_API static bool contains3DDistances(const SPTR(data::SeriesSet)& seriesSet);
+    IO_DICOM_API static bool contains3DDistances(const SPTR(data::series_set)& seriesSet);
 };
 
 } // namespace sight::io::dicom::helper

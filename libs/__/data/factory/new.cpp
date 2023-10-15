@@ -22,7 +22,7 @@
 
 #include "data/factory/new.hpp"
 
-#include "data/Object.hpp"
+#include "data/object.hpp"
 
 #include <core/runtime/runtime.hpp>
 
@@ -33,7 +33,7 @@ namespace sight::data::factory
 
 //------------------------------------------------------------------------------
 
-data::Object::sptr make(const data::registry::KeyType& _classname)
+data::object::sptr make(const data::registry::key_t& _classname)
 {
     SIGHT_ASSERT("A classname must be specified", !_classname.empty());
 

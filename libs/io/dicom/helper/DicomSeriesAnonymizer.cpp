@@ -36,7 +36,7 @@ DicomSeriesAnonymizer::DicomSeriesAnonymizer() :
     m_job(std::make_shared<core::jobs::aggregator>("Anonymization process"))
 {
     m_writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
-    m_reader = std::make_shared<io::dicom::reader::SeriesSet>();
+    m_reader = std::make_shared<io::dicom::reader::series_set>();
 }
 
 //------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ DicomSeriesAnonymizer::~DicomSeriesAnonymizer()
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(const data::DicomSeries::sptr& source)
+void DicomSeriesAnonymizer::anonymize(const data::dicom_series::sptr& source)
 {
     this->anonymize(source, source);
 }
@@ -54,8 +54,8 @@ void DicomSeriesAnonymizer::anonymize(const data::DicomSeries::sptr& source)
 //------------------------------------------------------------------------------
 
 void DicomSeriesAnonymizer::anonymize(
-    const data::DicomSeries::sptr& source,
-    const data::DicomSeries::sptr& destination
+    const data::dicom_series::sptr& source,
+    const data::dicom_series::sptr& destination
 )
 {
     auto writerObserver     = m_writer->getJob();
@@ -78,7 +78,7 @@ void DicomSeriesAnonymizer::anonymize(
     core::os::temp_dir dest;
 
     // Write DicomSeries (Copy files)
-    m_writer->setObject(source);
+    m_writer->set_object(source);
     m_writer->set_folder(dest);
     m_writer->write();
 
@@ -102,13 +102,13 @@ void DicomSeriesAnonymizer::anonymize(
     // However, this reader also uses an aggregator - we discovered that an aggregator of aggregator exits
     // immediately, thus its state is FINISHED when we try to start the task...
     // Read anonymized series
-    auto series_set = std::make_shared<data::SeriesSet>();
-    m_reader->setObject(series_set);
+    auto series_set = std::make_shared<data::series_set>();
+    m_reader->set_object(series_set);
     m_reader->set_folder(dest);
     m_reader->readDicomSeries();
 
     // Update DicomSeries
-    auto anonymizedSeries = std::dynamic_pointer_cast<data::DicomSeries>(series_set->front());
+    auto anonymizedSeries = std::dynamic_pointer_cast<data::dicom_series>(series_set->front());
     destination->deep_copy(anonymizedSeries);
 }
 

@@ -11,14 +11,14 @@ This module contains services that can write sight data to files, and read them 
 
 - **new**: internal mechanism: generic constructor with restrictions on objects construction.
 - **detail**:  internal mechanism: provides the instances of the factory registry.
-- **CsvReader**:  reads CSV file and returns parsed tokens.
-- **ArrayReader**: reads `.raw` files and converts them into a `sight::data::Array`.
-- **DictionaryReader**: reads `.dic` files and converts them into a `sight::data::StructureTraitsDictionary`.
-- **GenericObjectReader**: generic reader which reads an object.
-- **GzArrayReader**: reads `.raw.gz` files and converts them into a `sight::data::Array`.
-- **GzBufferImageReader**: reads `.raw.gz` files and converts them into a `sight::data::Image`.
-- **IObjectReader**: generic definition for readers, though is not a service unlike `sight::io::service::reader`.
-- **Matrix4Reader**: reads `.trf` files and converts them into a `sight::data::Matrix4`.
+- **csv_reader**:  reads CSV file and returns parsed tokens.
+- **array_reader**: reads `.raw` files and converts them into a `sight::data::array`.
+- **dictionary_reader**: reads `.dic` files and converts them into a `sight::data::structure_traits_dictionary`.
+- **generic_object_reader**: generic reader which reads an object.
+- **gz_array_reader**: reads `.raw.gz` files and converts them into a `sight::data::array`.
+- **GzBufferImageReader**: reads `.raw.gz` files and converts them into a `sight::data::image`.
+- **object_reader**: generic definition for readers, though is not a service unlike `sight::io::service::reader`.
+- **matrix4_reader**: reads `.trf` files and converts them into a `sight::data::matrix4`.
 
 ### Service
 
@@ -32,12 +32,12 @@ Contains the base interface for reader and writer services.
 
 - **new**: internal mechanism: generic constructor with restrictions on objects construction.
 - **detail**:  internal mechanism: provides the instances of the factory registry.
-- **ArrayWriter**: writes `sight::data::Array` into a `.raw` file.
-- **GenericObjectWriter**: generic reader which reads an Object.
-- **GzArrayWriter**: writes `sight::data::Array` into a `.raw.gz` file.
-- **GzBufferImageWriter**: writes `sight::data::Image` into a `.raw.gz` file.
-- **IObjectWriter**: generic definition for writer, though is not a service unlike `sight::io::service::writer`.
-- **Matrix4Writer**: writes `sight::data::Matrix4` into a `.trf` file.
+- **array_writer**: writes `sight::data::array` into a `.raw` file.
+- **generic_object_writer**: generic reader which reads an Object.
+- **gz_array_writer**: writes `sight::data::array` into a `.raw.gz` file.
+- **gz_buffer_image_writer**: writes `sight::data::image` into a `.raw.gz` file.
+- **object_writer**: generic definition for writer, though is not a service unlike `sight::io::service::writer`.
+- **matrix4_writer**: writes `sight::data::matrix4` into a `.trf` file.
 
 ## How to use it
 

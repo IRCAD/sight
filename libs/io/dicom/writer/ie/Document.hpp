@@ -25,7 +25,7 @@
 #include "io/dicom/container/sr/DicomSRNode.hpp"
 #include "io/dicom/writer/ie/InformationEntity.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 namespace sight::io::dicom::writer::ie
 {
@@ -33,7 +33,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Document Information Entity class
  */
-class IO_DICOM_CLASS_API Document : public io::dicom::writer::ie::InformationEntity<data::Image>
+class IO_DICOM_CLASS_API Document : public io::dicom::writer::ie::InformationEntity<data::image>
 {
 public:
 
@@ -49,7 +49,7 @@ public:
     IO_DICOM_API Document(
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Image::csptr& image,
+        const data::image::csptr& image,
         bool use3DSR                          = false,
         const core::log::logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,

@@ -4,7 +4,7 @@ add_dependencies(
     Tuto13MeshGeneratorCpp
     sightrun
     data
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     module_viz_scene3d
@@ -23,6 +23,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto13MeshGeneratorCpp_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES Tuto13MeshGeneratorCpp_AppCfg)
 
 sight_generate_profile(Tuto13MeshGeneratorCpp)

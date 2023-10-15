@@ -23,12 +23,12 @@
 
 #include "codec/NvJpeg2K.hpp"
 
-#include "data/ModelSeries.hpp"
+#include "data/model_series.hpp"
 
 #include <core/macros.hpp>
 
-#include <data/FiducialsSeries.hpp>
-#include <data/ImageSeries.hpp>
+#include <data/fiducials_series.hpp>
+#include <data/image_series.hpp>
 
 #include <io/bitmap/Writer.hpp>
 
@@ -47,7 +47,7 @@ namespace sight::io::dicom
 //------------------------------------------------------------------------------
 
 inline static void writeEnhancedUSVolume(
-    const data::ImageSeries& image_series,
+    const data::image_series& image_series,
     const std::string& filepath,
     Writer::TransferSyntax transfer_syntax,
     [[maybe_unused]] bool force_cpu
@@ -146,17 +146,17 @@ inline static void writeEnhancedUSVolume(
     // Photometric Interpretation
     switch(image_series.getPixelFormat())
     {
-        case data::Image::PixelFormat::GRAY_SCALE:
+        case data::image::PixelFormat::GRAY_SCALE:
             gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::MONOCHROME2);
             gdcm_image.GetPixelFormat().SetSamplesPerPixel(1);
             break;
 
-        case data::Image::PixelFormat::RGB:
+        case data::image::PixelFormat::RGB:
             gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::RGB);
             gdcm_image.GetPixelFormat().SetSamplesPerPixel(3);
             break;
 
-        case data::Image::PixelFormat::RGBA:
+        case data::image::PixelFormat::RGBA:
             gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::RGB);
             gdcm_image.GetPixelFormat().SetSamplesPerPixel(4);
             break;
@@ -253,7 +253,7 @@ inline static void writeEnhancedUSVolume(
     auto& changed_gdcm_image = const_cast<gdcm::Image&>(transferSyntaxChanger.GetOutput());
 
     // Correct the Photometric Interpretation (This avoid a warning when GDCM decodes back the image)
-    if(image_series.getPixelFormat() != data::Image::PixelFormat::GRAY_SCALE)
+    if(image_series.getPixelFormat() != data::image::PixelFormat::GRAY_SCALE)
     {
         switch(transfer_syntax)
         {
@@ -285,7 +285,7 @@ inline static void writeEnhancedUSVolume(
 
 //------------------------------------------------------------------------------
 
-static void writeSpatialFiducials(const data::FiducialsSeries& fiducialsSeries, const std::filesystem::path& imagePath)
+static void writeSpatialFiducials(const data::fiducials_series& fiducialsSeries, const std::filesystem::path& imagePath)
 {
     gdcm::Writer writer;
     std::filesystem::path folder = imagePath.parent_path();
@@ -427,7 +427,7 @@ void Writer::write()
         if(const auto& sop_keyword = series->getSOPKeyword();
            sop_keyword == data::dicom::sop::Keyword::EnhancedUSVolumeStorage)
         {
-            const auto& image_series = std::dynamic_pointer_cast<data::ImageSeries>(series);
+            const auto& image_series = std::dynamic_pointer_cast<data::image_series>(series);
 
             SIGHT_THROW_IF(
                 "The series '" + series->getSeriesInstanceUID() + "' is not an image series.",
@@ -450,14 +450,14 @@ void Writer::write()
             }
         }
 
-        if(const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series))
+        if(const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(series))
         {
             if(imageSeries->hasFiducials())
             {
                 writeSpatialFiducials(*imageSeries->getFiducials(), filepath);
             }
         }
-        else if(const auto& modelSeries = std::dynamic_pointer_cast<data::ModelSeries>(series))
+        else if(const auto& modelSeries = std::dynamic_pointer_cast<data::model_series>(series))
         {
             if(modelSeries->hasFiducials())
             {

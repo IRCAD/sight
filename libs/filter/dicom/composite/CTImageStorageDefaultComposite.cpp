@@ -30,7 +30,7 @@
 #include "filter/dicom/splitter/ImageDimensionsSplitter.hpp"
 #include "filter/dicom/splitter/ImagePositionPatientSplitter.hpp"
 #include "filter/dicom/splitter/ImageTypeSplitter.hpp"
-#include "filter/dicom/splitter/SOPClassUIDSplitter.hpp"
+#include "filter/dicom/splitter/sop_class_uid_splitter.hpp"
 #include "filter/dicom/splitter/TemporalPositionSplitter.hpp"
 
 SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::composite::CTImageStorageDefaultComposite);

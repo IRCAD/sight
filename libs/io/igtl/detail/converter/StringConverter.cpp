@@ -24,7 +24,7 @@
 
 #include "io/igtl/detail/DataConverter.hpp"
 
-#include <data/String.hpp>
+#include <data/string.hpp>
 
 #include <igtlStringMessage.h>
 
@@ -32,7 +32,7 @@ namespace sight::io::igtl::detail::converter
 {
 
 const std::string StringConverter::s_IGTL_TYPE          = "STRING";
-const std::string StringConverter::s_FWDATA_OBJECT_TYPE = data::String::classname();
+const std::string StringConverter::s_FWDATA_OBJECT_TYPE = data::string::classname();
 
 converterRegisterMacro(io::igtl::detail::converter::StringConverter);
 
@@ -46,9 +46,9 @@ StringConverter::~StringConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer StringConverter::fromFwDataObject(data::Object::csptr src) const
+::igtl::MessageBase::Pointer StringConverter::fromFwDataObject(data::object::csptr src) const
 {
-    data::String::csptr srcStr = std::dynamic_pointer_cast<const data::String>(src);
+    data::string::csptr srcStr = std::dynamic_pointer_cast<const data::string>(src);
 
     ::igtl::StringMessage::Pointer dest = ::igtl::StringMessage::New();
     dest->SetString(srcStr->getValue().c_str());
@@ -57,9 +57,9 @@ StringConverter::~StringConverter()
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr StringConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    data::String::sptr dest = std::make_shared<data::String>();
+    data::string::sptr dest = std::make_shared<data::string>();
 
     auto* msg                             = dynamic_cast< ::igtl::StringMessage*>(src.GetPointer());
     ::igtl::StringMessage::Pointer srcStr = ::igtl::StringMessage::Pointer(msg);

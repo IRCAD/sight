@@ -49,31 +49,31 @@ struct end_type_list_action
     {
     }
 
-    /// Throw an exception to inform end-user that KeyType value have no correspondence in type list
+    /// Throw an exception to inform end-user that key_t value have no correspondence in type list
     template<class key_type>
-    static void invoke(const key_type& keytype)
+    static void invoke(const key_type& key_t)
     {
-        std::string msg = keytype.name()
-                          + " : KeyType value incorrect : no corresponding Type in typelist";
+        std::string msg = key_t.name()
+                          + " : key_t value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
     }
 
-    /// Throw an exception to inform end-user that KeyType value have no correspondence in type list
+    /// Throw an exception to inform end-user that key_t value have no correspondence in type list
     template<class key_type, class parameter>
-    static void invoke(const key_type& keytype, const parameter& param)
+    static void invoke(const key_type& key_t, const parameter& param)
     {
         SIGHT_NOT_USED(param);
-        std::string msg = keytype.name()
-                          + " : KeyType value incorrect : no corresponding Type in typelist";
+        std::string msg = key_t.name()
+                          + " : key_t value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
     }
 
-    /// Throw an exception to inform end-user that KeyType value have no correspondence in type list
+    /// Throw an exception to inform end-user that key_t value have no correspondence in type list
     template<class base_class, class key_type>
-    static base_class* instantiate(const key_type& keytype)
+    static base_class* instantiate(const key_type& key_t)
     {
-        std::string msg = keytype.name()
-                          + " : KeyType value incorrect : no corresponding Type in typelist";
+        std::string msg = key_t.name()
+                          + " : key_t value incorrect : no corresponding Type in typelist";
         throw std::invalid_argument(msg);
         return NULL;
     }
@@ -123,11 +123,11 @@ struct dispatcher
          * @brief Invoke only the specified Type only
          */
         template<class key_type>
-        static void invoke(const key_type& keytype)
+        static void invoke(const key_type& key_t)
         {
             namespace mpl = boost::mpl;
 
-            if(is_mapping<head>(keytype))
+            if(is_mapping<head>(key_t))
             {
                 // create the functor then excute it
                 FUNCTOR f;
@@ -145,7 +145,7 @@ struct dispatcher
                         end_type_list_action,
                         dispatcher<tail, FUNCTOR>
                 >::type type_x;
-                type_x::invoke(keytype);
+                type_x::invoke(key_t);
             }
         }
 
@@ -157,11 +157,11 @@ struct dispatcher
          * @note That parameter is *NOT* const so functor can update value
          */
         template<class key_type, class parameter>
-        static void invoke(const key_type& keytype, parameter& param)
+        static void invoke(const key_type& key_t, parameter& param)
         {
             namespace mpl = boost::mpl;
 
-            if(is_mapping<head>(keytype))
+            if(is_mapping<head>(key_t))
             {
                 // create the functor then excute it
                 FUNCTOR f;
@@ -179,7 +179,7 @@ struct dispatcher
                         end_type_list_action,
                         dispatcher<tail, FUNCTOR>
                 >::type type_x;
-                type_x::invoke(keytype, param);
+                type_x::invoke(key_t, param);
             }
         }
 };

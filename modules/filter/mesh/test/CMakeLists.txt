@@ -2,4 +2,4 @@ sight_add_target(module_filter_meshTest TYPE TEST)
 
 add_dependencies(module_filter_meshTest data module_service module_data module_filter_mesh)
 
-target_link_libraries(module_filter_meshTest PUBLIC service utestData io_vtk)
+target_link_libraries(module_filter_meshTest PUBLIC service utest_data io_vtk)

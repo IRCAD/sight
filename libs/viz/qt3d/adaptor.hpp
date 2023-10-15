@@ -23,7 +23,7 @@
 #pragma once
 
 #include "viz/qt3d/config.hpp"
-#include "viz/qt3d/SRender.hpp"
+#include "viz/qt3d/render.hpp"
 
 #include <service/base.hpp>
 
@@ -56,7 +56,7 @@ public:
     SIGHT_DECLARE_CLASS(adaptor, sight::service::base);
 
     /// Gets the render service using this adaptor.
-    VIZ_QT3D_API SRender::sptr getRenderService() const;
+    VIZ_QT3D_API render::sptr getRenderService() const;
 
 protected:
 
@@ -74,7 +74,7 @@ protected:
     /// Parses common adaptor parameters.
     VIZ_QT3D_API void configureParams();
 
-    /// Registers the adaptor into its SRender service.
+    /// Registers the adaptor into its render service.
     VIZ_QT3D_API void initialize();
 
     /**
@@ -97,7 +97,7 @@ protected:
     VIZ_QT3D_API virtual void setVisible(bool _visible);
 
     /// Contains the render service this adaptor is attached to.
-    viz::qt3d::SRender::wptr m_renderService;
+    viz::qt3d::render::wptr m_renderService;
 
     /// Enables the adaptor visibility.
     bool m_isVisible {true};

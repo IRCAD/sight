@@ -3,7 +3,7 @@ This config open a windows containing the editors to manage the ModelSeries: sho
 color, ...
 
 Example:
-<service uid="..." type="sight::service::SConfigController">
+<service uid="..." type="sight::app::config_controller">
     <appConfig id="ModelSeriesManagerWindow" />
     <inout group="data">
         <key name="ORGAN_MANAGER_MODELSERIES" uid="..." />
@@ -16,21 +16,21 @@ With:
 - ICON_PATH (mandatory): icon of the window
 - WindowTitle(optional): title of the window
 -->
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>ModelSeriesManagerWindow</id>
     <parameters>
         <param name="ORGAN_MANAGER_MODELSERIES" />
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by SConfigLauncher -->
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by config_launcher -->
         <param name="ICON_PATH" />
         <param name="WindowTitle" default="Organs Manager"/>
     </parameters>
     <desc>Open a windows containing the editors to manage the ModelSeries: show/hide reconstructions, change the color.</desc>
     <config>
 
-        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::ModelSeries" src="ref" />
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::model_series" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="organManagerFrame" type="sight::module::ui::SFrame">
+        <service uid="organManagerFrame" type="sight::module::ui::frame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -44,7 +44,7 @@ With:
             </registry>
         </service>
 
-        <service uid="modelManager" type="sight::service::SConfigController">
+        <service uid="modelManager" type="sight::app::config_controller">
             <appConfig id="ModelSeriesManagerView" />
             <inout group="data">
                 <key name="ORGAN_MANAGER_MODELSERIES" uid="${ORGAN_MANAGER_MODELSERIES}" />

@@ -28,9 +28,9 @@
 #include <core/location/single_file.hpp>
 #include <core/tools/progress_adviser.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 #include <ostream>
 
@@ -65,7 +65,7 @@ namespace sight::io::bitmap
  * On the contrary, nvJPEG2000 is fully lossless and provides a very good compression ratio, but is, of course, slower
  * (still 60 fps guaranteed on nowadays computers).
  */
-class IO_BITMAP_CLASS_API Writer final : public io::writer::GenericObjectWriter<data::Image>,
+class IO_BITMAP_CLASS_API Writer final : public io::writer::generic_object_writer<data::image>,
                                          public core::location::single_file,
                                          public core::tools::progress_adviser
 {
@@ -79,7 +79,7 @@ public:
 
     SIGHT_DECLARE_CLASS(
         Writer,
-        io::writer::GenericObjectWriter<data::Image>,
+        io::writer::generic_object_writer<data::image>,
         io::writer::factory::make<Writer>
     );
 
@@ -95,7 +95,7 @@ public:
     IO_BITMAP_API Writer();
     IO_BITMAP_API ~Writer() override;
 
-    /// Main writing method from GenericObjectWriter
+    /// Main writing method from generic_object_writer
     IO_BITMAP_API void write() override;
 
     /// Specialized writing method that allows to specify the backend and the mode (Fast or Best compression)

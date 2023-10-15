@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "io/dicom/config.hpp"
 
-#include <data/Mesh.hpp>
-#include <data/Reconstruction.hpp>
+#include <data/mesh.hpp>
+#include <data/reconstruction.hpp>
 
 #include <cstdint>
 
@@ -41,7 +41,7 @@ public:
 
     /**
      * Typedef for cell index in DICOM world (32 bits see VR OL).
-     * Sight uses uint64_t (see data::Mesh::CellId).
+     * Sight uses uint64_t (see data::mesh::CellId).
      */
     typedef std::uint32_t DicomCellValueType;
 
@@ -57,7 +57,7 @@ public:
      * @brief Constructor
      * @param[in] reconstruction Source reconstruction
      */
-    IO_DICOM_API DicomSurface(const data::Reconstruction::csptr& reconstruction);
+    IO_DICOM_API DicomSurface(const data::reconstruction::csptr& reconstruction);
 
     /**
      * @brief Constructor
@@ -68,18 +68,18 @@ public:
      * @param[in] normalBuffer Normals buffer
      */
     IO_DICOM_API DicomSurface(
-        const data::Mesh::position_t* pointBuffer,
-        data::Mesh::size_t pointBufferSize,
+        const data::mesh::position_t* pointBuffer,
+        data::mesh::size_t pointBufferSize,
         const DicomCellValueType* cellBuffer,
-        data::Mesh::size_t cellBufferSize,
-        const data::Mesh::normal_t* normalBuffer
+        data::mesh::size_t cellBufferSize,
+        const data::mesh::normal_t* normalBuffer
     );
 
     /// Destructor
     IO_DICOM_API ~DicomSurface();
 
     /// Convert DicomSurface container to Sight Mesh
-    IO_DICOM_API data::Mesh::sptr convertToData();
+    IO_DICOM_API data::mesh::sptr convertToData();
 
     /// Return point coordinates buffer
     [[nodiscard]] IO_DICOM_API const DicomPointBufferType& getPointBuffer() const;

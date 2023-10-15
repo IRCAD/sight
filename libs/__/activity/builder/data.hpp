@@ -22,15 +22,15 @@
 #pragma once
 
 #include <activity/config.hpp>
-#include <activity/extension/Activity.hpp>
+#include <activity/extension/activity.hpp>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 namespace sight::activity::detail::data
 {
 
 //------------------------------------------------------------------------------
 
-ACTIVITY_API sight::data::Object::sptr create(const std::string& _type, const activity::extension::ConfigType& _config);
+ACTIVITY_API sight::data::object::sptr create(const std::string& _type, const activity::extension::config_t& _config);
 
 } // namespace sight::activity::detail::data

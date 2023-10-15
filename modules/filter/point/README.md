@@ -1,10 +1,10 @@
 # sight::module::filter::point
 
-Contains services to process `sight::data::PointList`.
+Contains services to process `sight::data::point_list`.
 
 ## Services
 
-- **SPointListRegistration**: registers a point list against a reference point list.
+- **point_list_registration**: registers a point list against a reference point list.
 
 ## How to use it
 

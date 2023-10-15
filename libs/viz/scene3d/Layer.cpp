@@ -25,8 +25,8 @@
 #include "helper/Scene.hpp"
 
 #include "viz/scene3d/adaptor.hpp"
-#include "viz/scene3d/compositor/Core.hpp"
-#include "viz/scene3d/helper/Camera.hpp"
+#include "viz/scene3d/compositor/core.hpp"
+#include "viz/scene3d/helper/camera.hpp"
 #include "viz/scene3d/ILight.hpp"
 #include "viz/scene3d/ogre.hpp"
 
@@ -34,7 +34,7 @@
 #include <core/com/slots.hxx>
 #include <core/thread/worker.hpp>
 
-#include <data/tools/Color.hpp>
+#include <data/tools/color.hpp>
 
 #include <service/registry.hpp>
 
@@ -98,7 +98,7 @@ struct Layer::LayerCameraListener : public Ogre::Camera::Listener
     {
         SIGHT_ASSERT("Layer is not set", m_layer);
 
-        if(m_layer->getStereoMode() != viz::scene3d::compositor::Core::StereoModeType::NONE)
+        if(m_layer->getStereoMode() != viz::scene3d::compositor::core::StereoModeType::NONE)
         {
             const int frameId = m_layer->getRenderService()->getInteractorManager()->getFrameId();
             if(frameId != m_frameId)
@@ -224,7 +224,7 @@ void Layer::createScene()
     auto* viewport = m_renderTarget->addViewport(m_camera, m_order, left, top, width, height);
     SIGHT_ASSERT("Could not create a viewport", viewport);
 
-    m_compositorChainManager = std::make_unique<fwc::ChainManager>(this->get_sptr());
+    m_compositorChainManager = std::make_unique<fwc::chain_manager>(this->get_sptr());
 
     if(m_order != 0)
     {
@@ -251,14 +251,14 @@ void Layer::createScene()
             Ogre::Pass* pass                           = material->getTechnique(0)->getPass(0);
             Ogre::GpuProgramParametersSharedPtr params = pass->getFragmentProgramParameters();
 
-            data::tools::Color::hexaStringToRGBA(m_topColor, color);
+            data::tools::color::hexaStringToRGBA(m_topColor, color);
             Ogre::ColourValue ogreTopColor(static_cast<float>(color[0]) / 255.F,
                                            static_cast<float>(color[1]) / 255.F,
                                            static_cast<float>(color[2]) / 255.F,
                                            1.F);
             params->setNamedConstant("topColour", ogreTopColor);
 
-            data::tools::Color::hexaStringToRGBA(m_bottomColor, color);
+            data::tools::color::hexaStringToRGBA(m_bottomColor, color);
             Ogre::ColourValue ogreBotColor(static_cast<float>(color[0]) / 255.F,
                                            static_cast<float>(color[1]) / 255.F,
                                            static_cast<float>(color[2]) / 255.F,
@@ -306,8 +306,8 @@ void Layer::createScene()
     auto renderService = m_renderService.lock();
     if(m_hasDefaultLight)
     {
-        m_defaultLightDiffuseColor  = std::make_shared<data::Color>();
-        m_defaultLightSpecularColor = std::make_shared<data::Color>();
+        m_defaultLightDiffuseColor  = std::make_shared<data::color>();
+        m_defaultLightSpecularColor = std::make_shared<data::color>();
 
         m_lightAdaptor = viz::scene3d::ILight::createLightAdaptor(
             m_defaultLightDiffuseColor,
@@ -334,16 +334,16 @@ void Layer::createScene()
     {
         boost::char_separator<char> sep(";");
         boost::tokenizer<boost::char_separator<char> > tok(m_rawCompositorChain, sep);
-        std::vector<fwc::ChainManager::CompositorIdType> compositorChain;
+        std::vector<fwc::chain_manager::CompositorIdType> compositorChain;
 
         for(const auto& it : tok)
         {
             compositorChain.push_back(it);
         }
 
-        if(m_stereoMode != compositor::Core::StereoModeType::NONE)
+        if(m_stereoMode != compositor::core::StereoModeType::NONE)
         {
-            m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->numCameras());
+            m_autostereoListener = new compositor::listener::auto_stereo_compositor_listener(this->numCameras());
             Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
         }
 
@@ -590,14 +590,14 @@ void Layer::set_worker(const core::thread::worker::sptr& _worker)
 
 // ----------------------------------------------------------------------------
 
-viz::scene3d::SRender::sptr Layer::getRenderService() const
+viz::scene3d::render::sptr Layer::getRenderService() const
 {
     return m_renderService.lock();
 }
 
 //------------------------------------------------------------------------------
 
-void Layer::setRenderService(const viz::scene3d::SRender::sptr& _service)
+void Layer::setRenderService(const viz::scene3d::render::sptr& _service)
 {
     SIGHT_ASSERT("service not instanced", _service);
 
@@ -918,10 +918,10 @@ void Layer::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void Layer::setStereoMode(compositor::Core::StereoModeType mode)
+void Layer::setStereoMode(compositor::core::StereoModeType mode)
 {
     // Disable the old compositor
-    if(m_stereoMode != compositor::Core::StereoModeType::NONE)
+    if(m_stereoMode != compositor::core::StereoModeType::NONE)
     {
         Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
         delete m_autostereoListener;
@@ -935,9 +935,9 @@ void Layer::setStereoMode(compositor::Core::StereoModeType mode)
     m_coreCompositor->setStereoMode(mode);
     m_coreCompositor->update();
 
-    if(m_stereoMode != compositor::Core::StereoModeType::NONE)
+    if(m_stereoMode != compositor::core::StereoModeType::NONE)
     {
-        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(this->numCameras());
+        m_autostereoListener = new compositor::listener::auto_stereo_compositor_listener(this->numCameras());
         Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
@@ -973,7 +973,7 @@ void Layer::setCoreCompositorEnabled(
     bool enabled,
     std::string transparencyTechnique,
     std::string numPeels,
-    compositor::Core::StereoModeType stereoMode
+    compositor::core::StereoModeType stereoMode
 )
 {
     m_hasCoreCompositor = enabled;
@@ -1054,7 +1054,7 @@ bool Layer::initialized() const
 
 //-------------------------------------------------------------------------------------
 
-compositor::Core::StereoModeType Layer::getStereoMode() const
+compositor::core::StereoModeType Layer::getStereoMode() const
 {
     return m_stereoMode;
 }
@@ -1066,7 +1066,7 @@ void Layer::setupCore()
     // Needed to setup compositors in GL3Plus, Ogre creates render targets
     m_renderService.lock()->makeCurrent();
 
-    m_coreCompositor = std::make_shared<viz::scene3d::compositor::Core>(this->getViewport());
+    m_coreCompositor = std::make_shared<viz::scene3d::compositor::core>(this->getViewport());
     m_coreCompositor->setStereoMode(m_stereoMode);
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
     m_coreCompositor->setTransparencyDepth(m_numPeels);
@@ -1113,7 +1113,7 @@ void Layer::restartAdaptors()
     // Restart all adaptors.
     for(auto& adapt : adaptors)
     {
-        if(adapt->isStarted())
+        if(adapt->started())
         {
             adapt->stop().wait();
             adapt->start().wait();
@@ -1123,7 +1123,7 @@ void Layer::restartAdaptors()
 
 //-------------------------------------------------------------------------------------
 
-viz::scene3d::compositor::ChainManager::CompositorChainType Layer::getCompositorChain() const
+viz::scene3d::compositor::chain_manager::CompositorChainType Layer::getCompositorChain() const
 {
     return m_compositorChainManager->getCompositorChain();
 }
@@ -1171,21 +1171,21 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
     );
     Ogre::Matrix4 extrinsicTransform(Ogre::Matrix4::IDENTITY);
 
-    if(m_stereoMode == viz::scene3d::compositor::Core::StereoModeType::AUTOSTEREO_5)
+    if(m_stereoMode == viz::scene3d::compositor::core::StereoModeType::AUTOSTEREO_5)
     {
         const float eyeAngle = 0.02321F;
         const float angle    = eyeAngle * (-2.F + float(cameraIdx));
 
-        extrinsicTransform = viz::scene3d::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
+        extrinsicTransform = viz::scene3d::helper::camera::computeFrustumShearTransform(*m_camera, angle);
     }
-    else if(m_stereoMode == viz::scene3d::compositor::Core::StereoModeType::AUTOSTEREO_8)
+    else if(m_stereoMode == viz::scene3d::compositor::core::StereoModeType::AUTOSTEREO_8)
     {
         const float eyeAngle = 0.01625F;
         const float angle    = eyeAngle * (-3.5F + float(cameraIdx));
 
-        extrinsicTransform = viz::scene3d::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
+        extrinsicTransform = viz::scene3d::helper::camera::computeFrustumShearTransform(*m_camera, angle);
     }
-    else if(m_stereoMode == viz::scene3d::compositor::Core::StereoModeType::STEREO)
+    else if(m_stereoMode == viz::scene3d::compositor::core::StereoModeType::STEREO)
     {
         if(m_stereoCameraCalibration.size() < 2 && cameraIdx == 1)
         {
@@ -1225,11 +1225,11 @@ Ogre::Matrix4 Layer::getCameraProjMat(const uint8_t cameraIdx) const
 
 uint8_t Layer::numCameras() const
 {
-    return m_stereoMode == viz::scene3d::compositor::Core::StereoModeType::AUTOSTEREO_8 ? 8
+    return m_stereoMode == viz::scene3d::compositor::core::StereoModeType::AUTOSTEREO_8 ? 8
                                                                                         : m_stereoMode
-           == viz::scene3d::compositor::Core::StereoModeType::AUTOSTEREO_5 ? 5
+           == viz::scene3d::compositor::core::StereoModeType::AUTOSTEREO_5 ? 5
                                                                            :
-           m_stereoMode == viz::scene3d::compositor::Core::StereoModeType::STEREO ? 2 : 1;
+           m_stereoMode == viz::scene3d::compositor::core::StereoModeType::STEREO ? 2 : 1;
 }
 
 //-------------------------------------------------------------------------------------

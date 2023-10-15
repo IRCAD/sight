@@ -25,7 +25,7 @@
 
 #include <core/com/slots.hpp>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 #include <ui/__/action.hpp>
 
@@ -42,7 +42,7 @@ public:
 
     /// Connect data::container<C>::ADDED_OBJECTS_SIG to this::CHECK_ADDED_OBJECTS_SLOT.
     /// Connect data::container<C>::REMOVED_OBJECTS_SIG to this::CHECK_REMOVED_OBJECTS_SLOT.
-    connections_t getAutoConnections() const override;
+    connections_t auto_connections() const override;
 
 protected:
 

@@ -30,7 +30,7 @@
 namespace sight::io::writer
 {
 
-class IObjectWriter;
+class object_writer;
 
 namespace factory
 {
@@ -38,7 +38,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-IO_API SPTR(io::writer::IObjectWriter) make(const io::writer::registry::KeyType& classname);
+IO_API SPTR(io::writer::object_writer) make(const io::writer::registry::key_t& classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make()

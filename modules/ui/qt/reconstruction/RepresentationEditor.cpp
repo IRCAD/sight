@@ -25,10 +25,10 @@
 #include <core/com/signal.hxx>
 #include <core/runtime/path.hpp>
 
-#include <data/Mesh.hpp>
+#include <data/mesh.hpp>
 
 #include <service/macros.hpp>
-#include <service/op/Get.hpp>
+#include <service/op.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -204,24 +204,24 @@ void RepresentationEditor::updating()
 
 void RepresentationEditor::onChangeRepresentation(int id)
 {
-    data::Material::RepresentationType selectedMode = data::Material::SURFACE;
+    data::material::RepresentationType selectedMode = data::material::SURFACE;
 
     switch(id)
     {
         case 1:
-            selectedMode = data::Material::POINT;
+            selectedMode = data::material::POINT;
             break;
 
         case 2:
-            selectedMode = data::Material::WIREFRAME;
+            selectedMode = data::material::WIREFRAME;
             break;
 
         case 3:
-            selectedMode = data::Material::EDGE;
+            selectedMode = data::material::EDGE;
             break;
 
         default: // 0 or other
-            selectedMode = data::Material::SURFACE;
+            selectedMode = data::material::SURFACE;
     }
 
     m_material->setRepresentationMode(selectedMode);
@@ -232,20 +232,20 @@ void RepresentationEditor::onChangeRepresentation(int id)
 
 void RepresentationEditor::onChangeShading(int id)
 {
-    data::Material::ShadingType selectedMode = data::Material::PHONG;
+    data::material::ShadingType selectedMode = data::material::PHONG;
 
     switch(id)
     {
         case 0:
-            selectedMode = data::Material::AMBIENT;
+            selectedMode = data::material::AMBIENT;
             break;
 
         case 1:
-            selectedMode = data::Material::FLAT;
+            selectedMode = data::material::FLAT;
             break;
 
         default: // 2 or other
-            selectedMode = data::Material::PHONG;
+            selectedMode = data::material::PHONG;
     }
 
     m_material->setShadingMode(selectedMode);
@@ -261,22 +261,22 @@ void RepresentationEditor::refreshRepresentation()
 
     switch(representationMode)
     {
-        case data::Material::SURFACE:
+        case data::material::SURFACE:
             button = m_buttonGroup->button(0);
             button->setChecked(true);
             break;
 
-        case data::Material::POINT:
+        case data::material::POINT:
             button = m_buttonGroup->button(1);
             button->setChecked(true);
             break;
 
-        case data::Material::WIREFRAME:
+        case data::material::WIREFRAME:
             button = m_buttonGroup->button(2);
             button->setChecked(true);
             break;
 
-        case data::Material::EDGE:
+        case data::material::EDGE:
             button = m_buttonGroup->button(3);
             button->setChecked(true);
             break;
@@ -296,17 +296,17 @@ void RepresentationEditor::refreshShading()
 
     switch(shadingMode)
     {
-        case data::Material::AMBIENT:
+        case data::material::AMBIENT:
             button = m_buttonGroupShading->button(0);
             button->setChecked(true);
             break;
 
-        case data::Material::FLAT:
+        case data::material::FLAT:
             button = m_buttonGroupShading->button(1);
             button->setChecked(true);
             break;
 
-        case data::Material::PHONG:
+        case data::material::PHONG:
             button = m_buttonGroupShading->button(2);
             button->setChecked(true);
             break;
@@ -322,9 +322,9 @@ void RepresentationEditor::refreshShading()
 void RepresentationEditor::refreshNormals()
 {
     QAbstractButton* buttonHide = m_normalsRadioBox->button(0);
-    buttonHide->setChecked(m_material->getOptionsMode() == data::Material::STANDARD);
+    buttonHide->setChecked(m_material->getOptionsMode() == data::material::STANDARD);
     QAbstractButton* buttonNormals = m_normalsRadioBox->button(1);
-    buttonNormals->setChecked(m_material->getOptionsMode() == data::Material::NORMALS);
+    buttonNormals->setChecked(m_material->getOptionsMode() == data::material::NORMALS);
 }
 
 //------------------------------------------------------------------------------
@@ -334,15 +334,15 @@ void RepresentationEditor::onShowNormals(int state)
     switch(state)
     {
         case 0:
-            m_material->setOptionsMode(data::Material::STANDARD);
+            m_material->setOptionsMode(data::material::STANDARD);
             break;
 
         case 1:
-            m_material->setOptionsMode(data::Material::NORMALS);
+            m_material->setOptionsMode(data::material::NORMALS);
             break;
 
         case 2:
-            m_material->setOptionsMode(data::Material::CELLS_NORMALS);
+            m_material->setOptionsMode(data::material::CELLS_NORMALS);
             break;
 
         default:
@@ -355,8 +355,8 @@ void RepresentationEditor::onShowNormals(int state)
     auto reconstruction = m_rec.lock();
 
     // In VTK backend the normals is handled by the mesh and not by the material
-    auto sig = reconstruction->signal<data::Reconstruction::MeshChangedSignalType>(
-        data::Reconstruction::MESH_CHANGED_SIG
+    auto sig = reconstruction->signal<data::reconstruction::MeshChangedSignalType>(
+        data::reconstruction::MESH_CHANGED_SIG
     );
     sig->async_emit(reconstruction->getMesh());
 }
@@ -368,19 +368,19 @@ void RepresentationEditor::notifyMaterial()
     SIGHT_ASSERT("The inout key '" << s_RECONSTRUCTION << "' is not defined.", !m_rec.expired());
     auto reconstruction = m_rec.lock();
 
-    data::Object::ModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal<data::Object::ModifiedSignalType>(
-        data::Object::MODIFIED_SIG
+    data::object::ModifiedSignalType::sptr sig;
+    sig = reconstruction->getMaterial()->signal<data::object::ModifiedSignalType>(
+        data::object::MODIFIED_SIG
     );
     sig->async_emit();
 }
 
 //------------------------------------------------------------------------------
 
-service::connections_t RepresentationEditor::getAutoConnections() const
+service::connections_t RepresentationEditor::auto_connections() const
 {
     connections_t connections;
-    connections.push(s_RECONSTRUCTION, data::Object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_RECONSTRUCTION, data::object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

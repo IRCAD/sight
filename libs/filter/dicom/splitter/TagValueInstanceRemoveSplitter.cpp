@@ -79,7 +79,7 @@ bool TagValueInstanceRemoveSplitter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveSplitter::apply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr& logger
 )
 const

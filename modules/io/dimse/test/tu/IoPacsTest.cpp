@@ -24,7 +24,7 @@
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 
-#include <service/op/Add.hpp>
+#include <service/op.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -56,7 +56,7 @@ void IoPacsTest::pacsConfigurationInitializer()
     auto pacsConfiguration = std::make_shared<sight::io::dimse::data::PacsConfiguration>();
 
     // Create service
-    service::base::sptr srv = service::add("sight::module::io::dimse::SPacsConfigurationInitializer");
+    service::base::sptr srv = service::add("sight::module::io::dimse::pacs_configuration_initializer");
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration
@@ -72,8 +72,8 @@ void IoPacsTest::pacsConfigurationInitializer()
                      "/>";
     boost::property_tree::read_xml(config_string, configSrv);
     // Use the service
-    srv->setInOut(pacsConfiguration, "config");
-    srv->setConfiguration(configSrv);
+    srv->set_inout(pacsConfiguration, "config");
+    srv->set_config(configSrv);
     srv->configure();
     srv->start();
     srv->update();

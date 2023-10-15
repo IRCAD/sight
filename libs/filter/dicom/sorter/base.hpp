@@ -25,7 +25,7 @@
 #include "filter/dicom/config.hpp"
 #include "filter/dicom/filter.hpp"
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 namespace sight::filter::dicom::sorter
 {

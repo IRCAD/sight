@@ -24,7 +24,7 @@
 
 #include "modules/io/igtl/config.hpp"
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 #include <service/controller.hpp>
 
@@ -63,15 +63,15 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Object::MODIFIED_SIG to service::slots::UPDATE.
+     * Connect data::object::MODIFIED_SIG to service::slots::UPDATE.
      */
-    MODULE_IO_IGTL_API connections_t getAutoConnections() const override;
+    MODULE_IO_IGTL_API connections_t auto_connections() const override;
 
     /**
      * @brief Sends the obj at the specified index.
      * @pre the configuration group must exists.
      */
-    MODULE_IO_IGTL_API virtual void sendObject(const data::Object::csptr& obj, std::size_t index) = 0;
+    MODULE_IO_IGTL_API virtual void sendObject(const data::object::csptr& obj, std::size_t index) = 0;
 
     /// Defines the signal emitted when service is connected.
     typedef core::com::signal<void ()> ConnectedSignalType;
@@ -82,7 +82,7 @@ protected:
     DisconnectSignalType::sptr m_sigDisconnected;
 
     static constexpr std::string_view s_OBJECTS_INPUT = "objects";
-    data::ptr_vector<data::Object, sight::data::Access::in> m_objects {this, s_OBJECTS_INPUT, true};
+    data::ptr_vector<data::object, sight::data::Access::in> m_objects {this, s_OBJECTS_INPUT, true};
 };
 
 } // namespace sight::module::io::igtl.

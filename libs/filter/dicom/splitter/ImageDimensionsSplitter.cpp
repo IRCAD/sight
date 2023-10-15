@@ -59,7 +59,7 @@ std::string ImageDimensionsSplitter::getDescription() const
 //-----------------------------------------------------------------------------
 
 ImageDimensionsSplitter::DicomSeriesContainerType ImageDimensionsSplitter::apply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr& logger
 ) const
 {

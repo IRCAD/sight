@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "viz/qt3d/core/GenericScene.hpp"
 
 #include "viz/qt3d/core/FrameGraph.hpp"
-#include "viz/qt3d/data/Mesh.hpp"
+#include "viz/qt3d/data/mesh.hpp"
 
 #include <QClearBuffers>
 #include <QPhongMaterial>
@@ -127,7 +127,7 @@ void GenericScene::setCameraController(Qt3DExtras::QAbstractCameraController* _c
 
 //------------------------------------------------------------------------------
 
-void GenericScene::setInputSettings(Qt3DInput::QInputSettings* _inputSettings)
+void GenericScene::SetInputSettings(Qt3DInput::QInputSettings* _inputSettings)
 {
     m_inputSettings = _inputSettings;
 }

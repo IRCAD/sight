@@ -22,7 +22,7 @@
 
 #include "io/vtk/ModelSeriesObjWriter.hpp"
 
-#include "io/vtk/helper/Mesh.hpp"
+#include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
@@ -30,9 +30,9 @@
 #include <core/jobs/observer.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/Material.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/Reconstruction.hpp>
+#include <data/material.hpp>
+#include <data/model_series.hpp>
+#include <data/reconstruction.hpp>
 
 #include <io/__/writer/registry/macros.hpp>
 
@@ -66,26 +66,26 @@ ModelSeriesObjWriter::~ModelSeriesObjWriter()
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkActor> createActor(const data::Reconstruction::sptr& pReconstruction)
+vtkSmartPointer<vtkActor> createActor(const data::reconstruction::sptr& pReconstruction)
 {
     vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 
-    data::Mesh::sptr mesh         = pReconstruction->getMesh();
-    data::Material::sptr material = pReconstruction->getMaterial();
+    data::mesh::sptr mesh         = pReconstruction->getMesh();
+    data::material::sptr material = pReconstruction->getMaterial();
 
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::Mesh::toVTKMesh(mesh, polyData);
+    io::vtk::helper::mesh::toVTKMesh(mesh, polyData);
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(polyData);
     actor->SetMapper(mapper);
 
     vtkProperty* property = actor->GetProperty();
 
-    data::Color::sptr diffuse = material->diffuse();
+    data::color::sptr diffuse = material->diffuse();
     property->SetDiffuseColor(diffuse->red(), diffuse->green(), diffuse->blue());
     property->SetOpacity(diffuse->alpha());
 
-    data::Color::sptr ambient = material->ambient();
+    data::color::sptr ambient = material->ambient();
     property->SetAmbientColor(ambient->red(), ambient->green(), ambient->blue());
 
     property->SetSpecularColor(1., 1., 1.);
@@ -108,11 +108,11 @@ void ModelSeriesObjWriter::write()
 
     const std::filesystem::path prefix = this->get_folder();
 
-    const data::ModelSeries::csptr modelSeries = getConcreteObject();
+    const data::model_series::csptr modelSeries = getConcreteObject();
 
     m_job->set_total_work_units(modelSeries->getReconstructionDB().size());
     std::uint64_t units = 0;
-    for(const data::Reconstruction::sptr& rec : modelSeries->getReconstructionDB())
+    for(const data::reconstruction::sptr& rec : modelSeries->getReconstructionDB())
     {
         vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
         vtkSmartPointer<vtkActor> actor       = createActor(rec);

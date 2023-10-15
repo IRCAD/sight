@@ -3,19 +3,19 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::console" />
 
-    <extension implements="sight::service::extension::Factory" >
+    <extension implements="sight::service::extension::factory" >
         <type>sight::service::base</type>
-        <service>ExTimeLine::SProducer</service>
+        <service>ExTimeLine::producer</service>
         <object>ExTimeLine::MessageTL</object>
     </extension>
 
-    <extension implements="sight::service::extension::Factory" >
+    <extension implements="sight::service::extension::factory" >
         <type>sight::service::base</type>
-        <service>ExTimeLine::SConsumer</service>
+        <service>ExTimeLine::consumer</service>
         <object>ExTimeLine::MessageTL</object>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>ExTimeLine_AppCfg</id>
         <config>
 
@@ -25,7 +25,7 @@
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="producer1Srv" type="ExTimeLine::SProducer" worker="producer" >
+            <service uid="producer1Srv" type="ExTimeLine::producer" worker="producer" >
                 <inout key="timeline" uid="messageTL" />
                 <message>Hello</message>
                 <id>0</id>
@@ -33,26 +33,26 @@
                 <timelineSize>2</timelineSize>
             </service>
 
-            <service uid="producer2Srv" type="ExTimeLine::SProducer" worker="producer" >
+            <service uid="producer2Srv" type="ExTimeLine::producer" worker="producer" >
                 <inout key="timeline" uid="messageTL" />
                 <message>World</message>
                 <id>1</id>
                 <period>2000</period>
             </service>
 
-            <service uid="producer3Srv" type="ExTimeLine::SProducer" worker="producer" >
+            <service uid="producer3Srv" type="ExTimeLine::producer" worker="producer" >
                 <inout key="timeline" uid="messageTL" />
                 <message>!!!!!</message>
                 <id>1</id>
                 <period>5000</period>
             </service>
 
-            <service uid="consumer1Srv" type="ExTimeLine::SConsumer" worker="consumer" >
+            <service uid="consumer1Srv" type="ExTimeLine::consumer" worker="consumer" >
                 <in key="timeline" uid="messageTL" />
                 <id>100</id>
             </service>
 
-            <service uid="consumer2Srv" type="ExTimeLine::SConsumer" worker="consumer" >
+            <service uid="consumer2Srv" type="ExTimeLine::consumer" worker="consumer" >
                 <in key="timeline" uid="messageTL" />
                 <id>200</id>
                 <period>5000</period>

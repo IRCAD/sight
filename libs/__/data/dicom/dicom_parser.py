@@ -624,7 +624,7 @@ def fetch_module(module_section_id: str) -> Module:
         attribute_elements.extend(fetch_attributes(attributes_table_id))
 
     if len(attribute_elements) == 0:
-        raise Exception(f"Unable to find any attributes in {name}")
+        raise exception(f"Unable to find any attributes in {name}")
 
     module = Module(
         name=name,
@@ -671,7 +671,7 @@ def fetch_module_usages(iod_modules_table: xml.etree.ElementTree.Element) -> lis
         module_usages.append(module_usage)
 
     if len(module_usages) == 0:
-        raise Exception(f"Unable to find any module in table.")
+        raise exception(f"Unable to find any module in table.")
 
     return module_usages
 
@@ -719,7 +719,7 @@ def fetch_iod(iod_section_id: str) -> Iod:
             functional_groups.extend(fetch_module_usages(iod_modules_table))
 
     if len(modules) == 0:
-        raise Exception(f"Unable to find any module in {name}")
+        raise exception(f"Unable to find any module in {name}")
 
     iod = Iod(
         name=name,

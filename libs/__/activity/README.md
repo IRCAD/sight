@@ -23,9 +23,9 @@ This is one of the most important library in _Sight_. It allows to build, to con
 - **base**: defines the interface for all activity validator's classes.
 - **activity**: defines the interface for all activity validator's classes.
 - **object**: defines the interface for all activity data validator's classes.
-- **DefaultActivity**: defines a validator which checks that activity requirements are valid.
-- **ImageProperties**: defines a validator which checks that properties of given images are the same.
-- **RelatedStudy**: defines a validator which checks that given series refer to the same study.
+- **default_activity**: defines a validator which checks that activity requirements are valid.
+- **image_properties**: defines a validator which checks that properties of given images are the same.
+- **related_study**: defines a validator which checks that given series refer to the same study.
 
 ### Other
 

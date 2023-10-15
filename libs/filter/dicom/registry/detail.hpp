@@ -37,9 +37,9 @@ class filter;
 namespace registry
 {
 
-typedef std::string KeyType;
+typedef std::string key_t;
 
-typedef core::factory_registry<SPTR(sight::filter::dicom::filter)(), KeyType> Type;
+typedef core::factory_registry<SPTR(sight::filter::dicom::filter)(), key_t> Type;
 
 FILTER_DICOM_API SPTR(Type) get();
 

@@ -27,14 +27,14 @@
 #include "io/dicom/writer/ie/Equipment.hpp"
 #include "io/dicom/writer/ie/FrameOfReference.hpp"
 #include "io/dicom/writer/ie/Patient.hpp"
-#include "io/dicom/writer/ie/Series.hpp"
+#include "io/dicom/writer/ie/series.hpp"
 #include "io/dicom/writer/ie/Study.hpp"
 #include "io/dicom/writer/ie/Surface.hpp"
 
 #include <core/runtime/path.hpp>
 #include <core/spy_log.hpp>
 
-#include <data/ModelSeries.hpp>
+#include <data/model_series.hpp>
 
 #include <gdcmSurfaceWriter.h>
 
@@ -67,10 +67,10 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
+void SurfaceSegmentationIOD::write(const data::series::csptr& series)
 {
     // Retrieve model series
-    data::ModelSeries::csptr modelSeries = std::dynamic_pointer_cast<const data::ModelSeries>(series);
+    data::model_series::csptr modelSeries = std::dynamic_pointer_cast<const data::model_series>(series);
     SIGHT_ASSERT("Image series should not be null.", modelSeries);
 
     // Create writer
@@ -79,7 +79,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
     io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
-    io::dicom::writer::ie::Series seriesIE(writer, m_instance, series);
+    io::dicom::writer::ie::series seriesIE(writer, m_instance, series);
     // Use Image as frame of reference
     io::dicom::writer::ie::FrameOfReference frameOfReferenceIE(writer, m_imageInstance, series);
     io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);

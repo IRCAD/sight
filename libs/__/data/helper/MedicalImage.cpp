@@ -24,14 +24,14 @@
 
 #include "data/helper/Field.hpp"
 
-#include <data/Boolean.hpp>
-#include <data/Composite.hpp>
-#include <data/Image.hpp>
-#include <data/Integer.hpp>
-#include <data/Point.hpp>
-#include <data/PointList.hpp>
-#include <data/String.hpp>
-#include <data/Vector.hpp>
+#include <data/boolean.hpp>
+#include <data/composite.hpp>
+#include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/point.hpp>
+#include <data/point_list.hpp>
+#include <data/string.hpp>
+#include <data/vector.hpp>
 
 #include <cmath>
 #include <numeric>
@@ -60,14 +60,14 @@ namespace MedicalImage
 
 //------------------------------------------------------------------------------
 
-bool checkImageValidity(data::Image::csptr _pImg)
+bool checkImageValidity(data::image::csptr _pImg)
 {
     return _pImg ? checkImageValidity(*_pImg) : false;
 }
 
 //------------------------------------------------------------------------------
 
-bool checkImageValidity(const data::Image& _image)
+bool checkImageValidity(const data::image& _image)
 {
     // Test if the image is allocated
     bool dataImageIsAllocated = (_image.getAllocatedSizeInBytes() > 0);
@@ -88,13 +88,13 @@ bool checkImageValidity(const data::Image& _image)
 
 //------------------------------------------------------------------------------
 
-bool checkImageSliceIndex(data::Image::sptr _pImg)
+bool checkImageSliceIndex(data::image::sptr _pImg)
 {
     SIGHT_ASSERT("_pImg pointer null", _pImg);
 
     bool fieldIsModified = false;
 
-    const data::Image::Size& imageSize = _pImg->size();
+    const data::image::Size& imageSize = _pImg->size();
 
     const auto axialIdx    = getSliceIndex(*_pImg, orientation_t::AXIAL);
     const auto frontalIdx  = getSliceIndex(*_pImg, orientation_t::FRONTAL);
@@ -140,10 +140,10 @@ bool checkImageSliceIndex(data::Image::sptr _pImg)
 
 //------------------------------------------------------------------------------
 
-bool isBufNull(const data::Image::BufferType* buf, const unsigned int len)
+bool isBufNull(const data::image::BufferType* buf, const unsigned int len)
 {
     bool isNull        = false;
-    const auto* buffer = static_cast<const data::Image::BufferType*>(buf);
+    const auto* buffer = static_cast<const data::image::BufferType*>(buf);
     isNull = 0 == std::accumulate(
         buffer,
         buffer + len,
@@ -156,7 +156,7 @@ bool isBufNull(const data::Image::BufferType* buf, const unsigned int len)
 //------------------------------------------------------------------------------
 
 std::optional<std::int64_t> getSliceIndex(
-    const data::Image& _image,
+    const data::image& _image,
     const orientation_t& _orientation
 )
 {
@@ -176,7 +176,7 @@ std::optional<std::int64_t> getSliceIndex(
             break;
 
         default:
-            SIGHT_THROW_EXCEPTION(data::Exception("Wrong orientation type."));
+            SIGHT_THROW_EXCEPTION(data::exception("Wrong orientation type."));
             break;
     }
 
@@ -184,8 +184,8 @@ std::optional<std::int64_t> getSliceIndex(
     const auto field = _image.getField(orientation_index);
     if(field)
     {
-        // Test if the type is data::Integer.
-        const auto field_int = _image.getField<data::Integer>(orientation_index);
+        // Test if the type is data::integer.
+        const auto field_int = _image.getField<data::integer>(orientation_index);
         if(field_int)
         {
             // Get value.
@@ -199,12 +199,12 @@ std::optional<std::int64_t> getSliceIndex(
 //------------------------------------------------------------------------------
 
 void setSliceIndex(
-    data::Image& _image,
+    data::image& _image,
     const orientation_t& _orientation,
     std::int64_t _sliceIdx
 )
 {
-    data::Integer::sptr value = std::make_shared<data::Integer>();
+    data::integer::sptr value = std::make_shared<data::integer>();
     value->setValue(_sliceIdx);
 
     std::string orientation_index;
@@ -223,7 +223,7 @@ void setSliceIndex(
             break;
 
         default:
-            SIGHT_THROW_EXCEPTION(data::Exception("Wrong orientation type."));
+            SIGHT_THROW_EXCEPTION(data::exception("Wrong orientation type."));
             break;
     }
 
@@ -232,14 +232,14 @@ void setSliceIndex(
 
 //------------------------------------------------------------------------------
 
-data::PointList::sptr getLandmarks(const data::Image& _image)
+data::point_list::sptr getLandmarks(const data::image& _image)
 {
-    return _image.getField<data::PointList>(std::string(id::landmarks));
+    return _image.getField<data::point_list>(std::string(id::landmarks));
 }
 
 //------------------------------------------------------------------------------
 
-void setLandmarks(data::Image& _image, const data::PointList::sptr& _landmarks)
+void setLandmarks(data::image& _image, const data::point_list::sptr& _landmarks)
 {
     if(_landmarks)
     {
@@ -247,20 +247,20 @@ void setLandmarks(data::Image& _image, const data::PointList::sptr& _landmarks)
     }
     else
     {
-        SIGHT_THROW_EXCEPTION(data::Exception("Trying to set nullptr as landmark field."));
+        SIGHT_THROW_EXCEPTION(data::exception("Trying to set nullptr as landmark field."));
     }
 }
 
 //------------------------------------------------------------------------------
 
-data::Vector::sptr getDistances(const data::Image& _image)
+data::vector::sptr getDistances(const data::image& _image)
 {
-    return _image.getField<data::Vector>(std::string(id::distances));
+    return _image.getField<data::vector>(std::string(id::distances));
 }
 
 //------------------------------------------------------------------------------
 
-void setDistances(data::Image& _image, const data::Vector::sptr& _distances)
+void setDistances(data::image& _image, const data::vector::sptr& _distances)
 {
     if(_distances)
     {
@@ -274,9 +274,9 @@ void setDistances(data::Image& _image, const data::Vector::sptr& _distances)
 
 //------------------------------------------------------------------------------
 
-bool getDistanceVisibility(const data::Image& _image)
+bool getDistanceVisibility(const data::image& _image)
 {
-    const auto visibility = _image.getField<Boolean>(std::string(id::distance_visibility));
+    const auto visibility = _image.getField<boolean>(std::string(id::distance_visibility));
 
     if(visibility)
     {
@@ -289,16 +289,16 @@ bool getDistanceVisibility(const data::Image& _image)
 
 //------------------------------------------------------------------------------
 
-void setDistanceVisibility(data::Image& _image, bool _visibility)
+void setDistanceVisibility(data::image& _image, bool _visibility)
 {
-    _image.setField(std::string(id::distance_visibility), std::make_shared<data::Boolean>(_visibility));
+    _image.setField(std::string(id::distance_visibility), std::make_shared<data::boolean>(_visibility));
 }
 
 //------------------------------------------------------------------------------
 
-bool getLandmarksVisibility(const data::Image& _image)
+bool getLandmarksVisibility(const data::image& _image)
 {
-    const auto visibility = _image.getField<Boolean>(std::string(id::landmarks_visibility));
+    const auto visibility = _image.getField<boolean>(std::string(id::landmarks_visibility));
 
     if(visibility)
     {
@@ -311,21 +311,21 @@ bool getLandmarksVisibility(const data::Image& _image)
 
 //------------------------------------------------------------------------------
 
-void setLandmarksVisibility(data::Image& _image, bool _visibility)
+void setLandmarksVisibility(data::image& _image, bool _visibility)
 {
-    _image.setField(std::string(id::landmarks_visibility), std::make_shared<data::Boolean>(_visibility));
+    _image.setField(std::string(id::landmarks_visibility), std::make_shared<data::boolean>(_visibility));
 }
 
 //------------------------------------------------------------------------------
 
-data::TransferFunction::sptr getTransferFunction(const data::Image& _image)
+data::transfer_function::sptr getTransferFunction(const data::image& _image)
 {
-    return _image.getField<data::TransferFunction>(std::string(id::transferFunction));
+    return _image.getField<data::transfer_function>(std::string(id::transferFunction));
 }
 
 //------------------------------------------------------------------------------
 
-void setTransferFunction(data::Image& _image, const data::TransferFunction::sptr& _cmp)
+void setTransferFunction(data::image& _image, const data::transfer_function::sptr& _cmp)
 {
     _image.setField(std::string(id::transferFunction), _cmp);
 }

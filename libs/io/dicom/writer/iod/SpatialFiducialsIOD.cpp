@@ -24,18 +24,18 @@
 
 #include "io/dicom/helper/FileWriter.hpp"
 #include "io/dicom/writer/ie/Equipment.hpp"
-#include "io/dicom/writer/ie/Image.hpp"
+#include "io/dicom/writer/ie/image.hpp"
 #include "io/dicom/writer/ie/Patient.hpp"
-#include "io/dicom/writer/ie/Series.hpp"
+#include "io/dicom/writer/ie/series.hpp"
 #include "io/dicom/writer/ie/SpatialFiducials.hpp"
 #include "io/dicom/writer/ie/Study.hpp"
 
 #include <core/spy_log.hpp>
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/Vector.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
+#include <data/vector.hpp>
 
 #include <gdcmWriter.h>
 
@@ -62,13 +62,13 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::write(const data::Series::csptr& series)
+void SpatialFiducialsIOD::write(const data::series::csptr& series)
 {
     // Retrieve image series
-    data::ImageSeries::csptr imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(series);
+    data::image_series::csptr imageSeries = std::dynamic_pointer_cast<const data::image_series>(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
-    const data::Vector::sptr distances = data::helper::MedicalImage::getDistances(*imageSeries);
+    const data::vector::sptr distances = data::helper::MedicalImage::getDistances(*imageSeries);
     SIGHT_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer
@@ -77,7 +77,7 @@ void SpatialFiducialsIOD::write(const data::Series::csptr& series)
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
     io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
-    io::dicom::writer::ie::Series seriesIE(writer, m_instance, series);
+    io::dicom::writer::ie::series seriesIE(writer, m_instance, series);
     io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);
     io::dicom::writer::ie::SpatialFiducials spatialFiducialsIE(writer, m_instance, imageSeries);
 

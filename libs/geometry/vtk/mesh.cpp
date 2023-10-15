@@ -22,7 +22,7 @@
 
 #include "mesh.hpp"
 
-#include <io/vtk/helper/Mesh.hpp>
+#include <io/vtk/helper/mesh.hpp>
 
 #include <vtkCenterOfMass.h>
 #include <vtkPolyData.h>
@@ -33,10 +33,10 @@ namespace sight::geometry::vtk
 
 //------------------------------------------------------------------------------
 
-data::Point::sptr computeCenterOfMass(const data::Mesh::csptr mesh, const bool useScalarAsWeights)
+data::point::sptr computeCenterOfMass(const data::mesh::csptr mesh, const bool useScalarAsWeights)
 {
     vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-    sight::io::vtk::helper::Mesh::toVTKMesh(mesh, polyData);
+    sight::io::vtk::helper::mesh::toVTKMesh(mesh, polyData);
 
     // Compute the center of mass
     vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
@@ -47,7 +47,7 @@ data::Point::sptr computeCenterOfMass(const data::Mesh::csptr mesh, const bool u
 
     std::array<double, 3> centerOfMass {};
     centerOfMassFilter->GetCenter(centerOfMass.data());
-    data::Point::sptr center = std::make_shared<data::Point>(centerOfMass[0], centerOfMass[1], centerOfMass[2]);
+    data::point::sptr center = std::make_shared<data::point>(centerOfMass[0], centerOfMass[1], centerOfMass[2]);
     return center;
 }
 

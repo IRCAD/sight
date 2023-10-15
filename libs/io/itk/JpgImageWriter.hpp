@@ -27,22 +27,22 @@
 #include <core/location/single_folder.hpp>
 #include <core/tools/progress_adviser.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 #include <filesystem>
 
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API JpgImageWriter : public writer::GenericObjectWriter<data::Image>,
+class IO_ITK_CLASS_API JpgImageWriter : public writer::generic_object_writer<data::image>,
                                         public core::location::single_folder,
                                         public core::tools::progress_adviser
 {
 public:
 
-    SIGHT_DECLARE_CLASS(JpgImageWriter, io::writer::GenericObjectWriter<data::Image>);
+    SIGHT_DECLARE_CLASS(JpgImageWriter, io::writer::generic_object_writer<data::image>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     IO_ITK_API ~JpgImageWriter() override = default;

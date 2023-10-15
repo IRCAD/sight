@@ -29,7 +29,7 @@ namespace sight::activity::builder::factory
 
 //------------------------------------------------------------------------------
 
-sight::activity::builder::base::sptr make(const activity::builder::registry::KeyType& classname)
+sight::activity::builder::base::sptr make(const activity::builder::registry::key_t& classname)
 {
     return activity::builder::registry::get()->create(classname);
 }

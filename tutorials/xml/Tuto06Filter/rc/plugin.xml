@@ -3,22 +3,22 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>Tuto06Filter_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- This is the source image for the filtering. -->
-            <object uid="myImage1" type="sight::data::Image" />
+            <object uid="myImage1" type="sight::data::image" />
             <!-- This is the output image for the filtering. "deferred" defines that the image is not created at the
                  beginning, but will be created by a service. -->
-            <object uid="myImage2" type="sight::data::Image" src="deferred" />
+            <object uid="myImage2" type="sight::data::image" src="deferred" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
             <!-- Windows & Main Menu -->
-            <service uid="mainFrame" type="sight::module::ui::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::frame" >
                 <gui>
                     <frame>
                         <name>Tuto06Filter</name>
@@ -33,7 +33,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::menu_bar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -47,7 +47,7 @@
             </service>
 
             <!-- Menus -->
-            <service uid="menuFileView" type="sight::module::ui::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::menu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -61,7 +61,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFilterView" type="sight::module::ui::SMenu" >
+            <service uid="menuFilterView" type="sight::module::ui::menu" >
                 <gui>
                     <layout>
                         <menuItem name="Compute image filter" />
@@ -74,7 +74,7 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::SView" >
+            <service uid="containerView" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
@@ -92,21 +92,21 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Action to quit the application -->
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
             <!-- Action to open image file: call update on image reader service -->
-            <service uid="openImageAct" type="sight::module::ui::SAction" />
+            <service uid="openImageAct" type="sight::module::ui::action" />
 
             <!-- Action apply threshold filter: call update on threshold filter service -->
-            <service uid="imageFilterAct" type="sight::module::ui::SAction" />
+            <service uid="imageFilterAct" type="sight::module::ui::action" />
 
             <!-- Action apply flip filter: call 'flipAxisY' slot on flip service -->
-            <service uid="imageFlipperAct" type="sight::module::ui::SAction" />
+            <service uid="imageFlipperAct" type="sight::module::ui::action" />
 
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Reader of the input image -->
-            <service uid="imageReaderSrv" type="sight::module::ui::io::SSelector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector" >
                 <inout key="data" uid="myImage1" />
                 <type mode="reader" />
             </service>
@@ -117,7 +117,7 @@
                 output image is 'myImage2'.
                 The two images are declared above.
              -->
-            <service uid="imageFilterSrv" type="sight::module::filter::image::SThreshold" >
+            <service uid="imageFilterSrv" type="sight::module::filter::image::threshold" >
                 <in key="source" uid="myImage1" />
                 <out key="target" uid="myImage2" />
                 <config>
@@ -131,25 +131,25 @@
                 output image is 'myImage2'.
                 The two images are declared above.
              -->
-            <service uid="imageFlipperSrv" type="sight::module::filter::image::SFlip" >
+            <service uid="imageFlipperSrv" type="sight::module::filter::image::flip" >
                 <in key="source" uid="myImage1" />
                 <out key="target" uid="myImage2" />
             </service>
 
             <!--
-                Renderer of the 1st Image:
+                Renderer of the 1st image:
                 This is the source image for the filtering.
             -->
-            <service uid="image1Srv" type="sight::module::viz::sample::SImage" >
-                <in key="image" uid="myImage1" autoConnect="true" />
+            <service uid="image1Srv" type="sight::module::viz::sample::image" >
+                <in key="image" uid="myImage1" auto_connect="true" />
             </service>
 
             <!--
-                Rendered for the 2nd Image:
+                Rendered for the 2nd image:
                 This is the output image for the filtering.
             -->
-            <service uid="image2Srv" type="sight::module::viz::sample::SImage" >
-                <in key="image" uid="myImage2" autoConnect="true" />
+            <service uid="image2Srv" type="sight::module::viz::sample::image" >
+                <in key="image" uid="myImage2" auto_connect="true" />
             </service>
 
             <!-- ******************************* Start services ***************************************** -->

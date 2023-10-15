@@ -24,7 +24,7 @@
 
 #include "io/dicom/reader/ie/InformationEntity.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 namespace sight::io::dicom::reader::ie
 {
@@ -32,7 +32,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief Spatial Fiducials Information Entity class
  */
-class IO_DICOM_CLASS_API SpatialFiducials : public io::dicom::reader::ie::InformationEntity<data::Image>
+class IO_DICOM_CLASS_API SpatialFiducials : public io::dicom::reader::ie::InformationEntity<data::image>
 {
 public:
 
@@ -47,10 +47,10 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API SpatialFiducials(
-        const CSPTR(data::DicomSeries)& dicomSeries,
+        const CSPTR(data::dicom_series)& dicomSeries,
         const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Image::sptr& series,
+        const data::image::sptr& series,
         const core::log::logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr

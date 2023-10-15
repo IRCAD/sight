@@ -3,7 +3,7 @@ sight_add_target(Tuto09MatrixTransformInGS TYPE APP)
 add_dependencies(
     Tuto09MatrixTransformInGS
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     module_viz_scene3d
@@ -22,6 +22,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto09MatrixTransformInGS_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES Tuto09MatrixTransformInGS_AppCfg)
 
 sight_generate_profile(Tuto09MatrixTransformInGS)

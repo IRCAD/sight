@@ -54,15 +54,6 @@ const core::com::signals::key_t action::CHECKED_SIG    = "checked";
 const core::com::signals::key_t action::UNCHECKED_SIG  = "unchecked";
 const core::com::signals::key_t action::IS_VISIBLE_SIG = "isVisible";
 
-// Deprecated in Sight 22.0 and removed in Sight 23.0
-const core::com::slots::key_t action::SET_IS_ACTIVE_SLOT = "setIsActive";
-const core::com::slots::key_t action::ACTIVATE_SLOT      = "activate";
-const core::com::slots::key_t action::DEACTIVATE_SLOT    = "deactivate";
-
-const core::com::slots::key_t action::SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
-const core::com::slots::key_t action::SET_EXECUTABLE_SLOT    = "setExecutable";
-const core::com::slots::key_t action::SET_INEXECUTABLE_SLOT  = "setInexecutable";
-
 action::action()
 {
     new_slot(SET_CHECKED_SLOT, &action::setChecked, this);
@@ -79,14 +70,6 @@ action::action()
     new_slot(SHOW_SLOT, [this](){this->setVisible(true);});
     new_slot(HIDE_SLOT, [this](){this->setVisible(false);});
     new_slot(TOGGLE_VISIBILITY_SLOT, [this]{this->setVisible(!m_visible);});
-
-    new_slot(SET_IS_ACTIVE_SLOT, &action::setIsActive, this);
-    new_slot(ACTIVATE_SLOT, [this](){this->setIsActive(true);});
-    new_slot(DEACTIVATE_SLOT, [this](){this->setIsActive(false);});
-
-    new_slot(SET_IS_EXECUTABLE_SLOT, &action::setIsExecutable, this);
-    new_slot(SET_EXECUTABLE_SLOT, [this](){this->setIsExecutable(true);});
-    new_slot(SET_INEXECUTABLE_SLOT, [this](){this->setIsExecutable(false);});
 
     new_signal<bool_signal_t>(IS_ENABLED_SIG);
     new_signal<void_signal_t>(ENABLED_SIG);
@@ -108,33 +91,10 @@ void action::initialize()
 {
     m_registry = ui::detail::registry::Action::make(this->get_id());
 
-    auto config = this->getConfiguration();
+    auto config = this->get_config();
 
-    if(config.get_child_optional("state.<xmlattr>.active").has_value())
-    {
-        SIGHT_WARN(
-            "'<state active=" "/> option is deprecated and will be removed in Sight 23.0,"
-                              " please use '<state checked=" ">' instead."
-        );
-        m_checked = core::runtime::get_ptree_value(config, "state.<xmlattr>.active", m_checked);
-    }
-    else
-    {
-        m_checked = core::runtime::get_ptree_value(config, "state.<xmlattr>.checked", m_checked);
-    }
-
-    if(config.get_child_optional("state.<xmlattr>.executable").has_value())
-    {
-        SIGHT_WARN(
-            "'<state executable=" "/> option is deprecated and will be removed in Sight 23.0,"
-                                  " please use '<state enabled=" ">' instead."
-        );
-        m_enabled = core::runtime::get_ptree_value(config, "state.<xmlattr>.executable", m_enabled);
-    }
-    else
-    {
-        m_enabled = core::runtime::get_ptree_value(config, "state.<xmlattr>.enabled", m_enabled);
-    }
+    m_checked = core::runtime::get_ptree_value(config, "state.<xmlattr>.checked", m_checked);
+    m_enabled = core::runtime::get_ptree_value(config, "state.<xmlattr>.enabled", m_enabled);
 
     m_inverted = core::runtime::get_ptree_value(config, "state.<xmlattr>.inverse", m_inverted);
     m_visible  = core::runtime::get_ptree_value(config, "state.<xmlattr>.visible", m_visible);
@@ -193,25 +153,6 @@ bool action::checked() const
 
 //-----------------------------------------------------------------------------
 
-void action::setIsActive(bool isActive)
-{
-    SIGHT_WARN(
-        "'setIsActive/activate/deactivate' slots are deprecated and will be removed in Sight 23.0,"
-        " please use 'setChecked/check/uncheck' instead."
-    );
-
-    this->setChecked(isActive);
-}
-
-//-----------------------------------------------------------------------------
-
-bool action::getIsActive() const
-{
-    return this->checked();
-}
-
-//-----------------------------------------------------------------------------
-
 void action::setEnabled(bool enabled)
 {
     m_enabled = enabled;
@@ -237,24 +178,6 @@ void action::setEnabled(bool enabled)
 bool action::enabled() const
 {
     return m_enabled;
-}
-
-//-----------------------------------------------------------------------------
-
-void action::setIsExecutable(bool isExecutable)
-{
-    SIGHT_WARN(
-        "'setIsExecutable/setExecutable/setInexecutable' slots are deprecated and will be removed in Sight 23.0,"
-        " please use 'setEnabled/enable/disable' instead."
-    );
-    this->setEnabled(isExecutable);
-}
-
-//-----------------------------------------------------------------------------
-
-bool action::getIsExecutable() const
-{
-    return this->enabled();
 }
 
 //-----------------------------------------------------------------------------
@@ -289,23 +212,9 @@ bool action::visible() const
 
 //-----------------------------------------------------------------------------
 
-bool action::isVisible() const
-{
-    return visible();
-}
-
-//-----------------------------------------------------------------------------
-
 bool action::inverted() const
 {
     return m_inverted;
-}
-
-//-----------------------------------------------------------------------------
-
-bool action::isInverted() const
-{
-    return inverted();
 }
 
 //-----------------------------------------------------------------------------
@@ -314,7 +223,7 @@ bool action::confirmAction()
 {
     bool actionIsConfirmed = true;
 
-    if(m_confirmAction && this->getStatus() == base::STARTED)
+    if(m_confirmAction && this->status() == base::STARTED)
     {
         ui::dialog::message dialog;
         dialog.setTitle("Confirmation");

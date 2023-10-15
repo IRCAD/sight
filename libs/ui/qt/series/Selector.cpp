@@ -22,9 +22,9 @@
 
 #include "Selector.hpp"
 
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/Series.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
+#include <data/series.hpp>
 
 #include <QItemSelectionModel>
 #include <QKeyEvent>
@@ -53,7 +53,7 @@ Selector::Selector(const std::string& displayColumn, QWidget* _parent) :
 
 //-----------------------------------------------------------------------------
 
-void Selector::addSeries(data::Series::sptr _series)
+void Selector::addSeries(data::series::sptr _series)
 {
     m_model->addSeries(_series);
     QStandardItem* studyItem = m_model->findStudyItem(_series);
@@ -67,7 +67,7 @@ void Selector::addSeries(data::Series::sptr _series)
 
 //-----------------------------------------------------------------------------
 
-void Selector::removeSeries(data::Series::sptr _series)
+void Selector::removeSeries(data::series::sptr _series)
 {
     m_model->removeSeries(_series);
 }
@@ -105,7 +105,7 @@ Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& _indexList
 
         if(index.data(SelectorModel::ITEM_TYPE) == SelectorModel::SERIES)
         {
-            data::Series::sptr series = std::dynamic_pointer_cast<data::Series>(obj);
+            data::series::sptr series = std::dynamic_pointer_cast<data::series>(obj);
             vSeries.push_back(series);
         }
     }
@@ -145,7 +145,7 @@ Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& 
         const std::string uid = child->data(SelectorModel::UID).toString().toStdString();
         SIGHT_ASSERT("UID must not be empty.", !uid.empty());
         core::tools::object::sptr obj = core::tools::id::get_object(uid);
-        data::Series::sptr series     = std::dynamic_pointer_cast<data::Series>(obj);
+        data::series::sptr series     = std::dynamic_pointer_cast<data::series>(obj);
         vSeries.push_back(series);
     }
 
@@ -216,7 +216,7 @@ void Selector::onRemoveStudyInstanceUID(const std::string& _uid)
 
                     const std::string seriesUID = seriesItem->index().data(SelectorModel::UID).toString().toStdString();
                     auto series                 =
-                        std::dynamic_pointer_cast<data::Series>(core::tools::id::get_object(seriesUID));
+                        std::dynamic_pointer_cast<data::series>(core::tools::id::get_object(seriesUID));
 
                     if(series)
                     {
@@ -256,7 +256,7 @@ void Selector::onRemoveSeriesID(const std::string& _id)
                 if(seriesUID == _id)
                 {
                     selection.push_back(seriesItem->index());
-                    auto series = std::dynamic_pointer_cast<data::Series>(core::tools::id::get_object(seriesUID));
+                    auto series = std::dynamic_pointer_cast<data::series>(core::tools::id::get_object(seriesUID));
 
                     if(series)
                     {

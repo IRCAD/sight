@@ -23,9 +23,9 @@
 
 #include <core/type.hpp>
 
-#include <data/Array.hpp>
+#include <data/array.hpp>
 
-#include <io/__/writer/GzArrayWriter.hpp>
+#include <io/__/writer/gz_array_writer.hpp>
 
 #include <zlib.h>
 
@@ -40,15 +40,15 @@ namespace sight::io::ut
 
 void GzArrayWriterTest::basicTest()
 {
-    auto gzArrayWriter             = std::make_shared<writer::GzArrayWriter>();
+    auto gzArrayWriter             = std::make_shared<writer::gz_array_writer>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + gzArrayWriter->extension());
-    auto arrayIn                   = std::make_shared<data::Array>();
+    auto arrayIn                   = std::make_shared<data::array>();
     arrayIn->resize({16}, core::type::UINT8);
     {
         auto arrayLock = arrayIn->dump_lock();
         std::iota(arrayIn->begin<std::uint8_t>(), arrayIn->end<std::uint8_t>(), std::uint8_t(0));
     }
-    gzArrayWriter->setObject(arrayIn);
+    gzArrayWriter->set_object(arrayIn);
     std::filesystem::remove(filepath);
     gzArrayWriter->set_file(filepath);
     CPPUNIT_ASSERT_NO_THROW(gzArrayWriter->write());

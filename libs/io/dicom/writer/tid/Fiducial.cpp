@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,11 +32,11 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/PointList.hpp>
-#include <data/Series.hpp>
-#include <data/String.hpp>
+#include <data/point_list.hpp>
+#include <data/series.hpp>
+#include <data/string.hpp>
 #include <data/types.hpp>
-#include <data/Vector.hpp>
+#include <data/vector.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 
@@ -52,9 +52,9 @@ namespace sight::io::dicom::writer::tid
 Fiducial::Fiducial(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::Image::csptr& image
+    const data::image::csptr& image
 ) :
-    io::dicom::writer::tid::TemplateID<data::Image>(writer, instance, image)
+    io::dicom::writer::tid::TemplateID<data::image>(writer, instance, image)
 {
 }
 
@@ -70,11 +70,11 @@ void Fiducial::createNodes(
     bool useSCoord3D
 )
 {
-    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
+    data::point_list::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
     if(pointList)
     {
         unsigned int id = 1;
-        for(const data::Point::sptr& point : pointList->getPoints())
+        for(const data::point::sptr& point : pointList->getPoints())
         {
             this->createFiducial(parent, point, id++, useSCoord3D);
         }
@@ -85,7 +85,7 @@ void Fiducial::createNodes(
 
 void Fiducial::createFiducial(
     const SPTR(io::dicom::container::sr::DicomSRNode)& parent,
-    const data::Point::csptr& point,
+    const data::point::csptr& point,
     unsigned int id,
     bool useSCoord3D
 )

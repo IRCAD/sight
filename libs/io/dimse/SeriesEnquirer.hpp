@@ -52,7 +52,7 @@ namespace sight::io::dimse
             "ORTHANC";
         seriesEnquirer->connect();
         OFList< QRResponse* > responses = seriesEnquire->findSeriesByModality("CT");
-        data::SeriesSet::container_type series = io::dimse::helper::Series::toFwMedData(responses);
+        data::series_set::container_type series = io::dimse::helper::Series::toFwMedData(responses);
         io::dimse::helper::Series::releaseResponses(responses);
     }
     catch(io::dimse::exceptions::Base& _e)

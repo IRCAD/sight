@@ -25,8 +25,8 @@
 #include "io/dicom/container/sr/DicomSRNode.hpp"
 #include "io/dicom/reader/tid/TemplateID.hpp"
 
-#include <data/DicomSeries.hpp>
-#include <data/Image.hpp>
+#include <data/dicom_series.hpp>
+#include <data/image.hpp>
 
 namespace sight::io::dicom::reader::tid
 {
@@ -35,7 +35,7 @@ namespace sight::io::dicom::reader::tid
  * @brief Fiducial TID
  * @see TID t1tt3 FIXME: Set the final TID
  */
-class IO_DICOM_CLASS_API Fiducial : public io::dicom::reader::tid::TemplateID<data::Image>
+class IO_DICOM_CLASS_API Fiducial : public io::dicom::reader::tid::TemplateID<data::image>
 {
 public:
 
@@ -48,10 +48,10 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API Fiducial(
-        const CSPTR(data::DicomSeries)& dicomSeries,
+        const CSPTR(data::dicom_series)& dicomSeries,
         const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Image::sptr& image,
+        const data::image::sptr& image,
         const core::log::logger::sptr& logger
     );
 

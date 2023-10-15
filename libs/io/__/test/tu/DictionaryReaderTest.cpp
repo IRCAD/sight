@@ -24,12 +24,12 @@
 
 #include <core/os/temp_path.hpp>
 
-#include <data/StructureTraits.hpp>
-#include <data/StructureTraitsDictionary.hpp>
-#include <data/StructureTraitsHelper.hpp>
+#include <data/structure_traits.hpp>
+#include <data/structure_traits_dictionary.hpp>
+#include <data/structure_traits_helper.hpp>
 
-#include <io/__/reader/DictionaryReader.hpp>
-#include <io/__/reader/IObjectReader.hpp>
+#include <io/__/reader/dictionary_reader.hpp>
+#include <io/__/reader/object_reader.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -70,30 +70,30 @@ void DictionaryReaderTest::tearDown()
 void DictionaryReaderTest::test_1()
 {
     // Expected data
-    data::StructureTraits::sptr expectedSkin = std::make_shared<data::StructureTraits>();
+    data::structure_traits::sptr expectedSkin = std::make_shared<data::structure_traits>();
     expectedSkin->setType("Skin");
-    expectedSkin->setClass(data::StructureTraits::ENVIRONMENT);
-    expectedSkin->setColor(std::make_shared<data::Color>(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F));
-    data::StructureTraits::CategoryContainer skinCat(1);
-    skinCat[0] = data::StructureTraits::BODY;
+    expectedSkin->setClass(data::structure_traits::ENVIRONMENT);
+    expectedSkin->setColor(std::make_shared<data::color>(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F));
+    data::structure_traits::CategoryContainer skinCat(1);
+    skinCat[0] = data::structure_traits::BODY;
     expectedSkin->setCategories(skinCat);
     expectedSkin->setAnatomicRegion("Entire_Body");
     expectedSkin->setPropertyCategory("Anat_Struct");
     expectedSkin->setPropertyType("Entire_Body");
 
-    auto structDico = std::make_shared<data::StructureTraitsDictionary>();
+    auto structDico = std::make_shared<data::structure_traits_dictionary>();
     // get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::DictionaryReader>();
-    dictionaryReader->setObject(structDico);
+    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
+    dictionaryReader->set_object(structDico);
     dictionaryReader->set_file(m_tmpDictionaryFilePath);
     dictionaryReader->read();
 
-    data::StructureTraits::sptr struct1 = structDico->getStructure("Skin");
+    data::structure_traits::sptr struct1 = structDico->getStructure("Skin");
     CPPUNIT_ASSERT(struct1);
     CPPUNIT_ASSERT_EQUAL(struct1->getType(), expectedSkin->getType());
     CPPUNIT_ASSERT_EQUAL(struct1->getClass(), expectedSkin->getClass());
 
-    data::Color::sptr color1 = struct1->getColor();
+    data::color::sptr color1 = struct1->getColor();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->red(), expectedSkin->getColor()->red(), 0.001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->green(), expectedSkin->getColor()->green(), 0.001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(color1->blue(), expectedSkin->getColor()->blue(), 0.001);
@@ -117,10 +117,10 @@ void DictionaryReaderTest::test_2()
     m_tmpDictionaryFilePath = core::os::temp_dir::shared_directory() / "WrongDictionary.dic";
     sight::io::ut::DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
 
-    auto structDico = std::make_shared<data::StructureTraitsDictionary>();
+    auto structDico = std::make_shared<data::structure_traits_dictionary>();
     // Get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::DictionaryReader>();
-    dictionaryReader->setObject(structDico);
+    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
+    dictionaryReader->set_object(structDico);
     dictionaryReader->set_file(m_tmpDictionaryFilePath);
 
     CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::exception);
@@ -131,10 +131,10 @@ void DictionaryReaderTest::test_2()
 void DictionaryReaderTest::test_3()
 {
     m_tmpDictionaryFilePath = core::os::temp_dir::shared_directory() / "NoDictionary.dic";
-    auto structDico = std::make_shared<data::StructureTraitsDictionary>();
+    auto structDico = std::make_shared<data::structure_traits_dictionary>();
     // Get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::DictionaryReader>();
-    dictionaryReader->setObject(structDico);
+    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
+    dictionaryReader->set_object(structDico);
     dictionaryReader->set_file(m_tmpDictionaryFilePath);
 
     CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::exception);
@@ -148,10 +148,10 @@ void DictionaryReaderTest::test_4()
     m_tmpDictionaryFilePath = core::os::temp_dir::shared_directory() / "WrongDictionary.dic";
     sight::io::ut::DictionaryReaderTest::generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
 
-    auto structDico = std::make_shared<data::StructureTraitsDictionary>();
+    auto structDico = std::make_shared<data::structure_traits_dictionary>();
     // Get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::DictionaryReader>();
-    dictionaryReader->setObject(structDico);
+    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
+    dictionaryReader->set_object(structDico);
     dictionaryReader->set_file(m_tmpDictionaryFilePath);
 
     CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::exception);
@@ -165,10 +165,10 @@ void DictionaryReaderTest::test_5()
     m_tmpDictionaryFilePath = core::os::temp_dir::shared_directory() / "WrongDictionary.dic";
     sight::io::ut::DictionaryReaderTest::generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
 
-    auto structDico = std::make_shared<data::StructureTraitsDictionary>();
+    auto structDico = std::make_shared<data::structure_traits_dictionary>();
     // Get data from file.
-    auto dictionaryReader = std::make_shared<io::reader::DictionaryReader>();
-    dictionaryReader->setObject(structDico);
+    auto dictionaryReader = std::make_shared<io::reader::dictionary_reader>();
+    dictionaryReader->set_object(structDico);
     dictionaryReader->set_file(m_tmpDictionaryFilePath);
 
     CPPUNIT_ASSERT_THROW(dictionaryReader->read(), core::exception);

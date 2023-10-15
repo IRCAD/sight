@@ -22,14 +22,14 @@
 
 #include "io/__/writer/factory/new.hpp"
 
-#include "io/__/writer/IObjectWriter.hpp"
+#include "io/__/writer/object_writer.hpp"
 
 namespace sight::io::writer::factory
 {
 
 //------------------------------------------------------------------------------
 
-io::writer::IObjectWriter::sptr make(const io::writer::registry::KeyType& classname)
+io::writer::object_writer::sptr make(const io::writer::registry::key_t& classname)
 {
     return io::writer::registry::get()->create(classname);
 }

@@ -3,7 +3,7 @@ sight_add_target(Tuto03DataService TYPE APP)
 add_dependencies(
     Tuto03DataService
     sightrun
-    module_appXml
+    module_app
     module_ui_qt
     data
     module_service
@@ -13,6 +13,6 @@ add_dependencies(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto03DataService_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES Tuto03DataService_AppCfg)
 
 sight_generate_profile(Tuto03DataService)

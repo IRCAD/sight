@@ -25,7 +25,7 @@
 #include "filter/dicom/exceptions/FilterFailure.hpp"
 #include "filter/dicom/registry/macros.hpp"
 
-#include <geometry/data/VectorFunctions.hpp>
+#include <geometry/data/vector_functions.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -61,7 +61,7 @@ std::string SliceThicknessModifier::getDescription() const
 //-----------------------------------------------------------------------------
 
 SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr&
     /*logger*/
 ) const

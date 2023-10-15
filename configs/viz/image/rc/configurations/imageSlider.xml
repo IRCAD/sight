@@ -1,7 +1,7 @@
 <!--
 Example:
 
-<service uid="..." type="sight::service::SConfigController">
+<service uid="..." type="sight::app::config_controller">
     <appConfig id="sight::config::viz::image::imageSlider2D" />
     <parameter replace="WID_PARENT" by="negatoSliderView" />
     <parameter replace="sliceIndex" by="axial" />
@@ -12,7 +12,7 @@ Example:
     </inout>
 </service>
 -->
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>sight::config::viz::image::imageSlider</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -29,10 +29,10 @@ Example:
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::Image" src="ref" />
-        <object uid="${transferFunction}" type="sight::data::TransferFunction" src="ref" />
+        <object uid="${image}" type="sight::data::image" src="ref" />
+        <object uid="${transferFunction}" type="sight::data::transfer_function" src="ref" />
 
-        <service uid="view" type="sight::module::ui::SView">
+        <service uid="view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -47,7 +47,7 @@ Example:
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::SView">
+        <service uid="toolBarView" type="sight::module::ui::view">
             <gui>
                 <toolBar backgroundColor="#00000000" />
                 <layout type="sight::ui::layout::line">
@@ -59,7 +59,7 @@ Example:
             </registry>
         </service>
 
-        <service uid="topToolbarView" type="sight::module::ui::SToolBar">
+        <service uid="topToolbarView" type="sight::module::ui::tool_bar">
             <gui>
                 <layout>
                     <menuItem name="slice" icon="sight::module::ui::flaticons/Layers.svg" style="radio" />
@@ -75,7 +75,7 @@ Example:
             </registry>
         </service>
 
-        <service uid="sliderView" type="sight::module::ui::SView">
+        <service uid="sliderView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -93,33 +93,33 @@ Example:
 
         <!-- ************************************* Actions ************************************ -->
 
-        <service uid="sliceAct" type="sight::module::ui::SAction">
+        <service uid="sliceAct" type="sight::module::ui::action">
             <state visible="${enableSliceSlider}" />
         </service>
 
-        <service uid="windowingAct" type="sight::module::ui::SAction" >
+        <service uid="windowingAct" type="sight::module::ui::action" >
             <state checked="true" />
         </service>
 
-        <service uid="opacityAct" type="sight::module::ui::SAction" >
+        <service uid="opacityAct" type="sight::module::ui::action" >
             <state visible="${enableOpacity}" />
         </service>
 
         <!-- ************************************* Services *********************************** -->
 
-        <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor">
+        <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::slice_index_position_editor">
             <inout key="image" uid="${image}" />
             <sliceIndex>${sliceIndex}</sliceIndex>
             <displayAxisSelector>${enableSliceType}</displayAxisSelector>
         </service>
 
-        <service uid="windowLevelImage" type="sight::module::ui::qt::image::SWindowLevel">
+        <service uid="windowLevelImage" type="sight::module::ui::qt::image::window_level">
             <config minimal="true" />
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
         </service>
 
-        <service uid="transferFunctionOpacity" type="sight::module::ui::qt::image::STransferFunctionOpacity">
+        <service uid="transferFunctionOpacity" type="sight::module::ui::qt::image::transfer_function_opacity">
             <inout key="tf" uid="${transferFunction}" />
         </service>
 

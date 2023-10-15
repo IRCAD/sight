@@ -42,7 +42,7 @@ template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
-    const viz::scene3d::registry::KeyType& classname
+    const viz::scene3d::registry::key_t& classname
 );
 
 template<class CLASSNAME>
@@ -61,7 +61,7 @@ template<class CLASSNAME>
 SPTR(CLASSNAME) make(std::pair<unsigned int, unsigned int> _dims);
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
-    const viz::scene3d::registry::KeyType& classname,
+    const viz::scene3d::registry::key_t& classname,
     std::pair<unsigned int, unsigned int> _dims
 );
 
@@ -80,7 +80,7 @@ template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::ILight) make(
-    const viz::scene3d::registry::KeyType& classname
+    const viz::scene3d::registry::key_t& classname
 );
 
 template<class CLASSNAME>
@@ -99,7 +99,7 @@ template<class CLASSNAME>
 SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::Layer) & _layer);
 
 VIZ_SCENE3D_API SPTR(viz::scene3d::IText) make(
-    const viz::scene3d::registry::KeyType& classname,
+    const viz::scene3d::registry::key_t& classname,
     const SPTR(sight::viz::scene3d::Layer) & _layer
 );
 

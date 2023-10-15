@@ -71,7 +71,7 @@ public:
     }
 
     /// Reading
-    inline void read(data::Image& image, std::istream& istream, Flag /*flag*/)
+    inline void read(data::image& image, std::istream& istream, Flag /*flag*/)
     {
         // Get input size
         istream.seekg(0, std::ios::end);
@@ -136,54 +136,54 @@ public:
                     case JCS_GRAYSCALE:
                     {
                         SIGHT_THROW_IF(
-                            "data::Image::PixelFormat::GRAY_SCALE must have exactly one component.",
+                            "data::image::PixelFormat::GRAY_SCALE must have exactly one component.",
                             m_cinfo.num_components != 1
                         );
 
-                        return data::Image::PixelFormat::GRAY_SCALE;
+                        return data::image::PixelFormat::GRAY_SCALE;
                     }
 
                     case JCS_RGB:
                     case JCS_EXT_RGB:
                     {
                         SIGHT_THROW_IF(
-                            "data::Image::PixelFormat::RGB must have exactly three components.",
+                            "data::image::PixelFormat::RGB must have exactly three components.",
                             m_cinfo.num_components != 3
                         );
 
-                        return data::Image::PixelFormat::RGB;
+                        return data::image::PixelFormat::RGB;
                     }
 
                     case JCS_EXT_BGR:
                     {
                         SIGHT_THROW_IF(
-                            "data::Image::PixelFormat::BGR must have exactly three components.",
+                            "data::image::PixelFormat::BGR must have exactly three components.",
                             m_cinfo.num_components != 3
                         );
 
-                        return data::Image::PixelFormat::BGR;
+                        return data::image::PixelFormat::BGR;
                     }
 
                     case JCS_EXT_RGBA:
                     case JCS_EXT_RGBX:
                     {
                         SIGHT_THROW_IF(
-                            "data::Image::PixelFormat::RGBA must have exactly four components.",
+                            "data::image::PixelFormat::RGBA must have exactly four components.",
                             m_cinfo.num_components != 4
                         );
 
-                        return data::Image::PixelFormat::RGBA;
+                        return data::image::PixelFormat::RGBA;
                     }
 
                     case JCS_EXT_BGRA:
                     case JCS_EXT_BGRX:
                     {
                         SIGHT_THROW_IF(
-                            "data::Image::PixelFormat::BGRA must have exactly four components.",
+                            "data::image::PixelFormat::BGRA must have exactly four components.",
                             m_cinfo.num_components != 4
                         );
 
-                        return data::Image::PixelFormat::BGRA;
+                        return data::image::PixelFormat::BGRA;
                     }
 
                     default:

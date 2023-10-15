@@ -29,7 +29,7 @@ namespace sight::viz::qt3d::factory
 
 //------------------------------------------------------------------------------
 
-viz::qt3d::window_interactor::sptr make(const viz::qt3d::registry::KeyType& classname)
+viz::qt3d::window_interactor::sptr make(const viz::qt3d::registry::key_t& classname)
 {
     return viz::qt3d::registry::get()->create(classname);
 }

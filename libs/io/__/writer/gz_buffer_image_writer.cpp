@@ -1,0 +1,95 @@
+/************************************************************************
+ *
+ * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2012-2020 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "io/__/writer/gz_buffer_image_writer.hpp"
+
+#include "io/__/writer/registry/macros.hpp"
+
+#include <data/image.hpp>
+
+#include <zlib.h>
+
+#include <iostream>
+
+SIGHT_REGISTER_IO_WRITER(sight::io::writer::gz_buffer_image_writer);
+
+namespace sight::io::writer
+{
+
+//------------------------------------------------------------------------------
+
+void gz_buffer_image_writer::write()
+{
+    SIGHT_ASSERT("File path is empty.", get_file().empty() == false);
+
+    data::image::csptr image = getConcreteObject();
+
+    /// test if can open archive
+    gzFile rawFile = gzopen(get_file().string().c_str(), "wb1");
+    SIGHT_ASSERT("rawFile not instanced", rawFile);
+    if(rawFile == nullptr)
+    {
+        std::string str = "gz_buffer_image_writer::write unable to open ";
+        str += get_file().string();
+        gzclose(rawFile);
+        throw std::ios_base::failure(str);
+    }
+
+    const auto dumpLock = image->dump_lock();
+
+    // file is OK : process now
+    const std::size_t imageSizeInBytes = image->getSizeInBytes();
+
+    const char* ptr          = static_cast<const char*>(image->buffer());
+    std::size_t writtenBytes = 0;
+
+    int uncompressed_bytes_written = 0;
+
+    while(writtenBytes < imageSizeInBytes
+          && (uncompressed_bytes_written =
+                  gzwrite(rawFile, ptr + writtenBytes, static_cast<unsigned int>(imageSizeInBytes - writtenBytes))) > 0)
+    {
+        writtenBytes += static_cast<std::size_t>(uncompressed_bytes_written);
+    }
+
+    gzclose(rawFile);
+
+    assert(uncompressed_bytes_written != 0 && writtenBytes == imageSizeInBytes);
+
+    if(uncompressed_bytes_written != 0 && writtenBytes == imageSizeInBytes)
+    {
+        std::string str = "gz_buffer_image_writer::write unable to write ";
+        str += get_file().string();
+        throw std::ios_base::failure(str);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::string gz_buffer_image_writer::extension() const
+{
+    return ".raw.gz";
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace sight::io::writer

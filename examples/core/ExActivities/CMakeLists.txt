@@ -3,7 +3,7 @@ sight_add_target(ExActivities TYPE APP)
 add_dependencies(
     ExActivities
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     module_activity
@@ -28,7 +28,7 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config parameters PARAM_VALUES ExActivities_Base_AppCfg ExActivities_AppCfgParam)
+module_param(module_app PARAM_LIST config parameters PARAM_VALUES ExActivities_Base_AppCfg ExActivities_AppCfgParam)
 
 module_param(
     module_ui

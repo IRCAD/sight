@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/ui/qml/config.hpp"
 
-#include <data/ModelSeries.hpp>
+#include <data/model_series.hpp>
 
 #include <QAbstractListModel>
 #include <QObject>
@@ -60,7 +60,7 @@ public:
     /// Return the data stored under the given role for the item referred to by the index.
     [[nodiscard]] MODULE_UI_QML_API QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-    MODULE_UI_QML_API void updateModelSeries(const data::ModelSeries::sptr& modelSeries);
+    MODULE_UI_QML_API void updateModelSeries(const data::model_series::sptr& modelSeries);
 
 protected:
 
@@ -69,7 +69,7 @@ protected:
 
 private:
 
-    data::ModelSeries::sptr m_modelSeries;
+    data::model_series::sptr m_modelSeries;
 };
 
 } // namespace sight::module::ui::qml::model

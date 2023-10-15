@@ -13,7 +13,7 @@ file(DOWNLOAD https://cloud.ircad.fr/s/74XGSb523SSa6fD/download "${MODULE_PATH}/
 add_dependencies(
     Tuto17SimpleAR
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     module_viz_scene3d
@@ -40,6 +40,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto17SimpleAR_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES Tuto17SimpleAR_AppCfg)
 
 sight_generate_profile(Tuto17SimpleAR)

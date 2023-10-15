@@ -43,7 +43,7 @@ namespace sight::io::service
  *
  * This class represents the base interface for reader services.
  * Use the base service methods :
- * @li The service is configured with methods setConfiguration(cfg) and configure()
+ * @li The service is configured with methods set_config(cfg) and configure()
  * @li The method start() initialize the service
  * @li To read the object use update() method
  * @li Finally we must call stop() before deleting the service
@@ -278,7 +278,7 @@ protected:
     bool m_readFailed {false};
 
     /// Generic output data
-    data::ptr<data::Object, data::Access::inout> m_data {this, sight::io::service::s_DATA_KEY};
+    data::ptr<data::object, data::Access::inout> m_data {this, sight::io::service::s_DATA_KEY};
 
 private:
 

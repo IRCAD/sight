@@ -24,9 +24,9 @@
 
 #include "geometry/vision/config.hpp"
 
-#include <data/Matrix4.hpp>
-#include <data/PointList.hpp>
-#include <data/Vector.hpp>
+#include <data/matrix4.hpp>
+#include <data/point_list.hpp>
+#include <data/vector.hpp>
 
 #include <opencv2/aruco.hpp>
 #include <opencv2/calib3d.hpp>
@@ -103,21 +103,21 @@ GEOMETRY_VISION_API cv::Matx44f cameraPoseStereo(
 /**
  * @brief calibrateTool compute a transformation matrix from tracked device attached to a passive pointing tool and its
  * tip
- * @param _matricesVector: vector containing a set of sight::data::Matrix4 from the tracked device
+ * @param _matricesVector: vector containing a set of sight::data::matrix4 from the tracked device
  * @param _calibrationMatrix corresponding to the transformation matrix from the tracked device to the
  * tip of the attached passive pointing device
  * @param _centerMatrix corresponding to the center of the computed sphere used to calibrate the pointing tool
  */
 GEOMETRY_VISION_API void calibratePointingTool(
-    const sight::data::Vector::csptr _matricesVector,
-    sight::data::Matrix4::sptr _calibrationMatrix,
-    sight::data::Matrix4::sptr _centerMatrix
+    const sight::data::vector::csptr _matricesVector,
+    sight::data::matrix4::sptr _calibrationMatrix,
+    sight::data::matrix4::sptr _centerMatrix
 );
 
 /**
  * @brief Tries to detect a chessboard with the given dimensions in the image.
  *
- * @param[in] _img Image in which to search for a chessboard.
+ * @param[in] _img image in which to search for a chessboard.
  * @param[in] _xDim Width of the chessboard in number of tiles.
  * @param[in] _yDim Height of the chessboard in number of tiles.
  * @param[in] _scale Scale applied to the input image. Downscaling speeds up the detection.
@@ -126,7 +126,7 @@ GEOMETRY_VISION_API void calibratePointingTool(
  *
  * @return List of detected chessboard points. nullptr if detection failed.
  */
-GEOMETRY_VISION_API sight::data::PointList::sptr detectChessboard(
+GEOMETRY_VISION_API sight::data::point_list::sptr detectChessboard(
     const cv::Mat& _img,
     std::size_t _xDim,
     std::size_t _yDim,

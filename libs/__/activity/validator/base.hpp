@@ -23,7 +23,7 @@
 #pragma once
 
 #include "activity/config.hpp"
-#include "activity/extension/Activity.hpp"
+#include "activity/extension/activity.hpp"
 #include "activity/validator/factory/new.hpp"
 #include "activity/validator/registry/detail.hpp"
 
@@ -57,7 +57,7 @@ public:
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' )
      *
-     * @tparam T Factory product type
+     * @tparam T factory product type
      */
     template<typename T>
     class Registry
@@ -77,15 +77,15 @@ public:
 
     /**
      * @brief Performs validation of given data as inputs for the considered activity.
-     * @param[in] activityInfo a structure which contains all the activity configuration
+     * @param[in] activity_info a structure which contains all the activity configuration
      * @param[in] currentSelection a vector which contains current selected data.
      * @return result of the validation
      *
      * @see validator::return_t
      */
     ACTIVITY_API virtual return_t validate(
-        const activity::extension::ActivityInfo& activityInfo,
-        const CSPTR(data::Vector)& currentSelection
+        const activity::extension::activity_info& activity_info,
+        const CSPTR(data::vector)& currentSelection
     ) const = 0;
 };
 

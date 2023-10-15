@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include "io/itk/config.hpp"
 #include <itkImageIOBase.h>
@@ -34,30 +34,30 @@ namespace sight::io::itk
  * @brief Allocate a new data Image from an itk one.
  *
  * If bufferManagerIsDataImage = true, itkImage releases buffer management
- * and so data::Image manages it (in this case, itkImage must be the
+ * and so data::image manages it (in this case, itkImage must be the
  * owner of this buffer). if bufferManagerIsDataImage = false, the created
- * data::Image does not manage the image buffer.
+ * data::image does not manage the image buffer.
  */
 template<class ITKIMAGE>
-data::Image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true);
+data::image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true);
 
 /**
  * @brief Update a data Image from an itk one.
  *
  * If bufferManagerIsDataImage = true, itkImage releases buffer management
- * and so data::Image manages it (in this case, itkImage must be the
+ * and so data::image manages it (in this case, itkImage must be the
  * owner of this buffer). if bufferManagerIsDataImage = false, the created
- * data::Image does not manage the image buffer.
+ * data::image does not manage the image buffer.
  */
 template<class ITKIMAGE>
 void moveFromItk(
     typename ITKIMAGE::Pointer itkImage,
-    data::Image::sptr _dataImage,
+    data::image::sptr _dataImage,
     bool bufferManagerIsDataImage = true
 );
 
 /**
- * @brief Create an ITK image from an data::Image.
+ * @brief Create an ITK image from an data::image.
  *
  * If bufferManagerIsDataImage = true, imageData conserve his buffer management
  * and so the created itkImage not manages it. If bufferManagerIsDataImage = false,
@@ -68,7 +68,7 @@ void moveFromItk(
  * @pre an assertion check if ITKIMAGE dimension correspond to imageData dimension
  */
 template<class ITKIMAGE>
-typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData);
+typename ITKIMAGE::Pointer moveToItk(data::image::csptr imageData);
 
 /**
  * @brief Map which associates itk types with sight types

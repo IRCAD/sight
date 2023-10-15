@@ -28,7 +28,7 @@
 #include <core/jobs/base.hpp>
 #include <core/jobs/observer.hpp>
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <io/__/writer/registry/macros.hpp>
 #include <io/zip/write_archive.hpp>
@@ -110,7 +110,7 @@ void DicomSeriesWriter::processStream(std::istream& inputStream, std::ostream& o
 
 void DicomSeriesWriter::processWrite()
 {
-    data::DicomSeries::csptr dicomSeries = this->getConcreteObject();
+    data::dicom_series::csptr dicomSeries = this->getConcreteObject();
 
     // Create folder
     std::filesystem::path folder = this->get_folder();
@@ -174,7 +174,7 @@ void DicomSeriesWriter::processWriteArchive()
 {
     SIGHT_ASSERT("Output archive shall be set", m_archive);
 
-    data::DicomSeries::csptr dicomSeries = this->getConcreteObject();
+    data::dicom_series::csptr dicomSeries = this->getConcreteObject();
 
     const std::size_t nb_instances = dicomSeries->numInstances();
     unsigned int count             = 0;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <data/SeriesSet.hpp>
+#include <data/series_set.hpp>
 
 #include <service/macros.hpp>
 
@@ -51,7 +51,7 @@ private:
      * Create a series set containing an ImageSeries with landmarks and distance
      * and a ModelSeries with one reconstruction.
      */
-    static data::SeriesSet::sptr createSeriesSet();
+    static data::series_set::sptr createSeriesSet();
 };
 
 } // namespace sight::io::dicom::ut

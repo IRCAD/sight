@@ -24,11 +24,11 @@
 
 #include "io/dicom/helper/DicomDataReader.hxx"
 
-#include <data/DicomSeries.hpp>
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/Series.hpp>
+#include <data/dicom_series.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
+#include <data/model_series.hpp>
+#include <data/series.hpp>
 
 #include <gdcmReader.h>
 #include <gdcmScanner.h>
@@ -50,7 +50,7 @@ DicomInstance::DicomInstance() :
 //------------------------------------------------------------------------------
 
 DicomInstance::DicomInstance(
-    const data::Series::csptr& series,
+    const data::series::csptr& series,
     core::log::logger::sptr logger,
     bool isMultiFiles
 ) :
@@ -59,8 +59,8 @@ DicomInstance::DicomInstance(
     m_seriesInstanceUID(series->getSeriesInstanceUID()),
     m_logger(std::move(logger))
 {
-    // Compute SOPClassUID
-    this->computeSOPClassUID(series);
+    // Compute sop_classUID
+    this->computesop_classUID(series);
 
     // Generate SOPInstanceUIDs
     this->generateSOPInstanceUIDs(series);
@@ -73,7 +73,7 @@ DicomInstance::DicomInstance(
 //------------------------------------------------------------------------------
 
 DicomInstance::DicomInstance(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     core::log::logger::sptr logger
 ) :
     m_isMultiFiles(dicomSeries->getDicomContainer().size() > 1),
@@ -83,11 +83,11 @@ DicomInstance::DicomInstance(
 {
     SIGHT_ASSERT("DicomSeries is not instantiated", dicomSeries);
 
-    // Get SOPClassUID
-    data::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
+    // Get sop_classUID
+    data::dicom_series::sop_classUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
     if(!sopClassUIDContainer.empty())
     {
-        m_SOPClassUID = *(sopClassUIDContainer.begin());
+        m_sop_classUID = *(sopClassUIDContainer.begin());
     }
 
     this->readUIDFromDicomSeries(dicomSeries);
@@ -97,7 +97,7 @@ DicomInstance::DicomInstance(
 
 DicomInstance::DicomInstance(const DicomInstance& dicomInstance) :
     m_isMultiFiles(dicomInstance.m_isMultiFiles),
-    m_SOPClassUID(dicomInstance.m_SOPClassUID),
+    m_sop_classUID(dicomInstance.m_sop_classUID),
     m_SOPInstanceUIDContainer(dicomInstance.m_SOPInstanceUIDContainer),
     m_logger(dicomInstance.m_logger)
 {
@@ -110,11 +110,11 @@ DicomInstance::~DicomInstance()
 
 //------------------------------------------------------------------------------
 
-void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
+void DicomInstance::computesop_classUID(const data::series::csptr& series)
 {
     // Retrieve series type
-    data::ImageSeries::csptr imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(series);
-    data::ModelSeries::csptr modelSeries = std::dynamic_pointer_cast<const data::ModelSeries>(series);
+    data::image_series::csptr imageSeries = std::dynamic_pointer_cast<const data::image_series>(series);
+    data::model_series::csptr modelSeries = std::dynamic_pointer_cast<const data::model_series>(series);
 
     // Create result
     std::string sopClassUID;
@@ -128,12 +128,12 @@ void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
         gdcm::MediaStorage mediaStorage;
         mediaStorage.GuessFromModality(series->getModality().c_str(), dimension);
 
-        // Identify the SOPClassUID from a guess
+        // Identify the sop_classUID from a guess
         if(mediaStorage != gdcm::MediaStorage::MS_END && mediaStorage.GetString() != nullptr)
         {
             sopClassUID = mediaStorage.GetString();
         }
-        // Force SOPClassUID to be CTImageStorage
+        // Force sop_classUID to be CTImageStorage
         else
         {
             sopClassUID = gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage);
@@ -150,10 +150,10 @@ void DicomInstance::computeSOPClassUID(const data::Series::csptr& series)
 
 //------------------------------------------------------------------------------
 
-void DicomInstance::generateSOPInstanceUIDs(const data::Series::csptr& series)
+void DicomInstance::generateSOPInstanceUIDs(const data::series::csptr& series)
 {
     // Retrieve ImageSeries
-    data::ImageSeries::csptr imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(series);
+    data::image_series::csptr imageSeries = std::dynamic_pointer_cast<const data::image_series>(series);
 
     // Compute number of instances
     const std::size_t nb_instances = (imageSeries && m_isMultiFiles) ? (imageSeries->size()[2]) : (1);
@@ -170,7 +170,7 @@ void DicomInstance::generateSOPInstanceUIDs(const data::Series::csptr& series)
 
 //------------------------------------------------------------------------------
 
-void DicomInstance::readUIDFromDicomSeries(const data::DicomSeries::csptr& dicomSeries)
+void DicomInstance::readUIDFromDicomSeries(const data::dicom_series::csptr& dicomSeries)
 {
     const gdcm::Tag SOPInstanceUIDTag      = gdcm::Tag(0x0008, 0x0018); // SOP Instance UID
     const gdcm::Tag frameOfReferenceUIDTag = gdcm::Tag(0x0020, 0x0052); // Frame of Reference UID

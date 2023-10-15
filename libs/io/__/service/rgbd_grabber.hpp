@@ -54,7 +54,7 @@ public:
 
 protected:
 
-    data::ptr<data::FrameTL, data::Access::inout> m_depth {this, s_DEPTHTL_INOUT, false, true};
+    data::ptr<data::frame_tl, data::Access::inout> m_depth {this, s_DEPTHTL_INOUT, false, true};
 };
 
 } //namespace sight::io::service

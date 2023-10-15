@@ -54,8 +54,8 @@ class View;
  *
  * Example of configuration
  * @code{.xml}
-   <service uid="mainFrame" type="sight::module::ui::SFrame"
- * autoConnect="false">
+   <service uid="mainFrame" type="sight::module::ui::frame"
+ * auto_connect="false">
      <window onclose="notify" />
      <gui>
          <frame>

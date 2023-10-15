@@ -28,8 +28,8 @@
 #include <core/com/signals.hpp>
 #include <core/tools/failed.hpp>
 
-#include <data/Material.hpp>
-#include <data/Reconstruction.hpp>
+#include <data/material.hpp>
+#include <data/reconstruction.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -55,7 +55,7 @@ namespace sight::module::ui::qt::reconstruction
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b reconstruction [sight::data::Reconstruction]: reconstruction that will be updated
+ * - \b reconstruction [sight::data::reconstruction]: reconstruction that will be updated
  */
 class MODULE_UI_QT_CLASS_API RepresentationEditor : public QObject,
                                                     public sight::ui::editor
@@ -92,7 +92,7 @@ protected:
      *
      * Connect Reconstruction::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    connections_t getAutoConnections() const override;
+    connections_t auto_connections() const override;
 
     /// Notify the changes
     void notifyMaterial();
@@ -113,10 +113,10 @@ private:
     QPointer<QButtonGroup> m_buttonGroupShading;
     QPointer<QButtonGroup> m_normalsRadioBox;
 
-    data::Material::sptr m_material;
+    data::material::sptr m_material;
 
     static constexpr std::string_view s_RECONSTRUCTION = "reconstruction";
-    data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION, true};
+    data::ptr<data::reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION, true};
 };
 
 } // namespace sight::module::ui::qt::reconstruction

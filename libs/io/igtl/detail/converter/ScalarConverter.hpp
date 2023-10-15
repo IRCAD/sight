@@ -29,8 +29,8 @@
 #include "io/igtl/detail/helper/ScalarToBytes.hpp"
 #include "io/igtl/detail/RawMessage.hpp"
 
-#include <data/Float.hpp>
-#include <data/Integer.hpp>
+#include <data/integer.hpp>
+#include <data/real.hpp>
 
 #include <boost/type_traits/is_base_of.hpp>
 
@@ -41,7 +41,7 @@ namespace sight::io::igtl::detail::converter
 
 /**
  *
- * @brief class to manage conversion between data::Integer of Float and igtl::RawMessage
+ * @brief class to manage conversion between data::integer of Float and igtl::RawMessage
  */
 template<typename ScalarType, typename FwDataObjectType>
 class IO_IGTL_CLASS_API ScalarConverter : public base
@@ -51,13 +51,13 @@ public:
     /// Constructor
     ScalarConverter()
     {
-        static_assert(std::is_base_of<data::Object, FwDataObjectType>::value);
+        static_assert(std::is_base_of<data::object, FwDataObjectType>::value);
     }
 
     ScalarConverter(std::string a) :
         m_igtlType(std::move(a))
     {
-        static_assert(std::is_base_of<data::Object, FwDataObjectType>::value);
+        static_assert(std::is_base_of<data::object, FwDataObjectType>::value);
     }
 
     /// Destructor
@@ -67,9 +67,9 @@ public:
     /**
      * @brief convert a igtl::RawMessage(which contain scalar) to a FwDataObjectType
      *
-     * @return an data::Integer converted from an igtl::RawMessage
+     * @return an data::integer converted from an igtl::RawMessage
      */
-    [[nodiscard]] data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const override
+    [[nodiscard]] data::object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const override
     {
         auto obj = std::make_shared<FwDataObjectType>();
 
@@ -83,9 +83,9 @@ public:
     /**
      * @brief convert a data::Scalar to an igtl::RawMessage
      *
-     * @return an  igtl::RawMessage converted from an data::Integer
+     * @return an  igtl::RawMessage converted from an data::integer
      */
-    [[nodiscard]] ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override
+    [[nodiscard]] ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const override
     {
         RawMessage::Pointer msg;
         typename FwDataObjectType::csptr obj = std::dynamic_pointer_cast<const FwDataObjectType>(src);
@@ -133,11 +133,11 @@ protected:
 };
 
 class IO_IGTL_CLASS_API IntConverter : public ScalarConverter<int,
-                                                              data::Integer>
+                                                              data::integer>
 {
 public:
 
-    typedef ScalarConverter<int, data::Integer> Superclass;
+    typedef ScalarConverter<int, data::integer> Superclass;
     /// Constructor
     IntConverter() :
         Superclass("INTEGER")
@@ -160,11 +160,11 @@ public:
 };
 
 class IO_IGTL_CLASS_API FloatConverter : public ScalarConverter<float,
-                                                                data::Float>
+                                                                data::real>
 {
 public:
 
-    typedef ScalarConverter<float, data::Float> Superclass;
+    typedef ScalarConverter<float, data::real> Superclass;
     /// Constructor
     FloatConverter() :
         Superclass("FLOAT")

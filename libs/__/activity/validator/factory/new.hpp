@@ -38,7 +38,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-ACTIVITY_API SPTR(activity::validator::base) make(const activity::validator::registry::KeyType& classname);
+ACTIVITY_API SPTR(activity::validator::base) make(const activity::validator::registry::key_t& classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make()

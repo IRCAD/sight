@@ -22,7 +22,7 @@
 
 #include "io/vtk/SeriesSetReader.hpp"
 
-#include "io/vtk/helper/Mesh.hpp"
+#include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/helper/vtkLambdaCommand.hpp"
 #include "io/vtk/vtk.hpp"
 
@@ -34,11 +34,11 @@
 #include <core/tools/date_and_time.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/Mesh.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/Reconstruction.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
+#include <data/mesh.hpp>
+#include <data/model_series.hpp>
+#include <data/reconstruction.hpp>
 
 #include <io/__/reader/registry/macros.hpp>
 
@@ -76,7 +76,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-void initSeries(data::Series::sptr series, const std::string& instanceUID)
+void initSeries(data::series::sptr series, const std::string& instanceUID)
 {
     series->setModality("OT");
     boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
@@ -93,7 +93,7 @@ void initSeries(data::Series::sptr series, const std::string& instanceUID)
 //------------------------------------------------------------------------------
 
 SeriesSetReader::SeriesSetReader() :
-    m_job(std::make_shared<core::jobs::observer>("SeriesSet reader")),
+    m_job(std::make_shared<core::jobs::observer>("series_set reader")),
     m_lazyMode(true)
 {
 }
@@ -135,19 +135,19 @@ vtkSmartPointer<vtkDataObject> getObj(FILE& file, const core::jobs::observer::sp
 
 //------------------------------------------------------------------------------
 
-data::Object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, const std::filesystem::path& file)
+data::object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, const std::filesystem::path& file)
 {
     vtkSmartPointer<vtkPolyData> mesh         = vtkPolyData::SafeDownCast(obj);
     vtkSmartPointer<vtkImageData> img         = vtkImageData::SafeDownCast(obj);
     vtkSmartPointer<vtkUnstructuredGrid> grid = vtkUnstructuredGrid::SafeDownCast(obj);
-    data::Object::sptr dataObj;
+    data::object::sptr dataObj;
 
     if(grid != nullptr)
     {
-        data::Mesh::sptr meshObj = std::make_shared<data::Mesh>();
-        io::vtk::helper::Mesh::fromVTKGrid(grid, meshObj);
+        data::mesh::sptr meshObj = std::make_shared<data::mesh>();
+        io::vtk::helper::mesh::fromVTKGrid(grid, meshObj);
 
-        data::Reconstruction::sptr rec = std::make_shared<data::Reconstruction>();
+        data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
         rec->setMesh(meshObj);
         rec->setOrganName(file.stem().string());
         rec->setIsVisible(true);
@@ -156,9 +156,9 @@ data::Object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, cons
 
     if(mesh != nullptr)
     {
-        data::Mesh::sptr meshObj = std::make_shared<data::Mesh>();
-        io::vtk::helper::Mesh::fromVTKMesh(mesh, meshObj);
-        data::Reconstruction::sptr rec = std::make_shared<data::Reconstruction>();
+        data::mesh::sptr meshObj = std::make_shared<data::mesh>();
+        io::vtk::helper::mesh::fromVTKMesh(mesh, meshObj);
+        data::reconstruction::sptr rec = std::make_shared<data::reconstruction>();
         rec->setMesh(meshObj);
         rec->setOrganName(file.stem().string());
         rec->setIsVisible(true);
@@ -168,13 +168,13 @@ data::Object::sptr getDataObject(const vtkSmartPointer<vtkDataObject>& obj, cons
     {
         try
         {
-            data::Image::sptr imgObj = std::make_shared<data::Image>();
+            data::image::sptr imgObj = std::make_shared<data::image>();
             io::vtk::fromVTKImage(img, imgObj);
             dataObj = imgObj;
         }
         catch(std::exception& e)
         {
-            SIGHT_THROW("VTKImage to data::Image failed " << e.what());
+            SIGHT_THROW("VTKImage to data::image failed " << e.what());
         }
     }
 
@@ -211,13 +211,13 @@ void SeriesSetReader::read()
     const std::vector<std::filesystem::path>& files = get_files();
     const std::string instanceUID                   = core::tools::UUID::generate();
 
-    data::ModelSeries::ReconstructionVectorType recs;
+    data::model_series::ReconstructionVectorType recs;
     std::vector<std::string> errorFiles;
     for(const auto& file : files)
     {
         vtkSmartPointer<vtkDataObject> obj;
-        data::Image::sptr img;
-        data::Reconstruction::sptr rec;
+        data::image::sptr img;
+        data::reconstruction::sptr rec;
 
         if(file.extension().string() == ".vtk")
         {
@@ -256,16 +256,16 @@ void SeriesSetReader::read()
 
         if(!img)
         {
-            data::Object::sptr dataObj = getDataObject(obj, file);
-            img = std::dynamic_pointer_cast<data::Image>(dataObj);
-            rec = std::dynamic_pointer_cast<data::Reconstruction>(dataObj);
+            data::object::sptr dataObj = getDataObject(obj, file);
+            img = std::dynamic_pointer_cast<data::image>(dataObj);
+            rec = std::dynamic_pointer_cast<data::reconstruction>(dataObj);
         }
 
         if(img)
         {
-            auto imgSeries = std::make_shared<data::ImageSeries>();
+            auto imgSeries = std::make_shared<data::image_series>();
             initSeries(imgSeries, instanceUID);
-            imgSeries->Image::shallow_copy(img);
+            imgSeries->image::shallow_copy(img);
             series_set->push_back(imgSeries);
         }
         else if(rec)
@@ -283,10 +283,10 @@ void SeriesSetReader::read()
         SIGHT_THROW("SeriesSetReader cannot read VTK file(s) : " << boost::algorithm::join(errorFiles, ", "));
     }
 
-    // Adds loaded Reconstructions in SeriesSet
+    // Adds loaded Reconstructions in series_set
     if(!recs.empty())
     {
-        data::ModelSeries::sptr modelSeries = std::make_shared<data::ModelSeries>();
+        data::model_series::sptr modelSeries = std::make_shared<data::model_series>();
         initSeries(modelSeries, instanceUID);
         modelSeries->setReconstructionDB(recs);
         series_set->push_back(modelSeries);

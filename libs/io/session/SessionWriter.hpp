@@ -27,9 +27,9 @@
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_file.hpp>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
-#include <io/__/writer/IObjectWriter.hpp>
+#include <io/__/writer/object_writer.hpp>
 #include <io/zip/ArchiveWriter.hpp>
 
 #include <boost/property_tree/ptree.hpp>
@@ -41,8 +41,8 @@ namespace sight::io::session
 using serializer_t = std::function<void (
                                        zip::ArchiveWriter&,
                                        boost::property_tree::ptree&,
-                                       data::Object::csptr,
-                                       std::map<std::string, data::Object::csptr>&,
+                                       data::object::csptr,
+                                       std::map<std::string, data::object::csptr>&,
                                        const core::crypto::secure_string&)>;
 
 /**
@@ -58,12 +58,12 @@ using serializer_t = std::function<void (
  *
  */
 
-class IO_SESSION_CLASS_API SessionWriter final : public io::writer::IObjectWriter,
+class IO_SESSION_CLASS_API SessionWriter final : public io::writer::object_writer,
                                                  public core::location::single_file
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SessionWriter, io::writer::IObjectWriter, io::writer::factory::make<SessionWriter>);
+    SIGHT_DECLARE_CLASS(SessionWriter, io::writer::object_writer, io::writer::factory::make<SessionWriter>);
     SIGHT_ALLOW_SHARED_FROM_THIS()
     /// Delete default constructors and assignment operators
     SessionWriter(const SessionWriter&)            = delete;

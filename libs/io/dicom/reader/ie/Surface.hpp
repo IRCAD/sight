@@ -25,7 +25,7 @@
 #include "io/dicom/helper/SegmentedPropertyRegistry.hpp"
 #include "io/dicom/reader/ie/InformationEntity.hpp"
 
-#include <data/ModelSeries.hpp>
+#include <data/model_series.hpp>
 
 #include <gdcmSurfaceReader.h>
 
@@ -44,7 +44,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief Surface Information Entity class
  */
-class IO_DICOM_CLASS_API Surface : public io::dicom::reader::ie::InformationEntity<data::ModelSeries>
+class IO_DICOM_CLASS_API Surface : public io::dicom::reader::ie::InformationEntity<data::model_series>
 {
 public:
 
@@ -59,10 +59,10 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API Surface(
-        const CSPTR(data::DicomSeries)& dicomSeries,
+        const CSPTR(data::dicom_series)& dicomSeries,
         const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::ModelSeries::sptr& series,
+        const data::model_series::sptr& series,
         const core::log::logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr
@@ -94,7 +94,7 @@ protected:
      * @see PS 3.3 C.8.23.1
      */
     virtual void readSurfaceSegmentationModule(
-        const SPTR(data::Reconstruction)& reconstruction,
+        const SPTR(data::reconstruction)& reconstruction,
         const gdcm::SmartPointer<gdcm::Segment>& segment,
         const gdcm::Item& segmentItem
     );
@@ -105,7 +105,7 @@ protected:
      * @see PS 3.3 C.27.1
      */
     IO_DICOM_API virtual void readSurfaceMeshModule(
-        const SPTR(data::Reconstruction)& reconstruction,
+        const SPTR(data::reconstruction)& reconstruction,
         const gdcm::SmartPointer<gdcm::Surface>& surface
     );
     /// Segment Property Registry

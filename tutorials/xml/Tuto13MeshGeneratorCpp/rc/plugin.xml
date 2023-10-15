@@ -6,23 +6,23 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
         <type>sight::ui::action</type>
-        <service>Tuto13MeshGeneratorCpp::SMeshModifier</service>
-        <object>sight::data::Mesh</object>
+        <service>Tuto13MeshGeneratorCpp::mesh_modifier</service>
+        <object>sight::data::mesh</object>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>Tuto13MeshGeneratorCpp_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="mesh" type="sight::data::Mesh" />
+            <object uid="mesh" type="sight::data::mesh" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>Tuto13MeshGeneratorCpp</name>
@@ -36,9 +36,9 @@
                 </registry>
             </service>
 
-            <service uid="progressBarView" type="sight::module::ui::SJobBar" />
+            <service uid="progressBarView" type="sight::module::ui::job_bar" />
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::menu_bar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -51,7 +51,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -67,7 +67,7 @@
                 </registry>
             </service>
 
-            <service uid="modifierFileView" type="sight::module::ui::SMenu">
+            <service uid="modifierFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Shake mesh point" shortcut="Q" />
@@ -98,7 +98,7 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -109,74 +109,74 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
                 <config priority="0" />
             </service>
 
-            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="mesh" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="sight::module::ui::com::SStarter">
+            <service uid="openMeshAct" type="sight::module::ui::com::starter">
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="saveMeshAct" type="sight::module::ui::com::SStarter">
+            <service uid="saveMeshAct" type="sight::module::ui::com::starter">
                 <start uid="meshWriterSrv" />
             </service>
 
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
-            <service uid="shakeMeshPointAct" type="Tuto13MeshGeneratorCpp::SMeshModifier">
+            <service uid="shakeMeshPointAct" type="Tuto13MeshGeneratorCpp::mesh_modifier">
                 <inout key="mesh" uid="mesh" />
                 <config functor="ShakeMeshPoint" />
             </service>
 
-            <service uid="colorizeMeshPointAct" type="Tuto13MeshGeneratorCpp::SMeshModifier">
+            <service uid="colorizeMeshPointAct" type="Tuto13MeshGeneratorCpp::mesh_modifier">
                 <inout key="mesh" uid="mesh" />
                 <config functor="ColorizeMeshPoints" />
             </service>
 
-            <service uid="colorizeMeshCellsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier">
+            <service uid="colorizeMeshCellsAct" type="Tuto13MeshGeneratorCpp::mesh_modifier">
                 <inout key="mesh" uid="mesh" />
                 <config functor="ColorizeMeshCells" />
             </service>
 
-            <service uid="colorizeComputePointsNormalsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier">
+            <service uid="colorizeComputePointsNormalsAct" type="Tuto13MeshGeneratorCpp::mesh_modifier">
                 <inout key="mesh" uid="mesh" />
                 <config functor="ComputePointNormals" />
             </service>
 
-            <service uid="colorizeComputeCellsNormalsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier">
+            <service uid="colorizeComputeCellsNormalsAct" type="Tuto13MeshGeneratorCpp::mesh_modifier">
                 <inout key="mesh" uid="mesh" />
                 <config functor="ComputeCellNormals" />
             </service>
 
-            <service uid="shakePointsNormalsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier">
+            <service uid="shakePointsNormalsAct" type="Tuto13MeshGeneratorCpp::mesh_modifier">
                 <inout key="mesh" uid="mesh" />
                 <config functor="ShakePointNormals" />
             </service>
 
-            <service uid="shakeCellsNormalsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier">
+            <service uid="shakeCellsNormalsAct" type="Tuto13MeshGeneratorCpp::mesh_modifier">
                 <inout key="mesh" uid="mesh" />
                 <config functor="ShakeCellNormals" />
             </service>
 
-            <service uid="meshDeformationAct" type="Tuto13MeshGeneratorCpp::SMeshModifier">
+            <service uid="meshDeformationAct" type="Tuto13MeshGeneratorCpp::mesh_modifier">
                 <inout key="mesh" uid="mesh" />
                 <config functor="MeshDeformation" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector">
+            <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="meshWriterSrv" type="sight::module::ui::io::SSelector">
+            <service uid="meshWriterSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="mesh" />
                 <type mode="writer" />
             </service>

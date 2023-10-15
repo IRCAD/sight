@@ -7,18 +7,18 @@
     <requirement id="sight::module::ui::qt" />
 
     <!-- This example allows to test the different dump policy. -->
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>ExDump_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesSet" type="sight::data::SeriesSet" />
-            <object uid="selections" type="sight::data::Vector" />
+            <object uid="seriesSet" type="sight::data::series_set" />
+            <object uid="selections" type="sight::data::vector" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::frame" >
                 <gui>
                     <frame>
                         <name>ExDump</name>
@@ -35,7 +35,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::menu_bar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -48,7 +48,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::menu" >
                 <gui>
                     <layout>
                         <menuItem name="Open Series..." shortcut="Ctrl+O" />
@@ -63,7 +63,7 @@
                 </registry>
             </service>
 
-            <service uid="menuMonitorView" type="sight::module::ui::SMenu" >
+            <service uid="menuMonitorView" type="sight::module::ui::menu" >
                 <gui>
                     <layout>
                         <menuItem name="ClassFactoryRegistry information" />
@@ -88,7 +88,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::SToolBar" >
+            <service uid="toolBarView" type="sight::module::ui::tool_bar" >
                 <gui>
                     <layout>
                         <menuItem name="Open..." icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -104,7 +104,7 @@
                 </registry>
             </service>
 
-            <service uid="mainview" type="sight::module::ui::SView" >
+            <service uid="mainview" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
@@ -118,7 +118,7 @@
                 </registry>
             </service>
 
-            <service uid="subView" type="sight::module::ui::SView" >
+            <service uid="subView" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
@@ -134,14 +134,14 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
-            <service uid="openAct" type="sight::module::ui::series::SDBMerger" >
+            <service uid="openAct" type="sight::module::ui::series::db_merger" >
                 <inout key="seriesSet" uid="seriesSet" />
                 <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
             </service>
 
-            <service uid="saveAct" type="sight::module::ui::com::SStarter" >
+            <service uid="saveAct" type="sight::module::ui::com::starter" >
                 <start uid="SDBWriterSrv" />
             </service>
 
@@ -161,15 +161,15 @@
 
             <service uid="componentsTreeAct" type="sight::module::ui::debug::action::ComponentsTree" />
 
-            <service uid="dumpAllAct" type="sight::module::debug::action::SDumpAll" />
+            <service uid="dumpAllAct" type="sight::module::debug::action::dump_all" />
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="SDBWriterSrv" type="sight::module::ui::io::SSelector" config="SDBSessionWriterIOSelectorConfig" >
+            <service uid="SDBWriterSrv" type="sight::module::ui::io::selector" config="SDBSessionWriterIOSelectorConfig" >
                 <inout key="data" uid="seriesSet" />
             </service>
 
-            <service uid="selectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="true" >
+            <service uid="selectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true" >
                 <inout key="seriesSet" uid="seriesSet" />
                 <inout key="selection" uid="selections" />
             </service>
@@ -178,12 +178,12 @@
             <service uid="dumpEditorSrv" type="sight::module::ui::debug::DumpEditor" />
 
             <!-- Service to display the preview when an image or an mesh is selected -->
-            <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::SViewer" autoConnect="true" >
+            <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::viewer" auto_connect="true" >
                 <in key="series" uid="selections" />
                 <parentView wid="previewView" />
                 <configs>
-                    <config id="2DSimpleConfig" type="sight::data::ImageSeries" />
-                    <config id="3DSimpleConfig" type="sight::data::ModelSeries" />
+                    <config id="2DSimpleConfig" type="sight::data::image_series" />
+                    <config id="3DSimpleConfig" type="sight::data::model_series" />
                 </configs>
             </service>
 

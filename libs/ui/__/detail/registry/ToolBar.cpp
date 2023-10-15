@@ -25,7 +25,7 @@
 #include "ui/__/action.hpp"
 #include "ui/__/registry.hpp"
 
-#include <service/op/Get.hpp>
+#include <service/op.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -177,14 +177,14 @@ void ToolBar::manage(std::vector<ui::container::menu_item::sptr> menuItems)
             SIGHT_ASSERT(
                 "The service '" + sid.first + "' cannot be started by '" + m_sid + "' because it is not stopped."
                 ,
-                service->isStopped()
+                service->stopped()
             );
             service->start();
         }
         else
         {
             bool service_exists = core::tools::id::exist(sid.first);
-            if(!service_exists || service::get(sid.first)->isStopped())
+            if(!service_exists || service::get(sid.first)->stopped())
             {
                 ui::registry::actionServiceStopping(sid.first);
             }
@@ -220,7 +220,7 @@ void ToolBar::manage(std::vector<ui::container::menu::sptr> menus)
             SIGHT_ASSERT(
                 "The service '" + sid.first + "' cannot be started by '" + m_sid + "' because it is not stopped."
                 ,
-                service->isStopped()
+                service->stopped()
             );
             service->start();
         }
@@ -251,7 +251,7 @@ void ToolBar::manage(std::vector<ui::container::widget::sptr> containers)
             SIGHT_ASSERT(
                 "The service '" + sid.first + "' cannot be started by '" + m_sid + "' because it is not stopped."
                 ,
-                service->isStopped()
+                service->stopped()
             );
             service->start();
         }

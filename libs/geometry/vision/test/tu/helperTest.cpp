@@ -24,12 +24,12 @@
 
 #include <core/tools/random/generator.hpp>
 
-#include <data/Point.hpp>
+#include <data/point.hpp>
 
-#include <geometry/data/Matrix4.hpp>
+#include <geometry/data/matrix4.hpp>
 #include <geometry/vision/helper.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -46,7 +46,7 @@ namespace sight::geometry::vision::ut
 
 using core::tools::random::safe_rand;
 
-using ExpectedChessboardType = std::vector<sight::data::Point::PointCoordArrayType>;
+using ExpectedChessboardType = std::vector<sight::data::point::PointCoordArrayType>;
 
 //------------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ static inline cv::Mat readRGBImage(const std::string _fname)
 
 static inline void compareChessboards(
     const ExpectedChessboardType& _expected,
-    const sight::data::PointList::csptr& _detected
+    const sight::data::point_list::csptr& _detected
 )
 {
     CPPUNIT_ASSERT_EQUAL(_expected.size(), _detected->getPoints().size());
@@ -326,10 +326,10 @@ void helperTest::reprojectionRealDatasetTest2()
 void helperTest::toolCalibrationBasic()
 {
     const std::uint8_t nbMatrices = 34;
-    auto matricesVector           = std::make_shared<sight::data::Vector>();
+    auto matricesVector           = std::make_shared<sight::data::vector>();
 
-    auto resCenterMatrix    = std::make_shared<sight::data::Matrix4>();
-    auto resTransformMatrix = std::make_shared<sight::data::Matrix4>();
+    auto resCenterMatrix    = std::make_shared<sight::data::matrix4>();
+    auto resTransformMatrix = std::make_shared<sight::data::matrix4>();
 
     const glm::dvec3 center(0., 0., 0.);
     const double radius = 18;
@@ -354,7 +354,7 @@ void helperTest::toolCalibrationBasic()
 
         matrix = glm::translate(matrix, translation);
 
-        auto mat = std::make_shared<sight::data::Matrix4>();
+        auto mat = std::make_shared<sight::data::matrix4>();
         geometry::data::setTF3DFromMatrix(*mat, matrix);
 
         matricesVector->push_back(mat);
@@ -401,10 +401,10 @@ void helperTest::toolCalibrationBasic()
 void helperTest::toolCalibration()
 {
     const std::uint8_t nbMatrices = 46;
-    auto matricesVector           = std::make_shared<sight::data::Vector>();
+    auto matricesVector           = std::make_shared<sight::data::vector>();
 
-    auto resCenterMatrix    = std::make_shared<sight::data::Matrix4>();
-    auto resTransformMatrix = std::make_shared<sight::data::Matrix4>();
+    auto resCenterMatrix    = std::make_shared<sight::data::matrix4>();
+    auto resTransformMatrix = std::make_shared<sight::data::matrix4>();
 
     const glm::dvec3 center(36., 52., -530.);
     const glm::dvec3 translation(-459.45, 46.6, -88.54);
@@ -426,7 +426,7 @@ void helperTest::toolCalibration()
         matrix = glm::rotate(matrix, angle, axis);
         matrix = glm::translate(matrix, translation);
 
-        sight::data::Matrix4::sptr mat = std::make_shared<sight::data::Matrix4>();
+        sight::data::matrix4::sptr mat = std::make_shared<sight::data::matrix4>();
         geometry::data::setTF3DFromMatrix(*mat, matrix);
 
         matricesVector->push_back(mat);
@@ -472,7 +472,7 @@ void helperTest::toolCalibration()
 
 void helperTest::chessboardDetectionTest()
 {
-    const auto calibDataDir = utestData::Data::dir() / "sight" / "calibration";
+    const auto calibDataDir = utest_data::Data::dir() / "sight" / "calibration";
     {
         const cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
 
@@ -480,7 +480,7 @@ void helperTest::chessboardDetectionTest()
         CPPUNIT_ASSERT_EQUAL(3, chessRgb0.channels());
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chessRgb0.elemSize1());
 
-        const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(
+        const sight::data::point_list::csptr detectedChess = geometry::vision::helper::detectChessboard(
             chessRgb0,
             9,
             6,
@@ -540,7 +540,7 @@ void helperTest::chessboardDetectionTest()
         CPPUNIT_ASSERT_EQUAL(3, chessRgb1.channels());
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chessRgb1.elemSize1());
 
-        const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(
+        const sight::data::point_list::csptr detectedChess = geometry::vision::helper::detectChessboard(
             chessRgb1,
             9,
             6,
@@ -603,7 +603,7 @@ void helperTest::chessboardDetectionTest()
         CPPUNIT_ASSERT_EQUAL(1, chessGray.channels());
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), chessGray.elemSize1());
 
-        const sight::data::PointList::csptr detectedChess = geometry::vision::helper::detectChessboard(
+        const sight::data::point_list::csptr detectedChess = geometry::vision::helper::detectChessboard(
             chessGray,
             9,
             6,
@@ -655,7 +655,7 @@ void helperTest::chessboardDetectionTest()
 
         compareChessboards(expectedChessboard, detectedChess);
 
-        const sight::data::PointList::csptr detectedChess2 = geometry::vision::helper::detectChessboard(
+        const sight::data::point_list::csptr detectedChess2 = geometry::vision::helper::detectChessboard(
             chessGray,
             8,
             5,
@@ -669,14 +669,14 @@ void helperTest::chessboardDetectionTest()
 
 void helperTest::chessboardDetectionScaleTest()
 {
-    const auto calibDataDir = utestData::Data::dir() / "sight" / "calibration";
+    const auto calibDataDir = utest_data::Data::dir() / "sight" / "calibration";
 
     const cv::Mat chessRgb0 = readRGBImage((calibDataDir / "chessboardRGB0.tiff").string());
 
-    const sight::data::PointList::csptr detectedChessFullScale =
+    const sight::data::point_list::csptr detectedChessFullScale =
         geometry::vision::helper::detectChessboard(chessRgb0, 9, 6, 1.F);
 
-    const sight::data::PointList::csptr detectedChessQuarterScale =
+    const sight::data::point_list::csptr detectedChessQuarterScale =
         geometry::vision::helper::detectChessboard(chessRgb0, 9, 6, 0.25F);
 
     CPPUNIT_ASSERT_EQUAL(detectedChessFullScale->getPoints().size(), detectedChessQuarterScale->getPoints().size());

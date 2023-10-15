@@ -3,7 +3,7 @@ sight_add_target(ExVideoTracking TYPE APP UNIQUE ON)
 add_dependencies(
     ExVideoTracking
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_viz_scene3d
     module_ui_qt
@@ -25,6 +25,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES ExVideoTracking_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES ExVideoTracking_AppCfg)
 
 sight_generate_profile(ExVideoTracking)

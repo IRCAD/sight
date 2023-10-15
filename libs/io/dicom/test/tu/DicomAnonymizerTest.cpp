@@ -24,21 +24,21 @@
 
 #include <core/os/temp_path.hpp>
 
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
 
 #include <io/dicom/helper/DicomAnonymizer.hpp>
 #include <io/dicom/helper/DicomDataReader.hxx>
 #include <io/dicom/helper/DicomSearch.hpp>
 #include <io/dicom/helper/DicomSeriesWriter.hpp>
-#include <io/dicom/reader/SeriesSet.hpp>
-#include <io/dicom/writer/Series.hpp>
+#include <io/dicom/reader/series_set.hpp>
+#include <io/dicom/writer/series.hpp>
 
 #include <utest/Filter.hpp>
 
-#include <utestData/Data.hpp>
-#include <utestData/generator/Image.hpp>
-#include <utestData/generator/SeriesSet.hpp>
+#include <utest_data/Data.hpp>
+#include <utest_data/generator/image.hpp>
+#include <utest_data/generator/series_set.hpp>
 
 #include <gdcmDicts.h>
 #include <gdcmGlobal.h>
@@ -83,14 +83,14 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
         return;
     }
 
-    data::ImageSeries::sptr imgSeries;
-    imgSeries = utestData::generator::SeriesSet::createImageSeries();
+    data::image_series::sptr imgSeries;
+    imgSeries = utest_data::generator::series_set::createImageSeries();
 
     core::os::temp_dir tmpDir;
 
     // Write ImageSeries
-    io::dicom::writer::Series::sptr writer = std::make_shared<io::dicom::writer::Series>();
-    writer->setObject(imgSeries);
+    io::dicom::writer::series::sptr writer = std::make_shared<io::dicom::writer::series>();
+    writer->set_object(imgSeries);
     writer->set_folder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
@@ -99,9 +99,9 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(tmpDir));
 
     // Load ImageSeries
-    auto series_set = std::make_shared<data::SeriesSet>();
-    auto reader     = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    auto series_set = std::make_shared<data::series_set>();
+    auto reader     = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
@@ -109,7 +109,7 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     auto anonymizedSeries =
-        std::dynamic_pointer_cast<data::ImageSeries>(series_set->front());
+        std::dynamic_pointer_cast<data::image_series>(series_set->front());
 
     CPPUNIT_ASSERT(anonymizedSeries);
 
@@ -142,7 +142,7 @@ void DicomAnonymizerTest::anonymizeDICOMTest()
     if(!utest::Filter::ignoreSlowTests())
     {
         //TODO Do we have to test more images ?
-        this->testDICOMFolder(utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/08-CT-PACS");
+        this->testDICOMFolder(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/08-CT-PACS");
     }
 }
 
@@ -254,11 +254,11 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
 
     m_uidContainer.erase("");
 
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     // Read DicomSeries
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(srcPath);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
@@ -266,7 +266,7 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     // Write DicomSeries
     core::os::temp_dir tmpDir;
     auto writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
-    writer->setObject((*series_set)[0]);
+    writer->set_object((*series_set)[0]);
     writer->set_folder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 

@@ -76,8 +76,8 @@ public:
      * Example of configuration
      * @code{.xml}
            <service uid="toolbar2" type="ui::toolbar"
-     * impl="sight::module::ui::SToolBar"
-     * autoConnect="false" >
+     * impl="sight::module::ui::tool_bar"
+     * auto_connect="false" >
                <gui>
                    <layout>
                        <menuItem name="My item 2" style="radio" icon="TutoGui/system.png"/>

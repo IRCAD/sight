@@ -11,4 +11,4 @@ endif()
 find_package(GDCM QUIET REQUIRED COMPONENTS gdcmCommon gdcmMSFF)
 target_link_libraries(filter_dicomTest PUBLIC gdcmCommon gdcmMSFF)
 
-target_link_libraries(filter_dicomTest PUBLIC core data io_dicom filter_dicom geometry_data utestData)
+target_link_libraries(filter_dicomTest PUBLIC core data io_dicom filter_dicom geometry_data utest_data)

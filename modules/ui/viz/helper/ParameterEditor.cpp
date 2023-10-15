@@ -22,10 +22,10 @@
 
 #include "modules/ui/viz/helper/ParameterEditor.hpp"
 
-#include <data/Array.hpp>
-#include <data/Color.hpp>
-#include <data/Float.hpp>
-#include <data/Integer.hpp>
+#include <data/array.hpp>
+#include <data/color.hpp>
+#include <data/integer.hpp>
+#include <data/real.hpp>
 
 #include <cmath>
 
@@ -85,7 +85,7 @@ service::config_t ParameterEditor::createConfig(
 
     const auto& objType = shaderObj->get_classname();
 
-    if(objType == "sight::data::Boolean")
+    if(objType == "sight::data::boolean")
     {
         _connections.connect(_paramSrv, "boolChanged", _adaptor, "setBoolParameter");
 
@@ -94,11 +94,11 @@ service::config_t ParameterEditor::createConfig(
         paramConfig.add("<xmlattr>.key", _adaptor->getParamName());
         paramConfig.add("<xmlattr>.defaultValue", false);
     }
-    else if(objType == "sight::data::Color")
+    else if(objType == "sight::data::color")
     {
         _connections.connect(_paramSrv, "colorChanged", _adaptor, "setColorParameter");
 
-        auto colorValue = std::dynamic_pointer_cast<data::Color>(shaderObj.get_shared());
+        auto colorValue = std::dynamic_pointer_cast<data::color>(shaderObj.get_shared());
 
         int r = static_cast<unsigned char>(colorValue->red() * 255);
         int g = static_cast<unsigned char>(colorValue->green() * 255);
@@ -117,11 +117,11 @@ service::config_t ParameterEditor::createConfig(
         paramConfig.add("<xmlattr>.key", _adaptor->getParamName());
         paramConfig.add("<xmlattr>.defaultValue", hexStr.str());
     }
-    else if(objType == "sight::data::Float")
+    else if(objType == "sight::data::real")
     {
         _connections.connect(_paramSrv, "doubleChanged", _adaptor, "setDoubleParameter");
 
-        auto floatValue         = std::dynamic_pointer_cast<data::Float>(shaderObj.get_shared());
+        auto floatValue         = std::dynamic_pointer_cast<data::real>(shaderObj.get_shared());
         const auto defaultValue = static_cast<double>(floatValue->value());
         const auto minmax       = getRange(defaultValue);
         const double min        = minmax.first;
@@ -134,11 +134,11 @@ service::config_t ParameterEditor::createConfig(
         paramConfig.add("<xmlattr>.min", min);
         paramConfig.add("<xmlattr>.max", max);
     }
-    else if(objType == "sight::data::Integer")
+    else if(objType == "sight::data::integer")
     {
         _connections.connect(_paramSrv, "intChanged", _adaptor, "setIntParameter");
 
-        auto intValue          = std::dynamic_pointer_cast<data::Integer>(shaderObj.get_shared());
+        auto intValue          = std::dynamic_pointer_cast<data::integer>(shaderObj.get_shared());
         const int defaultValue = int(intValue->value());
         const auto minmax      = getRange(defaultValue);
         const int min          = minmax.first;
@@ -151,9 +151,9 @@ service::config_t ParameterEditor::createConfig(
         paramConfig.add("<xmlattr>.min", min);
         paramConfig.add("<xmlattr>.max", max);
     }
-    else if(objType == "sight::data::Array")
+    else if(objType == "sight::data::array")
     {
-        auto arrayObject         = std::dynamic_pointer_cast<data::Array>(shaderObj.get_shared());
+        auto arrayObject         = std::dynamic_pointer_cast<data::array>(shaderObj.get_shared());
         const auto numComponents = arrayObject->size()[0];
         if(numComponents <= 3)
         {
@@ -169,7 +169,7 @@ service::config_t ParameterEditor::createConfig(
                     "setDouble" + strSize + "Parameter"
                 );
 
-                // We can't give a default value for each component to SParameters :/
+                // We can't give a default value for each component to parameters :/
                 // For now fill it with the first one
                 const auto dumpLock = arrayObject->dump_lock();
 

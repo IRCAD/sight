@@ -65,7 +65,7 @@ void input::setEchoMode(input::EchoMode echoMode)
 
 //------------------------------------------------------------------------------
 
-void input::setInput(const std::string& text)
+void input::set_input(const std::string& text)
 {
     m_input = QString::fromStdString(text);
 }

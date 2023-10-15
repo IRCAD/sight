@@ -26,11 +26,11 @@
 
 #include <core/thread/worker.hpp>
 
-#include <io/dimse/helper/Series.hpp>
+#include <io/dimse/helper/series.hpp>
 
 #include <utest/exception.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -134,7 +134,7 @@ void SeriesEnquirerTest::pushSeries()
 
     // Retrieve DICOM instances
     const std::filesystem::path path =
-        utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
+        utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
     const std::string pathStr = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
     CPPUNIT_ASSERT_MESSAGE(
@@ -184,14 +184,14 @@ void SeriesEnquirerTest::pullSeriesUsingMoveRetrieveMethod()
     // Try to find series on the pacs
     OFList<QRResponse*> responses;
     responses = m_seriesEnquirer->findSeriesByDate("17890101", "17900101");
-    io::dimse::helper::Series::releaseResponses(responses);
+    io::dimse::helper::series::releaseResponses(responses);
 
     // Try to pull series from the pacs
     responses = m_seriesEnquirer->findSeriesByPatientName("Doe");
     m_seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(
-        io::dimse::helper::Series::toSeriesInstanceUIDContainer(responses)
+        io::dimse::helper::series::toSeriesInstanceUIDContainer(responses)
     );
-    io::dimse::helper::Series::releaseResponses(responses);
+    io::dimse::helper::series::releaseResponses(responses);
 
     // Disconnect from the pacs
     m_seriesEnquirer->disconnect();
@@ -218,9 +218,9 @@ void SeriesEnquirerTest::pullSeriesUsingGetRetrieveMethod()
     OFList<QRResponse*> responses;
     responses = m_seriesEnquirer->findSeriesByPatientName("Doe");
     m_seriesEnquirer->pullSeriesUsingGetRetrieveMethod(
-        io::dimse::helper::Series::toSeriesInstanceUIDContainer(responses)
+        io::dimse::helper::series::toSeriesInstanceUIDContainer(responses)
     );
-    io::dimse::helper::Series::releaseResponses(responses);
+    io::dimse::helper::series::releaseResponses(responses);
 
     // Disconnect from the pacs
     m_seriesEnquirer->disconnect();

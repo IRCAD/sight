@@ -28,11 +28,11 @@
 
 #include <core/tools/date_and_time.hpp>
 
-#include <data/PointList.hpp>
-#include <data/Series.hpp>
-#include <data/String.hpp>
+#include <data/point_list.hpp>
+#include <data/series.hpp>
+#include <data/string.hpp>
 #include <data/types.hpp>
-#include <data/Vector.hpp>
+#include <data/vector.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 
@@ -48,13 +48,13 @@ namespace sight::io::dicom::writer::ie
 Document::Document(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::Image::csptr& image,
+    const data::image::csptr& image,
     bool use3DSR,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::Image>(writer, instance, image, logger, progress, cancel),
+    io::dicom::writer::ie::InformationEntity<data::image>(writer, instance, image, logger, progress, cancel),
     m_use3DSR(use3DSR)
 {
 }

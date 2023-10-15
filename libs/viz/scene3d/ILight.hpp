@@ -26,11 +26,11 @@
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/factory/new.hpp"
 #include "viz/scene3d/registry/detail.hpp"
-#include "viz/scene3d/SRender.hpp"
+#include "viz/scene3d/render.hpp"
 #include "viz/scene3d/transformable.hpp"
 
-#include <data/Color.hpp>
-#include <data/Matrix4.hpp>
+#include <data/color.hpp>
+#include <data/matrix4.hpp>
 
 #include <ui/__/container/widget.hpp>
 
@@ -55,7 +55,7 @@ public:
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' ).
      *
-     * @tparam T Factory product type.
+     * @tparam T factory product type.
      */
     template<typename T>
     class Registry
@@ -92,8 +92,8 @@ public:
      * @return A new light adaptor with registered inputs.
      */
     VIZ_SCENE3D_API static ILight::sptr createLightAdaptor(
-        data::Color::sptr _diffuse,
-        data::Color::sptr _specular
+        data::color::sptr _diffuse,
+        data::color::sptr _specular
     );
 
     /**
@@ -208,8 +208,8 @@ public:
 
 protected:
 
-    data::ptr<data::Color, data::Access::inout> m_diffuse {this, "diffuseColor", true};
-    data::ptr<data::Color, data::Access::inout> m_specular {this, "specularColor", true};
+    data::ptr<data::color, data::Access::inout> m_diffuse {this, "diffuseColor", true};
+    data::ptr<data::color, data::Access::inout> m_specular {this, "specularColor", true};
 };
 
 } // namespace sight::viz::scene3d

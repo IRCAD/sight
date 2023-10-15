@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include <service/macros.hpp>
 
@@ -58,14 +58,14 @@ public:
 private:
 
     static void inrStressTestWithType(core::type type, int nbTest);
-    static void inrReadWriteCheck(data::Image::sptr image);
+    static void inrReadWriteCheck(data::image::sptr image);
     static void niftiReadCheck(
-        const data::Image::sptr& imageToTest,
+        const data::image::sptr& imageToTest,
         const core::type& expectedType,
         std::size_t expectedDim,
-        const data::Image::Spacing& expectedSpacing,
-        const data::Image::Origin& expectedOrigin,
-        const data::Image::Size& expectedSize
+        const data::image::Spacing& expectedSpacing,
+        const data::image::Origin& expectedOrigin,
+        const data::image::Size& expectedSize
     );
 };
 

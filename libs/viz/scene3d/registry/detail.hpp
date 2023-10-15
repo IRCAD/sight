@@ -48,16 +48,16 @@ class base;
 namespace registry
 {
 
-typedef std::string KeyType;
+typedef std::string key_t;
 
-typedef core::factory_registry<SPTR(viz::scene3d::window_interactor)(), KeyType> Type;
+typedef core::factory_registry<SPTR(viz::scene3d::window_interactor)(), key_t> Type;
 typedef core::factory_registry<SPTR(viz::scene3d::window_interactor)(std::pair<unsigned int, unsigned int>),
-                               KeyType> OffscreenMgrType;
-typedef core::factory_registry<SPTR(viz::scene3d::interactor::base)(), KeyType> InteractorFactoryType;
-typedef core::factory_registry<SPTR(viz::scene3d::ICamera)(), KeyType> CameraFactoryType;
-typedef core::factory_registry<SPTR(viz::scene3d::ILight)(), KeyType> LightFactoryType;
+                               key_t> OffscreenMgrType;
+typedef core::factory_registry<SPTR(viz::scene3d::interactor::base)(), key_t> InteractorFactoryType;
+typedef core::factory_registry<SPTR(viz::scene3d::ICamera)(), key_t> CameraFactoryType;
+typedef core::factory_registry<SPTR(viz::scene3d::ILight)(), key_t> LightFactoryType;
 typedef core::factory_registry<SPTR(viz::scene3d::IText)(const SPTR(sight::viz::scene3d::Layer)& _layer),
-                               KeyType> TextFactoryType;
+                               key_t> TextFactoryType;
 
 VIZ_SCENE3D_API SPTR(Type) get();
 VIZ_SCENE3D_API SPTR(OffscreenMgrType) getOffscreenMgr();

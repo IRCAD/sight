@@ -3,7 +3,7 @@ sight_add_target(SightCalibrator TYPE APP)
 add_dependencies(
     SightCalibrator
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     module_service
@@ -36,7 +36,7 @@ module_param(
                                                              sight::module::ui::qt/flatdark.qss
 )
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config parameters PARAM_VALUES SightCalibrator_AppCfg SightCalibrator_AppCfgParam)
+module_param(module_app PARAM_LIST config parameters PARAM_VALUES SightCalibrator_AppCfg SightCalibrator_AppCfgParam)
 
 sight_generate_profile(SightCalibrator)
 

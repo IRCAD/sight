@@ -6,60 +6,60 @@ and are, therefore, contained in sub-folders according to their specificity.
 
 ## Services
 ### General
-* **SConfigLauncher**: starts/stops a template configuration.
+* **config_launcher**: starts/stops a template configuration.
 
-* **SDefaultAction**: defines the default action to have a simple action button.
+* **default_action**: defines the default action to have a simple action button.
 
-* **SFrame**: defines the default frame for standard application.
+* **frame**: defines the default frame for standard application.
 
-* **SJobBar**: displays a progress bar.
+* **job_bar**: displays a progress bar.
 
-* **SMenu**: defines the default menu for standard application.
+* **menu**: defines the default menu for standard application.
 
-* **SMenuBar**: defines the default menubar for standard application.
+* **menu_bar**: defines the default menubar for standard application.
 
-* **SModifyLayout**: modifies the layout of a configuration.
+* **modify_layout**: modifies the layout of a configuration.
 
-* **SQuit**: closes the window and reset root object.
+* **quit**: closes the window and reset root object.
 
-* **SToolBar**: defines the default toolbar for standard application.
+* **tool_bar**: defines the default toolbar for standard application.
 
-* **SView**: defines the generic layout for application.
+* **view**: defines the generic layout for application.
 
 ### com
-* **SSignal**: sends a signal when it is triggered.
+* **signal**: sends a signal when it is triggered.
 
-* **SStarter**: applies an action (start, stop, ...) on a service specify by uid.
+* **starter**: applies an action (start, stop, ...) on a service specify by uid.
 
-* **STimestampSlotCaller**: runs a slot given by HasSlot id and slot key and set the current timestamp in parameter.
+* **timestamp_slot_caller**: runs a slot given by HasSlot id and slot key and set the current timestamp in parameter.
 
 ### io
-* **SFolderSelector**: raises a pop-up dialog to select a directory, then send it via a signal.
+* **folder_selector**: raises a pop-up dialog to select a directory, then send it via a signal.
 
-* **SSelector**: displays a list of available readers or writers and lets you select one to load or save a data.
+* **selector**: displays a list of available readers or writers and lets you select one to load or save a data.
 
 ### metrics
 * **SAddDistance**: adds distances on an image field.
 
-* **SRemoveDistance**: removes distances from the image field.
+* **remove_distance**: removes distances from the image field.
   Possibility to choose between removing a selected point or the last added point.
 
-* **SShowDistance**: allows to show/hide image distances.
+* **show_distance**: allows to show/hide image distances.
 
 ### series
-* **SDBMerger**: allows to load a new SeriesSet and merge it with the current SeriesSet.
+* **db_merger**: allows to load a new series_set and merge it with the current series_set.
 
-* **SExport**: allows to export the series specified in config to the SeriesSet.
+* **export**: allows to export the series specified in config to the series_set.
 
-* **SExportWithSeriesSet**: allows to export the current series using a temporary SeriesSet.
+* **export_with_series_set**: allows to export the current series using a temporary series_set.
 
-* **SPushSelection**: action that pushes selected series into a `sight::data::SeriesSet`.
+* **push_selection**: action that pushes selected series into a `sight::data::series_set`.
 
 ### video
-* **SImagePicker**: listens to a picking interaction and fills the clicked point list.
+* **image_picker**: listens to a picking interaction and fills the clicked point list.
 
 ### viz
-* **CrossTypeAction**: allows change the cross type.
+* **cross_type_action**: allows change the cross type.
 
 ## How to use it
 

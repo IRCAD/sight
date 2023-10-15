@@ -24,8 +24,8 @@
 
 #include "io/igtl/detail/DataConverter.hpp"
 
-#include <data/Boolean.hpp>
-#include <data/Composite.hpp>
+#include <data/boolean.hpp>
+#include <data/composite.hpp>
 
 #include <igtlTrackingDataMessage.h>
 
@@ -33,7 +33,7 @@ namespace sight::io::igtl::detail::converter
 {
 
 const std::string TrackingStopConverter::s_IGTL_TYPE          = "STP_TDATA";
-const std::string TrackingStopConverter::s_FWDATA_OBJECT_TYPE = data::Composite::classname();
+const std::string TrackingStopConverter::s_FWDATA_OBJECT_TYPE = data::composite::classname();
 const std::string s_statusKey                                 = "Status";
 
 converterRegisterMacro(io::igtl::detail::converter::TrackingStopConverter);
@@ -48,7 +48,7 @@ TrackingStopConverter::~TrackingStopConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer TrackingStopConverter::fromFwDataObject(data::Object::csptr /*src*/) const
+::igtl::MessageBase::Pointer TrackingStopConverter::fromFwDataObject(data::object::csptr /*src*/) const
 {
     ::igtl::StopTrackingDataMessage::Pointer trackingMsg = ::igtl::StopTrackingDataMessage::New();
     return {trackingMsg.GetPointer()};
@@ -56,10 +56,10 @@ TrackingStopConverter::~TrackingStopConverter()
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer /*src*/) const
+data::object::sptr TrackingStopConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer /*src*/) const
 {
-    data::Composite::sptr composite = std::make_shared<data::Composite>();
-    data::Boolean::sptr status      = std::make_shared<data::Boolean>();
+    data::composite::sptr composite = std::make_shared<data::composite>();
+    data::boolean::sptr status      = std::make_shared<data::boolean>();
     (*composite)[s_statusKey] = status;
 
     status->setValue(false);

@@ -22,7 +22,7 @@
 #pragma once
 
 #include "data/container.hpp"
-#include "data/Exception.hpp"
+#include "data/exception.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
@@ -60,7 +60,7 @@ constexpr static auto inserter(C& container)
 
 template<class C>
 constexpr container<C>::container() :
-    Object(),
+    object(),
     ContainerWrapper<C>()
 {
     new_signal<added_signal_t>(ADDED_OBJECTS_SIG);
@@ -107,12 +107,12 @@ constexpr bool container<C>::operator!=(const container& other) const noexcept
 //------------------------------------------------------------------------------
 
 template<class C>
-inline void container<C>::shallow_copy(const Object::csptr& source)
+inline void container<C>::shallow_copy(const object::csptr& source)
 {
     const auto& other = std::dynamic_pointer_cast<const container<C> >(source);
 
     SIGHT_THROW_EXCEPTION_IF(
-        Exception(
+        exception(
             "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
         ),
         !other
@@ -147,7 +147,7 @@ constexpr bool is_data_object_fn()
         {
             // "using" is required for MSVC
             using shared_ptr_type = typename C::mapped_type;
-            return std::is_base_of<Object, typename shared_ptr_type::element_type>::value;
+            return std::is_base_of<object, typename shared_ptr_type::element_type>::value;
         }
     }
     else
@@ -156,7 +156,7 @@ constexpr bool is_data_object_fn()
         {
             // "using" is required for MSVC
             using shared_ptr_type = typename C::value_type;
-            return std::is_base_of<Object, typename shared_ptr_type::element_type>::value;
+            return std::is_base_of<object, typename shared_ptr_type::element_type>::value;
         }
     }
 
@@ -166,12 +166,12 @@ constexpr bool is_data_object_fn()
 //------------------------------------------------------------------------------
 
 template<class C>
-inline void container<C>::deep_copy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
+inline void container<C>::deep_copy(const object::csptr& source, const std::unique_ptr<deep_copy_cache_t>& cache)
 {
     const auto& other = std::dynamic_pointer_cast<const container<C> >(source);
 
     SIGHT_THROW_EXCEPTION_IF(
-        Exception(
+        exception(
             "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>")) + " to " + get_classname()
         ),
         !other
@@ -190,7 +190,7 @@ inline void container<C>::deep_copy(const Object::csptr& source, const std::uniq
         }
     }
 
-    // True if the container contains shared_ptr<Object>
+    // True if the container contains shared_ptr<object>
     constexpr bool is_data_object = is_data_object_fn<C>();
 
     // Special case for map
@@ -201,7 +201,7 @@ inline void container<C>::deep_copy(const Object::csptr& source, const std::uniq
         {
             if constexpr(is_data_object)
             {
-                this->container<C>::insert({key, Object::copy(value, cache)});
+                this->container<C>::insert({key, object::copy(value, cache)});
             }
             else
             {
@@ -219,7 +219,7 @@ inline void container<C>::deep_copy(const Object::csptr& source, const std::uniq
                 inserter(*this),
                 [&](const auto& value)
                 {
-                    return Object::copy(value, cache);
+                    return object::copy(value, cache);
                 });
         }
         else

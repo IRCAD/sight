@@ -25,7 +25,7 @@
 #include "io/igtl/detail/converter/base.hpp"
 #include "io/igtl/detail/exception/Conversion.hpp"
 
-#include <data/Mesh.hpp>
+#include <data/mesh.hpp>
 
 #include <igtlPolyDataMessage.h>
 
@@ -34,7 +34,7 @@ namespace sight::io::igtl::detail::converter
 
 /**
  *
- * @brief class to manage conversion between data::Mesh and igtl::PolyDataMessage
+ * @brief class to manage conversion between data::mesh and igtl::PolyDataMessage
  */
 class IO_IGTL_CLASS_API MeshConverter :
     public base
@@ -48,18 +48,18 @@ public:
     IO_IGTL_API ~MeshConverter() override;
 
     /**
-     * @brief convert a igtl::PositionMessage to a data::Line
+     * @brief convert a igtl::PositionMessage to a data::line
      *
-     * @return an data::Image converted from an ::igtl::ImageMessage
+     * @return an data::image converted from an ::igtl::ImageMessage
      */
-    [[nodiscard]] IO_IGTL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
+    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
 
     /**
-     * @brief convert a data::Line to an igtl::PositionMessage
+     * @brief convert a data::line to an igtl::PositionMessage
      *
-     * @return an  ::igtl::ImageMessage converted from an data::Image
+     * @return an  ::igtl::ImageMessage converted from an data::image
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const override;
 
     /**
      * @brief create a new LineConverter smart pointer
@@ -85,19 +85,19 @@ public:
 private:
 
     /// copy cells from a fwMesh to polydata message
-    static void copyCellsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest);
+    static void copyCellsFromFwMesh(data::mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest);
 
     /// copy points from fwMesh to polydata message
-    static void copyPointsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest);
+    static void copyPointsFromFwMesh(data::mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest);
 
     /// copy attributes from fwMesh(Normals, Colors) to polydata message
     static void copyAttributesFromFwMesh(
-        data::Mesh::csptr meshSrc,
+        data::mesh::csptr meshSrc,
         ::igtl::PolyDataMessage::Pointer dest
     );
 
     /// copy attribute from polydata message to fwMesh
-    static void copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer src, data::Mesh::sptr dest);
+    static void copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer src, data::mesh::sptr dest);
 
 private:
 

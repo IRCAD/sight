@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <core/base.hpp>
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <service/macros.hpp>
 
@@ -67,7 +67,7 @@ private:
         bool anonymized = false
     );
 
-    data::DicomSeries::sptr m_srcDicomSeries;
+    data::dicom_series::sptr m_srcDicomSeries;
 };
 
 } // namespace sight::io::dicom::ut

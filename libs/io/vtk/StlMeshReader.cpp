@@ -22,7 +22,7 @@
 
 #include "io/vtk/StlMeshReader.hpp"
 
-#include "io/vtk/helper/Mesh.hpp"
+#include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/helper/vtkLambdaCommand.hpp"
 
 #include <core/base.hpp>
@@ -62,7 +62,7 @@ void StlMeshReader::read()
 
     SIGHT_ASSERT("Object Lock null.", objectLock);
 
-    const data::Mesh::sptr pMesh = getConcreteObject();
+    const data::mesh::sptr pMesh = getConcreteObject();
 
     using helper::vtkLambdaCommand;
 
@@ -87,7 +87,7 @@ void StlMeshReader::read()
     vtkDataObject* obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
     SIGHT_THROW_IF("StlMeshReader cannot read VTK Mesh file : " << this->get_file().string(), !mesh);
-    io::vtk::helper::Mesh::fromVTKMesh(mesh, pMesh);
+    io::vtk::helper::mesh::fromVTKMesh(mesh, pMesh);
 
     m_job->finish();
 }

@@ -22,7 +22,7 @@
 
 #include "io/vtk/ObjMeshWriter.hpp"
 
-#include "io/vtk/helper/Mesh.hpp"
+#include "io/vtk/helper/mesh.hpp"
 #include "io/vtk/helper/vtkLambdaCommand.hpp"
 
 #include <core/base.hpp>
@@ -32,8 +32,8 @@
 #include <core/jobs/base.hpp>
 #include <core/jobs/observer.hpp>
 
-#include <data/Mesh.hpp>
-#include <data/Material.hpp>
+#include <data/mesh.hpp>
+#include <data/material.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -81,11 +81,11 @@ void ObjMeshWriter::write()
 
     SIGHT_ASSERT("Object Lock null.", objectLock);
 
-    const data::Mesh::csptr pMesh = getConcreteObject();
+    const data::mesh::csptr pMesh = getConcreteObject();
 
     vtkSmartPointer<vtkOBJWriter> writer = vtkSmartPointer<vtkOBJWriter>::New();
     vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::Mesh::toVTKMesh(pMesh, vtkMesh);
+    io::vtk::helper::mesh::toVTKMesh(pMesh, vtkMesh);
     writer->SetInputData(vtkMesh);
     writer->SetFileName(this->get_file().string().c_str());
 
@@ -117,9 +117,9 @@ void ObjMeshWriter::write()
 
     SIGHT_ASSERT("Object Lock null.", objectLock);
 
-    const data::Mesh::csptr pMesh        = getConcreteObject();
+    const data::mesh::csptr pMesh        = getConcreteObject();
     vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::Mesh::toVTKMesh(pMesh, vtkMesh);
+    io::vtk::helper::mesh::toVTKMesh(pMesh, vtkMesh);
 
     vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
     vtkSmartPointer<vtkActor> actor       = vtkSmartPointer<vtkActor>::New();

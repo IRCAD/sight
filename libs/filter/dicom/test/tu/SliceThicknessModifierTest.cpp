@@ -26,9 +26,9 @@
 #include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 
-#include <io/dicom/reader/SeriesSet.hpp>
+#include <io/dicom/reader/series_set.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -58,10 +58,10 @@ void SliceThicknessModifierTest::tearDown()
 
 void SliceThicknessModifierTest::simpleApplication()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "09-CT-PACS";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
@@ -69,16 +69,16 @@ void SliceThicknessModifierTest::simpleApplication()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
+    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
+    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Sort instances according to instance number
@@ -106,10 +106,10 @@ void SliceThicknessModifierTest::simpleApplication()
 
 void SliceThicknessModifierTest::applyFilterOn2DImage()
 {
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     const std::string filename       = "46-MR-BARRE-MONO2-12-shoulder";
-    const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
+    const std::filesystem::path path = utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
 
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
@@ -117,16 +117,16 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesSet::sptr reader = std::make_shared<io::dicom::reader::SeriesSet>();
-    reader->setObject(series_set);
+    io::dicom::reader::series_set::sptr reader = std::make_shared<io::dicom::reader::series_set>();
+    reader->set_object(series_set);
     reader->set_folder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>((*series_set)[0]);
+    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
-    std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
+    std::vector<data::dicom_series::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
 
     // Apply filter

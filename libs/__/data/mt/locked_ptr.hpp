@@ -38,7 +38,7 @@ class weak_ptr;
 
 /**
  * @brief This class holds a shared pointer on a data object, and acts as a mutex and a dump lock if the data own a
- * data::Array
+ * data::array
  */
 template<class DATATYPE>
 class locked_ptr final

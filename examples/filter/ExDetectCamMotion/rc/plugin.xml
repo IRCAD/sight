@@ -6,19 +6,19 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui" />
 
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>ExDetectCamMotion_AppCgf</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="frameTL" type="sight::data::FrameTL" />
-            <object uid="videoImage" type="sight::data::Image" />
-            <object uid="camera" type="sight::data::Camera" />
+            <object uid="frameTL" type="sight::data::frame_tl" />
+            <object uid="videoImage" type="sight::data::image" />
+            <object uid="camera" type="sight::data::camera" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <menuBar />
                     <toolBar />
@@ -34,7 +34,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::menu_bar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -47,7 +47,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="sight::module::ui::SMenu">
+            <service uid="menuPreferencesView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Video directory" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::tool_bar">
                 <gui>
                     <layout>
                         <editor />
@@ -96,35 +96,35 @@
             <!-- ************************************* Action ************************************ -->
 
             <!-- declaration of actions/slot callers -->
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::SAction">
+            <service uid="startVideoAct" type="sight::module::ui::action">
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::SAction">
+            <service uid="pauseVideoAct" type="sight::module::ui::action">
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::SAction">
+            <service uid="resumeVideoAct" type="sight::module::ui::action">
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::SAction">
+            <service uid="stopVideoAct" type="sight::module::ui::action">
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::SAction">
+            <service uid="loopVideoAct" type="sight::module::ui::action">
                 <state enabled="false" />
             </service>
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="sight::module::ui::qt::SPreferencesConfiguration">
+            <service uid="videoDirAct" type="sight::module::ui::qt::preferences_configuration">
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>
@@ -136,7 +136,7 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <!-- Scene in which the video will be rendered -->
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
                 <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -146,13 +146,13 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
                 <in key="image" uid="videoImage" />
             </service>
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="motionStatusSrv" type="sight::module::ui::qt::SStatus">
+            <service uid="motionStatusSrv" type="sight::module::ui::qt::status">
                 <form>circle</form>
                 <size>
                     <width>20</width>
@@ -164,18 +164,18 @@
                 <orange>Computing...</orange>
             </service>
 
-            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">
+            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
                 <inout key="camera" uid="camera" />
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="videoGrabberSrv" type="sight::module::io::video::SFrameGrabber">
+            <service uid="videoGrabberSrv" type="sight::module::io::video::frame_grabber">
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SSynchronizer">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer">
                 <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
@@ -184,8 +184,8 @@
                 </inout>
             </service>
 
-            <service uid="opticalFlowSrv" type="sight::module::filter::vision::SOpticalFlow" worker="ofWorker">
-                <in key="timeline" uid="frameTL" autoConnect="true" />
+            <service uid="opticalFlowSrv" type="sight::module::filter::vision::optical_flow" worker="ofWorker">
+                <in key="timeline" uid="frameTL" auto_connect="true" />
                 <config scaleFactor="3.6" />
             </service>
 

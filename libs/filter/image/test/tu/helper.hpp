@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include <io/itk/itk.hpp>
 #include <io/itk/itk.hxx>
@@ -38,7 +38,7 @@ template<class P, std::size_t N>
  * @tparam P Pixel type
  * @tparam N Number of channels
  */
-sight::data::Image::sptr createSphereImage(itk::Vector<double, N> spacing = itk::Vector<double, N>(1.))
+sight::data::image::sptr createSphereImage(itk::Vector<double, N> spacing = itk::Vector<double, N>(1.))
 {
     using ImageType                      = itk::Image<P, N>;
     using EllipseType                    = itk::EllipseSpatialObject<N>;
@@ -84,7 +84,7 @@ sight::data::Image::sptr createSphereImage(itk::Vector<double, N> spacing = itk:
 
     image->Graft(imageFilter->GetOutput());
 
-    auto outputImage = std::make_shared<sight::data::Image>();
+    auto outputImage = std::make_shared<sight::data::image>();
     sight::io::itk::moveFromItk(image, outputImage);
 
     return outputImage;

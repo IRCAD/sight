@@ -61,7 +61,7 @@ void MetaImageWriter::write()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::Image::csptr pImage = getConcreteObject();
+    data::image::csptr pImage = getConcreteObject();
 
     vtkSmartPointer<vtkMetaImageWriter> writer = vtkSmartPointer<vtkMetaImageWriter>::New();
     vtkSmartPointer<vtkImageData> vtkImage     = vtkSmartPointer<vtkImageData>::New();

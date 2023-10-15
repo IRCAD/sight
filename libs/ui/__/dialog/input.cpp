@@ -71,7 +71,7 @@ input::input(
             m_implementation        = std::dynamic_pointer_cast<ui::dialog::input_base>(guiObj);
             m_implementation->setTitle(title);
             m_implementation->setMessage(message);
-            m_implementation->setInput(text);
+            m_implementation->set_input(text);
             m_implementation->setEchoMode(echoMode);
         })
     );
@@ -110,13 +110,13 @@ void input::setMessage(const std::string& msg)
 
 //-----------------------------------------------------------------------------
 
-void input::setInput(const std::string& text)
+void input::set_input(const std::string& text)
 {
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(
             [&]
         {
-            m_implementation->setInput(text);
+            m_implementation->set_input(text);
         })
     ).wait();
 }

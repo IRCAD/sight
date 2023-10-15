@@ -28,11 +28,11 @@
 #include <core/tools/date_and_time.hpp>
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/Image.hpp>
-#include <data/Point.hpp>
-#include <data/PointList.hpp>
-#include <data/String.hpp>
-#include <data/Vector.hpp>
+#include <data/image.hpp>
+#include <data/point.hpp>
+#include <data/point_list.hpp>
+#include <data/string.hpp>
+#include <data/vector.hpp>
 
 #include <gdcmUIDGenerator.h>
 
@@ -44,12 +44,12 @@ namespace sight::io::dicom::writer::ie
 SpatialFiducials::SpatialFiducials(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::Image::csptr& image,
+    const data::image::csptr& image,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::Image>(writer, instance, image,
+    io::dicom::writer::ie::InformationEntity<data::image>(writer, instance, image,
                                                           logger, progress, cancel)
 {
 }
@@ -153,11 +153,11 @@ void SpatialFiducials::writeSpatialFiducialsModule()
 
 void SpatialFiducials::writeLandmarks(gdcm::SmartPointer<gdcm::SequenceOfItems> sequence)
 {
-    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
+    data::point_list::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
     if(pointList)
     {
         unsigned int index = 0;
-        for(const data::Point::sptr& point : pointList->getPoints())
+        for(const data::point::sptr& point : pointList->getPoints())
         {
             gdcm::Item fiducialItem;
             fiducialItem.SetVLToUndefined();

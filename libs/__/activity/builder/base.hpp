@@ -25,16 +25,16 @@
 #include "activity/builder/factory/new.hpp"
 #include "activity/builder/registry/detail.hpp"
 #include "activity/config.hpp"
-#include "activity/extension/Activity.hpp"
+#include "activity/extension/activity.hpp"
 
 #include <core/base.hpp>
 
-#include <data/Activity.hpp>
+#include <data/activity.hpp>
 
 namespace sight::data
 {
 
-class Vector;
+class vector;
 
 } // namespace sight::data
 
@@ -48,13 +48,13 @@ class ACTIVITY_CLASS_API base : public core::base_object
 {
 public:
 
-    typedef data::Activity::ConfigIdType ConfigIdType;
+    typedef data::activity::ConfigIdType ConfigIdType;
 
     /**
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' )
      *
-     * @tparam T Factory product type
+     * @tparam T factory product type
      */
     template<typename T>
     class Registry
@@ -74,19 +74,19 @@ public:
 
     /**
      * @brief Build an Activity with required data present in currentSelection and defined in configuration.
-     * @param[in] activityInfo a structure which contains all the Activity configuration
+     * @param[in] activity_info a structure which contains all the Activity configuration
      * @param[in] currentSelection a vector which contains current selected data.
      * @return specific data Activity for the specified Activity.
      */
-    ACTIVITY_API virtual data::Activity::sptr buildData(
-        const activity::extension::ActivityInfo& activityInfo,
-        const CSPTR(data::Vector)& currentSelection
+    ACTIVITY_API virtual data::activity::sptr buildData(
+        const activity::extension::activity_info& activity_info,
+        const CSPTR(data::vector)& currentSelection
     ) const = 0;
 
 protected:
 
-    ACTIVITY_API virtual SPTR(data::Vector) getType(
-        const CSPTR(data::Vector) & currentSelection,
+    ACTIVITY_API virtual SPTR(data::vector) getType(
+        const CSPTR(data::vector) & currentSelection,
         const std::string& type
     ) const;
 };

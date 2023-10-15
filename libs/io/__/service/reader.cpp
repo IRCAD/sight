@@ -158,7 +158,7 @@ void reader::clearLocations()
 
 void reader::configuring()
 {
-    const ConfigType config = this->getConfiguration();
+    const config_t config = this->get_config();
 
     SIGHT_ASSERT(
         "Generic configuring method is only available for io service that use paths.",

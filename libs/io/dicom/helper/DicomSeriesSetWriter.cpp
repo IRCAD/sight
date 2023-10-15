@@ -29,9 +29,9 @@
 #include <core/jobs/job.hpp>
 #include <core/jobs/observer.hpp>
 
-#include <data/DicomSeries.hpp>
-#include <data/Series.hpp>
-#include <data/SeriesSet.hpp>
+#include <data/dicom_series.hpp>
+#include <data/series.hpp>
+#include <data/series_set.hpp>
 
 #include <io/zip/WriteDirArchive.hpp>
 
@@ -87,7 +87,7 @@ std::string getSubPath(int index)
 void DicomSeriesSetWriter::write()
 {
     auto series_set = getConcreteObject();
-    SIGHT_ASSERT("Unable to retrieve associated SeriesSet", series_set);
+    SIGHT_ASSERT("Unable to retrieve associated series_set", series_set);
 
     io::zip::write_archive::sptr writeArchive = io::zip::WriteDirArchive::make(this->get_folder());
 
@@ -96,7 +96,7 @@ void DicomSeriesSetWriter::write()
 
     for(const auto& series : *series_set)
     {
-        const auto& dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(series);
+        const auto& dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(series);
 
         core::jobs::job::sptr job =
             std::make_shared<core::jobs::job>(
@@ -108,7 +108,7 @@ void DicomSeriesSetWriter::write()
                     m_anonymizer->resetIndex();
 
                     io::dicom::helper::DicomSeriesWriter::sptr writer = std::make_shared<io::dicom::helper::DicomSeriesWriter>();
-                    writer->setObject(dicomSeries);
+                    writer->set_object(dicomSeries);
                     writer->setAnonymizer(m_anonymizer);
                     writer->setOutputArchive(writeArchive, nbSeries > 1 ? getSubPath(processedSeries++) : "");
 

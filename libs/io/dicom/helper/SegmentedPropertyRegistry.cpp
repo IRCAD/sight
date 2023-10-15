@@ -22,7 +22,7 @@
 
 #include "io/dicom/helper/SegmentedPropertyRegistry.hpp"
 
-#include "io/__/reader/CsvReader.hpp"
+#include "io/__/reader/csv_reader.hpp"
 #include "io/dicom/helper/DicomCodedAttribute.hpp"
 
 #include <core/log/logger.hpp>
@@ -129,7 +129,7 @@ bool SegmentedPropertyRegistry::readSegmentedPropertyRegistryFile(
         bool result = true;
 
         // Read CSV
-        io::reader::CsvReader reader(filepath);
+        io::reader::csv_reader reader(filepath);
 
         const std::string separator = "|";
         auto tokens                 = reader.getLine(separator);

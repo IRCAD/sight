@@ -24,9 +24,9 @@
 
 #include <activity/validator/registry/macros.hpp>
 
-#include <data/Camera.hpp>
-#include <data/CameraSet.hpp>
-#include <data/Matrix4.hpp>
+#include <data/camera.hpp>
+#include <data/camera_set.hpp>
+#include <data/matrix4.hpp>
 
 namespace sight::module::activity::validator::CameraSet
 {
@@ -35,14 +35,14 @@ SIGHT_REGISTER_ACTIVITY_VALIDATOR(sight::module::activity::validator::CameraSet:
 
 //-----------------------------------------------------------------------------
 
-sight::activity::validator::return_t StereoCamera::validate(const data::Object::csptr& currentData) const
+sight::activity::validator::return_t StereoCamera::validate(const data::object::csptr& currentData) const
 {
     sight::activity::validator::return_t validation;
 
     validation.first  = true;
     validation.second = "";
 
-    const auto& camera_set = std::dynamic_pointer_cast<const data::CameraSet>(currentData);
+    const auto& camera_set = std::dynamic_pointer_cast<const data::camera_set>(currentData);
 
     if(!camera_set)
     {
@@ -53,21 +53,21 @@ sight::activity::validator::return_t StereoCamera::validate(const data::Object::
     {
         if(camera_set->size() == 2)
         {
-            data::Camera::csptr camera0 = camera_set->get_camera(0);
+            data::camera::csptr camera0 = camera_set->get_camera(0);
             if(!camera0->getIsCalibrated())
             {
                 validation.first  = false;
                 validation.second = "The first CameraSet should be calibrated.";
             }
 
-            data::Camera::csptr camera1 = camera_set->get_camera(1);
+            data::camera::csptr camera1 = camera_set->get_camera(1);
             if(!camera1->getIsCalibrated())
             {
                 validation.first  = false;
                 validation.second = "The second CameraSet should be calibrated.";
             }
 
-            data::Matrix4::csptr matrix = camera_set->get_extrinsic_matrix(1);
+            data::matrix4::csptr matrix = camera_set->get_extrinsic_matrix(1);
             if(!matrix)
             {
                 validation.first  = false;

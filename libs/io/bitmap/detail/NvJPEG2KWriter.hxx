@@ -79,7 +79,7 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::Image& image,
+        const data::image& image,
         O& output,
         Writer::Mode mode,
         Flag flag = Flag::NONE
@@ -95,18 +95,18 @@ public:
         const auto& pixel_format = image.getPixelFormat();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image format: " << pixel_format,
-            pixel_format != data::Image::PixelFormat::GRAY_SCALE
-            && pixel_format != data::Image::PixelFormat::RGB
-            && pixel_format != data::Image::PixelFormat::RGBA
-            && pixel_format != data::Image::PixelFormat::BGR
-            && pixel_format != data::Image::PixelFormat::BGRA
+            pixel_format != data::image::PixelFormat::GRAY_SCALE
+            && pixel_format != data::image::PixelFormat::RGB
+            && pixel_format != data::image::PixelFormat::RGBA
+            && pixel_format != data::image::PixelFormat::BGR
+            && pixel_format != data::image::PixelFormat::BGRA
         );
 
         /// @todo Check new version of nvjpeg2k (>0.6).
         /// No idea why the decoding fails with unsigned 16 bits and 4 components images, we mark this as unsupported.
         SIGHT_THROW_IF(
             m_name << " - Unsupported format (" << pixel_format << ") and type (" << pixel_type << ") combination",
-            (pixel_format == data::Image::PixelFormat::RGBA || pixel_format == data::Image::PixelFormat::BGRA)
+            (pixel_format == data::image::PixelFormat::RGBA || pixel_format == data::image::PixelFormat::BGRA)
             && pixel_type == core::type::UINT16
         );
 
@@ -155,7 +155,7 @@ public:
 
         // Only one component means grayscale
         encode_config.color_space =
-            pixel_format == data::Image::GRAY_SCALE
+            pixel_format == data::image::GRAY_SCALE
             ? NVJPEG2K_COLORSPACE_GRAY
             : NVJPEG2K_COLORSPACE_SRGB;
 
@@ -323,7 +323,7 @@ public:
 private:
 
     /// Copy an image packed data to planar in the GPU
-    inline void toGPU(const data::Image& image)
+    inline void toGPU(const data::image& image)
     {
         const auto size_in_bytes = image.getSizeInBytes();
 
@@ -404,7 +404,7 @@ private:
 
                 if(num_components == 3)
                 {
-                    if(pixel_format == data::Image::PixelFormat::RGB)
+                    if(pixel_format == data::image::PixelFormat::RGB)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[0]),
@@ -423,7 +423,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::Image::PixelFormat::BGR)
+                    else if(pixel_format == data::image::PixelFormat::BGR)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[2]),
@@ -449,7 +449,7 @@ private:
                 }
                 else if(num_components == 4)
                 {
-                    if(pixel_format == data::Image::PixelFormat::RGBA)
+                    if(pixel_format == data::image::PixelFormat::RGBA)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[0]),
@@ -469,7 +469,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::Image::PixelFormat::BGRA)
+                    else if(pixel_format == data::image::PixelFormat::BGRA)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[2]),
@@ -502,7 +502,7 @@ private:
 
                 if(num_components == 3)
                 {
-                    if(pixel_format == data::Image::PixelFormat::RGB)
+                    if(pixel_format == data::image::PixelFormat::RGB)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[0]),
@@ -521,7 +521,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::Image::PixelFormat::BGR)
+                    else if(pixel_format == data::image::PixelFormat::BGR)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[2]),
@@ -547,7 +547,7 @@ private:
                 }
                 else
                 {
-                    if(pixel_format == data::Image::PixelFormat::RGBA)
+                    if(pixel_format == data::image::PixelFormat::RGBA)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[0]),
@@ -567,7 +567,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::Image::PixelFormat::BGRA)
+                    else if(pixel_format == data::image::PixelFormat::BGRA)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[2]),
@@ -600,7 +600,7 @@ private:
 
                 if(num_components == 3)
                 {
-                    if(pixel_format == data::Image::PixelFormat::RGB)
+                    if(pixel_format == data::image::PixelFormat::RGB)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16s*>(m_planar_gpu_buffers[0]),
@@ -619,7 +619,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::Image::PixelFormat::BGR)
+                    else if(pixel_format == data::image::PixelFormat::BGR)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16s*>(m_planar_gpu_buffers[2]),
@@ -645,7 +645,7 @@ private:
                 }
                 else
                 {
-                    if(pixel_format == data::Image::PixelFormat::RGBA)
+                    if(pixel_format == data::image::PixelFormat::RGBA)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16s*>(m_planar_gpu_buffers[0]),
@@ -665,7 +665,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::Image::PixelFormat::BGRA)
+                    else if(pixel_format == data::image::PixelFormat::BGRA)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16s*>(m_planar_gpu_buffers[2]),

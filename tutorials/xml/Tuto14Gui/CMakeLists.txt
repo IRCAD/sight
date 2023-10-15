@@ -3,7 +3,7 @@ sight_add_target(Tuto14Gui TYPE APP)
 add_dependencies(
     Tuto14Gui
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     data
@@ -19,6 +19,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto14Gui_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES Tuto14Gui_AppCfg)
 
 sight_generate_profile(Tuto14Gui)

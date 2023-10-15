@@ -96,17 +96,17 @@ public:
 
                 // Check if the rerror is because of unsupported pixel format
                 const auto& pixel_format = image->getPixelFormat();
-                if(pixel_format != data::Image::PixelFormat::GRAY_SCALE
-                   && pixel_format != data::Image::PixelFormat::RGB
-                   && pixel_format != data::Image::PixelFormat::RGBA
-                   && pixel_format != data::Image::PixelFormat::BGR
-                   && pixel_format != data::Image::PixelFormat::BGRA)
+                if(pixel_format != data::image::PixelFormat::GRAY_SCALE
+                   && pixel_format != data::image::PixelFormat::RGB
+                   && pixel_format != data::image::PixelFormat::RGBA
+                   && pixel_format != data::image::PixelFormat::BGR
+                   && pixel_format != data::image::PixelFormat::BGRA)
                 {
                     throw;
                 }
 
                 /// @todo Check new version of nvjpeg2k (>0.6).
-                if((pixel_format == data::Image::PixelFormat::RGBA || pixel_format == data::Image::PixelFormat::BGRA)
+                if((pixel_format == data::image::PixelFormat::RGBA || pixel_format == data::image::PixelFormat::BGRA)
                    && pixel_type == core::type::UINT16)
                 {
                     throw;
@@ -182,7 +182,7 @@ private:
     template<typename W, typename O>
     inline static std::size_t write(
         std::unique_ptr<W>& backend,
-        const data::Image& image,
+        const data::image& image,
         O& output,
         Writer::Mode mode,
         Flag flag = Flag::NONE

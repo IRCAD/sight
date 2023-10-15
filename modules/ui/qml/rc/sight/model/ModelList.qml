@@ -15,7 +15,7 @@ Item {
         serviceCreated(modelSeriesList)
     }
 
-    SModelSeriesList {
+    model_series_list {
         id: modelSeriesList
 
         listModel: organListModel

@@ -32,9 +32,9 @@ namespace sight::ui::history
 
 //------------------------------------------------------------------------------
 
-ImageDiffCommand::ImageDiffCommand(const data::Image::sptr& img, filter::image::ImageDiff diff) :
+ImageDiffCommand::ImageDiffCommand(const data::image::sptr& img, filter::image::image_diff diff) :
     m_img(img),
-    m_modifiedSig(img->signal<data::Image::BufferModifiedSignalType>(data::Image::BUFFER_MODIFIED_SIG)),
+    m_modifiedSig(img->signal<data::image::BufferModifiedSignalType>(data::image::BUFFER_MODIFIED_SIG)),
     m_diff(std::move(diff))
 {
     m_diff.shrink();
@@ -73,7 +73,7 @@ bool ImageDiffCommand::undo()
 
 std::string ImageDiffCommand::getDescription() const
 {
-    return "ImageDiff";
+    return "image_diff";
 }
 
 } // namespace sight::ui::history

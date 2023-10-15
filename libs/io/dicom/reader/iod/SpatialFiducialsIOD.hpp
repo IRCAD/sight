@@ -43,7 +43,7 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API SpatialFiducialsIOD(
-        const data::DicomSeries::csptr& dicomSeries,
+        const data::dicom_series::csptr& dicomSeries,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         const core::log::logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
@@ -58,7 +58,7 @@ public:
      * @param[in,out] series Series that must be enriched
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API void read(data::Series::sptr series) override;
+    IO_DICOM_API void read(data::series::sptr series) override;
 };
 
 } // namespace sight::io::dicom::reader::iod

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "filter/image/config.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include <itkImage.h>
 
@@ -50,7 +50,7 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer median(
     std::size_t _z
 );
 
-/// Labeling filter
+/// labeling filter
 template<typename IMAGE_TYPE, unsigned int DIM>
 typename itk::Image<std::uint8_t, DIM>::Pointer labeling(
     typename itk::Image<IMAGE_TYPE, DIM>::Pointer _image,

@@ -26,15 +26,15 @@
 #include <core/tools/system.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/ImageSeries.hpp>
+#include <data/image_series.hpp>
 
 #include <io/dicom/Reader.hpp>
 #include <io/dicom/Writer.hpp>
 
 #include <utest/Filter.hpp>
 
-#include <utestData/Data.hpp>
-#include <utestData/generator/Image.hpp>
+#include <utest_data/Data.hpp>
+#include <utest_data/generator/image.hpp>
 
 #include <TestAssert.h>
 
@@ -48,17 +48,17 @@ namespace sight::io::dicom::ut
 
 //------------------------------------------------------------------------------
 
-inline static sight::data::SeriesSet::sptr read(const std::filesystem::path path)
+inline static sight::data::series_set::sptr read(const std::filesystem::path path)
 {
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    auto seriesSet = std::make_shared<data::SeriesSet>();
+    auto seriesSet = std::make_shared<data::series_set>();
 
     auto reader = std::make_shared<io::dicom::Reader>();
-    reader->setObject(seriesSet);
+    reader->set_object(seriesSet);
     reader->set_folder(path);
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -85,8 +85,8 @@ inline static std::filesystem::path createTempFolder()
 //------------------------------------------------------------------------------
 
 inline static void compareEnhancedUSVolume(
-    const data::ImageSeries::sptr& expected,
-    const data::ImageSeries::sptr& actual
+    const data::image_series::sptr& expected,
+    const data::image_series::sptr& actual
 )
 {
     CPPUNIT_ASSERT(expected);
@@ -169,13 +169,13 @@ inline static void compareEnhancedUSVolume(
 
 //------------------------------------------------------------------------------
 
-inline static void compareEnhancedUSVolume(const data::SeriesSet::sptr& expected, const data::SeriesSet::sptr& actual)
+inline static void compareEnhancedUSVolume(const data::series_set::sptr& expected, const data::series_set::sptr& actual)
 {
     CPPUNIT_ASSERT_EQUAL(expected->size(), actual->size());
     for(std::size_t i = 0 ; i < expected->size() ; i++)
     {
-        const auto& expectedImageSeries = std::dynamic_pointer_cast<data::ImageSeries>((*expected)[i]);
-        const auto& actualImageSeries   = std::dynamic_pointer_cast<data::ImageSeries>((*actual)[i]);
+        const auto& expectedImageSeries = std::dynamic_pointer_cast<data::image_series>((*expected)[i]);
+        const auto& actualImageSeries   = std::dynamic_pointer_cast<data::image_series>((*actual)[i]);
         compareEnhancedUSVolume(expectedImageSeries, actualImageSeries);
     }
 }
@@ -193,16 +193,16 @@ void ReaderWriterTest::setUp()
 static void testImage(const std::string& name)
 {
     const auto& folder   = createTempFolder();
-    const auto& expected = read(utestData::Data::dir() / name);
+    const auto& expected = read(utest_data::Data::dir() / name);
 
     auto writer = std::make_shared<io::dicom::Writer>();
-    writer->setObject(expected);
+    writer->set_object(expected);
     writer->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    auto actual = std::make_shared<data::SeriesSet>();
+    auto actual = std::make_shared<data::series_set>();
     auto reader = std::make_shared<io::dicom::Reader>();
-    reader->setObject(actual);
+    reader->set_object(actual);
     reader->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 

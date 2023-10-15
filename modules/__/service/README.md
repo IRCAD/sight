@@ -1,6 +1,6 @@
 # sight::modules::service
 
-Initializes service, serviceConfig, appConfig & appConfigParameters extension points registries.
+Initializes service, service_config, appConfig & appConfigParameters extension points registries.
 Contains also `.xsd` files to perform checks of each of the previously named configurations.
 
 ## Classes
@@ -10,7 +10,7 @@ Contains also `.xsd` files to perform checks of each of the previously named con
 ## Resources
 
 - **serviceFactory.xsd**: XML schema definition for service factory.
-- **serviceConfig.xsd**: XML schema definition for service config.
+- **service_config.xsd**: XML schema definition for service config.
 - **serviceFactory.xsd**: XML schema definition for appConfig.
 - **serviceFactory.xsd**: XML schema definition for appConfigParameters.
 
@@ -27,9 +27,9 @@ add_dependencies(myTarget module_service ... )
 example of service factory:
 
  ```xml
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
         <type>sight::service::IXMLParser</type>
         <service>sight::service::parser::Color</service>
-        <object>sight::data::Color</object>
+        <object>sight::data::color</object>
     </extension>
  ```

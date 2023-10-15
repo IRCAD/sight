@@ -100,8 +100,8 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="myMenu" type="ui::menu" impl="sight::module::ui::SMenu"
-     * autoConnect="false" >
+       <service uid="myMenu" type="ui::menu" impl="sight::module::ui::menu"
+     * auto_connect="false" >
             <gui>
                 <layout>
                     <menuItem name="My item 1" shortcut="1" style="check" icon="TutoGui/system.png" />

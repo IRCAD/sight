@@ -26,9 +26,9 @@
 
 #include <core/location/single_file.hpp>
 
-#include <data/Mesh.hpp>
+#include <data/mesh.hpp>
 
-#include <io/__/reader/GenericObjectReader.hpp>
+#include <io/__/reader/generic_object_reader.hpp>
 
 #include <filesystem>
 
@@ -48,14 +48,14 @@ namespace sight::io::vtk
  *
  */
 
-class IO_VTK_CLASS_API StlMeshReader : public reader::GenericObjectReader<data::Mesh>,
+class IO_VTK_CLASS_API StlMeshReader : public reader::generic_object_reader<data::mesh>,
                                        public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         StlMeshReader,
-        io::reader::GenericObjectReader<data::Mesh>,
+        io::reader::generic_object_reader<data::mesh>,
         io::reader::factory::make<StlMeshReader>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()

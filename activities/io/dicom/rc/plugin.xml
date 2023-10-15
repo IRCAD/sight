@@ -12,7 +12,7 @@
     <xi:include href="configurations/DicomFiltering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/DicomPreview.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>DicomPacsReader</id>
         <title>Dicom PACS Reader</title>
         <desc>Dicom PACS Reader activity</desc>
@@ -24,7 +24,7 @@
         </appConfig>
         </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>DicomPacsWriter</id>
         <title>Dicom PACS Writer</title>
         <desc>Dicom Pacs Writer activity</desc>
@@ -36,7 +36,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>DicomPacsReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
@@ -44,7 +44,7 @@
         </config>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>DicomFiltering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
@@ -56,21 +56,21 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>IOSelectorServiceConfigVRRenderExtDicomSeriesSetReader</id>
-        <service>sight::module::ui::io::SSelector</service>
+        <service>sight::module::ui::io::selector</service>
         <desc>IOSelectorService config for DICOM Filtering Activity</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::dicom::SDicomSeriesSetReader" />
-            <config id="DicomReaderConfig" service="sight::module::io::dicom::SDicomSeriesSetReader" />
+            <addSelection service="sight::module::io::dicom::dicom_series_set_reader" />
+            <config id="DicomReaderConfig" service="sight::module::io::dicom::dicom_series_set_reader" />
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
          <id>DicomReaderConfig</id>
-         <desc>DICOM Reader Config</desc>
+         <desc>DICOM Reader config</desc>
          <config>
             <dicomdirSupport>user_selection</dicomdirSupport>
             <mode>direct</mode>

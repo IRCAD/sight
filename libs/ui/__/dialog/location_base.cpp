@@ -25,7 +25,7 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <data/String.hpp>
+#include <data/string.hpp>
 
 #include <service/base.hpp>
 #include <service/registry.hpp>

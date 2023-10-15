@@ -45,7 +45,7 @@ public:
     inline ~LibPNGReader() noexcept = default;
 
     /// Reading
-    inline void read(data::Image& image, std::istream& istream, Flag /*flag*/)
+    inline void read(data::image& image, std::istream& istream, Flag /*flag*/)
     {
         // Create an RAII to be sure everything is cleaned at exit
         struct Keeper final
@@ -149,16 +149,16 @@ public:
                 switch(channels)
                 {
                     case 1:
-                        return data::Image::PixelFormat::GRAY_SCALE;
+                        return data::image::PixelFormat::GRAY_SCALE;
 
                     case 2:
-                        return data::Image::PixelFormat::RG;
+                        return data::image::PixelFormat::RG;
 
                     case 3:
-                        return data::Image::PixelFormat::RGB;
+                        return data::image::PixelFormat::RGB;
 
                     case 4:
-                        return data::Image::PixelFormat::RGBA;
+                        return data::image::PixelFormat::RGBA;
 
                     default:
                         SIGHT_THROW("Unsupported number of channels: " << channels);

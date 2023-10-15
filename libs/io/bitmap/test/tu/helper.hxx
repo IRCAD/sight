@@ -25,14 +25,14 @@
 #include <core/tools/uuid.hpp>
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/ImageSeries.hpp>
+#include <data/image_series.hpp>
 
 #include <io/bitmap/Writer.hpp>
-#include <io/opencv/Image.hpp>
-#include <io/opencv/Type.hpp>
+#include <io/opencv/image.hpp>
+#include <io/opencv/type.hpp>
 
-#include <utestData/Data.hpp>
-#include <utestData/generator/Image.hpp>
+#include <utest_data/Data.hpp>
+#include <utest_data/generator/image.hpp>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -44,23 +44,23 @@ namespace sight::io::bitmap::ut
 
 //------------------------------------------------------------------------------
 
-inline static data::Image::sptr getSyntheticImage(
+inline static data::image::sptr getSyntheticImage(
     std::optional<std::uint32_t> seed = std::nullopt,
     core::type type                   = core::type::UINT8,
-    data::Image::PixelFormat format   = data::Image::RGB
+    data::image::PixelFormat format   = data::image::RGB
 )
 {
-    using key_t = std::tuple<std::optional<std::uint32_t>, core::type, data::Image::PixelFormat>;
-    static std::map<key_t, data::Image::sptr> s_generated;
+    using key_t = std::tuple<std::optional<std::uint32_t>, core::type, data::image::PixelFormat>;
+    static std::map<key_t, data::image::sptr> s_generated;
 
     const key_t key = std::make_tuple(seed, type, format);
 
     if(const auto& it = s_generated.find(key); it == s_generated.end())
     {
-        auto image           = std::make_shared<data::Image>();
+        auto image           = std::make_shared<data::image>();
         const auto dump_lock = image->dump_lock();
 
-        utestData::generator::Image::generateImage(
+        utest_data::generator::image::generateImage(
             image,
             {256, 256, 0},
             {0, 0, 0},
@@ -99,14 +99,14 @@ inline static data::Image::sptr getSyntheticImage(
 
 //------------------------------------------------------------------------------
 
-inline static cv::Mat imageToMat(const data::Image::sptr& image, bool clone = true)
+inline static cv::Mat imageToMat(const data::image::sptr& image, bool clone = true)
 {
     // Convert origin to cv::Mat
     const auto dump_lock = image->dump_lock();
     const auto& sizes    = image->size();
     auto mat             = cv::Mat(
         std::vector<int> {int(sizes[1]), int(sizes[0])},
-        io::opencv::Type::toCv(image->getType(), image->numComponents()),
+        io::opencv::type::toCv(image->getType(), image->numComponents()),
         image->buffer()
     );
 
@@ -117,11 +117,11 @@ inline static cv::Mat imageToMat(const data::Image::sptr& image, bool clone = tr
 
     switch(image->getPixelFormat())
     {
-        case data::Image::PixelFormat::RGB:
+        case data::image::PixelFormat::RGB:
             cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
             break;
 
-        case data::Image::PixelFormat::RGBA:
+        case data::image::PixelFormat::RGBA:
             cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGRA);
             break;
 
@@ -135,15 +135,15 @@ inline static cv::Mat imageToMat(const data::Image::sptr& image, bool clone = tr
 
 //------------------------------------------------------------------------------
 
-inline static data::Image::sptr matToImage(cv::Mat& mat, bool clone = true)
+inline static data::image::sptr matToImage(cv::Mat& mat, bool clone = true)
 {
-    auto image           = std::make_shared<data::Image>();
+    auto image           = std::make_shared<data::image>();
     const auto dump_lock = image->dump_lock();
 
     cv::Mat mat_copy;
     cv::Mat& mat_ref = clone ? (mat_copy = mat.clone()) : mat;
 
-    const auto cv_type = io::opencv::Type::fromCv(mat_ref.type());
+    const auto cv_type = io::opencv::type::fromCv(mat_ref.type());
 
     switch(cv_type.second)
     {
@@ -160,7 +160,7 @@ inline static data::Image::sptr matToImage(cv::Mat& mat, bool clone = true)
             break;
     }
 
-    io::opencv::Image::copyFromCv(*image, mat_ref);
+    io::opencv::image::copyFromCv(*image, mat_ref);
 
     sight::data::helper::MedicalImage::checkImageSliceIndex(image);
 
@@ -169,7 +169,7 @@ inline static data::Image::sptr matToImage(cv::Mat& mat, bool clone = true)
 
 //------------------------------------------------------------------------------
 
-inline static data::Image::sptr readImage(const std::filesystem::path& path)
+inline static data::image::sptr readImage(const std::filesystem::path& path)
 {
     CPPUNIT_ASSERT(std::filesystem::exists(path) && std::filesystem::is_regular_file(path));
 
@@ -180,7 +180,7 @@ inline static data::Image::sptr readImage(const std::filesystem::path& path)
 //------------------------------------------------------------------------------
 
 // Borrowed from openCV sample
-inline static double computePSNR(const data::Image::sptr& expected, const data::Image::sptr& actual)
+inline static double computePSNR(const data::image::sptr& expected, const data::image::sptr& actual)
 {
     // Convert origin to cv::Mat
     const cv::Mat& expected_mat = imageToMat(expected);
@@ -219,26 +219,26 @@ inline static std::string modeToString(const Writer::Mode& mode)
 
 //------------------------------------------------------------------------------
 
-inline static std::string pixelFormatToString(const data::Image::PixelFormat& format)
+inline static std::string pixelFormatToString(const data::image::PixelFormat& format)
 {
     switch(format)
     {
-        case data::Image::PixelFormat::RGB:
+        case data::image::PixelFormat::RGB:
             return "RGB";
 
-        case data::Image::PixelFormat::RGBA:
+        case data::image::PixelFormat::RGBA:
             return "RGBA";
 
-        case data::Image::PixelFormat::BGR:
+        case data::image::PixelFormat::BGR:
             return "BGR";
 
-        case data::Image::PixelFormat::BGRA:
+        case data::image::PixelFormat::BGRA:
             return "BGRA";
 
-        case data::Image::PixelFormat::GRAY_SCALE:
+        case data::image::PixelFormat::GRAY_SCALE:
             return "GRAY_SCALE";
 
-        case data::Image::PixelFormat::RG:
+        case data::image::PixelFormat::RG:
             return "RG";
 
         default:

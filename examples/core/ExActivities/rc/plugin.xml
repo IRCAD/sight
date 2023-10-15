@@ -9,56 +9,56 @@
     <xi:include href="configurations/ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/VolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>ExImage_Import_Activity</id>
         <title>ImageSeries reading</title>
         <desc>Activity to read an imageSeries</desc>
         <icon>sight::module::ui::flaticons/BlueFile.svg</icon>
         <requirements>
-            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1">
+            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
                 <desc>ImageSeries that will be read by this activity.</desc>
             </requirement>
         </requirements>
         <appConfig id="ExActivities_ImageReading_AppCfg" />
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>ExImage_Negatoscope_Activity</id>
         <title>ImageSeries displaying</title>
         <desc>Activity to display an imageSeries</desc>
         <icon>sight::module::ui::flaticons/Layers.svg</icon>
         <requirements>
             <!-- The imageSeries must be present to launch the activity -->
-            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1">
+            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
                 <desc>ImageSeries that will be display by this activity.</desc>
             </requirement>
-            <requirement name="landmarks" type="sight::data::Landmarks" minOccurs="0" maxOccurs="0">
+            <requirement name="landmarks" type="sight::data::landmarks" minOccurs="0" maxOccurs="0">
                 <desc>Landmarks that will be created in this activity.</desc>
             </requirement>
         </requirements>
         <appConfig id="2DVisualization" />
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>ExImage_VolumeRendering_Activity</id>
         <title>ImageSeries displaying Volume</title>
         <desc>Activity to display an imageSeries in a volume rendering</desc>
         <icon>sight::module::ui::flaticons/Volume.svg</icon>
         <requirements>
             <!-- The imageSeries must be present to launch the activity -->
-            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1">
+            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
                 <desc>ImageSeries that will be display by this activity.</desc>
             </requirement>
-            <requirement name="optionalModelSeries" type="sight::data::ModelSeries" minOccurs="0" maxOccurs="1">
+            <requirement name="optionalModelSeries" type="sight::data::model_series" minOccurs="0" maxOccurs="1">
                 <desc>Optional model series.</desc>
             </requirement>
         </requirements>
         <appConfig id="VolumeRendering" />
     </extension>
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>ExActivities_Sequencer_SrvCfg</id>
-        <service>sight::module::ui::qt::activity::SSequencer</service>
+        <service>sight::module::ui::qt::activity::sequencer</service>
         <desc>Configuration for sequencer</desc>
         <config>
             <activity id="ExImage_Import_Activity" name="Import" />
@@ -74,23 +74,23 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>ExActivities_Wizard_SrvCfg</id>
-        <service>sight::module::ui::qt::activity::SWizard</service>
+        <service>sight::module::ui::qt::activity::wizard</service>
         <desc>Custom configuration for ExActivities wizard</desc>
         <config>
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="sight::data::Image" icon="sight::module::ui::flaticons/Volume.svg" />
+                <icon type="sight::data::image" icon="sight::module::ui::flaticons/Volume.svg" />
             </icons>
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>SessionReaderConfig</id>
-        <service>sight::module::io::session::SReader</service>
+        <service>sight::module::io::session::reader</service>
         <desc>Session reader</desc>
         <config>
             <dialog extension=".sample" description="Sample Sight session file" policy="always" />
@@ -98,9 +98,9 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>SessionWriterConfig</id>
-        <service>sight::module::io::session::SWriter</service>
+        <service>sight::module::io::session::writer</service>
         <desc>Session writer</desc>
         <config>
             <dialog extension=".sample" description="Sample Sight session file" policy="once" />
@@ -108,7 +108,7 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfigParameters">
+    <extension implements="sight::app::extension::parameters">
         <id>ExActivities_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="ExActivities" />

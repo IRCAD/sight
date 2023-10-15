@@ -27,7 +27,7 @@
 
 #include <core/base.hpp>
 
-#include <data/Activity.hpp>
+#include <data/activity.hpp>
 
 namespace sight::data
 {
@@ -52,8 +52,8 @@ public:
 
     /// Does nothing.
     ACTIVITY_API return_t validate(
-        const extension::ActivityInfo& /*activityInfo*/,
-        const CSPTR(data::Vector)&
+        const extension::activity_info& /*activity_info*/,
+        const CSPTR(data::vector)&
         /*currentSelection*/
     ) const override
     {
@@ -67,14 +67,14 @@ public:
      * @brief Performs the validation of the given activity data.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains detailed error.
      */
-    ACTIVITY_API virtual return_t validate(const CSPTR(data::Activity)& activity) const = 0;
+    ACTIVITY_API virtual return_t validate(const CSPTR(data::activity)& activity) const = 0;
 
     /**
      * @brief Checks if all the required data are present in the activity.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    static ACTIVITY_API return_t checkRequirements(const CSPTR(data::Activity)& activity);
+    static ACTIVITY_API return_t checkRequirements(const CSPTR(data::activity)& activity);
 
     /**
      * @brief Calls the object validator if it is defined.
@@ -84,7 +84,7 @@ public:
      * @see activity::validator::object
      */
     static ACTIVITY_API return_t checkObject(
-        const CSPTR(data::Object)& object,
+        const CSPTR(data::object)& object,
         const std::string& validatorImpl
     );
 };

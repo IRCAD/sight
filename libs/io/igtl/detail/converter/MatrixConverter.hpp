@@ -30,7 +30,7 @@ namespace sight::io::igtl::detail::converter
 
 /**
  *
- * @brief class to manage conversion between data::Matrix4 and igtl::TransformationMessage
+ * @brief class to manage conversion between data::matrix4 and igtl::TransformationMessage
  */
 class IO_IGTL_CLASS_API MatrixConverter :
     public base
@@ -44,18 +44,18 @@ public:
     IO_IGTL_API ~MatrixConverter() override;
 
     /**
-     * @brief convert a ::igtl::ImageMessage to a data::Object
+     * @brief convert a ::igtl::ImageMessage to a data::object
      *
-     * @return an data::Image converted from an ::igtl::ImageMessage
+     * @return an data::image converted from an ::igtl::ImageMessage
      */
-    [[nodiscard]] IO_IGTL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
+    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
 
     /**
-     * @brief convert a data::Image to a ::igtl::ImageMessage
+     * @brief convert a data::image to a ::igtl::ImageMessage
      *
-     * @return an data::Image converted from an ::igtl::ImageMessage
+     * @return an data::image converted from an ::igtl::ImageMessage
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const override;
 
     /**
      * @brief create new MatrixConverter

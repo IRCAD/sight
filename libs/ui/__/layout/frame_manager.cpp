@@ -25,8 +25,8 @@
 #include <core/base.hpp>
 #include <core/runtime/path.hpp>
 
-#include <data/Integer.hpp>
-#include <data/String.hpp>
+#include <data/integer.hpp>
+#include <data/string.hpp>
 
 #include <service/macros.hpp>
 #include <service/registry.hpp>

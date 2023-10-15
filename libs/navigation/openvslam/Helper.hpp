@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "navigation/openvslam/config.hpp"
 #include "navigation/openvslam/OpenvslamConfig.hpp"
 
-#include <data/Camera.hpp>
+#include <data/camera.hpp>
 
 #include <openvslam/camera/perspective.h>
 #include <openvslam/config.h>
@@ -45,14 +45,14 @@ public:
      * @param _sightCam: sight camera reference.
      * @return ::openvslam::camera::perspective* pointer to a openvslam perspective camera.
      */
-    static ::openvslam::camera::perspective fromSight(const data::Camera& _sightCam);
+    static ::openvslam::camera::perspective fromSight(const data::camera& _sightCam);
 
     /**
      * @brief converts openvslam  perspective camera to sight camera
      * @param _oVSlamCam is a pointer to an openvlsam perspective camera.
-     * @return an data::Camera::sptr.
+     * @return an data::camera::sptr.
      */
-    static data::Camera::sptr toSight(const ::openvslam::camera::perspective _oVSlamCam);
+    static data::camera::sptr toSight(const ::openvslam::camera::perspective _oVSlamCam);
 
     /**
      * @brief create an openvslam monocular config file from camera, orb parameters and initializer parameters (both
@@ -63,7 +63,7 @@ public:
      * @return shared_ptr of ::openvslam::config, to initialize openvslam system.
      */
     static std::shared_ptr< ::openvslam::config> createMonocularConfig(
-        const data::Camera& _sightCam,
+        const data::camera& _sightCam,
         const navigation::openvslam::OrbParams& _orbParams
         = navigation::openvslam::OrbParams(),
         const navigation::openvslam::InitParams& _initParams

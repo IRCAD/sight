@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>DicomPacsReader</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -10,15 +10,15 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <object uid="${SERIES_SET}" type="sight::data::SeriesSet" src="ref" />
-        <object uid="previewSeriesSet" type="sight::data::SeriesSet" />
+        <object uid="${SERIES_SET}" type="sight::data::series_set" src="ref" />
+        <object uid="previewSeriesSet" type="sight::data::series_set" />
         <object uid="pacsConfiguration" type="sight::io::dimse::data::PacsConfiguration" />
-        <object uid="previewSelections" type="sight::data::Vector" />
+        <object uid="previewSelections" type="sight::data::vector" />
 
-        <object uid="localSeriesSet" type="sight::data::SeriesSet" />
-        <object uid="localSelections" type="sight::data::Vector" />
+        <object uid="localSeriesSet" type="sight::data::series_set" />
+        <object uid="localSelections" type="sight::data::vector" />
 
-        <service uid="mainView" type="sight::module::ui::SView" >
+        <service uid="mainView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <view caption="DICOM Query" align="left"/>
@@ -36,7 +36,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::SToolBar" >
+        <service uid="toolBar" type="sight::module::ui::tool_bar" >
             <gui>
                 <layout>
                     <menuItem name="Edit pacs configuration" icon="sight::module::ui::icons/Settings.svg" style="check" />
@@ -51,7 +51,7 @@
             </registry>
         </service>
 
-        <service uid="leftView" type="sight::module::ui::SView" >
+        <service uid="leftView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -65,7 +65,7 @@
             </registry>
         </service>
 
-        <service uid="queryEditorSpacerView" type="sight::module::ui::SView" >
+        <service uid="queryEditorSpacerView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -75,7 +75,7 @@
             </registry>
         </service>
 
-        <service uid="centerView" type="sight::module::ui::SView" >
+        <service uid="centerView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -89,7 +89,7 @@
             </registry>
         </service>
 
-        <service uid="bottomView" type="sight::module::ui::SView" >
+        <service uid="bottomView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <orientation value="horizontal" />
@@ -105,7 +105,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_editPacsConfiguration" type="sight::module::ui::SConfigLauncher">
+        <service uid="action_editPacsConfiguration" type="sight::module::ui::config_launcher">
             <appConfig id="PacsConfigurationManager" />
             <inout group="data">
                 <key name="PACS_CONFIGURATION" uid="pacsConfiguration" />
@@ -113,20 +113,20 @@
             <parameter replace="ICON_PATH" by="sight::module::ui::icons/Settings.svg"  />
         </service>
 
-        <service uid="action_pullSeries" type="sight::module::ui::SAction" />
+        <service uid="action_pullSeries" type="sight::module::ui::action" />
 
-        <service uid="action_pushSeries" type="sight::module::ui::series::SPushSelection">
+        <service uid="action_pushSeries" type="sight::module::ui::series::push_selection">
             <in key="selectedSeries" uid="localSelections" />
             <inout key="seriesSet" uid="${SERIES_SET}" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="progressBarController" type="sight::module::io::dimse::SProgressBarController"  worker="progress" />
+        <service uid="progressBarController" type="sight::module::io::dimse::progress_bar_controller"  worker="progress" />
 
         <!-- PACS CONFIGURATION -->
-        <service uid="pacsConfigurationInitializer" type="sight::module::io::dimse::SPacsConfigurationInitializer">
-            <inout key="config" uid="pacsConfiguration" autoConnect="true" />
+        <service uid="pacsConfigurationInitializer" type="sight::module::io::dimse::pacs_configuration_initializer">
+            <inout key="config" uid="pacsConfiguration" auto_connect="true" />
             <config
                 localApplicationTitle="${APP_NAME}"
                 pacsHostName="mypacs.mycompany.com"
@@ -140,44 +140,44 @@
         </service>
 
         <!-- PREVIEW -->
-        <service uid="previewSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
+        <service uid="previewSelector" type="sight::module::ui::qt::series::selector" auto_connect="true">
             <inout key="selection" uid="previewSelections" />
             <inout key="seriesSet" uid="previewSeriesSet" />
         </service>
 
-        <service uid="queryEditor" type="sight::module::io::dimse::SQueryEditor">
+        <service uid="queryEditor" type="sight::module::io::dimse::query_editor">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesSet" uid="previewSeriesSet" />
         </service>
 
-        <service uid="pullSeriesController" type="sight::module::io::dimse::SSeriesPuller" autoConnect="true">
+        <service uid="pullSeriesController" type="sight::module::io::dimse::series_puller" auto_connect="true">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesSet" uid="localSeriesSet" />
-            <config dicomReader="sight::module::io::dicom::SSeriesSetReader" readerConfig="DicomPacsReaderConfig" />
+            <config dicomReader="sight::module::io::dicom::series_set_reader" readerConfig="DicomPacsReaderConfig" />
         </service>
 
-        <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
+        <service uid="pacsViewer" type="sight::module::ui::qt::series::viewer" auto_connect="true">
             <in key="series" uid="previewSelections" />
             <parentView wid="pacsPreview" />
             <configs>
-                <config id="2DPacsPreviewConfig" type="sight::data::DicomSeries" >
+                <config id="2DPacsPreviewConfig" type="sight::data::dicom_series" >
                     <parameter replace="PACS_CONFIGURATION" by="pacsConfiguration" />
                 </config>
             </configs>
         </service>
 
         <!-- LOCAL -->
-        <service uid="localSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
+        <service uid="localSelector" type="sight::module::ui::qt::series::selector" auto_connect="true">
             <inout key="seriesSet" uid="localSeriesSet" />
             <inout key="selection" uid="localSelections" />
         </service>
 
-        <service uid="localViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
+        <service uid="localViewer" type="sight::module::ui::qt::series::viewer" auto_connect="true">
             <in key="series" uid="localSelections" />
             <parentView wid="localPreview" />
             <configs>
-                <config id="2DSimpleConfig" type="sight::data::ImageSeries" />
+                <config id="2DSimpleConfig" type="sight::data::image_series" />
             </configs>
         </service>
 

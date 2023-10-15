@@ -38,7 +38,7 @@ public:
     UI_API void setTitle(const std::string& title) override;
     UI_API void setMessage(const std::string& msg) override;
     UI_API void setEchoMode(EchoMode echoMode) override;
-    UI_API void setInput(const std::string& text) override;
+    UI_API void set_input(const std::string& text) override;
 
     UI_API std::pair<std::string, bool> getInput() override;
 

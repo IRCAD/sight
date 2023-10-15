@@ -8,7 +8,7 @@
     <xi:include href="configurations/dicomXplorerBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::service::extension::AppConfigParameters">
+    <extension implements="sight::app::extension::parameters">
         <id>dicomXplorerAppBase</id>
         <parameters>
             <param name="appName" value="DicomXplorer" />
@@ -17,7 +17,7 @@
         </parameters>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>SDBdicomXplorer</id>
         <title>SDB</title>
         <desc>Series Selector</desc>

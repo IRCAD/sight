@@ -2,18 +2,18 @@
     <requirement id="sight::module::service"/>
     <requirement id="sight::module::viz::scene3d"/>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::viz::scene3d::adaptor</type>
-         <service>sight::module::viz::scene3dQt::adaptor::SLandmarks</service>
-         <object key="landmarks">sight::data::Landmarks</object>
-         <object key="image">sight::data::Image</object>
+         <service>sight::module::viz::scene3dQt::adaptor::landmarks</service>
+         <object key="landmarks">sight::data::landmarks</object>
+         <object key="image">sight::data::image</object>
          <desc>This adaptor displays landmarks.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::viz::scene3d::adaptor</type>
-         <service>sight::module::viz::scene3dQt::adaptor::SImageMultiDistances</service>
-         <object key="image">sight::data::Image</object>
+         <service>sight::module::viz::scene3dQt::adaptor::image_multi_distances</service>
+         <object key="image">sight::data::image</object>
          <desc>This adaptor displays distances retrieved from an image fields.</desc>
     </extension>
 </plugin>

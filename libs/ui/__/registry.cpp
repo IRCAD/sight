@@ -28,7 +28,7 @@
 #include <core/tools/id.hpp>
 
 #include <service/macros.hpp>
-#include <service/op/Get.hpp>
+#include <service/op.hpp>
 
 namespace sight::ui::registry
 {
@@ -64,7 +64,7 @@ void unregisterSIDContainer(std::string sid)
         service::base::sptr service = service::get(sid);
         SIGHT_ASSERT(
             "The service '" + sid + "' must be stopped before unregistering the container.",
-            service->isStopped()
+            service->stopped()
         );
     }
 
@@ -165,7 +165,7 @@ void unregisterSIDMenuBar(std::string sid)
         service::base::sptr service = service::get(sid);
         SIGHT_ASSERT(
             "The service '" + sid + "' must be stopped before unregistering the menuBar.",
-            service->isStopped()
+            service->stopped()
         );
     }
 
@@ -212,7 +212,7 @@ void unregisterSIDToolBar(std::string sid)
         service::base::sptr service = service::get(sid);
         SIGHT_ASSERT(
             "The service '" + sid + "' must be stopped before unregistering the menuBar.",
-            service->isStopped()
+            service->stopped()
         );
     }
 
@@ -257,7 +257,7 @@ void unregisterSIDMenu(std::string sid)
     if(service_exists)
     {
         service::base::sptr service = service::get(sid);
-        SIGHT_ASSERT("The service '" + sid + "' must be stopped before unregistering the menu.", service->isStopped());
+        SIGHT_ASSERT("The service '" + sid + "' must be stopped before unregistering the menu.", service->stopped());
     }
 
     SIGHT_ASSERT(
@@ -320,7 +320,7 @@ void unregisterActionSIDToParentSID(std::string actionSid, std::string parentSid
             service::base::sptr service = service::get(actionSid);
             SIGHT_ASSERT(
                 "The service '" + actionSid + "' must be stopped before unregistering the action.",
-                service->isStopped()
+                service->stopped()
             );
         }
 

@@ -24,23 +24,23 @@
 
 #include <core/type.hpp>
 
-#include <data/Composite.hpp>
-#include <data/Float.hpp>
-#include <data/Image.hpp>
-#include <data/Integer.hpp>
-#include <data/Line.hpp>
-#include <data/Matrix4.hpp>
-#include <data/Mesh.hpp>
-#include <data/Object.hpp>
-#include <data/PointList.hpp>
-#include <data/String.hpp>
+#include <data/composite.hpp>
+#include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/line.hpp>
+#include <data/matrix4.hpp>
+#include <data/mesh.hpp>
+#include <data/object.hpp>
+#include <data/point_list.hpp>
+#include <data/real.hpp>
+#include <data/string.hpp>
 
 #include <io/igtl/detail/converter/CompositeConverter.hpp>
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/RawMessage.hpp>
 
-#include <utestData/generator/Image.hpp>
-#include <utestData/generator/Mesh.hpp>
+#include <utest_data/generator/image.hpp>
+#include <utest_data/generator/mesh.hpp>
 
 #include <igtlImageMessage.h>
 #include <igtlPointMessage.h>
@@ -76,17 +76,17 @@ void DataConverterTest::tearDown()
 void DataConverterTest::meshConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
-    data::Mesh::sptr mesh         = std::make_shared<data::Mesh>();
+    data::mesh::sptr mesh         = std::make_shared<data::mesh>();
     const auto lock               = mesh->dump_lock();
-    utestData::generator::Mesh::generateMesh(mesh);
+    utest_data::generator::mesh::generateMesh(mesh);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(mesh);
 
     CPPUNIT_ASSERT_MESSAGE("Message is null", msg);
 
-    data::Object::sptr obj = converter->fromIgtlMessage(msg);
+    data::object::sptr obj = converter->fromIgtlMessage(msg);
 
-    data::Mesh::sptr mesh2 = std::dynamic_pointer_cast<data::Mesh>(obj);
+    data::mesh::sptr mesh2 = std::dynamic_pointer_cast<data::mesh>(obj);
     CPPUNIT_ASSERT_MESSAGE("Mesh is null", mesh2);
     const auto lock2 = mesh2->dump_lock();
 
@@ -96,28 +96,28 @@ void DataConverterTest::meshConverterTest()
     CPPUNIT_ASSERT_EQUAL(mesh->getDataSizeInBytes(), mesh2->getDataSizeInBytes());
 
     CPPUNIT_ASSERT_EQUAL(
-        mesh->has<data::Mesh::Attributes::POINT_COLORS>(),
-        mesh2->has<data::Mesh::Attributes::POINT_COLORS>()
+        mesh->has<data::mesh::Attributes::POINT_COLORS>(),
+        mesh2->has<data::mesh::Attributes::POINT_COLORS>()
     );
     CPPUNIT_ASSERT_EQUAL(
-        mesh->has<data::Mesh::Attributes::CELL_COLORS>(),
-        mesh2->has<data::Mesh::Attributes::CELL_COLORS>()
+        mesh->has<data::mesh::Attributes::CELL_COLORS>(),
+        mesh2->has<data::mesh::Attributes::CELL_COLORS>()
     );
     CPPUNIT_ASSERT_EQUAL(
-        mesh->has<data::Mesh::Attributes::POINT_NORMALS>(),
-        mesh2->has<data::Mesh::Attributes::POINT_NORMALS>()
+        mesh->has<data::mesh::Attributes::POINT_NORMALS>(),
+        mesh2->has<data::mesh::Attributes::POINT_NORMALS>()
     );
     CPPUNIT_ASSERT_EQUAL(
-        mesh->has<data::Mesh::Attributes::CELL_NORMALS>(),
-        mesh2->has<data::Mesh::Attributes::CELL_NORMALS>()
+        mesh->has<data::mesh::Attributes::CELL_NORMALS>(),
+        mesh2->has<data::mesh::Attributes::CELL_NORMALS>()
     );
     CPPUNIT_ASSERT_EQUAL(
-        mesh->has<data::Mesh::Attributes::POINT_TEX_COORDS>(),
-        mesh2->has<data::Mesh::Attributes::POINT_TEX_COORDS>()
+        mesh->has<data::mesh::Attributes::POINT_TEX_COORDS>(),
+        mesh2->has<data::mesh::Attributes::POINT_TEX_COORDS>()
     );
     CPPUNIT_ASSERT_EQUAL(
-        mesh->has<data::Mesh::Attributes::CELL_TEX_COORDS>(),
-        mesh2->has<data::Mesh::Attributes::CELL_TEX_COORDS>()
+        mesh->has<data::mesh::Attributes::CELL_TEX_COORDS>(),
+        mesh2->has<data::mesh::Attributes::CELL_TEX_COORDS>()
     );
 
     const auto dumpLock = mesh->dump_lock();
@@ -174,18 +174,18 @@ void DataConverterTest::meshConverterTest()
 void DataConverterTest::imageConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
-    data::Image::sptr image       = std::make_shared<data::Image>();
+    data::image::sptr image       = std::make_shared<data::image>();
 
     core::type type = core::type::INT32;
-    utestData::generator::Image::generateRandomImage(image, type);
+    utest_data::generator::image::generateRandomImage(image, type);
 
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(image);
 
     CPPUNIT_ASSERT_MESSAGE("Message is null", msg);
 
-    data::Object::sptr obj = converter->fromIgtlMessage(msg);
+    data::object::sptr obj = converter->fromIgtlMessage(msg);
 
-    data::Image::sptr image2 = std::dynamic_pointer_cast<data::Image>(obj);
+    data::image::sptr image2 = std::dynamic_pointer_cast<data::image>(obj);
 
     CPPUNIT_ASSERT_MESSAGE("Image is null", image2);
 
@@ -211,10 +211,10 @@ void DataConverterTest::matrixConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
     ::igtl::TransformMessage::Pointer convertedMatrix;
-    data::Matrix4::sptr matrix;
+    data::matrix4::sptr matrix;
     ::igtl::Matrix4x4 igtlMatrix;
 
-    matrix = std::make_shared<data::Matrix4>();
+    matrix = std::make_shared<data::matrix4>();
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
@@ -236,9 +236,9 @@ void DataConverterTest::matrixConverterTest()
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->begin() + i * 4LL));
     }
 
-    data::Object::sptr destObj =
+    data::object::sptr destObj =
         converter->fromIgtlMessage(::igtl::MessageBase::Pointer(convertedMatrix.GetPointer()));
-    data::Matrix4::sptr matrix2 = std::dynamic_pointer_cast<data::Matrix4>(destObj);
+    data::matrix4::sptr matrix2 = std::dynamic_pointer_cast<data::matrix4>(destObj);
     for(int i = 0 ; i < 4 ; ++i)
     {
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix2->begin() + i * 4LL));
@@ -256,14 +256,14 @@ void DataConverterTest::pointListConverterTest()
     std::array<::igtl::PointElement::Pointer, 2> igtlPointElement;
     std::remove_const_t<decltype(points)> igtlPoints {};
     DataConverter::sptr converter = DataConverter::getInstance();
-    data::PointList::sptr pointList;
+    data::point_list::sptr pointList;
     ::igtl::PointMessage::Pointer msg;
-    data::Point::sptr point;
+    data::point::sptr point;
 
-    pointList = std::make_shared<data::PointList>();
+    pointList = std::make_shared<data::point_list>();
     for(std::size_t i = 0 ; i < 2 ; ++i)
     {
-        point = std::make_shared<data::Point>();
+        point = std::make_shared<data::point>();
         std::copy(points[i].begin(), points[i].end(), point->getCoord().begin());
         pointList->getPoints().push_back(point);
     }
@@ -281,8 +281,8 @@ void DataConverterTest::pointListConverterTest()
         CPPUNIT_ASSERT(std::equal(points[i].begin(), points[i].end(), igtlPoints[i].begin()));
     }
 
-    data::Object::sptr destObj       = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
-    data::PointList::sptr pointList2 = std::dynamic_pointer_cast<data::PointList>(destObj);
+    data::object::sptr destObj        = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
+    data::point_list::sptr pointList2 = std::dynamic_pointer_cast<data::point_list>(destObj);
     for(std::size_t i = 0 ; i < 2 ; ++i)
     {
         CPPUNIT_ASSERT(
@@ -301,10 +301,10 @@ void DataConverterTest::stringConverterTest()
 {
     std::string const& sample     = "Hello world";
     DataConverter::sptr converter = DataConverter::getInstance();
-    data::String::sptr str;
+    data::string::sptr str;
     ::igtl::StringMessage::Pointer strMsg;
 
-    str = std::make_shared<data::String>();
+    str = std::make_shared<data::string>();
     str->setValue(sample);
     strMsg =
         ::igtl::StringMessage::Pointer(
@@ -314,8 +314,8 @@ void DataConverterTest::stringConverterTest()
         );
     CPPUNIT_ASSERT(std::string(strMsg->GetString()) == sample);
 
-    data::Object::sptr destObj = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(strMsg.GetPointer()));
-    data::String::sptr str2    = std::dynamic_pointer_cast<data::String>(destObj);
+    data::object::sptr destObj = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(strMsg.GetPointer()));
+    data::string::sptr str2    = std::dynamic_pointer_cast<data::string>(destObj);
     CPPUNIT_ASSERT(str2->getValue() == sample);
 }
 
@@ -328,14 +328,14 @@ void DataConverterTest::lineConverterTest()
     // four-element array.
     std::array<float, 4> direction {0.0F, 1.0F, 2.0F};
 
-    data::Point::sptr point;
-    data::Line::sptr line;
+    data::point::sptr point;
+    data::line::sptr line;
     DataConverter::sptr converter = DataConverter::getInstance();
     ::igtl::PositionMessage::Pointer lineMsg;
 
-    line = std::make_shared<data::Line>();
-    line->setPosition(std::make_shared<data::Point>());
-    line->setDirection(std::make_shared<data::Point>());
+    line = std::make_shared<data::line>();
+    line->setPosition(std::make_shared<data::point>());
+    line->setDirection(std::make_shared<data::point>());
     std::copy(direction.begin(), direction.begin() + 3, line->getDirection()->getCoord().begin());
     std::copy(position.begin(), position.end(), line->getPosition()->getCoord().begin());
     lineMsg =
@@ -361,8 +361,8 @@ void DataConverterTest::lineConverterTest()
         )
     );
 
-    data::Object::sptr destObj = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(lineMsg.GetPointer()));
-    data::Line::sptr line2     = std::dynamic_pointer_cast<data::Line>(destObj);
+    data::object::sptr destObj = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(lineMsg.GetPointer()));
+    data::line::sptr line2     = std::dynamic_pointer_cast<data::line>(destObj);
     CPPUNIT_ASSERT(
         std::equal(
             line2->getPosition()->getCoord().begin(),
@@ -385,26 +385,26 @@ void DataConverterTest::scalarConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
     RawMessage::Pointer msg;
-    data::Object::sptr destObj;
+    data::object::sptr destObj;
 
     const int valueInt              = 10;
-    data::Integer::sptr dataInteger = std::make_shared<data::Integer>(valueInt);
+    data::integer::sptr dataInteger = std::make_shared<data::integer>(valueInt);
 
     msg = RawMessage::Pointer(dynamic_cast<RawMessage*>(converter->fromFwObject(dataInteger).GetPointer()));
     CPPUNIT_ASSERT(msg->getMessage().size() == sizeof(int));
 
     destObj = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
-    data::Integer::sptr newDataInteger = std::dynamic_pointer_cast<data::Integer>(destObj);
+    data::integer::sptr newDataInteger = std::dynamic_pointer_cast<data::integer>(destObj);
     CPPUNIT_ASSERT(newDataInteger->getValue() == valueInt);
 
-    const float valueFloat      = 16.64F;
-    data::Float::sptr dataFloat = std::make_shared<data::Float>(valueFloat);
+    const float valueFloat     = 16.64F;
+    data::real::sptr dataFloat = std::make_shared<data::real>(valueFloat);
 
     msg = RawMessage::Pointer(dynamic_cast<RawMessage*>(converter->fromFwObject(dataFloat).GetPointer()));
     CPPUNIT_ASSERT(msg->getMessage().size() == sizeof(float));
 
     destObj = converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()));
-    data::Float::sptr newDataFloat = std::dynamic_pointer_cast<data::Float>(destObj);
+    data::real::sptr newDataFloat = std::dynamic_pointer_cast<data::real>(destObj);
     CPPUNIT_ASSERT(newDataFloat->getValue() == valueFloat);
 }
 
@@ -412,15 +412,15 @@ void DataConverterTest::scalarConverterTest()
 
 void DataConverterTest::compositeConverterTest()
 {
-    //FIXME : there is 3 converter that can convert a data::Composite (aka CompositeConverter, TrackingStartConverter
+    //FIXME : there is 3 converter that can convert a data::composite (aka CompositeConverter, TrackingStartConverter
     ///and TrackingStopConverter). To avoid asserts CompositeConverter should be called explicitly.
     io::igtl::detail::converter::CompositeConverter::sptr converter =
         io::igtl::detail::converter::CompositeConverter::New();
 
     ::igtl::TrackingDataMessage::Pointer trackingMsg;
 
-    data::Matrix4::sptr matrix      = std::make_shared<data::Matrix4>();
-    data::Composite::sptr composite = std::make_shared<data::Composite>();
+    data::matrix4::sptr matrix      = std::make_shared<data::matrix4>();
+    data::composite::sptr composite = std::make_shared<data::composite>();
     (*composite)["H_marker1_2_polaris"] = matrix;
 
     for(std::size_t i = 0 ; i < 4 ; ++i)
@@ -455,14 +455,14 @@ void DataConverterTest::compositeConverterTest()
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->begin() + i * 4));
     }
 
-    data::Object::sptr destObject =
+    data::object::sptr destObject =
         converter->fromIgtlMessage(::igtl::MessageBase::Pointer(trackingMsg.GetPointer()));
-    data::Composite::sptr destComposite = std::dynamic_pointer_cast<data::Composite>(destObject);
+    data::composite::sptr destComposite = std::dynamic_pointer_cast<data::composite>(destObject);
 
     auto iter = destComposite->find("H_marker1_2_polaris");
     CPPUNIT_ASSERT(iter != destComposite->end());
 
-    data::Matrix4::sptr destMatrix = std::dynamic_pointer_cast<data::Matrix4>(iter->second);
+    data::matrix4::sptr destMatrix = std::dynamic_pointer_cast<data::matrix4>(iter->second);
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMatrix->begin() + i * 4));

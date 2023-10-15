@@ -21,10 +21,10 @@
 
 #include "AxialNegato.hpp"
 
-#include <utestData/Data.hpp>
-
 #include <ui/testCore/helper/Button.hpp>
 #include <ui/testCore/helper/Slider.hpp>
+
+#include <utest_data/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::AxialNegato);
 
@@ -42,7 +42,7 @@ void AxialNegato::test()
     const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
     std::filesystem::remove(snapshotPath);
 
-    const std::filesystem::path referencePath = utestData::Data::dir() / "sight/ui/SightViewer" / imageName;
+    const std::filesystem::path referencePath = utest_data::Data::dir() / "sight/ui/SightViewer" / imageName;
 
     start(
         testName,
@@ -51,7 +51,7 @@ void AxialNegato::test()
             openFile(
                 tester,
                 "Nifti or Inr images",
-                utestData::Data::dir() / "sight/image/inr/image.inr.gz"
+                utest_data::Data::dir() / "sight/image/inr/image.inr.gz"
             );
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this

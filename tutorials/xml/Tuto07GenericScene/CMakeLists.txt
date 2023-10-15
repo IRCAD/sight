@@ -3,7 +3,7 @@ sight_add_target(Tuto07GenericScene TYPE APP UNIQUE ON)
 add_dependencies(
     Tuto07GenericScene
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     module_viz_scene3d
@@ -23,6 +23,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto07GenericScene_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES Tuto07GenericScene_AppCfg)
 
 sight_generate_profile(Tuto07GenericScene)

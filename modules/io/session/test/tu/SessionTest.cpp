@@ -25,14 +25,14 @@
 #include <core/com/slot.hxx>
 #include <core/os/temp_path.hpp>
 
-#include <data/String.hpp>
+#include <data/string.hpp>
 
 #include <io/__/service/ioTypes.hpp>
 #include <io/__/service/reader.hpp>
 #include <io/__/service/writer.hpp>
 
 #include <service/base.hpp>
-#include <service/op/Add.hpp>
+#include <service/op.hpp>
 
 #include <ui/__/dialog/input_dummy.hpp>
 #include <ui/__/dialog/location_dummy.hpp>
@@ -63,8 +63,8 @@ void SessionTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-// Returns a basic configuration for SReader and SWriter
-inline static service::config_t getConfiguration(const bool read = true, const bool raw = false)
+// Returns a basic configuration for reader and writer
+inline static service::config_t setup_config(const bool read = true, const bool raw = false)
 {
     service::config_t config;
 
@@ -103,19 +103,19 @@ inline static void basicTest(const bool raw = false)
     {
         // Create a writer service
         auto writer = std::dynamic_pointer_cast<sight::io::service::writer>(
-            service::add("sight::module::io::session::SWriter")
+            service::add("sight::module::io::session::writer")
         );
         CPPUNIT_ASSERT(writer);
 
         // Set data input
-        auto inString = std::make_shared<data::String>(expected);
-        writer->setInput(inString, sight::io::service::s_DATA_KEY);
+        auto inString = std::make_shared<data::string>(expected);
+        writer->set_input(inString, sight::io::service::s_DATA_KEY);
 
         // Set file output
         writer->set_file(tmpFile);
 
         // Configure the writer service
-        writer->setConfiguration(getConfiguration(false, raw));
+        writer->set_config(setup_config(false, raw));
         writer->configure();
 
         // Execute the writer service
@@ -137,13 +137,13 @@ inline static void basicTest(const bool raw = false)
     {
         // Create a reader service
         auto reader = std::dynamic_pointer_cast<sight::io::service::reader>(
-            service::add("sight::module::io::session::SReader")
+            service::add("sight::module::io::session::reader")
         );
         CPPUNIT_ASSERT(reader);
 
         // Set data output
-        auto outString = std::make_shared<data::String>();
-        reader->setInOut(outString, sight::io::service::s_DATA_KEY);
+        auto outString = std::make_shared<data::string>();
+        reader->set_inout(outString, sight::io::service::s_DATA_KEY);
 
         // Set file input
         reader->set_file(tmpFile);
@@ -172,7 +172,7 @@ inline static void basicTest(const bool raw = false)
         auto conn2 = reader->signal("sessionLoadingFailed")->connect(sessionLoadingFailedSlot);
 
         // Configure the reader service
-        reader->setConfiguration(getConfiguration(true, raw));
+        reader->set_config(setup_config(true, raw));
         reader->configure();
 
         // Execute the writer service
@@ -211,20 +211,20 @@ void SessionTest::basicRawTest()
 
 static void badPolicyTest(bool reader, const std::string& key, const std::string& value)
 {
-    auto config = getConfiguration(reader);
+    auto config = setup_config(reader);
     config.put(key, value);
     service::base::sptr service;
     if(reader)
     {
-        service = service::add("sight::module::io::session::SReader");
+        service = service::add("sight::module::io::session::reader");
     }
     else
     {
-        service = service::add("sight::module::io::session::SWriter");
+        service = service::add("sight::module::io::session::writer");
     }
 
     CPPUNIT_ASSERT(service);
-    service->setConfiguration(config);
+    service->set_config(config);
     CPPUNIT_ASSERT_THROW(service->configure(), sight::core::exception);
 }
 
@@ -260,13 +260,13 @@ void SessionTest::readerBadFile()
     {
         // Create a reader service
         auto reader = std::dynamic_pointer_cast<sight::io::service::reader>(
-            service::add("sight::module::io::session::SReader")
+            service::add("sight::module::io::session::reader")
         );
         CPPUNIT_ASSERT(reader);
 
         // Set data output
-        auto outString = std::make_shared<data::String>();
-        reader->setInOut(outString, sight::io::service::s_DATA_KEY);
+        auto outString = std::make_shared<data::string>();
+        reader->set_inout(outString, sight::io::service::s_DATA_KEY);
 
         // Set file input
         reader->set_file(tmpFile);
@@ -295,7 +295,7 @@ void SessionTest::readerBadFile()
         auto conn2 = reader->signal("sessionLoadingFailed")->connect(sessionLoadingFailedSlot);
 
         // Configure the reader service
-        reader->setConfiguration(getConfiguration(true, false));
+        reader->set_config(setup_config(true, false));
         reader->configure();
 
         // Execute the writer service
@@ -347,18 +347,18 @@ void SessionTest::fileDialogTest()
     {
         // Create a writer service
         auto writer = std::dynamic_pointer_cast<sight::io::service::writer>(
-            service::add("sight::module::io::session::SWriter")
+            service::add("sight::module::io::session::writer")
         );
         CPPUNIT_ASSERT(writer);
 
         // Set data input
-        auto inString = std::make_shared<data::String>(expected);
-        writer->setInput(inString, sight::io::service::s_DATA_KEY);
+        auto inString = std::make_shared<data::string>(expected);
+        writer->set_input(inString, sight::io::service::s_DATA_KEY);
 
         // Configure the writer service
-        auto config = getConfiguration(false);
+        auto config = setup_config(false);
         config.put("dialog.<xmlattr>.policy", "always");
-        writer->setConfiguration(config);
+        writer->set_config(config);
         writer->configure();
 
         // Execute the writer service
@@ -385,18 +385,18 @@ void SessionTest::fileDialogTest()
     {
         // Create a reader service
         auto reader = std::dynamic_pointer_cast<sight::io::service::reader>(
-            service::add("sight::module::io::session::SReader")
+            service::add("sight::module::io::session::reader")
         );
         CPPUNIT_ASSERT(reader);
 
         // Set data output
-        auto outString = std::make_shared<data::String>();
-        reader->setInOut(outString, sight::io::service::s_DATA_KEY);
+        auto outString = std::make_shared<data::string>();
+        reader->set_inout(outString, sight::io::service::s_DATA_KEY);
 
         // Configure the reader service
-        auto config = getConfiguration(true);
+        auto config = setup_config(true);
         config.put("dialog.<xmlattr>.policy", "always");
-        reader->setConfiguration(config);
+        reader->set_config(config);
         reader->configure();
 
         // Execute the writer service
@@ -429,21 +429,21 @@ void SessionTest::passwordTest()
     {
         // Create a writer service
         auto writer = std::dynamic_pointer_cast<sight::io::service::writer>(
-            service::add("sight::module::io::session::SWriter")
+            service::add("sight::module::io::session::writer")
         );
         CPPUNIT_ASSERT(writer);
 
         // Set data input
-        auto inString = std::make_shared<data::String>(expected);
-        writer->setInput(inString, sight::io::service::s_DATA_KEY);
+        auto inString = std::make_shared<data::string>(expected);
+        writer->set_input(inString, sight::io::service::s_DATA_KEY);
 
         // Set file output
         writer->set_file(tmpFile);
 
         // Configure the writer service
-        auto config = getConfiguration(false);
+        auto config = setup_config(false);
         config.put("password.<xmlattr>.policy", "always");
-        writer->setConfiguration(config);
+        writer->set_config(config);
         writer->configure();
 
         // Execute the writer service
@@ -470,21 +470,21 @@ void SessionTest::passwordTest()
     {
         // Create a reader service
         auto reader = std::dynamic_pointer_cast<sight::io::service::reader>(
-            service::add("sight::module::io::session::SReader")
+            service::add("sight::module::io::session::reader")
         );
         CPPUNIT_ASSERT(reader);
 
         // Set data output
-        auto outString = std::make_shared<data::String>();
-        reader->setInOut(outString, sight::io::service::s_DATA_KEY);
+        auto outString = std::make_shared<data::string>();
+        reader->set_inout(outString, sight::io::service::s_DATA_KEY);
 
         // Set file input
         reader->set_file(tmpFile);
 
         // Configure the reader service
-        auto config = getConfiguration(true);
+        auto config = setup_config(true);
         config.put("password.<xmlattr>.policy", "always");
-        reader->setConfiguration(config);
+        reader->set_config(config);
         reader->configure();
 
         // Execute the writer service

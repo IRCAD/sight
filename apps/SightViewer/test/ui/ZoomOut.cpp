@@ -21,9 +21,9 @@
 
 #include "ZoomOut.hpp"
 
-#include <utestData/Data.hpp>
-
 #include <ui/testCore/helper/Scene3d.hpp>
+
+#include <utest_data/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::ZoomOut);
 
@@ -44,7 +44,7 @@ void ZoomOut::test()
         std::filesystem::remove(snapshotPath);
     }
 
-    const std::filesystem::path referencePath(utestData::Data::dir() / "sight/ui/SightViewer" / imageName);
+    const std::filesystem::path referencePath(utest_data::Data::dir() / "sight/ui/SightViewer" / imageName);
 
     start(
         testName,
@@ -53,7 +53,7 @@ void ZoomOut::test()
             openFile(
                 tester,
                 "VTK",
-                utestData::Data::dir() / "sight/mesh/vtk/sphere.vtk"
+                utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk"
             );
 
             // Drag the mouse to zoom out

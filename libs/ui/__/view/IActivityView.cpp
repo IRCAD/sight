@@ -33,8 +33,8 @@
 #include <core/tools/date_and_time.hpp>
 #include <core/tools/uuid.hpp>
 
-#include <data/Composite.hpp>
-#include <data/String.hpp>
+#include <data/composite.hpp>
+#include <data/string.hpp>
 
 #include <service/macros.hpp>
 
@@ -56,7 +56,7 @@ void IActivityView::configuring()
 {
     this->ui::service::initialize();
 
-    const ConfigType config = this->getConfiguration();
+    const config_t config = this->get_config();
 
     sight::activity::launcher::InOutMapType inoutMap;
     std::for_each(
@@ -75,7 +75,7 @@ void IActivityView::configuring()
 
 //------------------------------------------------------------------------------
 
-bool IActivityView::validateActivity(data::Activity::sptr activity) const
+bool IActivityView::validateActivity(data::activity::sptr activity) const
 {
     bool isValid = false;
     std::string message;
@@ -96,7 +96,7 @@ bool IActivityView::validateActivity(data::Activity::sptr activity) const
 
 //------------------------------------------------------------------------------
 
-data::Activity::sptr IActivityView::createMainActivity() const
+data::activity::sptr IActivityView::createMainActivity() const
 {
     auto activity = this->activity::launcher::createMainActivity();
 

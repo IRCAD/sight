@@ -83,7 +83,7 @@ void WriterTest::test_typeOK()
 
         sight::service::config_t config;
         config.add("file", (m_rootPath / m_file).string());
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -98,7 +98,7 @@ void WriterTest::test_typeOK()
 
         sight::service::config_t config;
         config.add("folder", m_rootPath);
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -127,7 +127,7 @@ void WriterTest::test_hasLocationDefined()
 
         sight::service::config_t config;
         config.add("file", m_file);
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -139,7 +139,7 @@ void WriterTest::test_hasLocationDefined()
         auto srv = std::make_shared<sight::io::ut::STestWriter>(sight::io::service::FILE);
         sight::service::config_t config;
         config.add("file", (m_rootPath / m_file).string());
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -157,7 +157,7 @@ void WriterTest::test_hasLocationDefinedWithBaseFolder()
 
         sight::service::config_t config;
         config.add("baseFolder", m_rootPath.string());
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -171,7 +171,7 @@ void WriterTest::test_hasLocationDefinedWithBaseFolder()
         sight::service::config_t config;
         config.add("baseFolder", m_rootPath.string());
         config.add("file", m_file);
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -184,7 +184,7 @@ void WriterTest::test_hasLocationDefinedWithBaseFolder()
 
         sight::service::config_t config;
         config.add("baseFolder", m_rootPath.string());
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -198,7 +198,7 @@ void WriterTest::test_hasLocationDefinedWithBaseFolder()
         sight::service::config_t config;
         config.add("baseFolder", m_rootPath.string());
         config.add("folder", m_folder);
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -216,7 +216,7 @@ void WriterTest::test_outputPaths()
 
         sight::service::config_t config;
         config.add("folder", (m_rootPath / m_folder).string());
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -229,7 +229,7 @@ void WriterTest::test_outputPaths()
 
         sight::service::config_t config;
         config.add("file", (m_rootPath / m_file).string());
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -243,7 +243,7 @@ void WriterTest::test_outputPaths()
         sight::service::config_t config;
         config.add("baseFolder", m_rootPath.string());
         config.add("file", m_file);
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 
@@ -257,7 +257,7 @@ void WriterTest::test_outputPaths()
         sight::service::config_t config;
         config.add("baseFolder", m_rootPath.string());
         config.add("folder", m_folder);
-        srv->setConfiguration(config);
+        srv->set_config(config);
         srv->configure();
         srv->start();
 

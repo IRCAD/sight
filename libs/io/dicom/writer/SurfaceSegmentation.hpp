@@ -29,10 +29,10 @@
 #include <core/location/single_file.hpp>
 #include <core/log/logger.hpp>
 
-#include <data/ImageSeries.hpp>
-#include <data/ModelSeries.hpp>
+#include <data/image_series.hpp>
+#include <data/model_series.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 namespace sight::core::jobs
 {
@@ -49,14 +49,14 @@ namespace sight::io::dicom::writer
  * @brief This class handles DICOM Surface Segmentation files writing.
  */
 class IO_DICOM_CLASS_API SurfaceSegmentation :
-    public io::writer::GenericObjectWriter<data::ModelSeries>,
+    public io::writer::generic_object_writer<data::model_series>,
     public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         SurfaceSegmentation,
-        io::writer::GenericObjectWriter<data::ModelSeries>,
+        io::writer::generic_object_writer<data::model_series>,
         io::writer::factory::make<SurfaceSegmentation>
     );
 

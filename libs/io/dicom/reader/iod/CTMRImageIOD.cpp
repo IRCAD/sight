@@ -24,12 +24,12 @@
 
 #include "io/dicom/helper/DicomDataReader.hxx"
 #include "io/dicom/reader/ie/Equipment.hpp"
-#include "io/dicom/reader/ie/Image.hpp"
+#include "io/dicom/reader/ie/image.hpp"
 #include "io/dicom/reader/ie/Patient.hpp"
-#include "io/dicom/reader/ie/Series.hpp"
+#include "io/dicom/reader/ie/series.hpp"
 #include "io/dicom/reader/ie/Study.hpp"
 
-#include <data/ImageSeries.hpp>
+#include <data/image_series.hpp>
 
 #include <gdcmImageReader.h>
 
@@ -42,7 +42,7 @@ namespace sight::io::dicom::reader::iod
 //------------------------------------------------------------------------------
 
 CTMRImageIOD::CTMRImageIOD(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
@@ -59,10 +59,10 @@ CTMRImageIOD::~CTMRImageIOD()
 
 //------------------------------------------------------------------------------
 
-void CTMRImageIOD::read(data::Series::sptr series)
+void CTMRImageIOD::read(data::series::sptr series)
 {
     // Retrieve image series
-    data::ImageSeries::sptr imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
+    data::image_series::sptr imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
@@ -89,11 +89,11 @@ void CTMRImageIOD::read(data::Series::sptr series)
                                              m_progressCallback, m_cancelRequestedCallback);
     io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                          m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger, m_progressCallback,
+    io::dicom::reader::ie::series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger, m_progressCallback,
                                            m_cancelRequestedCallback);
     io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                                  m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Image imageIE(m_dicomSeries, reader, m_instance, imageSeries, m_logger, m_progressCallback,
+    io::dicom::reader::ie::image imageIE(m_dicomSeries, reader, m_instance, imageSeries, m_logger, m_progressCallback,
                                          m_cancelRequestedCallback);
     imageIE.setBufferRotationEnabled(m_enableBufferRotation);
 

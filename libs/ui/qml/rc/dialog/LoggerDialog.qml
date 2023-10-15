@@ -37,14 +37,14 @@ Window{
                 width: window.width
 
                 // icon of the biggest type of error from the TableView
-                Image {
+                image {
                     id: icon
 
                     width: 48
                     height: 48
                     x: description.leftPadding
                     y: description.height / 2 - icon.height / 2 + 15
-                    fillMode: Image.PreserveAspectFit
+                    fillMode: image.PreserveAspectFit
                     mipmap: true
                     source: logger.icon
                 }
@@ -69,14 +69,14 @@ Window{
 
                 text: checkState ? "Hide Details" : "Show Details"
                 // the style permits to not show the default checkbox indicator but instead an image if set
-                indicator: Image {
+                indicator: image {
                     id: detailsIcon
 
                     width:  28
                     height: 28
                     x: checkbox.leftPadding
                     y: parent.height / 2 - height / 2
-                    fillMode: Image.PreserveAspectFit
+                    fillMode: image.PreserveAspectFit
                     mipmap: true
                     antialiasing: true
                     source: checkbox.checkState ? logger.shown : logger.hidden

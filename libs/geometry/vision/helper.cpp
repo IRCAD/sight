@@ -221,9 +221,9 @@ cv::Matx44f cameraPoseStereo(
 //-----------------------------------------------------------------------------
 
 void calibratePointingTool(
-    const data::Vector::csptr _matricesVector,
-    data::Matrix4::sptr _calibrationMatrix,
-    data::Matrix4::sptr _centerMatrix
+    const data::vector::csptr _matricesVector,
+    data::matrix4::sptr _calibrationMatrix,
+    data::matrix4::sptr _centerMatrix
 )
 {
     if(_matricesVector->size() < 4)
@@ -239,8 +239,8 @@ void calibratePointingTool(
 
     for(const auto& i : *_matricesVector)
     {
-        data::Matrix4::csptr m1 = std::dynamic_pointer_cast<data::Matrix4>(i);
-        SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
+        data::matrix4::csptr m1 = std::dynamic_pointer_cast<data::matrix4>(i);
+        SIGHT_ASSERT("This element of the vector is not a data::matrix4", m1);
         geometry::eigen::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
         xyz1(0, 0) = (*m1)(0, 3);
@@ -268,8 +268,8 @@ void calibratePointingTool(
     translation.fill(0);
     for(const auto& i : *_matricesVector)
     {
-        data::Matrix4::csptr m1 = std::dynamic_pointer_cast<data::Matrix4>(i);
-        SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
+        data::matrix4::csptr m1 = std::dynamic_pointer_cast<data::matrix4>(i);
+        SIGHT_ASSERT("This element of the vector is not a data::matrix4", m1);
         const geometry::eigen::helper::EigenMatrix pointMatrix = geometry::eigen::helper::toEigen(m1);
         geometry::eigen::helper::EigenMatrix centerMatrix(pointMatrix);
         const geometry::eigen::helper::EigenMatrix pointMatrixInverse = pointMatrix.inverse();
@@ -297,14 +297,14 @@ void calibratePointingTool(
 
 //-----------------------------------------------------------------------------
 
-data::PointList::sptr detectChessboard(
+data::point_list::sptr detectChessboard(
     const cv::Mat& _img,
     std::size_t _xDim,
     std::size_t _yDim,
     float _scale
 )
 {
-    data::PointList::sptr pointlist;
+    data::point_list::sptr pointlist;
 
     SIGHT_ASSERT("Expected 8bit pixel components, this image has: " << 8 * _img.elemSize1(), _img.elemSize1() == 1);
 
@@ -352,11 +352,11 @@ data::PointList::sptr detectChessboard(
         cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
         cv::cornerSubPix(grayImg, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
 
-        pointlist = std::make_shared<data::PointList>();
-        data::PointList::PointListContainer& points = pointlist->getPoints();
+        pointlist = std::make_shared<data::point_list>();
+        data::point_list::PointListContainer& points = pointlist->getPoints();
         points.reserve(corners.size());
 
-        const auto cv2SightPt = [](const cv::Point2f& p){return std::make_shared<data::Point>(p.x, p.y);};
+        const auto cv2SightPt = [](const cv::Point2f& p){return std::make_shared<data::point>(p.x, p.y);};
         std::ranges::transform(corners, std::back_inserter(points), cv2SightPt);
     }
 

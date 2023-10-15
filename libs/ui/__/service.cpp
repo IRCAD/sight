@@ -60,7 +60,7 @@ void service::initialize()
     // Create view registry
     m_viewRegistry = ui::detail::registry::View::make(this->get_id());
 
-    const auto& config = this->getConfiguration();
+    const auto& config = this->get_config();
 
     if(const auto registryConfig = config.get_child_optional("registry"); registryConfig.has_value())
     {

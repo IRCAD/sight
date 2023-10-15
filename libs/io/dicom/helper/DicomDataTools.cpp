@@ -66,7 +66,7 @@ gdcm::PixelFormat DicomDataTools::getPixelType(const core::type& type)
 
 //------------------------------------------------------------------------------
 
-gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
+gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::image::csptr& image)
 {
     gdcm::PhotometricInterpretation pi;
     const std::size_t components = image->numComponents();
@@ -98,18 +98,18 @@ gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(con
 //------------------------------------------------------------------------------
 
 gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
-    data::Material::RepresentationType representationMode
+    data::material::RepresentationType representationMode
 )
 {
     switch(representationMode)
     {
-        case data::Material::SURFACE:
+        case data::material::SURFACE:
             return gdcm::Surface::SURFACE;
 
-        case data::Material::POINT:
+        case data::material::POINT:
             return gdcm::Surface::POINTS;
 
-        case data::Material::WIREFRAME:
+        case data::material::WIREFRAME:
             return gdcm::Surface::WIREFRAME;
 
         default:
@@ -120,32 +120,32 @@ gdcm::Surface::VIEWType DicomDataTools::convertToPresentationType(
 
 //------------------------------------------------------------------------------
 
-data::Material::RepresentationType DicomDataTools::convertToRepresentationMode(
+data::material::RepresentationType DicomDataTools::convertToRepresentationMode(
     gdcm::Surface::VIEWType presentationType
 )
 {
     switch(presentationType)
     {
         case gdcm::Surface::SURFACE:
-            return data::Material::SURFACE;
+            return data::material::SURFACE;
 
         case gdcm::Surface::WIREFRAME:
-            return data::Material::WIREFRAME;
+            return data::material::WIREFRAME;
 
         case gdcm::Surface::POINTS:
-            return data::Material::POINT;
+            return data::material::POINT;
 
         default:
             SIGHT_WARN("Presentation type not handle (changed to : SURFACE)");
-            return data::Material::SURFACE;
+            return data::material::SURFACE;
     }
 }
 
 //------------------------------------------------------------------------------
 
 std::size_t DicomDataTools::convertPointToFrameNumber(
-    const data::Image::csptr& image,
-    const data::Point::csptr& point
+    const data::image::csptr& image,
+    const data::point::csptr& point
 )
 {
     // Retrieve Z spacing
@@ -170,7 +170,7 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
 //------------------------------------------------------------------------------
 
 double DicomDataTools::convertFrameNumberToZCoordinate(
-    const data::Image::csptr& image,
+    const data::image::csptr& image,
     const std::size_t frameNumber
 )
 {

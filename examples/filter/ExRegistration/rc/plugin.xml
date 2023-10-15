@@ -62,28 +62,28 @@ Detail of the ToolBar
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui" />
 
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>ExRegistration_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Object to store the image loading in the first tab -->
-            <object uid="myImage" type="sight::data::Image" />
-            <object uid="tf" type="sight::data::TransferFunction" />
+            <object uid="myImage" type="sight::data::image" />
+            <object uid="tf" type="sight::data::transfer_function" />
 
-            <object uid="meshOnNegato1" type="sight::data::Mesh" />
-            <object uid="meshOnNegato2" type="sight::data::Mesh" />
+            <object uid="meshOnNegato1" type="sight::data::mesh" />
+            <object uid="meshOnNegato2" type="sight::data::mesh" />
             <!-- Object to store the point put in the first tab -->
-            <object uid="pointList1" type="sight::data::PointList" />
+            <object uid="pointList1" type="sight::data::point_list" />
             <!-- Object to store the point put in the second tab -->
-            <object uid="pointList2" type="sight::data::PointList" />
+            <object uid="pointList2" type="sight::data::point_list" />
             <!-- Object to store the registration matrix -->
-            <object uid="registrationMatrix" type="sight::data::Matrix4" />
+            <object uid="registrationMatrix" type="sight::data::matrix4" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>ExRegistration</name>
@@ -96,7 +96,7 @@ Detail of the ToolBar
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::SView">
+            <service uid="mainView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::cardinal">
                         <view align="center" />
@@ -110,7 +110,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create a toolbar -->
-            <service uid="toolBarView" type="sight::module::ui::SToolBar">
+            <service uid="toolBarView" type="sight::module::ui::tool_bar">
                 <gui>
                     <layout>
                         <menuItem name="Load image" icon="ExRegistration/icons/icon-load1.png" />
@@ -130,7 +130,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="sight::module::ui::SView">
+            <service uid="multiView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::tab">
                         <view caption="Point List 1" selected="true" border="5" backgroundColor="#2E3034" />
@@ -146,7 +146,7 @@ Detail of the ToolBar
             </service>
 
             <!-- NEGATO 1 VIEW    (Content of the first Tab)-->
-            <service uid="image1View" type="sight::module::ui::SView">
+            <service uid="image1View" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
@@ -163,27 +163,27 @@ Detail of the ToolBar
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Action to load an image in the Tab 1 (Point list 1)-->
-            <service uid="openImageAct" type="sight::module::ui::com::SStarter">
+            <service uid="openImageAct" type="sight::module::ui::com::starter">
                 <start uid="imageReaderSrv" />
             </service>
 
             <!-- Action to load a mesh in the Tab 1 (Point list 1) -->
-            <service uid="openMesh1Act" type="sight::module::ui::com::SStarter">
+            <service uid="openMesh1Act" type="sight::module::ui::com::starter">
                 <start uid="meshReader1Srv" />
             </service>
 
             <!-- Action to load a mesh in the Tab 2 (Point list 2)    -->
-            <service uid="openMesh2Act" type="sight::module::ui::com::SStarter">
+            <service uid="openMesh2Act" type="sight::module::ui::com::starter">
                 <start uid="meshReader2Srv" />
             </service>
 
             <!-- Action to do the registration -->
-            <service uid="registerAct" type="sight::module::ui::SAction" />
+            <service uid="registerAct" type="sight::module::ui::action" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
             <!-- Generic Scene (Negato) for the first tab -->
-            <service uid="negato1SceneSrv" type="sight::viz::scene3d::SRender">
+            <service uid="negato1SceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -197,32 +197,32 @@ Detail of the ToolBar
                 </scene>
             </service>
 
-            <service uid="N1TrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <service uid="N1TrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
                 <config priority="0" />
             </service>
 
-            <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true">
+            <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
                 <in key="image" uid="myImage" />
                 <inout key="tf" uid="tf" />
                 <config sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="N1MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="N1MeshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="meshOnNegato1" />
                 <config picker="negato1default" />
             </service>
 
-            <service uid="N1PointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true">
+            <service uid="N1PointListAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
                 <in key="pointList" uid="pointList1" />
                 <config color="#619647" radius="5.0" />
             </service>
 
-            <service uid="N1PickerAdp" type="sight::module::viz::scene3d::adaptor::SPicker" />
+            <service uid="N1PickerAdp" type="sight::module::viz::scene3d::adaptor::picker" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
             <!-- Generic Scene (Negato) for the second tab -->
-            <service uid="negato2SceneSrv" type="sight::viz::scene3d::SRender">
+            <service uid="negato2SceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -235,26 +235,26 @@ Detail of the ToolBar
                 </scene>
             </service>
 
-            <service uid="N2TrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <service uid="N2TrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
                 <config priority="0" />
             </service>
 
-            <service uid="N2MeshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="N2MeshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="meshOnNegato2" />
                 <config picker="negato2default" />
             </service>
 
-            <service uid="N2PointListAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true">
+            <service uid="N2PointListAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
                 <in key="pointList" uid="pointList2" />
                 <config color="#619647" radius="5.0" />
             </service>
 
-            <service uid="N2PickerAdp" type="sight::module::viz::scene3d::adaptor::SPicker" />
+            <service uid="N2PickerAdp" type="sight::module::viz::scene3d::adaptor::picker" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
             <!-- Generic Scene (Negato) for the Third tab -->
-            <service uid="negato3SceneSrv" type="sight::viz::scene3d::SRender">
+            <service uid="negato3SceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -268,26 +268,26 @@ Detail of the ToolBar
                 </scene>
             </service>
 
-            <service uid="N3TrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <service uid="N3TrackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
                 <config priority="0" />
             </service>
 
-            <service uid="N3Mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="N3Mesh1Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="meshOnNegato1" />
             </service>
 
-            <service uid="N3Mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="N3Mesh2Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="meshOnNegato2" />
                 <config transform="registrationMatrix" />
             </service>
 
-            <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true">
+            <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
                 <in key="image" uid="myImage" />
                 <inout key="tf" uid="tf" />
                 <config sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="N3TransformAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true">
+            <service uid="N3TransformAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
                 <inout key="transform" uid="registrationMatrix" />
                 <config transform="registrationMatrix" />
             </service>
@@ -295,41 +295,41 @@ Detail of the ToolBar
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Service which compute the registration -->
-            <service uid="PLRegistrationSrv" type="sight::module::filter::point::SPointListRegistration">
+            <service uid="PLRegistrationSrv" type="sight::module::filter::point::point_list_registration">
                 <inout key="registeredPL" uid="pointList2" />
                 <inout key="referencePL" uid="pointList1" />
                 <inout key="output" uid="registrationMatrix" />
                 <config mode="rigid" />
             </service>
 
-            <service uid="imageReaderSrv" type="sight::module::ui::io::SSelector">
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="myImage" />
                 <type mode="reader" />
             </service>
 
             <!-- Editors for Negato1 -->
-            <service uid="sliderNegatoSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
+            <service uid="sliderNegatoSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
                 <inout key="image" uid="myImage" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
-            <service uid="meshReader1Srv" type="sight::module::ui::io::SSelector">
+            <service uid="meshReader1Srv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="meshOnNegato1" />
                 <type mode="reader" />
             </service>
 
-            <service uid="meshReader2Srv" type="sight::module::ui::io::SSelector">
+            <service uid="meshReader2Srv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="meshOnNegato2" />
                 <type mode="reader" />
             </service>
 
             <!-- Services to add a point in the pointlist when the user clicks in the scene -->
-            <service uid="addLAndmarksInPL1Srv" type="sight::module::geometry::SManagePointList">
+            <service uid="addLAndmarksInPL1Srv" type="sight::module::geometry::manage_point_list">
                 <inout key="pointList" uid="pointList1" />
                 <config label="true" />
             </service>
 
-            <service uid="addLAndmarksInPL2Srv" type="sight::module::geometry::SManagePointList">
+            <service uid="addLAndmarksInPL2Srv" type="sight::module::geometry::manage_point_list">
                 <inout key="pointList" uid="pointList2" />
             </service>
 

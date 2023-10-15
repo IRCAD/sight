@@ -30,7 +30,7 @@
 #include <core/log/logger.hpp>
 #include <core/spy_log.hpp>
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
@@ -74,8 +74,8 @@ std::filesystem::path DicomDir::findDicomDir(const std::filesystem::path& root)
 void processDirInformation(
     const std::filesystem::path& dicomdir,
     const std::filesystem::path& rootDicomDirPath,
-    data::DicomSeries::sptr currentSeries,
-    std::map<std::string, data::DicomSeries::sptr>& dicomSeriesMap,
+    data::dicom_series::sptr currentSeries,
+    std::map<std::string, data::dicom_series::sptr>& dicomSeriesMap,
     const core::log::logger::sptr& logger,
     std::function<void(std::uint64_t)>& progress,
     std::function<bool()>& cancel,
@@ -181,7 +181,7 @@ void processDirInformation(
                             io::dicom::helper::DicomDataReader::getTagValue<0x0020, 0x000e>(item.GetNestedDataSet());
                         if(dicomSeriesMap.find(seriesUID) == dicomSeriesMap.end())
                         {
-                            data::DicomSeries::sptr series = std::make_shared<data::DicomSeries>();
+                            data::dicom_series::sptr series = std::make_shared<data::dicom_series>();
                             series->setSeriesInstanceUID(seriesUID);
                             dicomSeriesMap[seriesUID] = series;
                         }
@@ -225,7 +225,7 @@ void processDirInformation(
 
 void DicomDir::retrieveDicomSeries(
     const std::filesystem::path& dicomdir,
-    std::vector<SPTR(data::DicomSeries)>& series_set,
+    std::vector<SPTR(data::dicom_series)>& series_set,
     const core::log::logger::sptr& logger,
     std::function<void(std::uint64_t)> progress,
     std::function<bool()> cancel
@@ -292,7 +292,7 @@ void DicomDir::retrieveDicomSeries(
         ptotal = 1.;
     }
 
-    std::map<std::string, data::DicomSeries::sptr> dicomSeriesMap;
+    std::map<std::string, data::dicom_series::sptr> dicomSeriesMap;
     processDirInformation(
         dicomdir,
         dicomdir.parent_path(),

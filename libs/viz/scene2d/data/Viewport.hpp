@@ -24,8 +24,8 @@
 
 #include "viz/scene2d/config.hpp"
 
-#include <data/Exception.hpp>
-#include <data/Object.hpp>
+#include <data/exception.hpp>
+#include <data/object.hpp>
 
 #include <optional>
 
@@ -35,11 +35,11 @@ namespace sight::viz::scene2d::data
 /**
  * @brief Manage the current viewport of the fwRenderQt.
  */
-class VIZ_SCENE2D_CLASS_API Viewport : public sight::data::Object
+class VIZ_SCENE2D_CLASS_API Viewport : public sight::data::object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Viewport, sight::data::Object);
+    SIGHT_DECLARE_CLASS(Viewport, sight::data::object);
 
     double x() const;
     double y() const;
@@ -70,17 +70,17 @@ public:
     /// @}
 
     /// Defines shallow copy
-    /// @throws data::Exception if an errors occurs during copy
+    /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    VIZ_SCENE2D_API void shallow_copy(const sight::data::Object::csptr& source) override;
+    VIZ_SCENE2D_API void shallow_copy(const sight::data::object::csptr& source) override;
 
     /// Defines deep copy
-    /// @throws data::Exception if an errors occurs during copy
+    /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     VIZ_SCENE2D_API void deep_copy(
-        const sight::data::Object::csptr& source,
-        const std::unique_ptr<sight::data::Object::DeepCopyCacheType>& cache = std::make_unique<sight::data::Object::DeepCopyCacheType>()
+        const sight::data::object::csptr& source,
+        const std::unique_ptr<sight::data::object::deep_copy_cache_t>& cache = std::make_unique<sight::data::object::deep_copy_cache_t>()
     )
     override;
 

@@ -67,7 +67,7 @@ material SummedAreaTableInit
 
 //---------------------------------------------------------------------------
 
-material SummedAreaTable
+material summed_area_table
 {
     technique
     {

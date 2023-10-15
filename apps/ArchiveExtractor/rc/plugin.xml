@@ -5,13 +5,13 @@
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::io::zip" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>ArchiveExtractor_AppCfg</id>
         <config>
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="sight::module::ui::SFrame" >
+            <service uid="mainView" type="sight::module::ui::frame" >
                 <gui>
                     <frame>
                         <name>Archive Extractor</name>
@@ -24,7 +24,7 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::SView" >
+            <service uid="containerView" type="sight::module::ui::view" >
                 <gui>
                     <toolBar align="top" />
                     <layout type="sight::ui::layout::line" >
@@ -36,7 +36,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::SToolBar" >
+            <service uid="toolBarView" type="sight::module::ui::tool_bar" >
                 <gui>
                     <layout style="ToolButtonTextBesideIcon">
                         <menuItem name="Extract archive" icon="sight::module::ui::flaticons/Volume.svg" />
@@ -47,15 +47,15 @@
                 </registry>
             </service>
 
-            <service uid="progressStatusbar" type="sight::module::ui::SJobBar" />
+            <service uid="progressStatusbar" type="sight::module::ui::job_bar" />
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="extractArchiveAct" type="sight::module::ui::SAction" />
+            <service uid="extractArchiveAct" type="sight::module::ui::action" />
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="extractArchiveSrv" type="sight::module::io::zip::SExtract" />
+            <service uid="extractArchiveSrv" type="sight::module::io::zip::extract" />
 
             <!-- ******************************* Connections ***************************************** -->
 

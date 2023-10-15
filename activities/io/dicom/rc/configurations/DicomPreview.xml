@@ -1,18 +1,18 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>DicomPreview</id>
     <parameters>
         <param name="ICON_PATH" />
         <param name="SERIES_SET" />
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by config_launcher -->
     </parameters>
     <config>
 
-        <object type="sight::data::SeriesSet" uid="${SERIES_SET}" src="ref" />
-        <object type="sight::data::Vector" uid="dicomSelection" />
+        <object type="sight::data::series_set" uid="${SERIES_SET}" src="ref" />
+        <object type="sight::data::vector" uid="dicomSelection" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="dicomPreviewFrame" type="sight::module::ui::SFrame" >
+        <service uid="dicomPreviewFrame" type="sight::module::ui::frame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -26,7 +26,7 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="sight::module::ui::SView" >
+        <service uid="mainView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal" >
                     <view caption="DICOM Information" align="center" minWidth="200" />
@@ -40,16 +40,16 @@
         </service>
 
         <!-- DICOM SELECTION -->
-        <service uid="dicomSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
+        <service uid="dicomSelector" type="sight::module::ui::qt::series::selector" auto_connect="true">
             <inout key="selection" uid="dicomSelection" />
             <inout key="seriesSet" uid="${SERIES_SET}" />
         </service>
 
-        <service uid="dicomViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
+        <service uid="dicomViewer" type="sight::module::ui::qt::series::viewer" auto_connect="true">
             <in key="series" uid="dicomSelection" />
             <parentView wid="dicomPreview" />
             <configs>
-                <config id="2DLocalPreviewConfig" type="sight::data::DicomSeries" />
+                <config id="2DLocalPreviewConfig" type="sight::data::dicom_series" />
             </configs>
         </service>
 

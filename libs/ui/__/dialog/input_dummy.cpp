@@ -46,7 +46,7 @@ void input_dummy::setEchoMode(EchoMode /*echoMode*/)
 
 //------------------------------------------------------------------------------
 
-void input_dummy::setInput(const std::string& /*text*/)
+void input_dummy::set_input(const std::string& /*text*/)
 {
 }
 

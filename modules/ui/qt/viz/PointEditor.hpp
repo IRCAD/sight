@@ -26,8 +26,8 @@
 
 #include <core/tools/failed.hpp>
 
-#include <data/Point.hpp>
-#include <data/tools/PickingInfo.hpp>
+#include <data/point.hpp>
+#include <data/tools/picking_info.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -74,7 +74,7 @@ protected:
 private:
 
     /// Slot: get the interaction information
-    void getInteraction(data::tools::PickingInfo info);
+    void getInteraction(data::tools::picking_info info);
 
     QPointer<QLineEdit> m_textCtrl_x;
     QPointer<QLineEdit> m_textCtrl_y;

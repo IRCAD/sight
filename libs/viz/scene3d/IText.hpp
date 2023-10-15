@@ -29,7 +29,7 @@
 
 #include <core/base_object.hpp>
 
-#include <viz/scene3d/SRender.hpp>
+#include <viz/scene3d/render.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreMovableObject.h>

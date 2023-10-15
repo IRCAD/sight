@@ -25,7 +25,7 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/container/DicomCodedAttribute.hpp"
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 #include <array>
 #include <filesystem>

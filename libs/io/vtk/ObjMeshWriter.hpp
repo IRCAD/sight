@@ -26,14 +26,14 @@
 
 #include <core/location/single_file.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 #include <filesystem>
 
 namespace sight::data
 {
 
-class Mesh;
+class mesh;
 
 } // namespace sight::data
 
@@ -52,14 +52,14 @@ namespace sight::io::vtk
  * @brief Writes a Mesh in .obj format using VTK library.
  */
 
-class IO_VTK_CLASS_API ObjMeshWriter : public writer::GenericObjectWriter<data::Mesh>,
+class IO_VTK_CLASS_API ObjMeshWriter : public writer::generic_object_writer<data::mesh>,
                                        public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         ObjMeshWriter,
-        io::writer::GenericObjectWriter<data::Mesh>,
+        io::writer::generic_object_writer<data::mesh>,
         io::writer::factory::make<ObjMeshWriter>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()

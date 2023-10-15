@@ -42,7 +42,7 @@ namespace sight::io::vtk
 //------------------------------------------------------------------------------
 
 ImageWriter::ImageWriter() :
-    m_job(std::make_shared<core::jobs::observer>("VTK Image Writer"))
+    m_job(std::make_shared<core::jobs::observer>("VTK image Writer"))
 {
 }
 
@@ -60,7 +60,7 @@ void ImageWriter::write()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::Image::csptr pImage = getConcreteObject();
+    data::image::csptr pImage = getConcreteObject();
 
     vtkSmartPointer<vtkGenericDataObjectWriter> writer = vtkSmartPointer<vtkGenericDataObjectWriter>::New();
     vtkSmartPointer<vtkImageData> vtkImage             = vtkSmartPointer<vtkImageData>::New();

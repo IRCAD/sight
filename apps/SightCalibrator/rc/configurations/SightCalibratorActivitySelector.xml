@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>SightCalibrator_ActivitySelector_AppCfg</id>
     <parameters>
         <param name="activitySet" />
@@ -12,11 +12,11 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${activitySet}" type="sight::data::ActivitySet" src="ref" />
+        <object uid="${activitySet}" type="sight::data::activity_set" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainview" type="sight::module::ui::SView">
+        <service uid="mainview" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -33,18 +33,18 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="activityWizardSrv" type="sight::module::ui::qt::activity::SWizard">
+        <service uid="activityWizardSrv" type="sight::module::ui::qt::activity::wizard">
             <inout key="activitySet" uid="${activitySet}" />
             <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="sight::data::CameraSet" icon="sight::module::ui::flaticons/YellowCamera.svg" />
+                <icon type="sight::data::camera_set" icon="sight::module::ui::flaticons/YellowCamera.svg" />
             </icons>
         </service>
 
         <!-- Editor to select an activity. -->
-        <service uid="activityCreatorSrv" type="sight::module::ui::qt::activity::SSelector">
+        <service uid="activityCreatorSrv" type="sight::module::ui::qt::activity::selector">
             <filter>
                 <mode>include</mode>
                 <id>Calibration</id>

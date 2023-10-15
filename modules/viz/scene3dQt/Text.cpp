@@ -26,7 +26,7 @@
 
 #include <ui/qt/container/widget.hpp>
 
-#include <viz/scene3d/helper/Camera.hpp>
+#include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 

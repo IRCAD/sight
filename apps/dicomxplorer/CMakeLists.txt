@@ -7,7 +7,7 @@ add_dependencies(
     module_ui
     module_ui_qt
     module_activity
-    module_appXml
+    module_app
     module_memory
     sightrun
     module_io_itk
@@ -24,6 +24,6 @@ add_dependencies(
     module_ui
 )
 
-module_param(module_appXml PARAM_LIST config parameters PARAM_VALUES dicomXplorerBase dicomXplorerAppBase)
+module_param(module_app PARAM_LIST config parameters PARAM_VALUES dicomXplorerBase dicomXplorerAppBase)
 
 sight_generate_profile(dicomxplorer)

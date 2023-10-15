@@ -26,7 +26,7 @@
 
 #include <data/registry/detail.hpp>
 
-#include <service/extension/Factory.hpp>
+#include <service/extension/factory.hpp>
 #include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
@@ -60,7 +60,7 @@ void fwMetrics::updating()
     stream << std::endl;
 
     stream << "base: ";
-    stream << service::extension::Factory::getDefault()->get_factory_keys().size();
+    stream << service::extension::factory::get()->get_factory_keys().size();
 
     sight::ui::dialog::message messageBox;
     messageBox.setTitle("FactoryRegistry Information");

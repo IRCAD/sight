@@ -58,7 +58,7 @@ public:
     IO_DICOM_API ~ComprehensiveSRIOD() override;
 
     /// Write DICOM file
-    IO_DICOM_API void write(const data::Series::csptr& series) override;
+    IO_DICOM_API void write(const data::series::csptr& series) override;
 
 protected:
 

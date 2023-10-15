@@ -96,7 +96,7 @@ protected:
     VIZ_SCENE3D_API void setMaterial(const Ogre::MaterialPtr& material);
 
     /// Connect the input parameter modified signal to this service update slot.
-    VIZ_SCENE3D_API service::connections_t getAutoConnections() const override;
+    VIZ_SCENE3D_API service::connections_t auto_connections() const override;
 
 private:
 
@@ -139,7 +139,7 @@ private:
     /// Dirty flag to know if we must trigger an update or not
     bool m_dirty {true};
 
-    data::ptr<data::Object, data::Access::inout> m_parameter {this, s_PARAMETER_INOUT, true};
+    data::ptr<data::object, data::Access::inout> m_parameter {this, s_PARAMETER_INOUT, true};
 };
 
 //------------------------------------------------------------------------------

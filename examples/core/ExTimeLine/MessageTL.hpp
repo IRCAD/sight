@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <data/GenericTL.hpp>
-#include <data/GenericTL.hxx>
-#include <data/timeline/GenericObject.hpp>
-#include <data/timeline/GenericObject.hxx>
+#include <data/generic_tl.hpp>
+#include <data/generic_tl.hxx>
+#include <data/timeline/generic_object.hpp>
+#include <data/timeline/generic_object.hxx>
 
 #include <array>
 
@@ -47,18 +47,18 @@ struct MsgData
 /**
  * @brief Defines a timeline that stores string messages.
  */
-class MessageTL : public sight::data::GenericTL<MsgData>
+class MessageTL : public sight::data::generic_tl<MsgData>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(MessageTL, sight::data::TimeLine);
+    SIGHT_DECLARE_CLASS(MessageTL, sight::data::timeline::base);
 
     /**
      * @brief Creates the data.
      * @param _key private construction key.
      */
     MessageTL() :
-        GenericTL<MsgData>()
+        generic_tl<MsgData>()
     {
     }
 };

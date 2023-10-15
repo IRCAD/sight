@@ -1,99 +1,99 @@
 <plugin id="sight::module::filter::image" library="true">
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SAutomaticRegistration</service>
-          <object>sight::data::Image</object>
+          <service>sight::module::filter::image::automatic_registration</service>
+          <object>sight::data::image</object>
           <desc>Service computing a rigid transform matching an image to another.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SBitwiseAnd</service>
-          <object>sight::data::Image</object>
+          <service>sight::module::filter::image::bitwise_and</service>
+          <object>sight::data::image</object>
           <desc>Implements the AND bitwise operator pixel-wise between two images.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SFlip</service>
-          <object key="source">sight::data::Image</object>
-          <object key="target">sight::data::Image</object>
+          <service>sight::module::filter::image::flip</service>
+          <object key="source">sight::data::image</object>
+          <object key="target">sight::data::image</object>
           <desc>Service flipping an input image along x or y or z axis.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SImageCenter</service>
+          <service>sight::module::filter::image::image_center</service>
           <desc>Service computing the center of a 3D image, it outputs the translation going from origin to the center.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SImageExtruder</service>
-          <object key="meshes">sight::data::ModelSeries</object>
-          <object key="image">sight::data::Image</object>
-          <object key="extrudedImage">sight::data::Image</object>
+          <service>sight::module::filter::image::image_extruder</service>
+          <object key="meshes">sight::data::model_series</object>
+          <object key="image">sight::data::image</object>
+          <object key="extrudedImage">sight::data::image</object>
           <desc>This service sets all voxels of an image that are inside meshes to the lowest value of the image type.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SImagesSubstract</service>
+          <service>sight::module::filter::image::images_substract</service>
           <desc>Compute the substraction of two images.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SLabelGeometryImage</service>
-          <object>sight::data::Image</object>
+          <service>sight::module::filter::image::label_geometry_image</service>
+          <object>sight::data::image</object>
           <desc>Gets centroids of shapes from a labeled image and adds them as a 'landmark' field to it.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SLabelImageToBinaryImage</service>
+          <service>sight::module::filter::image::label_image_to_binary_image</service>
           <desc>Service extracting a binary mask from an image with labels.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::registerer</type>
-          <service>sight::module::filter::image::SMIPMatchingRegistration</service>
+          <service>sight::module::filter::image::mip_matching_registration</service>
           <desc>This service uses a fast registration algorithm to quickly register two images together if the transform</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SMatrixRegressor</service>
-          <object>sight::data::Vector</object>
+          <service>sight::module::filter::image::matrix_regressor</service>
+          <object>sight::data::vector</object>
           <desc>Service computing the matrix that best fits a list of matrices.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SPlaneSlicer</service>
+          <service>sight::module::filter::image::plane_slicer</service>
           <desc>Operator computing a 2D slice from a 3D image.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SPropagator</service>
-          <object>sight::data::Image</object>
+          <service>sight::module::filter::image::propagator</service>
+          <object>sight::data::image</object>
           <desc>Service placing seeds and propagating from them in an image.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SResampler</service>
-          <object>sight::data::Image</object>
+          <service>sight::module::filter::image::resampler</service>
+          <object>sight::data::image</object>
           <desc>Service applying a transform to an image and outputing the resampled image.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::filter</type>
-          <service>sight::module::filter::image::SThreshold</service>
-          <object key="source">sight::data::Object</object>
-          <object key="target">sight::data::Object</object>
+          <service>sight::module::filter::image::threshold</service>
+          <object key="source">sight::data::object</object>
+          <object key="target">sight::data::object</object>
           <desc>Apply a threshold on an image.</desc>
      </extension>
 </plugin>

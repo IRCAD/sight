@@ -106,7 +106,7 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::Image& image,
+        const data::image& image,
         O& output,
         Writer::Mode,
         Flag flag = Flag::NONE
@@ -131,11 +131,11 @@ public:
         const auto& pixel_format = image.getPixelFormat();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image format: " << pixel_format,
-            pixel_format != data::Image::PixelFormat::GRAY_SCALE
-            && pixel_format != data::Image::PixelFormat::RGB
-            && pixel_format != data::Image::PixelFormat::RGBA
-            && pixel_format != data::Image::PixelFormat::BGR
-            && pixel_format != data::Image::PixelFormat::BGRA
+            pixel_format != data::image::PixelFormat::GRAY_SCALE
+            && pixel_format != data::image::PixelFormat::RGB
+            && pixel_format != data::image::PixelFormat::RGBA
+            && pixel_format != data::image::PixelFormat::BGR
+            && pixel_format != data::image::PixelFormat::BGRA
         );
 
         // Create an RAII to be sure everything is cleaned at exit
@@ -240,7 +240,7 @@ public:
             });
 
         // Guess the color space to use
-        const OPJ_COLOR_SPACE color_space = pixel_format == data::Image::GRAY_SCALE
+        const OPJ_COLOR_SPACE color_space = pixel_format == data::image::GRAY_SCALE
                                             ? OPJ_CLRSPC_GRAY
                                             : OPJ_CLRSPC_SRGB;
 
@@ -426,11 +426,11 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename T>
-    inline static void toOpenJPEG(const data::Image& image, opj_image_t& opj_image)
+    inline static void toOpenJPEG(const data::image& image, opj_image_t& opj_image)
     {
         switch(image.getPixelFormat())
         {
-            case data::Image::GRAY_SCALE:
+            case data::image::GRAY_SCALE:
             {
                 struct Pixel
                 {
@@ -441,7 +441,7 @@ private:
                 break;
             }
 
-            case data::Image::RGB:
+            case data::image::RGB:
             {
                 struct Pixel
                 {
@@ -454,7 +454,7 @@ private:
                 break;
             }
 
-            case data::Image::RGBA:
+            case data::image::RGBA:
             {
                 struct Pixel
                 {
@@ -468,7 +468,7 @@ private:
                 break;
             }
 
-            case data::Image::BGR:
+            case data::image::BGR:
             {
                 struct Pixel
                 {
@@ -481,7 +481,7 @@ private:
                 break;
             }
 
-            case data::Image::BGRA:
+            case data::image::BGRA:
             {
                 struct Pixel
                 {
@@ -503,7 +503,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename P>
-    inline static void toOpenJPEGPixels(const data::Image& image, opj_image_t& opj_image)
+    inline static void toOpenJPEGPixels(const data::image& image, opj_image_t& opj_image)
     {
         const auto& sizes = image.size();
 

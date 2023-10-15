@@ -38,7 +38,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME) make();
 
-UI_API SPTR(sight::ui::object) make(const sight::ui::registry::KeyType& classname);
+UI_API SPTR(sight::ui::object) make(const sight::ui::registry::key_t& classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME) make()

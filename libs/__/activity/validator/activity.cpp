@@ -24,31 +24,31 @@
 
 #include "activity/validator/object.hpp"
 
-#include <data/Activity.hpp>
-#include <data/Composite.hpp>
-#include <data/Vector.hpp>
+#include <data/activity.hpp>
+#include <data/composite.hpp>
+#include <data/vector.hpp>
 
 namespace sight::activity::validator
 {
 
 //------------------------------------------------------------------------------
 
-validator::return_t activity::checkRequirements(const data::Activity::csptr& activity)
+validator::return_t activity::checkRequirements(const data::activity::csptr& activity)
 {
     validator::return_t validation;
     validation.first  = true;
     validation.second = "";
 
-    extension::ActivityInfo info;
-    info = extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
+    extension::activity_info info;
+    info = extension::activity::getDefault()->getInfo(activity->getActivityConfigId());
 
-    for(const extension::ActivityRequirement& req : info.requirements)
+    for(const extension::activity_requirement& req : info.requirements)
     {
         if((req.minOccurs == 1 && req.maxOccurs == 1)
            || (req.minOccurs == 0 && req.maxOccurs == 0)
            || req.create) // One object is required
         {
-            data::Object::csptr obj = activity->get(req.name);
+            data::object::csptr obj = activity->get(req.name);
             if(!obj)
             {
                 validation.first   = false;
@@ -71,7 +71,7 @@ validator::return_t activity::checkRequirements(const data::Activity::csptr& act
         }
         else if(req.container == "vector")
         {
-            data::Vector::csptr vector = std::dynamic_pointer_cast<const data::Vector>(activity->get(req.name));
+            data::vector::csptr vector = std::dynamic_pointer_cast<const data::vector>(activity->get(req.name));
             if(!vector)
             {
                 validation.first   = false;
@@ -95,7 +95,7 @@ validator::return_t activity::checkRequirements(const data::Activity::csptr& act
                 else
                 {
                     bool isValid = true;
-                    for(data::Object::csptr obj : *vector)
+                    for(data::object::csptr obj : *vector)
                     {
                         if(!obj)
                         {
@@ -131,7 +131,7 @@ validator::return_t activity::checkRequirements(const data::Activity::csptr& act
         }
         else // container == composite
         {
-            auto currentComposite = std::dynamic_pointer_cast<const data::Composite>(activity->get(req.name));
+            auto currentComposite = std::dynamic_pointer_cast<const data::composite>(activity->get(req.name));
             if(!currentComposite)
             {
                 validation.first   = false;
@@ -160,10 +160,10 @@ validator::return_t activity::checkRequirements(const data::Activity::csptr& act
                     for(const auto& elt : *currentComposite)
                     {
                         std::string key        = elt.first;
-                        data::Object::sptr obj = elt.second;
-                        extension::ActivityRequirementKey reqKey;
+                        data::object::sptr obj = elt.second;
+                        extension::activity_requirement_key reqKey;
                         bool keyIsFound = false;
-                        for(const extension::ActivityRequirementKey& keyElt : req.keys)
+                        for(const extension::activity_requirement_key& keyElt : req.keys)
                         {
                             if(key == keyElt.key)
                             {
@@ -218,7 +218,7 @@ validator::return_t activity::checkRequirements(const data::Activity::csptr& act
 //------------------------------------------------------------------------------
 
 validator::return_t activity::checkObject(
-    const data::Object::csptr& object,
+    const data::object::csptr& object,
     const std::string& validatorImpl
 )
 {

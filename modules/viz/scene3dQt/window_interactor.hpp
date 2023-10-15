@@ -75,10 +75,10 @@ public:
         const std::string& serviceID
     ) final;
 
-    /// Connects the widget and the SRender signals and slots.
+    /// Connects the widget and the render signals and slots.
     MODULE_VIZ_SCENE3DQT_API void connectToContainer() final;
 
-    /// Disconnects the widget and the SRender signals and slots.
+    /// Disconnects the widget and the render signals and slots.
     MODULE_VIZ_SCENE3DQT_API void disconnectInteractor() final;
 
     /// Returns the unique identifier of the widget.

@@ -31,7 +31,7 @@
 #include <core/jobs/observer.hpp>
 #include <core/spy_log.hpp>
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -45,7 +45,7 @@ namespace sight::io::dicom::helper
 {
 
 // Series
-static const gdcm::Tag s_MediaStorageSOPClassUID(0x0002, 0x0002);
+static const gdcm::Tag s_MediaStoragesop_classUID(0x0002, 0x0002);
 static const gdcm::Tag s_SpecificCharacterSetTag(0x0008, 0x0005);
 static const gdcm::Tag s_SeriesInstanceUIDTag(0x0020, 0x000e);
 static const gdcm::Tag s_SeriesDateTag(0x0008, 0x0021);
@@ -53,7 +53,7 @@ static const gdcm::Tag s_SeriesTimeTag(0x0008, 0x0031);
 static const gdcm::Tag s_ModalityTag(0x0008, 0x0060);
 static const gdcm::Tag s_SeriesDescriptionTag(0x0008, 0x103e);
 static const gdcm::Tag s_PerformingPhysicianNameTag(0x0008, 0x1050);
-static const gdcm::Tag s_SOPClassUIDTag(0x0008, 0x0016);
+static const gdcm::Tag s_sop_classUIDTag(0x0008, 0x0016);
 static const gdcm::Tag s_SOPInstanceUIDTag(0x0008, 0x0018);
 
 // Equipment
@@ -149,7 +149,7 @@ void DicomSeries::complete(
     selectedtags.insert(s_SeriesTimeTag);
     selectedtags.insert(s_SeriesDescriptionTag);
     selectedtags.insert(s_PerformingPhysicianNameTag);
-    selectedtags.insert(s_SOPClassUIDTag);
+    selectedtags.insert(s_sop_classUIDTag);
     selectedtags.insert(s_SOPInstanceUIDTag);
 
     for(const auto& series : seriesContainer)
@@ -198,8 +198,8 @@ void DicomSeries::complete(
         std::string performingPhysicianName = getStringValue(dataset, s_PerformingPhysicianNameTag);
         series->setPerformingPhysicianName(performingPhysicianName);
 
-        // Add the SOPClassUID to the series
-        const std::string& sopClassUID = getStringValue(dataset, s_SOPClassUIDTag);
+        // Add the sop_classUID to the series
+        const std::string& sopClassUID = getStringValue(dataset, s_sop_classUIDTag);
         series->getSOPClassUIDs().insert(sopClassUID);
     }
 
@@ -221,9 +221,9 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
     seriesScanner.AddTag(s_SeriesTimeTag);
     seriesScanner.AddTag(s_SeriesDescriptionTag);
     seriesScanner.AddTag(s_PerformingPhysicianNameTag);
-    seriesScanner.AddTag(s_SOPClassUIDTag);
+    seriesScanner.AddTag(s_sop_classUIDTag);
     seriesScanner.AddTag(s_SOPInstanceUIDTag);
-    seriesScanner.AddTag(s_MediaStorageSOPClassUID);
+    seriesScanner.AddTag(s_MediaStoragesop_classUID);
     readerObserver->set_total_work_units(filenames.size());
     readerObserver->done_work(0);
 
@@ -273,8 +273,9 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
             continue;
         }
 
-        const std::string& sopClassUID             = getStringValue(seriesScanner, filename, s_SOPClassUIDTag);
-        const std::string& mediaStorageSopClassUID = getStringValue(seriesScanner, filename, s_MediaStorageSOPClassUID);
+        const std::string& sopClassUID             = getStringValue(seriesScanner, filename, s_sop_classUIDTag);
+        const std::string& mediaStorageSopClassUID =
+            getStringValue(seriesScanner, filename, s_MediaStoragesop_classUID);
 
         if(sopClassUID != gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MediaStorageDirectoryStorage)
            && mediaStorageSopClassUID
@@ -320,7 +321,7 @@ void DicomSeries::fillSeries(
     std::uint64_t progress = 0;
 
     // Fill series
-    for(const data::DicomSeries::sptr& series : seriesContainer)
+    for(const data::dicom_series::sptr& series : seriesContainer)
     {
         // Compute number of instances
         const std::size_t size = series->getDicomContainer().size();
@@ -413,7 +414,7 @@ void DicomSeries::createSeries(
     const std::filesystem::path& filename
 )
 {
-    data::DicomSeries::sptr series = data::DicomSeries::sptr();
+    data::dicom_series::sptr series = data::dicom_series::sptr();
 
     const std::string stringFilename = filename.string();
 
@@ -433,7 +434,7 @@ void DicomSeries::createSeries(
     // If the series doesn't exist we create it
     if(!series)
     {
-        series = std::make_shared<data::DicomSeries>();
+        series = std::make_shared<data::dicom_series>();
 
         seriesContainer.push_back(series);
 
@@ -461,11 +462,11 @@ void DicomSeries::createSeries(
         series->setPerformingPhysicianName(performingPhysicianName);
     }
 
-    // Add the SOPClassUID to the series
+    // Add the sop_classUID to the series
     const std::string& sopClassUID = getStringValue(
         scanner,
         stringFilename,
-        s_SOPClassUIDTag
+        s_sop_classUIDTag
     );
 
     series->getSOPClassUIDs().insert(sopClassUID);

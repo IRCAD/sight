@@ -22,7 +22,8 @@
 
 #include "adaptor.hpp"
 
-#include "viz/scene2d/registry/Adaptor.hpp"
+#include "viz/scene2d/registry/adaptor.hpp"
+
 #include "viz/scene2d/Scene2DGraphicsView.hpp"
 
 #include <service/macros.hpp>
@@ -59,15 +60,15 @@ float adaptor::getZValue() const
 
 //-----------------------------------------------------------------------------
 
-viz::scene2d::SRender::sptr adaptor::getScene2DRender() const
+viz::scene2d::render::sptr adaptor::getScene2DRender() const
 {
-    const auto& registry = viz::scene2d::registry::getAdaptorRegistry();
+    const auto& registry = viz::scene2d::registry::get_adaptor_registry();
     const auto& iter     = registry.find(this->get_id());
-    SIGHT_ASSERT("Adaptor " + this->get_id() + " not registered", iter != registry.end());
+    SIGHT_ASSERT("adaptor " + this->get_id() + " not registered", iter != registry.end());
 
-    viz::scene2d::SRender::sptr render =
-        std::dynamic_pointer_cast<viz::scene2d::SRender>(core::tools::id::get_object(iter->second));
-    SIGHT_ASSERT("Service SRender " + iter->second + " not instanced", render);
+    viz::scene2d::render::sptr render =
+        std::dynamic_pointer_cast<viz::scene2d::render>(core::tools::id::get_object(iter->second));
+    SIGHT_ASSERT("Service render " + iter->second + " not instanced", render);
     return render;
 }
 
@@ -180,7 +181,7 @@ vec2d_t adaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
 
 void adaptor::configureParams()
 {
-    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
+    const config_t config = this->get_config().get_child("config.<xmlattr>");
 
     // If the corresponding attributes are present in the config, set the xAxis, yAxis and the adaptor zValue
     if(config.count("xAxis") != 0U)

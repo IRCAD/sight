@@ -22,7 +22,7 @@
 
 #include "io/dimse/data/PacsConfiguration.hpp"
 
-#include <data/Exception.hpp>
+#include <data/exception.hpp>
 #include <data/registry/macros.hpp>
 
 SIGHT_REGISTER_DATA(sight::io::dimse::data::PacsConfiguration);
@@ -32,12 +32,12 @@ namespace sight::io::dimse::data
 
 //------------------------------------------------------------------------------
 
-void PacsConfiguration::shallow_copy(const sight::data::Object::csptr& source)
+void PacsConfiguration::shallow_copy(const sight::data::object::csptr& source)
 {
     const auto& other = std::dynamic_pointer_cast<const PacsConfiguration>(source);
 
     SIGHT_THROW_EXCEPTION_IF(
-        sight::data::Exception(
+        sight::data::exception(
             "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),

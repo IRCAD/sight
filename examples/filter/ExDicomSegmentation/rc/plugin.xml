@@ -11,31 +11,31 @@
     <xi:include href="Threshold.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="VTKMesher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>ExDicomSegmentation_VTKMesher_Activity</id>
         <title>VTK mesher</title>
         <desc>Mesher activity using VTK</desc>
         <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
         <requirements>
-            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
         <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg"/>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>ExDicomSegmentation_Threshold_Activity</id>
         <title>Threshold</title>
         <desc>Simple threshold activity</desc>
         <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
         <requirements>
-            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
         <appConfig id="ExDicomSegmentation_Threshold_AppCfg" />
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>ExDicomSegmentation_Base_Activity</id>
         <title>ExDicomSegmentation</title>
         <desc>ExDicomSegmentation main activity</desc>
@@ -46,17 +46,17 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>ExDicomSegmentation_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesSet" type="sight::data::SeriesSet" />
+            <object uid="seriesSet" type="sight::data::series_set" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>ExDicomSegmentation</name>
@@ -70,7 +70,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::SDynamicView">
+            <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::dynamic_view">
                 <inout group="data">
                     <key name="seriesSet" uid="seriesSet" />
                 </inout>

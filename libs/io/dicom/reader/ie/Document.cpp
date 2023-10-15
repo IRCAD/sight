@@ -33,15 +33,15 @@ namespace sight::io::dicom::reader::ie
 //------------------------------------------------------------------------------
 
 Document::Document(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
-    const data::Image::sptr& image,
+    const data::image::sptr& image,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::Image>(dicomSeries, reader, instance, image,
+    io::dicom::reader::ie::InformationEntity<data::image>(dicomSeries, reader, instance, image,
                                                           logger, progress, cancel)
 {
 }

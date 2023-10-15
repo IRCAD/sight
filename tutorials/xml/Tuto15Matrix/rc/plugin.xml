@@ -5,26 +5,26 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>Tuto15Matrix_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Mesh object associated to the uid 'mesh' -->
-            <object uid="mesh" type="sight::data::Mesh" />
+            <object uid="mesh" type="sight::data::mesh" />
             <!-- Matrix object associated to the uid 'matrix' -->
-            <object uid="matrix" type="sight::data::Matrix4" />
+            <object uid="matrix" type="sight::data::matrix4" />
             <!-- Translation matrix object associated to the uid 'translationMatrix' -->
-            <object uid="translationMatrix" type="sight::data::Matrix4" />
+            <object uid="translationMatrix" type="sight::data::matrix4" />
             <!-- Rotation matrix object associated to the uid 'rotationMatrix' -->
-            <object uid="rotationMatrix" type="sight::data::Matrix4" />
-            <object uid="transRotMatrix" type="sight::data::Matrix4" />
-            <object uid="rotTransMatrix" type="sight::data::Matrix4" />
+            <object uid="rotationMatrix" type="sight::data::matrix4" />
+            <object uid="transRotMatrix" type="sight::data::matrix4" />
+            <object uid="rotTransMatrix" type="sight::data::matrix4" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>Tuto15Matrix</name>
@@ -39,7 +39,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::menu_bar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -50,7 +50,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+M" />
@@ -71,7 +71,7 @@
             It is possible to add a 'proportion' attribute for the <view> to defined the proportion
             used by the view compared to the others.
             -->
-            <service uid="containerView" type="sight::module::ui::SView">
+            <service uid="containerView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
@@ -85,7 +85,7 @@
                 </registry>
             </service>
 
-            <service uid="editorsView" type="sight::module::ui::SView">
+            <service uid="editorsView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
@@ -99,7 +99,7 @@
                 </registry>
             </service>
 
-            <service uid="matrixView" type="sight::module::ui::qt::viz::STransformEditor" autoConnect="false">
+            <service uid="matrixView" type="sight::module::ui::qt::viz::transform_editor" auto_connect="false">
                 <inout key="matrix" uid="matrix" />
                 <translation enabled="true" min="-300" />
                 <rotation enabled="true" min="-180" max="180" />
@@ -107,11 +107,11 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="sight::module::ui::com::SStarter">
+            <service uid="openMeshAct" type="sight::module::ui::com::starter">
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -119,7 +119,7 @@
             Mesh view:
             This scene display two meshes.
             -->
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -138,55 +138,55 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
                 <config priority="0" />
             </service>
 
             <!-- Mesh adaptors -->
-            <service uid="mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="mesh1Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="mesh" />
                 <config transform="transRotMat" />
             </service>
 
-            <service uid="mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="mesh2Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="mesh" />
                 <config transform="rotTransMat" />
             </service>
 
             <!--
             Defines transform adaptors:
-            This adaptor works on a sight::data::Matrix4 and manages a vtkTransform. When
-            the sight::data::Matrix4 is modified, it updates the vtkTransform, and vice
+            This adaptor works on a sight::data::matrix4 and manages a vtkTransform. When
+            the sight::data::matrix4 is modified, it updates the vtkTransform, and vice
             versa.
             -->
-            <service uid="matrix1Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true">
+            <service uid="matrix1Adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
                 <inout key="transform" uid="transRotMatrix" />
                 <config transform="transRotMat" />
             </service>
 
-            <service uid="matrix2Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true">
+            <service uid="matrix2Adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
                 <inout key="transform" uid="rotTransMatrix" />
                 <config transform="rotTransMat" />
             </service>
 
-            <service uid="axis1Adp" type="sight::module::viz::scene3d::adaptor::SAxis">
+            <service uid="axis1Adp" type="sight::module::viz::scene3d::adaptor::axis">
                 <config length="10" transform="transRotMat" label="false" origin="true" originColor="#6997BB" name="Base" />
             </service>
 
-            <service uid="axis2Adp" type="sight::module::viz::scene3d::adaptor::SAxis">
+            <service uid="axis2Adp" type="sight::module::viz::scene3d::adaptor::axis">
                 <config length="10" transform="rotTransMat" label="false" origin="true" originColor="#D25252" />
             </service>
 
-            <service uid="originAxisAdp" type="sight::module::viz::scene3d::adaptor::SAxis">
+            <service uid="originAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
                 <config length="10" label="false" origin="true" originColor="#000000" />
             </service>
 
-            <service uid="text1Adp" type="sight::module::viz::scene3d::adaptor::SText">
+            <service uid="text1Adp" type="sight::module::viz::scene3d::adaptor::text">
                 <text>Translation-Rotation transform</text>
                 <config color="#FF0000" fontSize="15" hAlign="left" vAlign="bottom" />
             </service>
 
-            <service uid="text2Adp" type="sight::module::viz::scene3d::adaptor::SText">
+            <service uid="text2Adp" type="sight::module::viz::scene3d::adaptor::text">
                 <text>Rotation-Translation transform</text>
                 <config color="#00FF00" fontSize="15" hAlign="right" vAlign="bottom" />
             </service>
@@ -194,7 +194,7 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector">
+            <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
@@ -203,14 +203,14 @@
             Defines matrixDecomposerAdp service:
             This service decompose a matrix into a rotation matrix and a translation matrix
             -->
-            <service uid="matrixDecomposerAdp" type="sight::module::geometry::SDecomposeMatrix">
-                <in key="source" uid="matrix" autoConnect="true" />
+            <service uid="matrixDecomposerAdp" type="sight::module::geometry::decompose_matrix">
+                <in key="source" uid="matrix" auto_connect="true" />
                 <inout key="translation" uid="translationMatrix" />
                 <inout key="rotation" uid="rotationMatrix" />
             </service>
 
             <!-- to multiply matrices -->
-            <service uid="concatenateTranslationAndRotationArv" type="sight::module::geometry::SConcatenateMatrices" autoConnect="true">
+            <service uid="concatenateTranslationAndRotationArv" type="sight::module::geometry::concatenate_matrices" auto_connect="true">
                 <in group="matrix">
                     <key uid="translationMatrix" />
                     <key uid="rotationMatrix" />
@@ -219,7 +219,7 @@
             </service>
 
             <!-- to multiply matrices -->
-            <service uid="concatenateRotationAndTranslationSrv" type="sight::module::geometry::SConcatenateMatrices" autoConnect="true">
+            <service uid="concatenateRotationAndTranslationSrv" type="sight::module::geometry::concatenate_matrices" auto_connect="true">
                 <in group="matrix">
                     <key uid="rotationMatrix" />
                     <key uid="translationMatrix" />
@@ -227,7 +227,7 @@
                 <inout key="output" uid="rotTransMatrix" />
             </service>
 
-            <service uid="shhowMeshSrv" type="sight::module::ui::qt::SParameters">
+            <service uid="shhowMeshSrv" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <param type="bool" name="Show/Hide Mesh" key="boolParam" defaultValue="true" />
                 </parameters>

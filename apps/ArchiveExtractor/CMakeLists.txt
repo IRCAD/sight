@@ -3,7 +3,7 @@ sight_add_target(ArchiveExtractor TYPE APP)
 add_dependencies(
     ArchiveExtractor
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     module_ui_flaticons
@@ -17,6 +17,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES ArchiveExtractor_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES ArchiveExtractor_AppCfg)
 
 sight_generate_profile(ArchiveExtractor)

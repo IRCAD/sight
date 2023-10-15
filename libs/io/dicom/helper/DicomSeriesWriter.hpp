@@ -26,7 +26,7 @@
 
 #include <core/location/single_folder.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 #include <string>
 
@@ -41,7 +41,7 @@ class base;
 namespace sight::data
 {
 
-class DicomSeries;
+class dicom_series;
 
 } // namespace sight::data
 
@@ -66,14 +66,14 @@ class DicomAnonymizer;
  * If the DicomSeries contains the binaries of the DICOM files, the files are extracted (or zipped).
  * If the DicomSeries contains the paths of the DICOM files, a simple copy (or zip) is performed.
  */
-class IO_DICOM_CLASS_API DicomSeriesWriter : public io::writer::GenericObjectWriter<data::DicomSeries>,
+class IO_DICOM_CLASS_API DicomSeriesWriter : public io::writer::generic_object_writer<data::dicom_series>,
                                              public core::location::single_folder
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         DicomSeriesWriter,
-        io::writer::GenericObjectWriter<data::DicomSeries>,
+        io::writer::generic_object_writer<data::dicom_series>,
         io::writer::factory::make<DicomSeriesWriter>
     );
 

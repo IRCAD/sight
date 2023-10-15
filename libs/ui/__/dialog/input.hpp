@@ -37,7 +37,7 @@ namespace sight::ui::dialog
    ui::dialog::input inputDlg;
    inputDlg.setTitle("Identification dialog");
    inputDlg.setMessage("Enter Pin Code: ");
-   inputDlg.setInput ("<Enter your code here>");
+   inputDlg.set_input ("<Enter your code here>");
    std::string inputText = inputDlg.getInput();
    @endcode
  */
@@ -69,7 +69,7 @@ public:
        ui::dialog::input inputDlg;
        inputDlg.setTitle("Identification dialog");
        inputDlg.setMessage("Enter Pin Code: ");
-       inputDlg.setInput ("<Enter your code here>");
+       inputDlg.set_input ("<Enter your code here>");
        std::string inputText = inputDlg.getInput();
        @endcode
      */
@@ -102,7 +102,7 @@ public:
     UI_API void setEchoMode(EchoMode echoMode) override;
 
     /// Set the input text in the input field
-    UI_API void setInput(const std::string& text) override;
+    UI_API void set_input(const std::string& text) override;
 
     /// Get the input text in the input field
     UI_API std::pair<std::string, bool> getInput() override;

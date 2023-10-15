@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "helper.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 namespace sight::io::itk::ut::helper
 {
@@ -36,9 +36,9 @@ double tolerance(double num)
 
 //------------------------------------------------------------------------------
 
-void roundSpacing(data::Image::sptr image)
+void roundSpacing(data::image::sptr image)
 {
-    data::Image::Spacing spacing = image->getSpacing();
+    data::image::Spacing spacing = image->getSpacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image->setSpacing(spacing);
 }

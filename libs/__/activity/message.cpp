@@ -26,8 +26,8 @@
 
 #include <core/tools/uuid.hpp>
 
-#include <data/Composite.hpp>
-#include <data/String.hpp>
+#include <data/composite.hpp>
+#include <data/string.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 
@@ -39,8 +39,8 @@ namespace sight::activity
 //-----------------------------------------------------------------------------
 
 message::message(
-    const data::Activity::sptr& activity,
-    const activity::extension::ActivityInfo& info,
+    const data::activity::sptr& activity,
+    const activity::extension::activity_info& info,
     const ParametersType& parameters
 ) :
     m_title(info.title),
@@ -53,7 +53,7 @@ message::message(
 {
     SIGHT_ASSERT("Activity instantiation failed", activity);
 
-    m_replacementMap = sight::activity::extension::Activity::getDefault()->getReplacementMap(
+    m_replacementMap = sight::activity::extension::activity::getDefault()->getReplacementMap(
         *activity,
         info,
         parameters

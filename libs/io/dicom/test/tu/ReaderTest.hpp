@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,10 +75,10 @@ public:
     /// Read Enhanced US Volume Storage
     static void readEnhancedUSVolumeTest();
 
-    /// Read Ultrasound Image Storage
+    /// Read Ultrasound image Storage
     static void readUltrasoundImageTest();
 
-    /// Read Ultrasound Multi-frame Image Storage
+    /// Read Ultrasound Multi-frame image Storage
     static void readUltrasoundMultiframeImageTest();
 };
 

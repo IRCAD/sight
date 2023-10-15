@@ -7,4 +7,4 @@ target_include_directories(module_ui_vizTest PRIVATE ${CMAKE_BINARY_DIR}/modules
 
 add_dependencies(module_ui_vizTest data geometry_data module_service module_ui module_ui_viz)
 
-target_link_libraries(module_ui_vizTest PUBLIC core utestData viz_scene3d)
+target_link_libraries(module_ui_vizTest PUBLIC core utest_data viz_scene3d)

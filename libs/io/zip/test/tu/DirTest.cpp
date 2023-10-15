@@ -27,7 +27,7 @@
 #include <io/zip/ReadDirArchive.hpp>
 #include <io/zip/WriteDirArchive.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <filesystem>
 
@@ -92,7 +92,7 @@ void DirTest::putFileTest()
 
     const std::filesystem::path testDir = "test";
     //cspell: ignore makao
-    const std::filesystem::path testFile = utestData::Data::dir() / "sight/image/jpg/makao01.jpg";
+    const std::filesystem::path testFile = utest_data::Data::dir() / "sight/image/jpg/makao01.jpg";
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + testFile.string() + "' does not exist",
         std::filesystem::exists(testFile)

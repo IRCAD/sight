@@ -21,8 +21,8 @@
 
 #include "DicomSurfaceTest.hpp"
 
-#include <data/Mesh.hpp>
-#include <data/Reconstruction.hpp>
+#include <data/mesh.hpp>
+#include <data/reconstruction.hpp>
 
 #include <io/dicom/container/DicomSurface.hpp>
 
@@ -35,8 +35,8 @@ namespace sight::io::dicom::container::ut
 
 void DicomSurfaceTest::basicTest()
 {
-    auto mesh = std::make_shared<data::Mesh>();
-    mesh->reserve(4, 3, data::Mesh::CellType::TRIANGLE, data::Mesh::Attributes::POINT_NORMALS);
+    auto mesh = std::make_shared<data::mesh>();
+    mesh->reserve(4, 3, data::mesh::CellType::TRIANGLE, data::mesh::Attributes::POINT_NORMALS);
     {
         auto meshLock = mesh->dump_lock();
         mesh->pushPoint(0, 1, 2);
@@ -51,7 +51,7 @@ void DicomSurfaceTest::basicTest()
         mesh->pushCell(3, 0, 1);
         mesh->pushCell(2, 3, 0);
     }
-    auto reconstruction = std::make_shared<data::Reconstruction>();
+    auto reconstruction = std::make_shared<data::reconstruction>();
     reconstruction->setMesh(mesh);
     auto meshLock = mesh->dump_lock(); // TODO: Fix failure because mesh isn't dump locked.
     DicomSurface dicomSurface(reconstruction);

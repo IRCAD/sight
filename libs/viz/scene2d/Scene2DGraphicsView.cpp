@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "Scene2DGraphicsView.hpp"
 
-#include "viz/scene2d/SRender.hpp"
+#include "viz/scene2d/render.hpp"
 
 #include <QMouseEvent>
 
@@ -48,7 +48,7 @@ Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget)
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::setSceneRender(viz::scene2d::SRender::sptr sceneRender)
+void Scene2DGraphicsView::setSceneRender(viz::scene2d::render::sptr sceneRender)
 {
     m_scene2DRender = sceneRender;
 }

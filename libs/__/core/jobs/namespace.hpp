@@ -158,7 +158,7 @@
 
             writer->setProgressCallback( runningJob.progress_callback() );
 
-            writer->setObject(mesh);
+            writer->set_object(mesh);
             writer->set_file("file.vtk"));
             writer->write();
         },

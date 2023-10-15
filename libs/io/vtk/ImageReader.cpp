@@ -43,7 +43,7 @@ namespace sight::io::vtk
 //------------------------------------------------------------------------------
 
 ImageReader::ImageReader() :
-    m_job(std::make_shared<core::jobs::observer>("VTK Image reader"))
+    m_job(std::make_shared<core::jobs::observer>("VTK image reader"))
 {
 }
 
@@ -61,7 +61,7 @@ void ImageReader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::Image::sptr pImage = getConcreteObject();
+    data::image::sptr pImage = getConcreteObject();
 
     vtkSmartPointer<vtkGenericDataObjectReader> reader = vtkSmartPointer<vtkGenericDataObjectReader>::New();
     reader->SetFileName(this->get_file().string().c_str());
@@ -98,7 +98,7 @@ void ImageReader::read()
     }
     catch(std::exception& e)
     {
-        SIGHT_THROW("VTKImage to data::Image failed " << e.what());
+        SIGHT_THROW("VTKImage to data::image failed " << e.what());
     }
 }
 

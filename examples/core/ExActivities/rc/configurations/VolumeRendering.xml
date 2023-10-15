@@ -1,5 +1,5 @@
 <!-- This configuration allows to read an image and display it in a simple scene -->
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>VolumeRendering</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -9,14 +9,14 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
-        <object uid="tf" type="sight::data::TransferFunction" />
-        <object uid="mask" type="sight::data::Image" />
-        <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
+        <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
+        <object uid="tf" type="sight::data::transfer_function" />
+        <object uid="mask" type="sight::data::image" />
+        <object uid="extrudedModelSeries" type="sight::data::model_series" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SView">
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -33,7 +33,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::tool_bar">
             <gui>
                 <layout>
                     <menuItem name="Import image" icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -46,16 +46,16 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="sight::module::ui::io::SSelector">
+        <service uid="importAct" type="sight::module::ui::io::selector">
             <inout key="data" uid="${imageSeries}" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::vtk::SImageReader" />
+            <addSelection service="sight::module::io::vtk::image_reader" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="imageScene" type="sight::viz::scene3d::SRender">
+        <service uid="imageScene" type="sight::viz::scene3d::render">
             <scene>
                 <background color="#36393E" />
                 <layer id="default" order="1" >
@@ -65,24 +65,24 @@
             </scene>
         </service>
 
-        <service uid="cameraInteractorAdaptor" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+        <service uid="cameraInteractorAdaptor" type="sight::module::viz::scene3d::adaptor::trackball_camera">
             <config priority="0" />
         </service>
 
-        <service uid="volumeRender" type="sight::module::viz::scene3d::adaptor::SVolumeRender">
+        <service uid="volumeRender" type="sight::module::viz::scene3d::adaptor::volume_render">
             <in key="image" uid="${imageSeries}" />
             <in key="tf" uid="tf" />
             <in key="mask" uid="mask" />
             <config widgets="true" preintegration="false" autoresetcamera="true" />
         </service>
 
-        <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" worker="EXTRUSION_THREAD">
+        <service uid="imageExtruderSrv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION_THREAD">
             <in key="meshes" uid="extrudedModelSeries" />
             <in key="image" uid="${imageSeries}" />
             <inout key="mask" uid="mask" />
         </service>
 
-        <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction">
+        <service uid="tfm" type="sight::module::ui::qt::image::transfer_function">
             <inout key="tf" uid="tf" />
             <in key="image" uid="${imageSeries}" />
         </service>

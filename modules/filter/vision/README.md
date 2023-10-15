@@ -6,12 +6,12 @@ This module uses **OpenCV** & **Realsense** libraries.
 
 ## Services
 
-- **SColourImageMasking**: learns a foreground and background color model and allows to segment the foreground.
-- **SDepthImageMasking**: learns a background depth image in a mask to perform a depth difference and output the foreground.
-- **SOpticalFlow**: computes optical flow (Lukas-Kanade) to detect if camera is moving or not.
-- **SPointCloudFromDepthMap**: computes a point cloud from a depth map obtained from an RGBD camera. Optionally, combines it with an RGB map to get a colored point cloud.
-- **STransformDepthMap2mm**: applies a scale on a depth map image.
-- **STransformDepthTL2mm**: applies a scale on a depth map buffer extracted from a timeline.
+- **colour_image_masking**: learns a foreground and background color model and allows to segment the foreground.
+- **depth_image_masking**: learns a background depth image in a mask to perform a depth difference and output the foreground.
+- **optical_flow**: computes optical flow (Lukas-Kanade) to detect if camera is moving or not.
+- **point_cloud_from_depth_map**: computes a point cloud from a depth map obtained from an RGBD camera. Optionally, combines it with an RGB map to get a colored point cloud.
+- **transform_depth_map2mm**: applies a scale on a depth map image.
+- **transform_depth_tl2mm**: applies a scale on a depth map buffer extracted from a timeline.
 
 ## How to use it
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <data/Material.hpp>
-#include <data/Mesh.hpp>
+#include <data/material.hpp>
+#include <data/mesh.hpp>
 
 #include <OGRE/OgreTechnique.h>
 
@@ -80,7 +80,7 @@ public:
      * @param[in] _diffuseTexture is diffuse texture bound ?
      */
     VIZ_SCENE3D_API static std::string getPermutation(
-        data::Material::ShadingType _mode,
+        data::material::ShadingType _mode,
         bool _diffuseTexture,
         bool _vertexColor
     );
@@ -93,7 +93,7 @@ public:
      * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
      */
     VIZ_SCENE3D_API static std::string getR2VBGeometryProgramName(
-        data::Mesh::CellType _primitiveType,
+        data::mesh::CellType _primitiveType,
         bool _diffuseTexture,
         bool _vertexColor,
         bool _hasPrimitiveColor
@@ -152,7 +152,7 @@ public:
      * @param[in] _type type of the shader parameter
      * @param[in] _value value of the shader parameter
      */
-    VIZ_SCENE3D_API static SPTR(data::Object) createObjectFromShaderParameter(
+    VIZ_SCENE3D_API static SPTR(data::object) createObjectFromShaderParameter(
         Ogre::GpuConstantType _type,
         ConstantValueType _value
     );

@@ -1,7 +1,7 @@
 <plugin id="sight::module::filter::point" library="true" >
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::service::registerer</type>
-         <service>sight::module::filter::point::SPointListRegistration</service>
+         <service>sight::module::filter::point::point_list_registration</service>
          <desc>Register a point list against a reference point list. Each point in the list to register is matched</desc>
     </extension>
 </plugin>

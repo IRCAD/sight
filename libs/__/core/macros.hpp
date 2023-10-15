@@ -110,8 +110,8 @@
 /**
  * @brief Generate virtual methods that return classname/namespace strings
  *
- * Example: for data::Object,
- * - Classname is data::Object
+ * Example: for data::object,
+ * - Classname is data::object
  * - LeafClassname is Object
  */
 #define __FWCORE_INTERFACE_MACRO() \
@@ -140,8 +140,8 @@
 /**
  * @brief Generate virtual methods that return classname/namespace strings
  *
- * Example: for data::Object,
- * - Classname is data::Object
+ * Example: for data::object,
+ * - Classname is data::object
  * - LeafClassname is Object
  */
 #define __FWCORE_CLASSNAME_MACRO() \
@@ -172,8 +172,8 @@
  * (or a topclass of) 'this' type
  *
  * Example:
- * data::Image::IsTypeOf("data::Object") is true
- * image->is_a("data::Object") is true
+ * data::image::IsTypeOf("data::object") is true
+ * image->is_a("data::object") is true
  *
  */
 #define __FWCORE_TYPE_1(_class) \

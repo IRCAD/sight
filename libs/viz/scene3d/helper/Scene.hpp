@@ -23,7 +23,7 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/SRender.hpp"
+#include "viz/scene3d/render.hpp"
 
 #include <OGRE/OgreSceneNode.h>
 
@@ -41,7 +41,7 @@ public:
      * @return the Ogre scene node, null if not found
      */
     VIZ_SCENE3D_API static Ogre::SceneNode* getNodeById(
-        viz::scene3d::SRender::OgreObjectIdType _nodeId,
+        viz::scene3d::render::OgreObjectIdType _nodeId,
         Ogre::SceneNode* _sceneNode
     );
 

@@ -26,7 +26,7 @@
 #include "ui/qt/App.hpp"
 #include "ui/qt/container/widget.hpp"
 
-#include <data/tools/Color.hpp>
+#include <data/tools/color.hpp>
 
 #include <ui/__/macros.hpp>
 
@@ -59,7 +59,7 @@ void toolbar::createToolBar(ui::container::widget::sptr parent)
     if(!m_backgroundColor.empty())
     {
         std::array<std::uint8_t, 4> rgba {};
-        data::tools::Color::hexaStringToRGBA(m_backgroundColor, rgba);
+        data::tools::color::hexaStringToRGBA(m_backgroundColor, rgba);
         std::stringstream ss;
         ss << "QToolBar { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
         << static_cast<std::int16_t>(rgba[1]) << ','

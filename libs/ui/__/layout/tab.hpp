@@ -73,7 +73,7 @@ public:
      *
      * Example of configuration with Tab layout.
      * @code{.xml}
-       <service uid="subView3" type="sight::module::ui::SView" autoConnect="false" >
+       <service uid="subView3" type="sight::module::ui::view" auto_connect="false" >
            <gui>
                <layout type="ui::layout::tab" >
                    <view caption="TabView1" />

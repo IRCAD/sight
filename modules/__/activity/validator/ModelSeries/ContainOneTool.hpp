@@ -52,7 +52,7 @@ public:
      * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
      * @see module::activity::validator::base::validate
      */
-    MODULE_ACTIVITY_API sight::activity::validator::return_t validate(const CSPTR(data::Object)& currentObject) const
+    MODULE_ACTIVITY_API sight::activity::validator::return_t validate(const CSPTR(data::object)& currentObject) const
     override;
 };
 

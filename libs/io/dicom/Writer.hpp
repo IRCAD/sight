@@ -28,14 +28,14 @@
 #include <core/location/single_folder.hpp>
 #include <core/tools/progress_adviser.hpp>
 
-#include <data/SeriesSet.hpp>
+#include <data/series_set.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 namespace sight::io::dicom
 {
 
-class IO_DICOM_CLASS_API Writer final : public io::writer::GenericObjectWriter<data::SeriesSet>,
+class IO_DICOM_CLASS_API Writer final : public io::writer::generic_object_writer<data::series_set>,
                                         public core::location::single_folder,
                                         public core::location::single_file,
                                         public core::tools::progress_adviser
@@ -44,7 +44,7 @@ public:
 
     SIGHT_DECLARE_CLASS(
         Writer,
-        io::writer::GenericObjectWriter<data::SeriesSet>,
+        io::writer::generic_object_writer<data::series_set>,
         io::writer::factory::make<Writer>
     );
 
@@ -60,7 +60,7 @@ public:
     IO_DICOM_API Writer();
     IO_DICOM_API ~Writer() noexcept override;
 
-    /// Main writing method from GenericObjectWriter
+    /// Main writing method from generic_object_writer
     IO_DICOM_API void write() override;
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid

@@ -139,7 +139,7 @@ private:
     template<typename W>
     inline static void read(
         std::unique_ptr<W>& backend,
-        data::Image& image,
+        data::image& image,
         std::istream& istream,
         Flag flag = Flag::NONE
 )

@@ -24,16 +24,16 @@
 
 #include "io/dicom/reader/ie/Equipment.hpp"
 #include "io/dicom/reader/ie/Patient.hpp"
-#include "io/dicom/reader/ie/Series.hpp"
+#include "io/dicom/reader/ie/series.hpp"
 #include "io/dicom/reader/ie/Study.hpp"
 #include "io/dicom/reader/ie/Surface.hpp"
 
 #include <core/runtime/path.hpp>
 
-#include <data/Boolean.hpp>
-#include <data/Mesh.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/Reconstruction.hpp>
+#include <data/boolean.hpp>
+#include <data/mesh.hpp>
+#include <data/model_series.hpp>
+#include <data/reconstruction.hpp>
 
 #include <gdcmSegmentReader.h>
 #include <gdcmSurfaceHelper.h>
@@ -48,7 +48,7 @@ namespace sight::io::dicom::reader::iod
 //------------------------------------------------------------------------------
 
 SurfaceSegmentationIOD::SurfaceSegmentationIOD(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
@@ -65,16 +65,16 @@ SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 
 //------------------------------------------------------------------------------
 
-void SurfaceSegmentationIOD::read(data::Series::sptr series)
+void SurfaceSegmentationIOD::read(data::series::sptr series)
 {
-    data::ModelSeries::sptr modelSeries = std::dynamic_pointer_cast<data::ModelSeries>(series);
+    data::model_series::sptr modelSeries = std::dynamic_pointer_cast<data::model_series>(series);
     SIGHT_ASSERT("ModelSeries should not be null.", modelSeries);
 
     // Create GDCM Reader
     SPTR(gdcm::SurfaceReader) reader = std::make_shared<gdcm::SurfaceReader>();
 
     // Dicom container
-    data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
+    data::dicom_series::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
     if(dicomContainer.size() > 1)
     {
         m_logger->warning(
@@ -104,7 +104,7 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
                                              m_progressCallback, m_cancelRequestedCallback);
     io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                          m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
+    io::dicom::reader::ie::series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                            m_progressCallback, m_cancelRequestedCallback);
     // Use Image as frame of reference
     io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series, m_logger,
@@ -154,7 +154,7 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
     surfaceIE.readSurfaceSegmentationAndSurfaceMeshModules();
 
     // Display reconstructions
-    series->setField("ShowReconstructions", std::make_shared<data::Boolean>(true));
+    series->setField("ShowReconstructions", std::make_shared<data::boolean>(true));
 }
 
 //------------------------------------------------------------------------------

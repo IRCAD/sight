@@ -7,7 +7,7 @@ foreach(LINE ${PLUGIN_CONTENT})
 
     if(NOT FOUND_EXTENSION)
         # Look for service extension
-        if("${LINE}" MATCHES "<extension implements=\"(::)?sight::service::extension::Factory\" *>")
+        if("${LINE}" MATCHES "<extension implements=\"(::)?sight::service::extension::factory\" *>")
             set(FOUND_EXTENSION ON)
             set(OBJECTS "")
         endif()

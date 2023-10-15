@@ -30,11 +30,11 @@ and de-serialization function, stored in a separated header file (all of them ar
 ### Writing
 
 ```c++
-    auto object = sight::data::String::New("Sample");
+    auto object = sight::data::string::New("Sample");
     auto sessionWriter = io::session::SessionWriter::New();
 
     // Configure the session writer
-    sessionWriter->setObject(object);
+    sessionWriter->set_object(object);
     sessionWriter->setFile("Sample.zip");
 
     // Setting a password means the session will be encrypted

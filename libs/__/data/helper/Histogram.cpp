@@ -39,7 +39,7 @@ struct ComputeHistogramFunctor
     /// Parameters of the functor.
     struct Parameter
     {
-        data::Image::csptr image;
+        data::image::csptr image;
         double binsWidth {};
         std::vector<double> o_histogram;
         double o_min {std::numeric_limits<double>::max()};
@@ -52,7 +52,7 @@ struct ComputeHistogramFunctor
 
     template<class T>
     static void countPixels(
-        const data::Image::const_iterator<T>& imgBegin,
+        const data::image::const_iterator<T>& imgBegin,
         vector_t& values,
         T min,
         double invBinsWidth,
@@ -61,8 +61,8 @@ struct ComputeHistogramFunctor
         std::size_t i
 )
     {
-        const data::Image::const_iterator<T> begin = imgBegin + regionMin;
-        const data::Image::const_iterator<T> end   = imgBegin + regionMax;
+        const data::image::const_iterator<T> begin = imgBegin + regionMin;
+        const data::image::const_iterator<T> end   = imgBegin + regionMax;
         for(auto itr = begin ; itr != end ; ++itr)
         {
             const auto index = static_cast<std::size_t>(static_cast<double>(*itr - min) * invBinsWidth);
@@ -75,7 +75,7 @@ struct ComputeHistogramFunctor
     template<class IMAGETYPE>
     void operator()(Parameter& param)
     {
-        data::Image::csptr image = param.image;
+        data::image::csptr image = param.image;
 
         const auto dumpLock = image->dump_lock();
 

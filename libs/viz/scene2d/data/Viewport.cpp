@@ -31,12 +31,12 @@ namespace sight::viz::scene2d::data
 
 //------------------------------------------------------------------------------
 
-void Viewport::shallow_copy(const sight::data::Object::csptr& source)
+void Viewport::shallow_copy(const sight::data::object::csptr& source)
 {
     const auto& other = std::dynamic_pointer_cast<const Viewport>(source);
 
     SIGHT_THROW_EXCEPTION_IF(
-        sight::data::Exception(
+        sight::data::exception(
             "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),
@@ -54,14 +54,14 @@ void Viewport::shallow_copy(const sight::data::Object::csptr& source)
 //------------------------------------------------------------------------------
 
 void Viewport::deep_copy(
-    const sight::data::Object::csptr& source,
-    const std::unique_ptr<sight::data::Object::DeepCopyCacheType>& cache
+    const sight::data::object::csptr& source,
+    const std::unique_ptr<sight::data::object::deep_copy_cache_t>& cache
 )
 {
     const auto& other = std::dynamic_pointer_cast<const Viewport>(source);
 
     SIGHT_THROW_EXCEPTION_IF(
-        sight::data::Exception(
+        sight::data::exception(
             "Unable to copy " + (source ? source->get_classname() : std::string("<NULL>"))
             + " to " + get_classname()
         ),

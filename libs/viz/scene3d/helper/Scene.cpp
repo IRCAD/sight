@@ -22,7 +22,7 @@
 
 #include "viz/scene3d/helper/Scene.hpp"
 
-#include "Camera.hpp"
+#include "camera.hpp"
 
 #include <stack>
 
@@ -32,7 +32,7 @@ namespace sight::viz::scene3d::helper
 //------------------------------------------------------------------------------
 
 Ogre::SceneNode* Scene::getNodeById(
-    viz::scene3d::SRender::OgreObjectIdType _nodeId,
+    viz::scene3d::render::OgreObjectIdType _nodeId,
     Ogre::SceneNode* _sceneNode
 )
 {
@@ -133,7 +133,7 @@ std::pair<Ogre::Vector2, Ogre::Vector2> Scene::computeBoundingRect(
     const Ogre::AxisAlignedBox boundingBox = computeBoundingBox(rootSceneNode);
     if(!boundingBox.isFinite())
     {
-        const Ogre::Vector2 screenPos = Camera::convertWorldSpaceToScreenSpace(
+        const Ogre::Vector2 screenPos = camera::convertWorldSpaceToScreenSpace(
             camera,
             rootSceneNode->_getDerivedPosition()
         );
@@ -148,7 +148,7 @@ std::pair<Ogre::Vector2, Ogre::Vector2> Scene::computeBoundingRect(
         cornersScreenPos.begin(),
         [&camera](const Ogre::Vector3& worldPos)
         {
-            return sight::viz::scene3d::helper::Camera::convertWorldSpaceToScreenSpace(camera, worldPos);
+            return sight::viz::scene3d::helper::camera::convertWorldSpaceToScreenSpace(camera, worldPos);
         });
     std::array<float, NB_CORNERS> screenX {};
     std::array<float, NB_CORNERS> screenY {};

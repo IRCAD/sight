@@ -25,7 +25,7 @@
 #include "viz/scene2d/config.hpp"
 #include "viz/scene2d/data/Axis.hpp"
 #include "viz/scene2d/data/Event.hpp"
-#include "viz/scene2d/SRender.hpp"
+#include "viz/scene2d/render.hpp"
 
 #include <service/base.hpp>
 
@@ -48,7 +48,7 @@ public:
     VIZ_SCENE2D_API float getZValue() const;
 
     /// Get the render that manages the adaptor.
-    VIZ_SCENE2D_API SPTR(viz::scene2d::SRender) getScene2DRender() const;
+    VIZ_SCENE2D_API SPTR(viz::scene2d::render) getScene2DRender() const;
 
     /// Interact with the mouse events catched on the adaptor
     /// (virtual function, its behavior is only defined in the specific adaptors).

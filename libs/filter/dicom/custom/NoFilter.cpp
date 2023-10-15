@@ -50,7 +50,7 @@ std::string NoFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 NoFilter::DicomSeriesContainerType NoFilter::apply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr&
     /*logger*/
 )

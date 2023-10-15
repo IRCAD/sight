@@ -33,9 +33,9 @@ namespace sight::module::service
 struct plugin : public core::runtime::plugin
 {
     /// Destructor. Do nothing.
-    ~plugin() noexcept override;
+    ~plugin() noexcept override = default;
 
-    /// Overrides start method. Service declarations (services declared in fwServices libraries ).
+    /// Overrides start method. Service declarations (services declared in 'service' library ).
     void start() override;
 
     /// Overrides stop method. Do nothing

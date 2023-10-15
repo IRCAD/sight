@@ -10,7 +10,7 @@
     <xi:include href="configurations/SightCalibratorActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/SightCalibratorBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>SightCalibratorActivitySelector_Activity</id>
         <title>Activity selector</title>
         <desc>Activity selector for SightCalibrator</desc>
@@ -21,7 +21,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfigParameters">
+    <extension implements="sight::app::extension::parameters">
         <id>SightCalibrator_AppCfgParam</id>
         <parameters>
             <param name="APP_NAME" value="SightCalibrator" />

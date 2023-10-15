@@ -1,5 +1,5 @@
 <!-- This configuration allows to read an image and display it in a simple scene -->
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>ExActivities_ImageReading_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -10,11 +10,11 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
+        <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SView">
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -29,22 +29,22 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="sight::module::ui::io::SSelector">
+        <service uid="importAct" type="sight::module::ui::io::selector">
             <inout key="data" uid="${imageSeries}" />
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::vtk::SImageReader" />
+            <addSelection service="sight::module::io::vtk::image_reader" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="imageScene" type="sight::module::viz::sample::SImage" autoConnect="true">
+        <service uid="imageScene" type="sight::module::viz::sample::image" auto_connect="true">
             <in key="image" uid="${imageSeries}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <!-- The channel is used to call "SSequencer::checkNext" slot, to enable the next activity when the image is loaded. -->
+        <!-- The channel is used to call "sequencer::checkNext" slot, to enable the next activity when the image is loaded. -->
         <connect channel="${validationChannel}">
             <signal>${imageSeries}/modified</signal>
         </connect>

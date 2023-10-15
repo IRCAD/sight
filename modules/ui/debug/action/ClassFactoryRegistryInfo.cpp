@@ -24,7 +24,7 @@
 
 #include <core/base.hpp>
 
-#include <service/extension/Factory.hpp>
+#include <service/extension/factory.hpp>
 #include <service/macros.hpp>
 
 #include <QHBoxLayout>
@@ -49,12 +49,11 @@ void ClassFactoryRegistryInfo::updating()
     m_tree->clearSelection();
     m_tree->clear();
 
-    using ServiceRegistry = service::extension::Factory;
-    const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->get_factory_keys();
+    const auto& factoryKeys = service::extension::factory::get()->get_factory_keys();
 
-    for(const ServiceRegistry::KeyVectorType::value_type& key : factoryKeys)
+    for(const auto& key : factoryKeys)
     {
-        const auto objImpl = ServiceRegistry::getDefault()->getServiceObjects(key);
+        const auto objImpl = service::extension::factory::get()->getServiceObjects(key);
         auto* srvItem      = new QTreeWidgetItem();
         srvItem->setText(0, QString::fromStdString(key));
         srvItem->setText(1, QString::fromStdString(objImpl[0]));

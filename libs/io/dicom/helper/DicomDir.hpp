@@ -33,7 +33,7 @@
 namespace sight::data
 {
 
-class DicomSeries;
+class dicom_series;
 
 } // namespace sight::data
 
@@ -75,7 +75,7 @@ public:
      */
     IO_DICOM_API static void retrieveDicomSeries(
         const std::filesystem::path& dicomdir,
-        std::vector<SPTR(data::DicomSeries)>& series_set,
+        std::vector<SPTR(data::dicom_series)>& series_set,
         const SPTR(core::log::logger)& logger,
         std::function<void(std::uint64_t)> progress = nullptr,
         std::function<bool()> cancel                = nullptr

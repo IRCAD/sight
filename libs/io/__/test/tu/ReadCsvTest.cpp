@@ -22,7 +22,7 @@
 
 #include "ReadCsvTest.hpp"
 
-#include "io/__/reader/CsvReader.hpp"
+#include "io/__/reader/csv_reader.hpp"
 
 #include <core/exception.hpp>
 
@@ -67,10 +67,10 @@ void ReadCsvTest::tearDown()
 
 void ReadCsvTest::test_inexistenceCsv()
 {
-    CPPUNIT_ASSERT_NO_THROW(io::reader::CsvReader csvReader(m_validCRLFCsvDirectoryPath));
-    CPPUNIT_ASSERT_NO_THROW(io::reader::CsvReader csvReader(m_validLFCsvDirectoryPath));
-    CPPUNIT_ASSERT_NO_THROW(io::reader::CsvReader csvReader(m_invalidCsvDirectoryPath));
-    CPPUNIT_ASSERT_THROW(io::reader::CsvReader csvReader(m_wrongFilepathDirectory), core::exception);
+    CPPUNIT_ASSERT_NO_THROW(io::reader::csv_reader csv_reader(m_validCRLFCsvDirectoryPath));
+    CPPUNIT_ASSERT_NO_THROW(io::reader::csv_reader csv_reader(m_validLFCsvDirectoryPath));
+    CPPUNIT_ASSERT_NO_THROW(io::reader::csv_reader csv_reader(m_invalidCsvDirectoryPath));
+    CPPUNIT_ASSERT_THROW(io::reader::csv_reader csv_reader(m_wrongFilepathDirectory), core::exception);
 }
 
 //------------------------------------------------------------------------------
@@ -78,10 +78,10 @@ void ReadCsvTest::test_inexistenceCsv()
 void ReadCsvTest::test_validCRLFCsv()
 {
     // cspell: disable
-    io::reader::CsvReader csvReader(m_validCRLFCsvDirectoryPath);
-    io::reader::CsvReader::TokenContainerType tokenVec;
+    io::reader::csv_reader csv_reader(m_validCRLFCsvDirectoryPath);
+    io::reader::csv_reader::TokenContainerType tokenVec;
 
-    tokenVec = csvReader.getLine();
+    tokenVec = csv_reader.getLine();
     CPPUNIT_ASSERT("1" == tokenVec[0]);
     CPPUNIT_ASSERT("Eldon Base" == tokenVec[1]);
     CPPUNIT_ASSERT("platinum" == tokenVec[2]);
@@ -96,7 +96,7 @@ void ReadCsvTest::test_validCRLFCsv()
     CPPUNIT_ASSERT(tokenVec[11].empty());
     CPPUNIT_ASSERT(12 == tokenVec.size());
 
-    tokenVec = csvReader.getLine();
+    tokenVec = csv_reader.getLine();
     CPPUNIT_ASSERT("2" == tokenVec[0]);
     CPPUNIT_ASSERT("Eldon Base for stackable storage" == tokenVec[1]);
     CPPUNIT_ASSERT("plati" == tokenVec[2]);
@@ -110,7 +110,7 @@ void ReadCsvTest::test_validCRLFCsv()
     CPPUNIT_ASSERT(tokenVec[10].empty());
     CPPUNIT_ASSERT(11 == tokenVec.size());
 
-    tokenVec = csvReader.getLine();
+    tokenVec = csv_reader.getLine();
     CPPUNIT_ASSERT("3" == tokenVec[0]);
     CPPUNIT_ASSERT("Eldon" == tokenVec[1]);
     CPPUNIT_ASSERT("plati" == tokenVec[2]);
@@ -128,10 +128,10 @@ void ReadCsvTest::test_validCRLFCsv()
 void ReadCsvTest::test_validLFCsv()
 {
     // cspell: disable
-    io::reader::CsvReader csvReader(m_validLFCsvDirectoryPath);
-    io::reader::CsvReader::TokenContainerType tokenVec;
+    io::reader::csv_reader csv_reader(m_validLFCsvDirectoryPath);
+    io::reader::csv_reader::TokenContainerType tokenVec;
 
-    tokenVec = csvReader.getLine();
+    tokenVec = csv_reader.getLine();
     CPPUNIT_ASSERT("1" == tokenVec[0]);
     CPPUNIT_ASSERT("Eldon Base" == tokenVec[1]);
     CPPUNIT_ASSERT("platinum" == tokenVec[2]);
@@ -146,7 +146,7 @@ void ReadCsvTest::test_validLFCsv()
     CPPUNIT_ASSERT(tokenVec[11].empty());
     CPPUNIT_ASSERT(12 == tokenVec.size());
 
-    tokenVec = csvReader.getLine();
+    tokenVec = csv_reader.getLine();
     CPPUNIT_ASSERT("2" == tokenVec[0]);
     CPPUNIT_ASSERT("Eldon Base for stackable storage" == tokenVec[1]);
     CPPUNIT_ASSERT("plati" == tokenVec[2]);
@@ -160,7 +160,7 @@ void ReadCsvTest::test_validLFCsv()
     CPPUNIT_ASSERT(tokenVec[10].empty());
     CPPUNIT_ASSERT(11 == tokenVec.size());
 
-    tokenVec = csvReader.getLine();
+    tokenVec = csv_reader.getLine();
     CPPUNIT_ASSERT("3" == tokenVec[0]);
     CPPUNIT_ASSERT("Eldon" == tokenVec[1]);
     CPPUNIT_ASSERT("plati" == tokenVec[2]);
@@ -177,8 +177,8 @@ void ReadCsvTest::test_validLFCsv()
 
 void ReadCsvTest::test_invalidCsv()
 {
-    io::reader::CsvReader csvReader(m_invalidCsvDirectoryPath);
-    io::reader::CsvReader::TokenContainerType tagVec = csvReader.getLine();
+    io::reader::csv_reader csv_reader(m_invalidCsvDirectoryPath);
+    io::reader::csv_reader::TokenContainerType tagVec = csv_reader.getLine();
 
     CPPUNIT_ASSERT(std::filesystem::exists(m_invalidCsvDirectoryPath));
     const std::size_t size = tagVec.size();

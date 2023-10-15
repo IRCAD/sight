@@ -4,7 +4,7 @@ The `realsense` module contains services to bring support for the Intel Realsens
 
 ## Services
 
-- `sight::module::io::realsense::SScan`
+- `sight::module::io::realsense::scan`
 
 > This service grabs the depth, the color frame, and the point cloud from a compatible device (Realsense D400).
 
@@ -38,14 +38,14 @@ To be loaded correclty the preset file should have a name like "NAMEPreset.json"
 The service parses the presets folder and generates a map with [Name, path].
 ex HandPreset.json will give: ["Hand", "rc/presets/HandPreset.json"].
 
-#### 3. Use the preset in videoRealsense::SScan
+#### 3. Use the preset in videoRealsense::scan
 
 You can achieve this in two different ways:
 
 1. In the xml configuration of the service by using the `preset` key. The name should be the _generated name_ i.e. **without** the "...Preset.json".
 
 ```xml
-<service uid="videoGrabber" type ="sight::module::io::realsense::SScan" autoConnect="no">
+<service uid="videoGrabber" type ="sight::module::io::realsense::scan" auto_connect="no">
     <inout key="depthTL" uid="..." />
     <inout key="frameTL" uid="..." />
     <out key="pointcloud" uid="..." />
@@ -58,7 +58,7 @@ You can achieve this in two different ways:
 2. By using a SParameter (see **ExRealSense** example for a real-case use)
 
 ```xml
-<service uid="presets" type="sight::module::ui::qt::SParameters">
+<service uid="presets" type="sight::module::ui::qt::parameters">
     <parameters>
         <param type="enum" name="Realsense presets" key="preset" defaultValue="Default" values="Default,HighResHighAccuracy, HighResHighDensity,HighResMidDensity,MidResHighAccuracy, MidResHighDensity,MidResMidDensity,LowResHighAccuracy, LowResHighDensity,LowResMidDensity,Hand,ShortRange,BodyScan,RemoveIR" />
     </parameters>

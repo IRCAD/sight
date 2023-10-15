@@ -36,7 +36,7 @@ class ParameterEditor
 public:
 
     /**
-     * @brief Create a config that will be used to expose an shader parameter adaptor in a SParameters.
+     * @brief Create a config that will be used to expose an shader parameter adaptor in a parameters.
      *
      * @param[in] _adaptor adaptor to bind.
      * @param[in] _paramSrv editor service.

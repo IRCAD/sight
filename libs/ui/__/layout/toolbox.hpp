@@ -74,7 +74,7 @@ public:
      *
      * Example of configuration with cardinal layout.
      * @code{.xml}
-       <service uid="subView2" type="sight::module::ui::SView" autoConnect="false" >
+       <service uid="subView2" type="sight::module::ui::view" auto_connect="false" >
            <gui>
                <layout type="ui::layout::toolbox">
                    <view caption="My view 1" expanded="true" />

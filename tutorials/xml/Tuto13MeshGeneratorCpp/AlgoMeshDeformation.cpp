@@ -24,7 +24,7 @@
 
 #include <core/tools/numeric_round_cast.hxx>
 
-#include <geometry/data/Mesh.hpp>
+#include <geometry/data/mesh.hpp>
 
 #include <cmath>
 
@@ -47,7 +47,7 @@ AlgoMeshDeformation::~AlgoMeshDeformation() noexcept =
 //-----------------------------------------------------------------------------
 
 void AlgoMeshDeformation::setParam(
-    data::Mesh::sptr _mesh,
+    data::mesh::sptr _mesh,
     const unsigned int _nbStep,
     const unsigned int _amplitude
 )
@@ -64,7 +64,7 @@ void AlgoMeshDeformation::setParam(
 //-----------------------------------------------------------------------------
 
 void AlgoMeshDeformation::computeDeformation(
-    data::Mesh::sptr _mesh,
+    data::mesh::sptr _mesh,
     const unsigned int _nbStep,
     const unsigned int _amplitude
 )
@@ -72,7 +72,7 @@ void AlgoMeshDeformation::computeDeformation(
     if(m_mesh.expired()
        || m_nbPoints != _mesh->numPoints()
        || m_nbCells != _mesh->numCells()
-       || !_mesh->has<data::Mesh::Attributes::POINT_COLORS>())
+       || !_mesh->has<data::mesh::Attributes::POINT_COLORS>())
     {
         this->setParam(_mesh, _nbStep, _amplitude);
         this->initSimu();
@@ -88,12 +88,12 @@ void AlgoMeshDeformation::computeDeformation(
 void AlgoMeshDeformation::initSimu()
 {
     const auto mesh = m_mesh.lock();
-    m_originMesh = data::Object::copy(mesh);
+    m_originMesh = data::object::copy(mesh);
     m_step       = 0;
 
-    if(!m_mesh.lock()->has<data::Mesh::Attributes::POINT_COLORS>())
+    if(!m_mesh.lock()->has<data::mesh::Attributes::POINT_COLORS>())
     {
-        geometry::data::Mesh::colorizeMeshPoints(mesh);
+        geometry::data::mesh::colorizeMeshPoints(mesh);
     }
 
     const auto dumpLock = mesh->dump_lock();
@@ -153,7 +153,7 @@ void AlgoMeshDeformation::computeSimu()
         if(pt1.y - m_yCenter > 0)
         {
             pt2.y = pt1.y + (pt1.y - m_yCenter) * scale;
-            c2.r  = core::tools::numeric_round_cast<data::Mesh::color_t>(255 * scale);
+            c2.r  = core::tools::numeric_round_cast<data::mesh::color_t>(255 * scale);
         }
         else
         {
@@ -163,7 +163,7 @@ void AlgoMeshDeformation::computeSimu()
         pt2.z = pt1.z;
     }
 
-    geometry::data::Mesh::generatePointNormals(mesh);
+    geometry::data::mesh::generatePointNormals(mesh);
 }
 
 //-----------------------------------------------------------------------------

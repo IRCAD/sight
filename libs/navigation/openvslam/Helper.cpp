@@ -33,7 +33,7 @@ namespace sight::navigation::openvslam
 
 //-----------------------------------------------------------------------------
 
-::openvslam::camera::perspective Helper::fromSight(const data::Camera& _sightCam)
+::openvslam::camera::perspective Helper::fromSight(const data::camera& _sightCam)
 {
     const auto name = _sightCam.getCameraID();
     const auto dist = _sightCam.getDistortionCoefficient();
@@ -70,9 +70,9 @@ namespace sight::navigation::openvslam
 
 //-----------------------------------------------------------------------------
 
-data::Camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSlamCam)
+data::camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSlamCam)
 {
-    data::Camera::sptr cam = std::make_shared<data::Camera>();
+    data::camera::sptr cam = std::make_shared<data::camera>();
 
     cam->setCameraID(_oVSlamCam.name_);
     cam->setWidth(_oVSlamCam.cols_);
@@ -101,7 +101,7 @@ data::Camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSla
 //-----------------------------------------------------------------------------
 
 std::shared_ptr<::openvslam::config> Helper::createMonocularConfig(
-    const data::Camera& _sightCam,
+    const data::camera& _sightCam,
     const OrbParams& _orbParams,
     const InitParams& _initParams
 )

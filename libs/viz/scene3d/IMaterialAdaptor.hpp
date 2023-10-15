@@ -25,7 +25,7 @@
 #include "viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/Material.hpp>
+#include <viz/scene3d/material.hpp>
 #include <viz/scene3d/R2VBRenderable.hpp>
 
 #include <OGRE/OgreMaterial.h>
@@ -33,7 +33,7 @@
 namespace sight::viz::scene3d
 {
 
-/// This adaptor adapts a data::Material, allowing to tweak material parameters.
+/// This adaptor adapts a data::material, allowing to tweak material parameters.
 class VIZ_SCENE3D_CLASS_API IMaterialAdaptor : public sight::viz::scene3d::adaptor
 {
 public:
@@ -55,10 +55,10 @@ public:
     VIZ_SCENE3D_CLASS_API virtual void configure(
         const std::string& _id,
         const std::string& _name,
-        sight::viz::scene3d::SRender::sptr _service,
+        sight::viz::scene3d::render::sptr _service,
         const std::string& _layer,
         const std::string& _shadingMode = "",
-        const std::string& _template    = sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME
+        const std::string& _template    = sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
     )                                   = 0;
 
     /// Gets Ogre associated material.
@@ -89,7 +89,7 @@ public:
     VIZ_SCENE3D_CLASS_API virtual void setR2VBObject(sight::viz::scene3d::R2VBRenderable* _r2vbObject) = 0;
 
     /// Gets the internal material code.
-    VIZ_SCENE3D_CLASS_API virtual sight::viz::scene3d::Material* getMaterialFw() const = 0;
+    VIZ_SCENE3D_CLASS_API virtual sight::viz::scene3d::material* getMaterialFw() const = 0;
 };
 
 } // namespace sight::viz::scene3d.

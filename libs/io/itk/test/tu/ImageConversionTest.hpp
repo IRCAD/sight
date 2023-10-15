@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <service/macros.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 namespace sight::io::itk::ut
 {
@@ -47,7 +47,7 @@ public:
     void stressTest();
     static void testConversion2D();
 
-    static void roundSpacing(data::Image::sptr image);
+    static void roundSpacing(data::image::sptr image);
 
     template<class TYPE>
     void stressTestForAType();

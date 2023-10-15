@@ -22,7 +22,7 @@
 
 #include "SeriesTest.hpp"
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <utest/exception.hpp>
 
@@ -103,7 +103,7 @@ void SeriesTest::testSeries()
     const auto& series = seriesVector[0];
     CPPUNIT_ASSERT(series);
 
-    data::DicomSeries::sptr dicomSeries = std::dynamic_pointer_cast<data::DicomSeries>(series);
+    data::dicom_series::sptr dicomSeries = std::dynamic_pointer_cast<data::dicom_series>(series);
     CPPUNIT_ASSERT(dicomSeries);
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesInstanceUID(), seriesInstanceUID.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicomSeries->getSeriesDate(), seriesDate.toStdString());

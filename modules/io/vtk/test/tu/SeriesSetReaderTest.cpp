@@ -24,17 +24,17 @@
 
 #include <core/tools/system.hpp>
 
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/Mesh.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/Reconstruction.hpp>
-#include <data/Series.hpp>
-#include <data/SeriesSet.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
+#include <data/mesh.hpp>
+#include <data/model_series.hpp>
+#include <data/reconstruction.hpp>
+#include <data/series.hpp>
+#include <data/series_set.hpp>
 
 #include <service/op.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -66,8 +66,8 @@ void SeriesSetReaderTest::tearDown()
 
 void SeriesSetReaderTest::testSeriesSetReader()
 {
-    const std::filesystem::path imageFile = utestData::Data::dir() / "sight/image/vtk/img.vtk";
-    const std::filesystem::path meshFile  = utestData::Data::dir() / "sight/mesh/vtk/sphere.vtk";
+    const std::filesystem::path imageFile = utest_data::Data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path meshFile  = utest_data::Data::dir() / "sight/mesh/vtk/sphere.vtk";
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + imageFile.string() + "' does not exist",
@@ -85,14 +85,14 @@ void SeriesSetReaderTest::testSeriesSetReader()
     readerSrvCfg.add("file", meshFile.string());
     readerSrvCfg.add("file", meshFile.string());
 
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
-    service::base::sptr srv = service::add("sight::module::io::vtk::SSeriesSetReader");
+    service::base::sptr srv = service::add("sight::module::io::vtk::series_set_reader");
 
-    CPPUNIT_ASSERT_MESSAGE("Create SSeriesSetReader failed", srv);
+    CPPUNIT_ASSERT_MESSAGE("Create series_set_reader failed", srv);
 
-    srv->setInOut(series_set, "data");
-    srv->setConfiguration(readerSrvCfg);
+    srv->set_inout(series_set, "data");
+    srv->set_config(readerSrvCfg);
     srv->configure();
     srv->start().wait();
     srv->update().wait();
@@ -100,21 +100,21 @@ void SeriesSetReaderTest::testSeriesSetReader()
     service::remove(srv);
 
     // Data expected
-    const data::Image::Spacing spacingExpected = {1.732, 1.732, 3.2};
-    const data::Image::Origin originExpected   = {34.64, 86.6, 56};
-    const data::Image::Size sizeExpected       = {230, 170, 58};
+    const data::image::Spacing spacingExpected = {1.732, 1.732, 3.2};
+    const data::image::Origin originExpected   = {34.64, 86.6, 56};
+    const data::image::Size sizeExpected       = {230, 170, 58};
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
-    data::ImageSeries::sptr imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series_set->at(0));
-    data::ModelSeries::sptr modelSeries = std::dynamic_pointer_cast<data::ModelSeries>(series_set->at(1));
+    data::image_series::sptr imageSeries = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
+    data::model_series::sptr modelSeries = std::dynamic_pointer_cast<data::model_series>(series_set->at(1));
     CPPUNIT_ASSERT_MESSAGE("ImageSeries dynamicCast failed", imageSeries);
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
     // Data read.
-    const data::Image::Spacing spacingRead = imageSeries->getSpacing();
-    const data::Image::Spacing originRead  = imageSeries->getOrigin();
-    const data::Image::Size sizeRead       = imageSeries->size();
+    const data::image::Spacing spacingRead = imageSeries->getSpacing();
+    const data::image::Spacing originRead  = imageSeries->getOrigin();
+    const data::image::Size sizeRead       = imageSeries->size();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size());
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size());
@@ -134,13 +134,13 @@ void SeriesSetReaderTest::testSeriesSetReader()
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), modelSeries->getReconstructionDB().size());
 
-    data::Reconstruction::sptr rec1 = modelSeries->getReconstructionDB()[0];
-    data::Reconstruction::sptr rec2 = modelSeries->getReconstructionDB()[1];
-    data::Mesh::sptr mesh1          = rec1->getMesh();
-    data::Mesh::sptr mesh2          = rec2->getMesh();
+    data::reconstruction::sptr rec1 = modelSeries->getReconstructionDB()[0];
+    data::reconstruction::sptr rec2 = modelSeries->getReconstructionDB()[1];
+    data::mesh::sptr mesh1          = rec1->getMesh();
+    data::mesh::sptr mesh2          = rec2->getMesh();
 
-    CPPUNIT_ASSERT_EQUAL((data::Mesh::size_t) 720, mesh1->numCells());
-    CPPUNIT_ASSERT_EQUAL((data::Mesh::size_t) 362, mesh1->numPoints());
+    CPPUNIT_ASSERT_EQUAL((data::mesh::size_t) 720, mesh1->numCells());
+    CPPUNIT_ASSERT_EQUAL((data::mesh::size_t) 362, mesh1->numPoints());
 
     CPPUNIT_ASSERT(*mesh1 == *mesh2);
 }
@@ -149,7 +149,7 @@ void SeriesSetReaderTest::testSeriesSetReader()
 
 void SeriesSetReaderTest::testMergeSeriesSetReader()
 {
-    const std::filesystem::path imageFile = utestData::Data::dir() / "sight/image/vtk/img.vtk";
+    const std::filesystem::path imageFile = utest_data::Data::dir() / "sight/image/vtk/img.vtk";
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + imageFile.string() + "' does not exist",
@@ -159,16 +159,16 @@ void SeriesSetReaderTest::testMergeSeriesSetReader()
     service::config_t readerSrvCfg;
     readerSrvCfg.add("file", imageFile.string());
 
-    auto imageSeries = std::make_shared<data::ImageSeries>();
-    auto series_set  = std::make_shared<data::SeriesSet>();
+    auto imageSeries = std::make_shared<data::image_series>();
+    auto series_set  = std::make_shared<data::series_set>();
     series_set->push_back(imageSeries);
 
-    service::base::sptr srv = service::add("sight::module::io::vtk::SSeriesSetReader");
+    service::base::sptr srv = service::add("sight::module::io::vtk::series_set_reader");
 
-    CPPUNIT_ASSERT_MESSAGE("Create SSeriesSetReader failed", srv);
+    CPPUNIT_ASSERT_MESSAGE("Create series_set_reader failed", srv);
 
-    srv->setInOut(series_set, "data");
-    srv->setConfiguration(readerSrvCfg);
+    srv->set_inout(series_set, "data");
+    srv->set_config(readerSrvCfg);
     srv->configure();
     srv->start().wait();
     srv->update().wait();

@@ -4,25 +4,25 @@ This module contains services for reading and writing VTK related data.
 
 ## Services
 
-- **SImageReader**: reads a VTK image and converts it into a `sight::data::Image`.
+- **image_reader**: reads a VTK image and converts it into a `sight::data::image`.
 
-- **SImageWriter**: writes a VTK image from a `sight::data::Image`.
+- **image_writer**: writes a VTK image from a `sight::data::image`.
 
-- **SImageSeriesReader**: reads a VTK image series and converts them into a `sight::data::ImageSeries`.
+- **image_series_reader**: reads a VTK image series and converts them into a `sight::data::image_series`.
 
-- **SImageSeriesWriter**: writes a VTK image series file from a `sight::data::ImageSeries`.
+- **image_series_writer**: writes a VTK image series file from a `sight::data::image_series`.
 
-- **SMeshReader**: reads a VTK mesh and converts it into a `sight::data::Mesh`.
+- **meshReader**: reads a VTK mesh and converts it into a `sight::data::mesh`.
 
-- **SMeshWriter**: writes a VTK mesh from a `sight::data::Mesh`.
+- **meshWriter**: writes a VTK mesh from a `sight::data::mesh`.
 
-- **SModelSeriesReader**: reads VTK files and converts them into `ReconstructionDB` from a `sight::data::ModelSeries`.
+- **model_series_reader**: reads VTK files and converts them into `ReconstructionDB` from a `sight::data::model_series`.
 
-- **SModelSeriesWriter**: writes VTK files from `ReconstructionDB` from a `sight::data::ModelSeries`.
+- **model_series_writer**: writes VTK files from `ReconstructionDB` from a `sight::data::model_series`.
 
-- **SModelSeriesObjWriter**: same as `SModelSeriesWriter`, but limited to `.obj` files.
+- **model_series_obj_writer**: same as `model_series_writer`, but limited to `.obj` files.
 
-- **SSeriesSetReader**: reads VTK files and converts them into a `sight::data::SeriesSet`.
+- **series_set_reader**: reads VTK files and converts them into a `sight::data::series_set`.
 
 ## How to use it
 

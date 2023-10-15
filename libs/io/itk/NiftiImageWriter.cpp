@@ -45,7 +45,7 @@ struct NiftiSaverFunctor
     struct Parameter
     {
         std::string m_filename;
-        data::Image::csptr m_dataImage;
+        data::image::csptr m_dataImage;
         io::itk::NiftiImageWriter::sptr m_fwWriter;
     };
 

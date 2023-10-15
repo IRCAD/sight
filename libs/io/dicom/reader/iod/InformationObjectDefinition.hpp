@@ -28,7 +28,7 @@
 
 #include <core/log/logger.hpp>
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <gdcmReader.h>
 
@@ -56,7 +56,7 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API InformationObjectDefinition(
-        data::DicomSeries::csptr dicomSeries,
+        data::dicom_series::csptr dicomSeries,
         SPTR(io::dicom::container::DicomInstance)instance,
         core::log::logger::sptr logger = nullptr,
         ProgressCallback progress      = nullptr,
@@ -71,7 +71,7 @@ public:
      * @param[in,out] series Series that must be enriched
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API virtual void read(data::Series::sptr series) = 0;
+    IO_DICOM_API virtual void read(data::series::sptr series) = 0;
 
 protected:
 
@@ -79,7 +79,7 @@ protected:
     SPTR(io::dicom::container::DicomInstance) m_instance;
 
     /// Dicom Series
-    data::DicomSeries::csptr m_dicomSeries;
+    data::dicom_series::csptr m_dicomSeries;
 
     ///Logger
     core::log::logger::sptr m_logger;

@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig" >
+<extension implements="sight::app::extension::config" >
     <id>sight::config::viz::scene2d::TransferFunctionWindowCfg</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
@@ -14,13 +14,13 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::Image" src="ref" />
-        <object uid="${currentTF}" type="sight::data::TransferFunction" src="ref" />
-        <object uid="${presets}" type="sight::data::Composite" src="deferred" />
+        <object uid="${image}" type="sight::data::image" src="ref" />
+        <object uid="${currentTF}" type="sight::data::transfer_function" src="ref" />
+        <object uid="${presets}" type="sight::data::composite" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SFrame" >
+        <service uid="mainView" type="sight::module::ui::frame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="transferFunctionEditorView" type="sight::module::ui::SView" >
+        <service uid="transferFunctionEditorView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
@@ -48,7 +48,7 @@
         </service>
 
         <!-- TF manager -->
-        <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
+        <service uid="TFManagerCfg"  type="sight::app::config_controller" >
             <appConfig id="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
             <parameter replace="WID_PARENT" by="tfView" />
             <inout group="data">

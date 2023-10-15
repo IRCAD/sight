@@ -22,7 +22,7 @@
 
 #include "EigenToolsTest.hpp"
 
-#include <data/Matrix4.hpp>
+#include <data/matrix4.hpp>
 
 #include <geometry/eigen/helper.hpp>
 
@@ -71,7 +71,7 @@ void EigenToolsTest::eigenToF4s()
     mat(3, 2) = 0;
     mat(3, 3) = 1;
 
-    data::Matrix4::sptr f4sRes = geometry::eigen::helper::toF4s(mat);
+    data::matrix4::sptr f4sRes = geometry::eigen::helper::toF4s(mat);
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {
@@ -94,7 +94,7 @@ void EigenToolsTest::f4sToEigen()
 {
     Eigen::Matrix<float, 4, 4> eigenRes;
 
-    data::Matrix4::sptr mat = std::make_shared<data::Matrix4>();
+    data::matrix4::sptr mat = std::make_shared<data::matrix4>();
 
     for(unsigned int r = 0 ; r < 3 ; ++r)
     {
@@ -115,7 +115,7 @@ void EigenToolsTest::f4sToEigen()
 
     eigenRes = geometry::eigen::helper::toEigen<float>(mat);
 
-    data::Matrix4::sptr mat2 = geometry::eigen::helper::toF4s(eigenRes);
+    data::matrix4::sptr mat2 = geometry::eigen::helper::toF4s(eigenRes);
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {
@@ -186,10 +186,10 @@ void EigenToolsTest::f4sMatToRvecTvec()
     m.block<3, 3>(0, 0) = rotVec.toRotationMatrix();
     m.block<3, 1>(0, 3) = expected_tvec;
 
-    data::Matrix4::sptr trf = geometry::eigen::helper::toF4s(m);
+    data::matrix4::sptr trf = geometry::eigen::helper::toF4s(m);
 
     geometry::eigen::helper::RvecTvecType actualRvecTvec =
-        geometry::eigen::helper::f4sMatToRvecTvec(const_pointer_cast<data::Matrix4>(trf));
+        geometry::eigen::helper::f4sMatToRvecTvec(const_pointer_cast<data::matrix4>(trf));
 
     for(unsigned int i = 0 ; i < 3 ; ++i)
     {

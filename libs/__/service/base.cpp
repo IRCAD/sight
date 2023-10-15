@@ -22,7 +22,8 @@
 
 #include "service/base.hpp"
 
-#include "service/detail/Service.hpp"
+#include "service/detail/service.hpp"
+#include "service/manager.hpp"
 #include "service/registry.hpp"
 
 #include <core/com/signal.hxx>
@@ -60,7 +61,7 @@ void connections_t::push(
 
 //------------------------------------------------------------------------------
 
-connections_t::KeyConnectionsMapType::const_iterator connections_t::find(
+connections_t::key_connections_map_t::const_iterator connections_t::find(
     std::string_view key
 ) const
 {
@@ -69,7 +70,7 @@ connections_t::KeyConnectionsMapType::const_iterator connections_t::find(
 
 //------------------------------------------------------------------------------
 
-connections_t::KeyConnectionsMapType::const_iterator connections_t::end() const
+connections_t::key_connections_map_t::const_iterator connections_t::end() const
 {
     return m_keyConnectionsMap.cend();
 }
@@ -91,7 +92,7 @@ std::size_t connections_t::size() const
 //-----------------------------------------------------------------------------
 
 base::base() :
-    m_pimpl(std::make_unique<detail::Service>(*this))
+    m_pimpl(std::make_unique<detail::service>(*this))
 {
     new_signal<signals::started_t>(signals::STARTED);
     new_signal<signals::updated_t>(signals::UPDATED);
@@ -102,10 +103,10 @@ base::base() :
     new_slot(slots::STOP, [this](){m_pimpl->stop(true);});
     new_slot(slots::UPDATE, [this](){m_pimpl->update(true);});
     new_slot(
-        slots::SWAPKEY,
-        [this](std::string_view _key, data::Object::sptr _obj)
+        slots::swap_key,
+        [this](std::string_view _key, data::object::sptr _obj)
         {
-            m_pimpl->swapKey(_key, _obj, true);
+            m_pimpl->swap_key(_key, _obj, true);
         });
 }
 
@@ -130,23 +131,16 @@ core::thread::worker::sptr base::worker() const
 
 //-----------------------------------------------------------------------------
 
-void base::setConfiguration(const config_t& _configuration)
+void base::set_config(const config_t& _configuration)
 {
-    m_pimpl->setConfiguration(_configuration);
+    m_pimpl->set_config(_configuration);
 }
 
 //-----------------------------------------------------------------------------
 
-const base::ConfigType& base::getConfiguration() const
+const base::config_t& base::get_config() const
 {
-    return m_pimpl->getConfiguration();
-}
-
-//-----------------------------------------------------------------------------
-
-const base::ConfigType& base::getConfigTree() const
-{
-    return m_pimpl->getConfiguration();
+    return m_pimpl->get_config();
 }
 
 //-----------------------------------------------------------------------------
@@ -158,15 +152,15 @@ void base::configure()
 
 //-----------------------------------------------------------------------------
 
-void base::configure(const ConfigType& serviceConfig)
+void base::configure(const config_t& service_config)
 {
-    this->setConfiguration(serviceConfig);
+    this->set_config(service_config);
     this->configure();
 }
 
 //-----------------------------------------------------------------------------
 
-base::SharedFutureType base::start()
+base::shared_future_t base::start()
 {
     if(!m_pimpl->m_worker || core::thread::get_current_thread_id() == m_pimpl->m_worker->get_thread_id())
     {
@@ -178,7 +172,7 @@ base::SharedFutureType base::start()
 
 //-----------------------------------------------------------------------------
 
-base::SharedFutureType base::stop()
+base::shared_future_t base::stop()
 {
     if(!m_pimpl->m_worker || core::thread::get_current_thread_id() == m_pimpl->m_worker->get_thread_id())
     {
@@ -190,7 +184,7 @@ base::SharedFutureType base::stop()
 
 //-----------------------------------------------------------------------------
 
-base::SharedFutureType base::update()
+base::shared_future_t base::update()
 {
     if(!m_pimpl->m_worker || core::thread::get_current_thread_id() == m_pimpl->m_worker->get_thread_id())
     {
@@ -202,54 +196,54 @@ base::SharedFutureType base::update()
 
 //-----------------------------------------------------------------------------
 
-base::SharedFutureType base::swapKey(std::string_view _key, data::Object::sptr _obj)
+base::shared_future_t base::swap_key(std::string_view _key, data::object::sptr _obj)
 {
     if(!m_pimpl->m_worker || core::thread::get_current_thread_id() == m_pimpl->m_worker->get_thread_id())
     {
-        return m_pimpl->swapKey(_key, _obj, false);
+        return m_pimpl->swap_key(_key, _obj, false);
     }
 
-    return slot(slots::SWAPKEY)->async_run(_key, _obj);
+    return slot(slots::swap_key)->async_run(_key, _obj);
 }
 
 //-----------------------------------------------------------------------------
 
-base::GlobalStatus base::getStatus() const noexcept
+base::GlobalStatus base::status() const noexcept
 {
     return m_pimpl->m_globalState;
 }
 
 //-----------------------------------------------------------------------------
 
-base::ConfigurationStatus base::getConfigurationStatus() const noexcept
+base::ConfigurationStatus base::config_status() const noexcept
 {
     return m_pimpl->m_configurationState;
 }
 
 //-----------------------------------------------------------------------------
 
-bool base::isStarted() const noexcept
+bool base::started() const noexcept
 {
     return m_pimpl->m_globalState == STARTED;
 }
 
 //-----------------------------------------------------------------------------
 
-bool base::isStopped() const noexcept
+bool base::stopped() const noexcept
 {
     return m_pimpl->m_globalState == STOPPED;
 }
 
 //-----------------------------------------------------------------------------
 
-base::UpdatingStatus base::getUpdatingStatus() const noexcept
+base::UpdatingStatus base::updating_status() const noexcept
 {
     return m_pimpl->m_updatingState;
 }
 
 //-----------------------------------------------------------------------------
 
-connections_t base::getAutoConnections() const
+connections_t base::auto_connections() const
 {
     connections_t connections;
     return connections;
@@ -263,16 +257,16 @@ void base::info(std::ostream& /*unused*/)
 
 //------------------------------------------------------------------------------
 
-void base::notifyRegisterOut(data::Object::sptr _obj, const std::string& _id)
+void base::notify_register_out(data::object::sptr _obj, const std::string& _id)
 {
-    detail::Service::notifyRegisterOut(_obj, _id);
+    manager::notify_register_out(_obj, _id);
 }
 
 //------------------------------------------------------------------------------
 
-void base::notifyUnregisterOut(data::Object::sptr _obj, const std::string& _id)
+void base::notify_unregister_out(data::object::sptr _obj, const std::string& _id)
 {
-    detail::Service::notifyUnregisterOut(_obj, _id);
+    manager::notify_unregister_out(_obj, _id);
 }
 
 //-----------------------------------------------------------------------------

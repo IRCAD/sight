@@ -50,7 +50,7 @@ public:
      * @brief Checks if the current CameraSet contains one and only one Camera and is calibrated.
      * @see module::activity::validator::base::validate
      */
-    MODULE_ACTIVITY_API sight::activity::validator::return_t validate(const CSPTR(data::Object)& currentObject) const
+    MODULE_ACTIVITY_API sight::activity::validator::return_t validate(const CSPTR(data::object)& currentObject) const
     override;
 };
 

@@ -70,8 +70,8 @@ public:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="menuBar" type="ui::menu_bar" impl="sight::module::ui::SMenuBar"
-     * autoConnect="false"
+       <service uid="menuBar" type="ui::menu_bar" impl="sight::module::ui::menu_bar"
+     * auto_connect="false"
      *>
           <gui>
               <layout>

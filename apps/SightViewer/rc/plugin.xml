@@ -7,7 +7,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::io::session" />
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>SightViewer_SightData_SrvCfg</id>
         <desc>Sight data</desc>
         <config>
@@ -16,7 +16,7 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::Config" >
+    <extension implements="sight::service::extension::config" >
         <id>SightViewer_vtk_SrvCfg</id>
         <desc>VTK</desc>
         <config>
@@ -24,7 +24,7 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::Config" >
+    <extension implements="sight::service::extension::config" >
         <id>SightViewer_itk_SrvCfg</id>
         <desc>Nifti or Inr images</desc>
         <config>
@@ -32,7 +32,7 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::Config" >
+    <extension implements="sight::service::extension::config" >
         <id>SightViewer_dicom_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
@@ -41,7 +41,7 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>SightViewerDicomReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
@@ -50,7 +50,7 @@
     </extension>
 
     <!-- Service config used for writing Snapshot -->
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>SightViewer_snapshot_SrvCfg</id>
         <desc>Snapshot</desc>
         <config>
@@ -59,23 +59,23 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>SightViewer_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesSet" type="sight::data::SeriesSet" />
-            <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
-            <object uid="pacsSeriesSet" type="sight::data::SeriesSet" />
-            <object uid="image" type="sight::data::ImageSeries" src="deferred"/>
-            <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
+            <object uid="seriesSet" type="sight::data::series_set" />
+            <object uid="modelSeries" type="sight::data::model_series" src="deferred" />
+            <object uid="pacsSeriesSet" type="sight::data::series_set" />
+            <object uid="image" type="sight::data::image_series" src="deferred"/>
+            <object uid="extrudedModelSeries" type="sight::data::model_series" />
 
-            <object uid="volumeTF" type="sight::data::TransferFunction" />
+            <object uid="volumeTF" type="sight::data::transfer_function" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="sight::module::ui::SFrame" >
+            <service uid="mainView" type="sight::module::ui::frame" >
                 <gui>
                     <frame>
                         <name>Sight Viewer</name>
@@ -89,7 +89,7 @@
                 </registry>
             </service>
 
-            <service uid="mainContainerView" type="sight::module::ui::SView" >
+            <service uid="mainContainerView" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
@@ -101,7 +101,7 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::SView" >
+            <service uid="containerView" type="sight::module::ui::view" >
                 <gui>
                     <toolBar align="left" />
                     <layout type="sight::ui::layout::overlay" >
@@ -116,7 +116,7 @@
                 </registry>
             </service>
 
-            <service uid="sceneParameterView" type="sight::module::ui::SView" >
+            <service uid="sceneParameterView" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="horizontal" />
@@ -130,7 +130,7 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarSliderView" type="sight::module::ui::SView">
+            <service uid="rightToolbarSliderView" type="sight::module::ui::view">
                 <gui>
                     <toolBar backgroundColor="#3E4453" />
                     <layout type="sight::ui::layout::line">
@@ -142,7 +142,7 @@
                 </registry>
             </service>
 
-            <service uid="rightToolbarView" type="sight::module::ui::SToolBar">
+            <service uid="rightToolbarView" type="sight::module::ui::tool_bar">
                 <gui>
                     <layout>
                         <spacer />
@@ -154,7 +154,7 @@
                 </registry>
             </service>
 
-            <service uid="parameterView" type="sight::module::ui::SView" >
+            <service uid="parameterView" type="sight::module::ui::view" >
                 <gui>
                     <toolBar/>
                     <layout type="sight::ui::layout::line" >
@@ -177,7 +177,7 @@
                 </registry>
             </service>
 
-            <service uid="TFParameterView" type="sight::module::ui::SView" >
+            <service uid="TFParameterView" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
@@ -192,7 +192,7 @@
                 </registry>
             </service>
 
-            <service uid="parameterToolBarView" type="sight::module::ui::SToolBar" >
+            <service uid="parameterToolBarView" type="sight::module::ui::tool_bar" >
                 <gui>
                     <layout>
                         <menuItem name="Show volume parameters" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
@@ -214,7 +214,7 @@
                 </registry>
             </service>
 
-            <service uid="volumeParameterView" type="sight::module::ui::SView" >
+            <service uid="volumeParameterView" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
@@ -227,7 +227,7 @@
                 </registry>
             </service>
 
-            <service uid="landmarksParameterView" type="sight::module::ui::SView" >
+            <service uid="landmarksParameterView" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
@@ -240,7 +240,7 @@
                 </registry>
             </service>
 
-            <service uid="lightParameterView" type="sight::module::ui::SView" >
+            <service uid="lightParameterView" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::line" >
                         <orientation value="vertical" />
@@ -256,7 +256,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::SToolBar" >
+            <service uid="toolBarView" type="sight::module::ui::tool_bar" >
                 <gui>
                     <layout>
                         <menuItem name="Load series" icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -315,27 +315,27 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Read a series -->
-            <service uid="openSeriesSetAct" type="sight::module::ui::io::SSelector" worker="COMPUTING_THREAD" >
+            <service uid="openSeriesSetAct" type="sight::module::ui::io::selector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesSet" />
                 <type mode="reader" />
                 <selection mode="exclude" />
-                <addSelection service="sight::module::io::dicom::SSeriesSetReader" />
-                <addSelection service="sight::module::io::dicom::SDicomSeriesSetReader" />
-                <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::SReader" />
-                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesSetReader" />
-                <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::SSeriesSetReader" />
-                <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::SReader" />
+                <addSelection service="sight::module::io::dicom::series_set_reader" />
+                <addSelection service="sight::module::io::dicom::dicom_series_set_reader" />
+                <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::reader" />
+                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::series_set_reader" />
+                <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::series_set_reader" />
+                <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::reader" />
             </service>
 
             <!-- Show the negato/volume view -->
-            <service uid="negatoViewAct" type="sight::module::ui::SAction" />
+            <service uid="negatoViewAct" type="sight::module::ui::action" />
 
-            <service uid="volumeViewAct" type="sight::module::ui::SAction" >
+            <service uid="volumeViewAct" type="sight::module::ui::action" >
                 <state visible="false" />
             </service>
 
             <!-- Switch between parameters -->
-            <service uid="volumeManagerAct" type="sight::module::ui::SModifyLayout" >
+            <service uid="volumeManagerAct" type="sight::module::ui::modify_layout" >
                 <config>
                     <show sid="volumeParameterView" />
                     <hide sid="TFParameterView" />
@@ -345,7 +345,7 @@
                 </config>
             </service>
 
-            <service uid="TFManagerAct" type="sight::module::ui::SModifyLayout" >
+            <service uid="TFManagerAct" type="sight::module::ui::modify_layout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <show sid="TFParameterView" />
@@ -355,7 +355,7 @@
                 </config>
             </service>
 
-            <service uid="organsManagerAct" type="sight::module::ui::SModifyLayout" >
+            <service uid="organsManagerAct" type="sight::module::ui::modify_layout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide sid="TFParameterView" />
@@ -365,7 +365,7 @@
                 </config>
             </service>
 
-            <service uid="landmarksManagerAct" type="sight::module::ui::SModifyLayout" >
+            <service uid="landmarksManagerAct" type="sight::module::ui::modify_layout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide sid="TFParameterView" />
@@ -375,7 +375,7 @@
                 </config>
             </service>
 
-            <service uid="lightManagerAct" type="sight::module::ui::SModifyLayout" >
+            <service uid="lightManagerAct" type="sight::module::ui::modify_layout" >
                 <config>
                     <hide sid="volumeParameterView" />
                     <hide sid="TFParameterView" />
@@ -386,15 +386,15 @@
             </service>
 
             <!-- Show or hide the parameter view -->
-            <service uid="hideParameterAct" type="sight::module::ui::SAction" />
+            <service uid="hideParameterAct" type="sight::module::ui::action" />
 
-            <service uid="showParameterAct" type="sight::module::ui::SAction" >
+            <service uid="showParameterAct" type="sight::module::ui::action" >
                 <state checked="true" />
             </service>
 
             <!-- PACS manager -->
-            <service uid="pacsAct" type="sight::module::ui::SConfigLauncher" >
-                <appConfig id="PACSSelectorWindow_AppCfg" />
+            <service uid="pacsAct" type="sight::module::ui::config_launcher" >
+                <appConfig id="PACSselectorWindow_AppCfg" />
                 <inout group="data">
                     <key name="outputSeriesSet" uid="pacsSeriesSet" />
                 </inout>
@@ -403,60 +403,60 @@
             </service>
 
             <!-- Adaptors visibility -->
-            <service uid="volumeVisibilityAct" type="sight::module::ui::SAction" >
+            <service uid="volumeVisibilityAct" type="sight::module::ui::action" >
                 <state enabled="false" />
             </service>
 
-            <service uid="negato3DVisibilityAct" type="sight::module::ui::SAction" >
+            <service uid="negato3DVisibilityAct" type="sight::module::ui::action" >
                 <state enabled="false" />
             </service>
 
-            <service uid="meshVisibilityAct" type="sight::module::ui::SAction" >
+            <service uid="meshVisibilityAct" type="sight::module::ui::action" >
                 <state enabled="false" />
             </service>
 
-            <service uid="boxWidgetVisibilityAct" type="sight::module::ui::SAction" >
+            <service uid="boxWidgetVisibilityAct" type="sight::module::ui::action" >
                 <state enabled="false" />
             </service>
 
-            <service uid="boxWidgetResetAct" type="sight::module::ui::SAction" >
+            <service uid="boxWidgetResetAct" type="sight::module::ui::action" >
                 <state enabled="false" />
             </service>
 
-            <service uid="shapeExtruderAct" type="sight::module::ui::SAction" >
+            <service uid="shapeExtruderAct" type="sight::module::ui::action" >
                 <state enabled="true" />
             </service>
 
-            <service uid="shapeExtruderCancelAct" type="sight::module::ui::SAction" >
+            <service uid="shapeExtruderCancelAct" type="sight::module::ui::action" >
                 <state enabled="true" />
             </service>
 
-            <service uid="shapeExtruderRevertAct" type="sight::module::ui::SAction" >
+            <service uid="shapeExtruderRevertAct" type="sight::module::ui::action" >
                 <state enabled="true" />
             </service>
 
-            <service uid="axisVisibilityAct" type="sight::module::ui::SAction" />
+            <service uid="axisVisibilityAct" type="sight::module::ui::action" />
 
-            <service uid="landmarksEditModeAct" type="sight::module::ui::SAction" >
+            <service uid="landmarksEditModeAct" type="sight::module::ui::action" >
                 <state enabled="false" />
             </service>
 
-            <service uid="removeAllLandmarksAct" type="sight::module::ui::SAction" />
+            <service uid="removeAllLandmarksAct" type="sight::module::ui::action" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="sight::module::ui::SAction">
+            <service uid="addDistanceAct" type="sight::module::ui::action">
                 <state enabled="false" checked="false"/>
             </service>
 
-            <service uid="removeAllDistancesAct" type="sight::module::ui::SAction" />
+            <service uid="removeAllDistancesAct" type="sight::module::ui::action" />
 
-            <service uid="hideDistanceAct" type="sight::module::ui::metrics::SShowDistance" autoConnect="true" >
+            <service uid="hideDistanceAct" type="sight::module::ui::metrics::show_distance" auto_connect="true" >
                 <inout key="image" uid="image" />
             </service>
 
             <!-- ************************ Configuration launchers ********************************* -->
 
-            <service uid="ogreGenericSceneCfg" type="sight::service::SConfigController" >
+            <service uid="ogreGenericSceneCfg" type="sight::app::config_controller" >
                 <appConfig id="sight::config::viz::scene3d::imageSplitViews" />
                 <parameter replace="WID_PARENT" by="sceneView" />
                 <parameter replace="NEGATO_VIEW_RECEIVE_CHANNEL" by="NEGATO_VIEW_SENDER_CHANNEL" />
@@ -494,7 +494,7 @@
             </service>
 
             <!-- TF manager -->
-            <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
+            <service uid="TFManagerCfg"  type="sight::app::config_controller" >
                 <appConfig id="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
                 <parameter replace="WID_PARENT" by="TFCfgParameterView" />
                 <inout group="data">
@@ -503,7 +503,7 @@
                 </inout>
             </service>
 
-            <service uid="organManagerCfg"  type="sight::service::SConfigController" >
+            <service uid="organManagerCfg"  type="sight::app::config_controller" >
                 <appConfig id="sight::config::viz::scene3d::organManager" />
                 <parameter replace="WID_PARENT" by="organsParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
@@ -515,19 +515,19 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Extract the model or the image from the series -->
-            <service uid="extractSeriesSrv" type="sight::module::ui::qt::series::SSelectDialog" >
+            <service uid="extractSeriesSrv" type="sight::module::ui::qt::series::select_dialog" >
                 <in key="seriesSet" uid="seriesSet"/>
                 <out key="modelSeries" uid="modelSeries" />
                 <out key="image" uid="image" />
             </service>
 
-            <service uid="extractPacsImageSrv" type="sight::module::ui::qt::series::SSelectDialog" >
+            <service uid="extractPacsImageSrv" type="sight::module::ui::qt::series::select_dialog" >
                 <in key="seriesSet" uid="pacsSeriesSet"/>
                 <out key="image" uid="image" />
             </service>
 
             <!-- Parameters for the volume rendering -->
-            <service uid="volumeParameterSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="volumeParameterSrv" type="sight::module::ui::qt::parameters" >
                 <parameters>
                     <param type="int" name="Samples" key="sampling" defaultValue="1200" min="128" max="8192" reset="false" />
                     <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />
@@ -546,18 +546,18 @@
             </service>
 
             <!-- Parameters for landmarks -->
-            <service uid="landmarksParameterSrv" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="true" >
+            <service uid="landmarksParameterSrv" type="sight::module::ui::qt::metrics::landmarks" auto_connect="true" >
                 <inout key="imageSeries" uid="image" />
                 <advanced>true</advanced>
             </service>
 
             <!-- Light editor -->
-            <service uid="lightSelectorSrv" type="sight::module::ui::viz::SLightSelector"  />
+            <service uid="lightSelectorSrv" type="sight::module::ui::viz::light_selector"  />
 
-            <service uid="lightEditorSrv" type="sight::module::ui::viz::SLightEditor" />
+            <service uid="lightEditorSrv" type="sight::module::ui::viz::light_editor" />
 
             <!-- Transparency for the 3D negato -->
-            <service uid="transparencyParameterSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="transparencyParameterSrv" type="sight::module::ui::qt::parameters" >
                 <parameters>
                     <param type="double" name="Negatoscope transparency" key="transparency" defaultValue="0.0" min="0.0" max="1.0" reset="false" widget="slider"/>
                 </parameters>

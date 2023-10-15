@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,22 +24,22 @@
 
 #include "io/http/config.hpp"
 
-#include <data/SeriesSet.hpp>
+#include <data/series_set.hpp>
 
 #include <QJsonObject>
 
 namespace sight::data
 {
 
-class DicomSeries;
+class dicom_series;
 
 } // namespace sight::data
 
 namespace sight::data
 {
 
-class ImageSeries;
-class ModelSeries;
+class image_series;
+class model_series;
 
 } // namespace sight::data
 
@@ -53,18 +53,18 @@ class IO_HTTP_CLASS_API Series
 {
 public:
 
-    typedef data::SeriesSet::container_type DicomSeriesContainer;
+    typedef data::series_set::container_type DicomSeriesContainer;
     typedef std::vector<std::string> InstanceUIDContainer;
     typedef std::map<std::string, unsigned int> InstanceCountMap;
 
     /**
-     * @brief Convert HTTP series response to data::DicomSeries
+     * @brief Convert HTTP series response to data::dicom_series
      * @param[in] answer HTTP responses from the PACS that must be converted
      */
     IO_HTTP_API static DicomSeriesContainer toFwMedData(const QJsonObject& answer);
 
     /**
-     * @brief Convert std::vector< data::DicomSeries > to series instance uid container
+     * @brief Convert std::vector< data::dicom_series > to series instance uid container
      * @param[in] series Series vector used to extract the series instance uids
      */
     IO_HTTP_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer series);

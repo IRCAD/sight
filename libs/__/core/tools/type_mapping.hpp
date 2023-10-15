@@ -46,19 +46,19 @@ struct is_mapping_single_mplhelper;
 
 //
 /**
- * @brief   Create a type (T) binding/mapping with a KeyType ( std::string, PixelType etc...
+ * @brief   Create a type (T) binding/mapping with a key_t ( std::string, PixelType etc...
  * @tparam TSingle_or_TSEQ a sequence or 1 element type to test
  * @tparam KeyType_or_KeyTypeContainer to keys (sequence or single one)
- * @return  true iff the value of the KeyType can deal with the specified type T
+ * @return  true iff the value of the key_t can deal with the specified type T
  *
  *
- * This function should be specialized to create a Mapping with a KeyType value and a type.
+ * This function should be specialized to create a Mapping with a key_t value and a type.
  * This function is used by Dispatcher<>::invoke(key) to know what instance to execute.
  * If isMapping function is missing for a given type then a compilation error
  * "invalid application of 'sizeof' to incomplete type 'boost::STATIC_ASSERTION_FAILURE<false>" is raised
  * to inform developer.
  *
- * *Example* : if keytype type is a std::string and we need to have a binding within unsigned char
+ * *Example* : if key_t type is a std::string and we need to have a binding within unsigned char
  * @code
  * template<>
  * bool isMapping<unsigned char>(const std::string &key)
@@ -84,7 +84,7 @@ bool is_mapping(const key_type_or_key_type_container& type)
  * isMapping<SingleType> is not specialized
  * This class is intended to avoid developer to forgive the specialization of isMapping<TYPE>
  * @tparam  T the type to test
- * @tparam  KeyType the type to match
+ * @tparam  key_t the type to match
  */
 template<class T, class key_type>
 struct is_mapping_single_mplhelper
@@ -96,16 +96,16 @@ struct is_mapping_single_mplhelper
         static_assert(sizeof(T) == 0); // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
         // ** if the compilation trap here its because you have not specialized
         // ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)
-        std::string msg("isMapping<type>(const KEYTYPE &key) not specialized for TYPE and/or KEYTYPE!!!");
+        std::string msg("isMapping<type>(const key_t &key) not specialized for TYPE and/or key_t!!!");
         throw std::invalid_argument(msg);
         return false;
     }
 };
 
 /**
- * @brief   Test whatever a typelist is mapping a container of KeyType
+ * @brief   Test whatever a typelist is mapping a container of key_t
  *
- * @return  true if same size & each element of type list mappes a single element of KeyType
+ * @return  true if same size & each element of type list mappes a single element of key_t
  */
 template<class TSEQ, class key_type_container>
 bool is_mapping_multi(const key_type_container& keys)
@@ -126,8 +126,8 @@ struct empty_list_mapping
         [[maybe_unused]] typename key_type_container::const_iterator& end
 )
     {
-        assert(begin == end); // assertion fails iff TypeList & KeyType container does not have the same size
-        return true;          // an empty typelist with an empty keyType matches
+        assert(begin == end); // assertion fails iff TypeList & key_t container does not have the same size
+        return true;          // an empty typelist with an empty key_t matches
     }
 };
 
@@ -153,7 +153,7 @@ is_mapping_multi_mplhelper
 
         if(keys.size() != static_cast<std::uint64_t>(mpl::size<TSEQ>::value))
         {
-            std::string msg("isMappingMulti TypeList & KeyType container does not have the same size !!!");
+            std::string msg("isMappingMulti TypeList & key_t container does not have the same size !!!");
             throw std::invalid_argument(msg);
             return false;
         }

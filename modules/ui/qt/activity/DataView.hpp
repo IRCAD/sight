@@ -24,10 +24,10 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <activity/extension/Activity.hpp>
+#include <activity/extension/activity.hpp>
 
-#include <data/Activity.hpp>
-#include <data/Composite.hpp>
+#include <data/activity.hpp>
+#include <data/composite.hpp>
 
 #include <QEvent>
 #include <QPointer>
@@ -99,18 +99,18 @@ public:
     /**
      * @brief Creates all tabs from an activity information.
      *
-     * One tab will be added for each activity parameter, if the type of the data is a @ref data::Series,
+     * One tab will be added for each activity parameter, if the type of the data is a @ref data::series,
      * more informations will be displayed in the tree widget.
      *
      * @param _info the struct containing the activity configuration.
      */
-    MODULE_UI_QT_API void fillInformation(const sight::activity::extension::ActivityInfo& _info);
+    MODULE_UI_QT_API void fillInformation(const sight::activity::extension::activity_info& _info);
 
     /**
      * @brief Creates all tabs from an activity.
      * @param _activity the activity.
      */
-    MODULE_UI_QT_API void fillInformation(const data::Activity::sptr& _activity);
+    MODULE_UI_QT_API void fillInformation(const data::activity::sptr& _activity);
 
     /**
      * @brief Checks if all the required data are selected and fill activity data composite.
@@ -124,7 +124,7 @@ public:
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      */
     MODULE_UI_QT_API bool checkAndComputeData(
-        const data::Activity::sptr& _activity,
+        const data::activity::sptr& _activity,
         std::string& _errorMsg
     );
 
@@ -134,7 +134,7 @@ public:
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      * @return return the data if it is correct, else return a nullptr and errorMsg contains detailled error.
      */
-    MODULE_UI_QT_API data::Object::sptr checkData(std::size_t _index, std::string& _errorMsg);
+    MODULE_UI_QT_API data::object::sptr checkData(std::size_t _index, std::string& _errorMsg);
 
     /**
      * @brief Sets the IO selector configuration used to import data.
@@ -173,27 +173,27 @@ protected:
 
 private:
 
-    typedef std::vector<data::Object::csptr> ImportedObjectType;
+    typedef std::vector<data::object::csptr> ImportedObjectType;
     typedef std::vector<QPointer<QTreeWidget> > TreeContainerType;
 
     /// Imports an object required for the selected tab.
     void importObject();
 
-    /// Imports a SeriesSet and then extract the object required for the selected tab.
+    /// Imports a series_set and then extract the object required for the selected tab.
     void importObjectFromSDB();
 
     /// Creates a new object for the selected tab (just use data::factory::make(type)).
     void createNewObject();
 
     /**
-     * @brief Calls @ref module::ui::editor::SSelector service to read the object. Return true if the object is
+     * @brief Calls @ref module::ui::editor::selector service to read the object. Return true if the object is
      * properly
      * read.
      * @param _classname the class name of the object to read.
      * @param _ioSelectorSrvConfig the IO selector configuration.
      * @return the object read by the selector.
      */
-    static data::Object::sptr readObject(const std::string& _classname, const std::string& _ioSelectorSrvConfig);
+    static data::object::sptr readObject(const std::string& _classname, const std::string& _ioSelectorSrvConfig);
 
     /// Removes the selected object in the current tree.
     void removeSelectedObjects();
@@ -203,7 +203,7 @@ private:
 
     /**
      * @brief Allows to edit the current data.
-     * @note Currently it is only available for simple types (@see data::String).
+     * @note Currently it is only available for simple types (@see data::string).
      */
     void onTreeItemDoubleClicked(QTreeWidgetItem* _item, int _column);
 
@@ -212,15 +212,15 @@ private:
      * @param index index used to find the associated tree widget.
      * @param _obj object to add in the tree.
      */
-    void addObjectItem(std::size_t index, const data::Object::csptr& _obj);
+    void addObjectItem(std::size_t index, const data::object::csptr& _obj);
 
     /// Sets the activity information
-    sight::activity::extension::ActivityInfo m_activityInfo;
+    sight::activity::extension::activity_info m_activityInfo;
 
     /// Defines the IO selector config.
     std::string m_ioSelectorSrvConfig;
 
-    /// Dewfines the IO selector config to import data from a SeriesSet.
+    /// Dewfines the IO selector config to import data from a series_set.
     std::string m_sdbIoSelectorSrvConfig;
 
     /// Stores references on the imported object before to add them in the activity.

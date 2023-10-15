@@ -32,7 +32,7 @@ namespace sight::module::io::matrix
 {
 
 /**
- * @brief This service write a data::Matrix4 into a .trf file.
+ * @brief This service write a data::matrix4 into a .trf file.
  *
  * This format is basic: an ascii file which contains matrix 4x4 values.
  *
@@ -44,7 +44,7 @@ namespace sight::module::io::matrix
    </service>
    @endcode
  * @subsection Input Input
- * - \b data [sight::data::Matrix4]: matrix to save.
+ * - \b data [sight::data::matrix4]: matrix to save.
  */
 class MODULE_IO_MATRIX_CLASS_API Matrix4WriterService : public sight::io::service::writer
 {
@@ -101,7 +101,7 @@ protected:
      * @brief Updating method. This method is called by update() from base service ( service::base )
      *
      * This method is used to update the service.
-     * The transformation matrix is written with the writer io::writer::Matrix4Writer.
+     * The transformation matrix is written with the writer io::writer::matrix4_writer.
      * Notify writing.
      */
     MODULE_IO_MATRIX_API void updating() override;

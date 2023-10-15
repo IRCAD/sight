@@ -24,9 +24,9 @@
 
 #include "io/dicom/reader/ie/Document.hpp"
 
-#include <data/ImageSeries.hpp>
-#include <data/PointList.hpp>
-#include <data/String.hpp>
+#include <data/image_series.hpp>
+#include <data/point_list.hpp>
+#include <data/string.hpp>
 
 #include <memory>
 #include <utility>
@@ -37,7 +37,7 @@ namespace sight::io::dicom::reader::iod
 //------------------------------------------------------------------------------
 
 ComprehensiveSRIOD::ComprehensiveSRIOD(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
@@ -54,10 +54,10 @@ ComprehensiveSRIOD::~ComprehensiveSRIOD()
 
 //------------------------------------------------------------------------------
 
-void ComprehensiveSRIOD::read(data::Series::sptr series)
+void ComprehensiveSRIOD::read(data::series::sptr series)
 {
     // Retrieve image series
-    data::ImageSeries::sptr imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
+    data::image_series::sptr imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader

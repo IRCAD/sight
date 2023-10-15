@@ -1,5 +1,5 @@
-<extension implements="sight::service::extension::AppConfig" >
-    <id>PACSSelectorWindow_AppCfg</id>
+<extension implements="sight::app::extension::config" >
+    <id>PACSselectorWindow_AppCfg</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
         <param name="WINDOW_TITLE" />
@@ -10,11 +10,11 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${outputSeriesSet}" type="sight::data::SeriesSet" src="ref" />
+        <object uid="${outputSeriesSet}" type="sight::data::series_set" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SFrame" >
+        <service uid="mainView" type="sight::module::ui::frame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -28,7 +28,7 @@
             </registry>
         </service>
 
-        <service uid="pacsSelectorView" type="sight::module::ui::SView" >
+        <service uid="pacsSelectorView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
@@ -41,8 +41,8 @@
         </service>
 
         <!-- TF manager -->
-        <service uid="PACSSelectorCfg"  type="sight::service::SConfigController" >
-            <appConfig id="PACSSelectorWidget_AppCfg" />
+        <service uid="PACSselectorCfg"  type="sight::app::config_controller" >
+            <appConfig id="PACSselectorWidget_AppCfg" />
             <parameter replace="WID_PARENT" by="view" />
             <inout group="data">
                 <key name="outputSeriesSet" uid="${outputSeriesSet}" />
@@ -58,6 +58,6 @@
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
-        <start uid="PACSSelectorCfg" />
+        <start uid="PACSselectorCfg" />
     </config>
 </extension>

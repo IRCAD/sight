@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>ExDicomSegmentation_Threshold_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -10,15 +10,15 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesSet}" type="sight::data::SeriesSet" src="ref" />
-        <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
-        <object uid="imageSeriesMask" type="sight::data::ImageSeries" src="deferred" />
-        <object uid="landmarks1" type="sight::data::Landmarks" />
-        <object uid="landmarks2" type="sight::data::Landmarks" />
+        <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />
+        <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
+        <object uid="imageSeriesMask" type="sight::data::image_series" src="deferred" />
+        <object uid="landmarks1" type="sight::data::landmarks" />
+        <object uid="landmarks2" type="sight::data::landmarks" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SView">
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::tool_bar">
             <gui>
                 <layout>
                     <menuItem name="Threshold" icon="sight::module::ui::flaticons/YellowMenu.svg" />
@@ -50,7 +50,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="thresholdAct" type="sight::module::filter::image::SThreshold">
+        <service uid="thresholdAct" type="sight::module::filter::image::threshold">
             <in key="source" uid="${imageSeries}" />
             <out key="target" uid="imageSeriesMask" />
             <config>
@@ -58,14 +58,14 @@
             </config>
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::series::SExport" autoConnect="true">
+        <service uid="exportAct" type="sight::module::ui::series::exporter" auto_connect="true">
             <inout key="container" uid="${seriesSet}" />
             <inout key="data" uid="imageSeriesMask" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="negato1Srv" type="sight::service::SConfigController">
+        <service uid="negato1Srv" type="sight::app::config_controller">
             <appConfig id="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
@@ -75,7 +75,7 @@
             <parameter replace="patient_name" by="Source Image" />
         </service>
 
-        <service uid="negato2Srv" type="sight::service::SConfigController">
+        <service uid="negato2Srv" type="sight::app::config_controller">
             <appConfig id="2DNegato" />
             <inout group="data">
                 <key name="image" uid="imageSeriesMask" />

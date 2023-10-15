@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>videoEdition</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -17,13 +17,13 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${camera}" type="sight::data::Camera" src="ref" />
-        <object uid="timeLine" type="sight::data::FrameTL" />
-        <object uid="frame" type="sight::data::Image" />
+        <object uid="${camera}" type="sight::data::camera" src="ref" />
+        <object uid="timeLine" type="sight::data::frame_tl" />
+        <object uid="frame" type="sight::data::image" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SView">
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <toolBar />
                 <layout type="sight::ui::layout::line">
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::tool_bar">
             <gui>
                 <layout>
                     <editor />
@@ -53,11 +53,11 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="editionAct" type="sight::module::ui::SAction" />
+        <service uid="editionAct" type="sight::module::ui::action" />
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+        <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
             <scene renderMode="sync">
                 <background topColor="#000000" bottomColor="#000000" />
 
@@ -67,13 +67,13 @@
             </scene>
         </service>
 
-        <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
+        <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
             <in key="image" uid="frame" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="videoGrabberSrv" type="sight::module::io::video::SGrabberProxy">
+        <service uid="videoGrabberSrv" type="sight::module::io::video::grabber_proxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="timeLine" />
             <config>
@@ -81,7 +81,7 @@
             </config>
         </service>
 
-        <service uid="frameSynchronizerSrv" type="sight::module::sync::SSynchronizer">
+        <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer">
             <in group="frameTL">
                 <key uid="timeLine" />
             </in>
@@ -90,13 +90,13 @@
             </inout>
         </service>
 
-        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">
+        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
             <inout key="camera" uid="${camera}" />
             <videoSupport>true</videoSupport>
             <label></label>
         </service>
 
-        <service uid="intrinsicEditionSrv" type="sight::module::ui::qt::calibration::SIntrinsicEdition">
+        <service uid="intrinsicEditionSrv" type="sight::module::ui::qt::calibration::intrinsic_edition">
             <inout key="camera" uid="${camera}" />
         </service>
 

@@ -23,7 +23,7 @@ material Default
             {
             }
 
-            // This will be used by STexture adaptor and set in SMaterial adaptor
+            // This will be used by texture adaptor and set in material adaptor
             texture_unit diffuseTexture
             {
                 tex_address_mode wrap

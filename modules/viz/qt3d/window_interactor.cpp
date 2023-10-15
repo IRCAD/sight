@@ -25,7 +25,7 @@
 #include <ui/qt/container/widget.hpp>
 
 #include <viz/qt3d/registry/macros.hpp>
-#include <viz/qt3d/SRender.hpp>
+#include <viz/qt3d/render.hpp>
 
 #include <Qt3DExtras/Qt3DWindow>
 

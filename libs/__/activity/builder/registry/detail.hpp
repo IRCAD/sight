@@ -37,9 +37,9 @@ class base;
 namespace registry
 {
 
-typedef std::string KeyType;
+typedef std::string key_t;
 
-typedef core::factory_registry<SPTR(activity::builder::base)(), KeyType> Type;
+typedef core::factory_registry<SPTR(activity::builder::base)(), key_t> Type;
 
 ACTIVITY_API SPTR(Type) get();
 

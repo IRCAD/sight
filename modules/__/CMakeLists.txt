@@ -1,5 +1,5 @@
 add_subdirectory(memory)
-add_subdirectory(appXml)
+add_subdirectory(app)
 add_subdirectory(sync)
 add_subdirectory(activity)
 add_subdirectory(debug)

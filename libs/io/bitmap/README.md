@@ -30,14 +30,14 @@ To sum up:
 ### Writing
 
 ```c++
-    auto image = sight::data::Image::New();
+    auto image = sight::data::image::New();
     // fill the image...
     ...
 
     auto writer = io::bitmap::Writer::New();
 
     // Configure the session writer
-    writer->setObject(image);
+    writer->set_object(image);
 
     // Write with DEFAULT backend (tiff) and DEFAULT mode (fast)
     writer->setFile("image.tiff");
@@ -52,14 +52,14 @@ To sum up:
 ### Reading
 
 ```c++
-    auto image = sight::data::Image::New();
+    auto image = sight::data::image::New();
     // fill the image...
     ...
 
     auto reader = io::bitmap::Reader::New();
 
     // Configure the session writer
-    reader->setObject(image);
+    reader->set_object(image);
 
     // Read by guessing right backend (use the extension)
     reader->setFile("image.png");

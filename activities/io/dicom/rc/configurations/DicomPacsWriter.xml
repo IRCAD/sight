@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>DicomPacsWriter</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -7,13 +7,13 @@
         <param name="PROGRESS_CHANNEL" />
     </parameters>
     <config>
-        <object uid="seriesSet" type="sight::data::SeriesSet" />
-        <object uid="selections" type="sight::data::Vector" />
+        <object uid="seriesSet" type="sight::data::series_set" />
+        <object uid="selections" type="sight::data::vector" />
         <object uid="pacsConfiguration" type="sight::io::dimse::data::PacsConfiguration" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SView" >
+        <service uid="mainView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <view caption="Information" align="center" minWidth="200" />
@@ -29,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::SToolBar" >
+        <service uid="toolBar" type="sight::module::ui::tool_bar" >
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::icons/Import.svg" />
@@ -48,12 +48,12 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_import" type="sight::module::ui::series::SDBMerger" >
+        <service uid="action_import" type="sight::module::ui::series::db_merger" >
             <inout key="seriesSet" uid="seriesSet" />
             <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesSetReader" />
         </service>
 
-        <service uid="action_editPacsConfiguration" type="sight::module::ui::SConfigLauncher">
+        <service uid="action_editPacsConfiguration" type="sight::module::ui::config_launcher">
             <appConfig id="PacsConfigurationManager" />
             <inout group="data">
                 <key name="PACS_CONFIGURATION" uid="pacsConfiguration" />
@@ -62,21 +62,21 @@
         </service>
 
         <!-- Dicom Anonymization -->
-        <service uid="action_anonymize" type="sight::module::ui::SAction" />
+        <service uid="action_anonymize" type="sight::module::ui::action" />
 
         <!-- Push series -->
-        <service uid="action_pushSeriesToPacs" type="sight::module::ui::SAction" />
+        <service uid="action_pushSeriesToPacs" type="sight::module::ui::action" />
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="progressBarController" type="sight::module::io::dimse::SProgressBarController"  />
+        <service uid="progressBarController" type="sight::module::io::dimse::progress_bar_controller"  />
 
-        <service uid="selector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
+        <service uid="selector" type="sight::module::ui::qt::series::selector" auto_connect="true">
             <inout key="seriesSet" uid="seriesSet" />
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="pacsConfigurationInitializer" type="sight::module::io::dimse::SPacsConfigurationInitializer">
+        <service uid="pacsConfigurationInitializer" type="sight::module::io::dimse::pacs_configuration_initializer">
             <inout key="config" uid="pacsConfiguration" />
             <config
                 localApplicationTitle="${APP_NAME}"
@@ -91,20 +91,20 @@
         </service>
 
         <!-- Preview -->
-        <service uid="viewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
+        <service uid="viewer" type="sight::module::ui::qt::series::viewer" auto_connect="true">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
-                <config id="2DLocalPreviewConfig" type="sight::data::DicomSeries" />
+                <config id="2DLocalPreviewConfig" type="sight::data::dicom_series" />
             </configs>
         </service>
 
-        <service uid="anonymizeController" type="sight::module::io::dicom::SDicomSeriesAnonymizer">
+        <service uid="anonymizeController" type="sight::module::io::dicom::dicom_series_anonymizer">
             <inout key="seriesSet" uid="seriesSet" />
             <inout key="selectedSeries" uid="selections" />
         </service>
 
-        <service uid="pushSeriesController" type="sight::module::io::dimse::SSeriesPusher">
+        <service uid="pushSeriesController" type="sight::module::io::dimse::series_pusher">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="selections" />
         </service>

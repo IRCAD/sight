@@ -1,0 +1,280 @@
+/************************************************************************
+ *
+ * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2012-2015 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "vector_functions_test.hpp"
+
+#include <cmath>
+#include <core/base.hpp>
+#include <core/tools/random/generator.hpp>
+
+#define FW_PROFILING_DISABLED
+#include <core/profiling.hpp>
+
+#include <geometry/data/vector_functions.hpp>
+
+// Registers the fixture into the 'registry'
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::vector_functions_test);
+
+namespace sight::geometry::data::ut
+{
+
+using core::tools::random::safe_rand;
+
+//------------------------------------------------------------------------------
+
+void vector_functions_test::setUp()
+{
+    // Set up context before running a test.
+}
+
+//------------------------------------------------------------------------------
+
+void vector_functions_test::tearDown()
+{
+    // Clean up after the test run.
+}
+
+//------------------------------------------------------------------------------
+
+void vector_functions_test::checkDot()
+{
+    // Dot product
+    const double V1_X = 0.1;
+    const double V1_Y = safe_rand() % 30 + 0.1;
+    const double V1_Z = safe_rand() % 20 + 0.4;
+
+    const double V2_X = safe_rand() % 50 + 0.4;
+    const double V2_Y = 0.5;
+    const double V2_Z = safe_rand() % 10 + 0.8;
+
+    const fwVec3d V1 = {V1_X, V1_Y, V1_Z};
+    const fwVec3d V2 = {V2_X, V2_Y, V2_Z};
+    double result    = NAN;
+
+#ifndef FW_PROFILING_DISABLED
+    {
+        FW_PROFILE("::geometry::data::dot");
+        for(int i = 0 ; i < 2000000 ; ++i)
+        {
+            result = geometry::data::dot(V1, V2);
+        }
+    }
+#else
+    result = geometry::data::dot(V1, V2);
+#endif
+
+    double dotResult = V1_X * V2_X + V1_Y * V2_Y + V1_Z * V2_Z;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(dotResult, result, 0.00001);
+}
+
+//------------------------------------------------------------------------------
+
+void vector_functions_test::checkCross()
+{
+    // New version
+    const double CROSS_X = -0.03;
+    const double CROSS_Y = 0.06;
+    const double CROSS_Z = -0.03;
+    const fwVec3d V1     = {0.1, 0.2, 0.3};
+    const fwVec3d V2     = {0.4, 0.5, 0.6};
+
+    fwVec3d result;
+#ifndef FW_PROFILING_DISABLED
+    {
+        FW_PROFILE("::geometry::data::cross");
+        for(int i = 0 ; i < 2000000 ; ++i)
+        {
+            result = geometry::data::cross(V1, V2);
+        }
+    }
+#else
+    result = geometry::data::cross(V1, V2);
+#endif
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_X, result[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Y, result[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(CROSS_Z, result[2], 0.00001);
+}
+
+//------------------------------------------------------------------------------
+
+void vector_functions_test::checkNormalize()
+{
+    const double NORM = 0.87749;
+    fwVec3d v         = {0.4, 0.5, 0.6};
+
+    double norm = NAN;
+#ifndef FW_PROFILING_DISABLED
+    {
+        FW_PROFILE("::geometry::data::normalize");
+        for(int i = 0 ; i < 1000000 ; ++i)
+        {
+            v    = {0.4, 0.5, 0.6};
+            norm = geometry::data::normalize(v);
+        }
+    }
+#else
+    norm = geometry::data::normalize(v);
+#endif
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(NORM, norm, 0.00001);
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.4 / NORM, v[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5 / NORM, v[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.6 / NORM, v[2], 0.00001);
+}
+
+//------------------------------------------------------------------------------
+
+void vector_functions_test::checkNegate()
+{
+    fwVec3d v = {1.0, 2.0, 3.0};
+
+    geometry::data::negate(v);
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-1.0), v[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-2.0), v[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-3.0), v[2], 0.00001);
+}
+
+//------------------------------------------------------------------------------
+
+void vector_functions_test::checkVecLength()
+{
+    fwVec3d v = {1.0, 2.0, 3.0};
+
+    double length = NAN;
+#ifndef FW_PROFILING_DISABLED
+    {
+        FW_PROFILE("::geometry::data::normalize");
+        for(int i = 0 ; i < 1000000 ; ++i)
+        {
+            length = geometry::data::vecLength(v);
+        }
+    }
+#else
+    length = geometry::data::vecLength(v);
+#endif
+
+    double expected = 3.741657387;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, length, 0.00001);
+}
+
+//------------------------------------------------------------------------------
+
+void vector_functions_test::checkOperators()
+{
+    fwVec3d vec1 = {1.0, 2.0, 3.0};
+    vec1 *= 2.0;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2.0), vec1[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), vec1[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(6.0), vec1[2], 0.00001);
+
+    fwVec3d vec2 = {1.0, 2.0, 3.0};
+    vec2 /= 2.0;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.5), vec2[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.0), vec2[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.5), vec2[2], 0.00001);
+
+    fwVec3d addVec = {2.0, 2.0, 2.0};
+    fwVec3d vec3;
+#ifndef FW_PROFILING_DISABLED
+    {
+        FW_PROFILE("::geometry::data::operator/");
+        for(int i = 0 ; i < 1000000 ; ++i)
+        {
+            vec3  = {1.0, 2.0, 3.0};
+            vec3 += addVec;
+        }
+    }
+#else
+    vec3  = {1.0, 2.0, 3.0};
+    vec3 += addVec;
+#endif
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(3.0), vec3[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), vec3[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(5.0), vec3[2], 0.00001);
+
+    fwVec3d vec4   = {1.0, 2.0, 3.0};
+    fwVec3d subVec = {2.0, 2.0, 2.0};
+    vec4 -= subVec;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-1.0), vec4[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.0), vec4[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.0), vec4[2], 0.00001);
+
+    fwVec3d vec5 = {1.0, 2.0, 3.0};
+    fwVec3d res1 = vec5 * 2.0;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2.0), res1[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), res1[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(6.0), res1[2], 0.00001);
+
+    fwVec3d vec6 = {1.0, 2.0, 3.0};
+    fwVec3d res2 = vec6 * (-2.0);
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-2.0), res2[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-4.0), res2[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-6.0), res2[2], 0.00001);
+
+    fwVec3d vec7 = {1.0, 2.0, 3.0};
+    fwVec3d res3 = vec7 / 2.0;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.5), res3[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.0), res3[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.5), res3[2], 0.00001);
+
+    fwVec3d vec8 = {1.0, 2.0, 3.0};
+    fwVec3d res4 = vec8 + addVec;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(3.0), res4[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(4.0), res4[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(5.0), res4[2], 0.00001);
+
+    fwVec3d vec9 = {1.0, 2.0, 3.0};
+    fwVec3d res5 = vec9 - subVec;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(-1.0), res5[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0.0), res5[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1.0), res5[2], 0.00001);
+
+    fwVec3d vec10 = {1.0, 2.0, 3.0};
+    fwVec3d res6  = {1.000000, 2.00000000, 3.00000000000};
+
+    bool testEven = vec10 == res6;
+    CPPUNIT_ASSERT_EQUAL(testEven, true);
+
+    fwVec3d vec11 = {1.0, 2.0, 3.0};
+    fwVec3d res7  = {1.0000001, 2.05, 3.000000000000009};
+
+    bool testUneven = vec11 != res7;
+    CPPUNIT_ASSERT_EQUAL(testUneven, true);
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace sight::geometry::data::ut

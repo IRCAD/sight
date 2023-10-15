@@ -23,7 +23,7 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/SRender.hpp"
+#include "viz/scene3d/render.hpp"
 
 #include <OgreSceneNode.h>
 
@@ -41,13 +41,13 @@ public:
      * @brief Get the Ogre identifier of the transform in the scene manager.
      * @return This transform service Id.
      */
-    [[nodiscard]] VIZ_SCENE3D_API viz::scene3d::SRender::OgreObjectIdType getTransformId() const;
+    [[nodiscard]] VIZ_SCENE3D_API viz::scene3d::render::OgreObjectIdType getTransformId() const;
 
     /**
      * @brief Set the Ogre identifier of the transform in the scene manager.
      * @param _id The new transform service Id.
      */
-    VIZ_SCENE3D_API void setTransformId(viz::scene3d::SRender::OgreObjectIdType _id);
+    VIZ_SCENE3D_API void setTransformId(viz::scene3d::render::OgreObjectIdType _id);
 
     /**
      * @brief Retrieve the node matching m_transformId or create it.
@@ -71,7 +71,7 @@ private:
     Ogre::SceneNode* m_transformNode {nullptr};
 
     /// This transform identifier
-    viz::scene3d::SRender::OgreObjectIdType m_transformId;
+    viz::scene3d::render::OgreObjectIdType m_transformId;
 };
 
 } //namespace sight::viz::scene3d

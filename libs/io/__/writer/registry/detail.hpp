@@ -32,14 +32,14 @@
 namespace sight::io::writer
 {
 
-class IObjectWriter;
+class object_writer;
 
 namespace registry
 {
 
-typedef std::string KeyType;
+typedef std::string key_t;
 
-typedef core::factory_registry<SPTR(io::writer::IObjectWriter)(), KeyType> Type;
+typedef core::factory_registry<SPTR(io::writer::object_writer)(), key_t> Type;
 
 IO_API SPTR(Type) get();
 

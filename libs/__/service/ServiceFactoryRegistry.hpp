@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "service/extension/Factory.hpp"
+#include "service/extension/factory.hpp"
 #include "service/factory/new.hpp"
 
 namespace sight::service
@@ -39,15 +39,15 @@ public:
 
     ServiceFactoryRegistry(const std::string& simpl, const std::string& stype)
     {
-        auto factory = service::extension::Factory::getDefault();
-        factory->addServiceFactory(&sight::service::factory::make<SRV_IMPL>, simpl, stype);
+        auto factory = service::extension::factory::get();
+        factory->add_service_factory(&sight::service::factory::make<SRV_IMPL>, simpl, stype);
     }
 
     ServiceFactoryRegistry(const std::string& simpl, const std::string& stype, const std::string& oimpl)
     {
-        auto factory = service::extension::Factory::getDefault();
-        factory->addServiceFactory(&sight::service::factory::make<SRV_IMPL>, simpl, stype);
-        factory->addObjectFactory(simpl, oimpl);
+        auto factory = service::extension::factory::get();
+        factory->add_service_factory(&sight::service::factory::make<SRV_IMPL>, simpl, stype);
+        factory->add_object_factory(simpl, oimpl);
     }
 };
 
@@ -60,8 +60,8 @@ public:
 
     ServiceObjectFactoryRegistry(const std::string& simpl, const std::string& oimpl)
     {
-        auto factory = service::extension::Factory::getDefault();
-        factory->addObjectFactory(simpl, oimpl);
+        auto factory = service::extension::factory::get();
+        factory->add_object_factory(simpl, oimpl);
     }
 };
 

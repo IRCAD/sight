@@ -24,7 +24,7 @@
 
 #include <core/os/temp_path.hpp>
 
-#include <data/Camera.hpp>
+#include <data/camera.hpp>
 
 #include <navigation/openvslam/Helper.hpp>
 
@@ -82,8 +82,8 @@ void HelperTest::toSight()
 
 void HelperTest::fromSight()
 {
-    //Create a dummy data::Camera;
-    data::Camera cam;
+    //Create a dummy data::camera;
+    data::camera cam;
 
     cam.setCameraID("Dummy Test Camera");
     cam.setWidth(1920);
@@ -105,8 +105,8 @@ void HelperTest::fromSight()
 
 void HelperTest::createConfig()
 {
-    //Create a dummy data::Camera;
-    data::Camera cam;
+    //Create a dummy data::camera;
+    data::camera cam;
 
     cam.setCameraID("Dummy Test Camera");
     cam.setWidth(1920);
@@ -145,8 +145,8 @@ void HelperTest::createConfig()
 
 void HelperTest::writeReadConfig()
 {
-    //Create a dummy data::Camera;
-    data::Camera cam;
+    //Create a dummy data::camera;
+    data::camera cam;
 
     cam.setCameraID("Dummy Test Camera");
     cam.setWidth(1920);
@@ -228,7 +228,7 @@ void HelperTest::writeReadConfig()
 //-----------------------------------------------------------------------------
 
 void HelperTest::compareCam(
-    const data::Camera& _sightCam,
+    const data::camera& _sightCam,
     const ::openvslam::camera::perspective& _ovsCam,
     bool _sightExpected
 )

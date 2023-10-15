@@ -29,7 +29,7 @@
 
 #include <core/runtime/helper.hpp>
 
-#include <service/op/Get.hpp>
+#include <service/op.hpp>
 
 #include <utility>
 
@@ -182,7 +182,7 @@ void View::manage(std::vector<ui::container::widget::sptr> subViews)
             SIGHT_ASSERT(
                 "The service '" + sid.first + "' cannot be started by '" + m_sid + "' because it is not stopped."
                 ,
-                service->isStopped()
+                service->stopped()
             );
             service->start();
         }

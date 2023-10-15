@@ -10,13 +10,13 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>Tuto09MatrixTransformInGS_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="matrixA" type="sight::data::Matrix4">
+            <object uid="matrixA" type="sight::data::matrix4">
                 <matrix>
                     <![CDATA[
                         1 0 0 2
@@ -27,7 +27,7 @@
                 </matrix>
             </object>
 
-            <object uid="matrixB" type="sight::data::Matrix4">
+            <object uid="matrixB" type="sight::data::matrix4">
                 <matrix>
                     <![CDATA[
                         1 0 0 4
@@ -38,7 +38,7 @@
                 </matrix>
             </object>
 
-            <object uid="matrixC" type="sight::data::Matrix4">
+            <object uid="matrixC" type="sight::data::matrix4">
                 <matrix>
                     <![CDATA[
                         1 0 0 0
@@ -49,7 +49,7 @@
                 </matrix>
             </object>
 
-            <object uid="matrixD" type="sight::data::Matrix4">
+            <object uid="matrixD" type="sight::data::matrix4">
                 <matrix>
                     <![CDATA[
                         0.75 0        0        0
@@ -60,19 +60,19 @@
                 </matrix>
             </object>
 
-            <object uid="matrixE" type="sight::data::Matrix4" />
+            <object uid="matrixE" type="sight::data::matrix4" />
 
-            <object uid="rotation1" type="sight::data::Matrix4" />
+            <object uid="rotation1" type="sight::data::matrix4" />
 
-            <object uid="rotation2" type="sight::data::Matrix4" />
+            <object uid="rotation2" type="sight::data::matrix4" />
 
-            <object uid="rotation3" type="sight::data::Matrix4" />
+            <object uid="rotation3" type="sight::data::matrix4" />
 
-            <object uid="mesh" type="sight::data::Mesh" />
+            <object uid="mesh" type="sight::data::mesh" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>Tuto09MatrixTransformInGS</name>
@@ -87,7 +87,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::menu_bar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -98,7 +98,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -112,7 +112,7 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::SView">
+            <service uid="mainView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
@@ -132,7 +132,7 @@
                 Generic scene:
                 This scene shows four times the same mesh but with a different matrix. It manages multiples transformation matrices.
             -->
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -149,78 +149,78 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
                 <config priority="0" />
             </service>
 
-            <service uid="mesh0Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="mesh0Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="mesh" />
             </service>
 
-            <service uid="transform1Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true">
+            <service uid="transform1Adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
                 <inout key="transform" uid="rotation1" />
                 <config transform="rotationTransform1" />
             </service>
 
-            <service uid="mesh1Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="mesh1Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="mesh" />
                 <config transform="rotationTransform1" />
             </service>
 
-            <service uid="transform2Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true">
+            <service uid="transform2Adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
                 <inout key="transform" uid="rotation2" />
                 <config transform="rotationTransform2" />
             </service>
 
-            <service uid="mesh2Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="mesh2Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="mesh" />
                 <config transform="rotationTransform2" />
             </service>
 
-            <service uid="transform3Adp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true">
+            <service uid="transform3Adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
                 <inout key="transform" uid="rotation3" />
                 <config transform="rotationTransform3" />
             </service>
 
-            <service uid="mesh3Adp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="mesh3Adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="mesh" />
                 <config transform="rotationTransform3" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="sight::module::ui::com::SStarter">
+            <service uid="openMeshAct" type="sight::module::ui::com::starter">
                 <start uid="meshReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="matrixEditorSrv" type="sight::module::ui::qt::viz::STransformEditor">
+            <service uid="matrixEditorSrv" type="sight::module::ui::qt::viz::transform_editor">
                 <inout key="matrix" uid="matrixE" />
                 <translation enabled="false" />
                 <rotation enabled="y" min="0" max="360" />
             </service>
 
-            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector">
+            <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="rotation1Srv" type="sight::module::geometry::SConcatenateMatrices">
+            <service uid="rotation1Srv" type="sight::module::geometry::concatenate_matrices">
                 <in group="matrix">
-                    <key uid="matrixE" autoConnect="true" />
+                    <key uid="matrixE" auto_connect="true" />
                     <key uid="matrixA" />
                     <key uid="matrixD" />
                 </in>
                 <inout key="output" uid="rotation1" />
             </service>
 
-            <service uid="rotation2Srv" type="sight::module::geometry::SConcatenateMatrices">
+            <service uid="rotation2Srv" type="sight::module::geometry::concatenate_matrices">
                 <in group="matrix">
                     <key uid="matrixB" />
-                    <key uid="matrixE" autoConnect="true" />
+                    <key uid="matrixE" auto_connect="true" />
                     <key uid="matrixE" />
                     <key uid="matrixE" />
                     <key uid="matrixD" />
@@ -229,10 +229,10 @@
                 <inout key="output" uid="rotation2" />
             </service>
 
-            <service uid="rotation3Srv" type="sight::module::geometry::SConcatenateMatrices">
+            <service uid="rotation3Srv" type="sight::module::geometry::concatenate_matrices">
                 <in group="matrix">
                     <key uid="matrixC" />
-                    <key uid="matrixE" autoConnect="true" />
+                    <key uid="matrixE" auto_connect="true" />
                     <key uid="matrixD" />
                     <key uid="matrixD" />
                     <key uid="matrixD" />

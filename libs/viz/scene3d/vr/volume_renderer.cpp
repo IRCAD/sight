@@ -51,9 +51,9 @@ volume_renderer::volume_renderer(
     std::string parentId,
     Ogre::SceneManager* const sceneManager,
     Ogre::SceneNode* const volumeNode,
-    sight::data::Image::csptr image,
-    sight::data::Image::csptr mask,
-    sight::data::TransferFunction::csptr tf,
+    sight::data::image::csptr image,
+    sight::data::image::csptr mask,
+    sight::data::transfer_function::csptr tf,
     std::uint16_t samples,
     bool with_buffer,
     bool preintegration
@@ -62,7 +62,7 @@ volume_renderer::volume_renderer(
     m_sceneManager(sceneManager),
     m_3DOgreTexture(std::make_shared<sight::viz::scene3d::Texture>(image)),
     m_maskTexture(std::make_shared<sight::viz::scene3d::Texture>(mask)),
-    m_gpuVolumeTF(std::make_shared<sight::viz::scene3d::TransferFunction>(tf)),
+    m_gpuVolumeTF(std::make_shared<sight::viz::scene3d::transfer_function>(tf)),
     m_with_buffer(with_buffer),
     m_preintegration(preintegration),
     m_volumeSceneNode(volumeNode),
@@ -152,8 +152,8 @@ void volume_renderer::resizeViewport(int /*w*/, int /*h*/)
 //-----------------------------------------------------------------------------
 
 void volume_renderer::scaleTranslateCube(
-    const data::Image::Spacing& spacing,
-    const data::Image::Origin& origin
+    const data::image::Spacing& spacing,
+    const data::image::Origin& origin
 )
 {
     // Scale the volume based on the image's spacing and move it to the image origin.

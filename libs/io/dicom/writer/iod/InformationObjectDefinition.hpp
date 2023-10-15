@@ -27,7 +27,7 @@
 
 #include <core/log/logger.hpp>
 
-#include <data/Series.hpp>
+#include <data/series.hpp>
 
 #include <cstdint>
 #include <filesystem>
@@ -65,7 +65,7 @@ public:
     IO_DICOM_API virtual ~InformationObjectDefinition();
 
     /// Write DICOM file
-    IO_DICOM_API virtual void write(const data::Series::csptr& series) = 0;
+    IO_DICOM_API virtual void write(const data::series::csptr& series) = 0;
 
 protected:
 

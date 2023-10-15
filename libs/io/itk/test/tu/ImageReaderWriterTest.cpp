@@ -32,8 +32,8 @@
 #include <io/itk/NiftiImageReader.hpp>
 #include <io/itk/NiftiImageWriter.hpp>
 
-#include <utestData/Data.hpp>
-#include <utestData/generator/Image.hpp>
+#include <utest_data/Data.hpp>
+#include <utest_data/generator/image.hpp>
 
 #include <filesystem>
 
@@ -61,9 +61,9 @@ void ImageReaderWriterTest::tearDown()
 
 void ImageReaderWriterTest::inrReadWriteTest()
 {
-    // create Image
-    data::Image::sptr image = std::make_shared<data::Image>();
-    utestData::generator::Image::generateRandomImage(image, core::type::INT16);
+    // create image
+    data::image::sptr image = std::make_shared<data::image>();
+    utest_data::generator::image::generateRandomImage(image, core::type::INT16);
     sight::io::itk::ut::ImageReaderWriterTest::inrReadWriteCheck(image);
 }
 
@@ -95,17 +95,17 @@ void ImageReaderWriterTest::inrStressTest()
 void ImageReaderWriterTest::niftiReadTest()
 {
     //cspell: ignore 3Dkidney
-    const std::filesystem::path sightImagePath(utestData::Data::dir() / "sight/image/nii/3Dkidney.nii");
+    const std::filesystem::path sightImagePath(utest_data::Data::dir() / "sight/image/nii/3Dkidney.nii");
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + sightImagePath.string() + "' does not exist",
         std::filesystem::exists(sightImagePath)
     );
 
-    // load Image
-    data::Image::sptr sightImage                     = std::make_shared<data::Image>();
+    // load image
+    data::image::sptr sightImage                     = std::make_shared<data::image>();
     io::itk::NiftiImageReader::sptr sightImageReader = std::make_shared<io::itk::NiftiImageReader>();
-    sightImageReader->setObject(sightImage);
+    sightImageReader->set_object(sightImage);
     sightImageReader->set_file(sightImagePath);
     sightImageReader->read();
 
@@ -118,17 +118,17 @@ void ImageReaderWriterTest::niftiReadTest()
         {481, 362, 478
         });
 
-    const std::filesystem::path externalImagePath(utestData::Data::dir() / "sight/image/nii/brain.nii");
+    const std::filesystem::path externalImagePath(utest_data::Data::dir() / "sight/image/nii/brain.nii");
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + externalImagePath.string() + "' does not exist",
         std::filesystem::exists(externalImagePath)
     );
 
-    // load Image
-    data::Image::sptr externalImage                     = std::make_shared<data::Image>();
+    // load image
+    data::image::sptr externalImage                     = std::make_shared<data::image>();
     io::itk::NiftiImageReader::sptr externalImageReader = std::make_shared<io::itk::NiftiImageReader>();
-    externalImageReader->setObject(externalImage);
+    externalImageReader->set_object(externalImage);
     externalImageReader->set_file(externalImagePath);
     externalImageReader->read();
 
@@ -145,12 +145,12 @@ void ImageReaderWriterTest::niftiReadTest()
 //------------------------------------------------------------------------------
 
 void ImageReaderWriterTest::niftiReadCheck(
-    const data::Image::sptr& imageToTest,
+    const data::image::sptr& imageToTest,
     const core::type& expectedType,
     const std::size_t expectedDim,
-    const data::Image::Spacing& expectedSpacing,
-    const data::Image::Origin& expectedOrigin,
-    const data::Image::Size& expectedSize
+    const data::image::Spacing& expectedSpacing,
+    const data::image::Origin& expectedOrigin,
+    const data::image::Size& expectedSize
 )
 {
     CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -167,18 +167,18 @@ void ImageReaderWriterTest::niftiReadCheck(
     for(std::size_t i = 0 ; i < expectedDim ; ++i)
     {
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            static_cast<data::Image::Spacing::value_type>(imageToTest->getSpacing()[i]),
-            static_cast<data::Image::Spacing::value_type>(expectedSpacing[i]),
+            static_cast<data::image::Spacing::value_type>(imageToTest->getSpacing()[i]),
+            static_cast<data::image::Spacing::value_type>(expectedSpacing[i]),
             epsilon
         );
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            static_cast<data::Image::Origin::value_type>(imageToTest->getOrigin()[i]),
-            static_cast<data::Image::Origin::value_type>(expectedOrigin[i]),
+            static_cast<data::image::Origin::value_type>(imageToTest->getOrigin()[i]),
+            static_cast<data::image::Origin::value_type>(expectedOrigin[i]),
             epsilon
         );
         CPPUNIT_ASSERT_EQUAL(
-            static_cast<data::Image::Size::value_type>(imageToTest->size()[i]),
-            static_cast<data::Image::Size::value_type>(expectedSize[i])
+            static_cast<data::image::Size::value_type>(imageToTest->size()[i]),
+            static_cast<data::image::Size::value_type>(expectedSize[i])
         );
     }
 }
@@ -187,9 +187,9 @@ void ImageReaderWriterTest::niftiReadCheck(
 
 void ImageReaderWriterTest::niftiWriteTest()
 {
-    // create Image
-    data::Image::sptr image = std::make_shared<data::Image>();
-    utestData::generator::Image::generateRandomImage(image, core::type::INT16);
+    // create image
+    data::image::sptr image = std::make_shared<data::image>();
+    utest_data::generator::image::generateRandomImage(image, core::type::INT16);
 
     // WARNING!
     // There is a conversion subtlety. Nifti stores the data as float, and convert them.
@@ -197,8 +197,8 @@ void ImageReaderWriterTest::niftiWriteTest()
     // This leads to several errors.
     // To prevent this, the spacing and origin used for the test are set as float, converted to double, to be able to
     // test the direct equality.
-    const data::Image::Spacing spacingD = {0.5F, 0.001F, 1.25F};
-    const data::Image::Origin originD   = {0.5F, 0.25F, 0.25F};
+    const data::image::Spacing spacingD = {0.5F, 0.001F, 1.25F};
+    const data::image::Origin originD   = {0.5F, 0.25F, 0.25F};
     image->setSpacing(spacingD);
     image->setOrigin(originD);
 
@@ -207,7 +207,7 @@ void ImageReaderWriterTest::niftiWriteTest()
     const std::filesystem::path filename = tmpDir / "image.nii";
     auto myWriter                        = std::make_shared<io::itk::NiftiImageWriter>();
 
-    myWriter->setObject(image);
+    myWriter->set_object(image);
     myWriter->set_file(filename);
     myWriter->write();
 
@@ -216,13 +216,13 @@ void ImageReaderWriterTest::niftiWriteTest()
         std::filesystem::exists(filename)
     );
 
-    // load Image
-    data::Image::sptr image2 = std::make_shared<data::Image>();
+    // load image
+    data::image::sptr image2 = std::make_shared<data::image>();
     image2->setWindowCenter(image->getWindowCenter());
     image2->setWindowWidth(image->getWindowWidth());
 
     auto myReader = std::make_shared<io::itk::NiftiImageReader>();
-    myReader->setObject(image2);
+    myReader->set_object(image2);
     myReader->set_file(filename);
     myReader->read();
 
@@ -233,14 +233,14 @@ void ImageReaderWriterTest::niftiWriteTest()
 
 void ImageReaderWriterTest::jpegWriteTest()
 {
-    // create Image
-    data::Image::sptr image = std::make_shared<data::Image>();
-    utestData::generator::Image::generateRandomImage(image, core::type::INT16);
+    // create image
+    data::image::sptr image = std::make_shared<data::image>();
+    utest_data::generator::image::generateRandomImage(image, core::type::INT16);
 
     // save image in inr
     core::os::temp_dir tmpDir;
     auto myWriter = std::make_shared<io::itk::JpgImageWriter>();
-    myWriter->setObject(image);
+    myWriter->set_object(image);
     myWriter->set_folder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
 }
@@ -249,24 +249,24 @@ void ImageReaderWriterTest::jpegWriteTest()
 
 void ImageReaderWriterTest::inrReadJpegWriteTest()
 {
-    // create Image
-    std::filesystem::path pathInr = utestData::Data::dir() / "sight" / "image" / "inr" / "image.inr.gz";
+    // create image
+    std::filesystem::path pathInr = utest_data::Data::dir() / "sight" / "image" / "inr" / "image.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + pathInr.string() + "' does not exist",
         std::filesystem::exists(pathInr)
     );
 
-    data::Image::sptr image                = std::make_shared<data::Image>();
+    data::image::sptr image                = std::make_shared<data::image>();
     io::itk::InrImageReader::sptr myReader = std::make_shared<io::itk::InrImageReader>();
-    myReader->setObject(image);
+    myReader->set_object(image);
     myReader->set_file(pathInr);
     myReader->read();
 
     // save image in inr
     core::os::temp_dir tmpDir;
     auto myWriter = std::make_shared<io::itk::JpgImageWriter>();
-    myWriter->setObject(image);
+    myWriter->set_object(image);
     myWriter->set_folder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
 }
@@ -277,32 +277,32 @@ void ImageReaderWriterTest::inrStressTestWithType(core::type type, int nbTest)
 {
     for(int nb = 0 ; nb < nbTest ; ++nb)
     {
-        data::Image::sptr image = std::make_shared<data::Image>();
-        utestData::generator::Image::generateRandomImage(image, type);
+        data::image::sptr image = std::make_shared<data::image>();
+        utest_data::generator::image::generateRandomImage(image, type);
         sight::io::itk::ut::ImageReaderWriterTest::inrReadWriteCheck(image);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::inrReadWriteCheck(data::Image::sptr image)
+void ImageReaderWriterTest::inrReadWriteCheck(data::image::sptr image)
 {
     // inr only support image origin (0,0,0)
-    const data::Image::Origin origin = {0., 0., 0.};
+    const data::image::Origin origin = {0., 0., 0.};
     image->setOrigin(origin);
 
     // save image in inr
     core::os::temp_dir tmpDir;
     const std::filesystem::path PATH = tmpDir / "image.inr.gz";
     auto myWriter                    = std::make_shared<io::itk::InrImageWriter>();
-    myWriter->setObject(image);
+    myWriter->set_object(image);
     myWriter->set_file(PATH);
     myWriter->write();
 
-    // load Image
-    auto image2   = std::make_shared<data::Image>();
+    // load image
+    auto image2   = std::make_shared<data::image>();
     auto myReader = std::make_shared<io::itk::InrImageReader>();
-    myReader->setObject(image2);
+    myReader->set_object(image2);
     myReader->set_file(PATH);
     myReader->read();
 
@@ -311,7 +311,7 @@ void ImageReaderWriterTest::inrReadWriteCheck(data::Image::sptr image)
     image2->setWindowCenter(image->getWindowCenter());
     image2->setWindowWidth(image->getWindowWidth());
 
-    // check Image
+    // check image
     // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
     CPPUNIT_ASSERT(*image == *image2);
 }

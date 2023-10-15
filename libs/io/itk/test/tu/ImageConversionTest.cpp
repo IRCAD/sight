@@ -27,11 +27,11 @@
 #include <core/base.hpp>
 #include <core/tools/random/generator.hpp>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 #include <io/itk/itk.hpp>
 
-#include <utestData/generator/Image.hpp>
+#include <utest_data/generator/image.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::ImageConversionTest);
@@ -59,13 +59,13 @@ void ImageConversionTest::tearDown()
 void ImageConversionTest::testConversion()
 {
     // create Image
-    data::Image::sptr image = std::make_shared<data::Image>();
-    utestData::generator::Image::generateRandomImage(image, core::type::INT16);
+    data::image::sptr image = std::make_shared<data::image>();
+    utest_data::generator::image::generateRandomImage(image, core::type::INT16);
 
     using ImageType = ::itk::Image<std::int16_t, 3>;
     ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
-    data::Image::sptr image2 = std::make_shared<data::Image>();
+    data::image::sptr image2 = std::make_shared<data::image>();
     io::itk::moveFromItk<ImageType>(itkImage, image2, false);
 
     io::itk::ut::helper::roundSpacing(image);
@@ -76,7 +76,7 @@ void ImageConversionTest::testConversion()
 
     CPPUNIT_ASSERT(*image == *image2);
 
-    data::Image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
+    data::image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
     image3->setWindowCenter(image->getWindowCenter());
     image3->setWindowWidth(image->getWindowWidth());
 
@@ -108,21 +108,21 @@ void ImageConversionTest::stressTest()
 void ImageConversionTest::testConversion2D()
 {
     // create Image
-    data::Image::sptr image = std::make_shared<data::Image>();
-    data::Image::Size size  =
+    data::image::sptr image = std::make_shared<data::image>();
+    data::image::Size size  =
     {static_cast<std::size_t>(safe_rand() % 100 + 2), static_cast<std::size_t>(safe_rand() % 100 + 2), 0
     };
-    data::Image::Spacing spacing = {(safe_rand() % 200 + 1) / 100., (safe_rand() % 200 + 1) / 100., 0.};
-    data::Image::Origin origin   = {(safe_rand() % 200 - 100) / 3., (safe_rand() % 200 - 100) / 3., 0.};
+    data::image::Spacing spacing = {(safe_rand() % 200 + 1) / 100., (safe_rand() % 200 + 1) / 100., 0.};
+    data::image::Origin origin   = {(safe_rand() % 200 - 100) / 3., (safe_rand() % 200 - 100) / 3., 0.};
     core::type type              = core::type::INT16;
 
-    utestData::generator::Image::generateImage(image, size, spacing, origin, type, data::Image::GRAY_SCALE, 0);
+    utest_data::generator::image::generateImage(image, size, spacing, origin, type, data::image::GRAY_SCALE, 0);
 
     using ImageType = ::itk::Image<std::int16_t, 2>;
 
     ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
-    data::Image::sptr image2    = std::make_shared<data::Image>();
+    data::image::sptr image2    = std::make_shared<data::image>();
     bool image2ManagesHisBuffer = false;
     io::itk::moveFromItk<ImageType>(itkImage, image2, image2ManagesHisBuffer);
 
@@ -134,7 +134,7 @@ void ImageConversionTest::testConversion2D()
 
     CPPUNIT_ASSERT(*image == *image2);
 
-    data::Image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
+    data::image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
     image3->setWindowCenter(image->getWindowCenter());
     image3->setWindowWidth(image->getWindowWidth());
 

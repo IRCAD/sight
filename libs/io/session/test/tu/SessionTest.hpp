@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
     CPPUNIT_TEST(landmarksTest);
     CPPUNIT_TEST(lineTest);
     CPPUNIT_TEST(materialTest);
-    CPPUNIT_TEST(matrix4Test);
+    CPPUNIT_TEST(matrix4_test);
     CPPUNIT_TEST(planeTest);
     CPPUNIT_TEST(planeListTest);
     CPPUNIT_TEST(reconstructionTest);
@@ -99,7 +99,7 @@ public:
     static void landmarksTest();
     static void lineTest();
     static void materialTest();
-    static void matrix4Test();
+    static void matrix4_test();
     static void planeTest();
     static void planeListTest();
     static void reconstructionTest();

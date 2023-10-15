@@ -31,13 +31,13 @@ namespace sight::io::dicom::reader::tid
 //------------------------------------------------------------------------------
 
 MeasurementReport::MeasurementReport(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
-    const data::Image::sptr& image,
+    const data::image::sptr& image,
     const core::log::logger::sptr& logger
 ) :
-    io::dicom::reader::tid::TemplateID<data::Image>(dicomSeries, reader, instance, image, logger)
+    io::dicom::reader::tid::TemplateID<data::image>(dicomSeries, reader, instance, image, logger)
 {
 }
 

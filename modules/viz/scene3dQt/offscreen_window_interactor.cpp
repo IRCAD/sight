@@ -27,7 +27,7 @@
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/registry/macros.hpp>
-#include <viz/scene3d/SRender.hpp>
+#include <viz/scene3d/render.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <core/profiling.hpp>
@@ -114,7 +114,7 @@ void offscreen_window_interactor::createContainer(
     );
     m_ogreRenderTarget = m_ogreTexture->getBuffer()->getRenderTarget();
 
-    const auto renderService = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(m_renderService.lock());
+    const auto renderService = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_renderService.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", renderService);
 
     std::map<int, sight::viz::scene3d::Layer::wptr> orderedLayers;
@@ -191,8 +191,8 @@ void offscreen_window_interactor::makeCurrent()
 
 void offscreen_window_interactor::render()
 {
-    service::base::sptr renderService                    = m_renderService.lock();
-    sight::viz::scene3d::SRender::sptr ogreRenderService = std::dynamic_pointer_cast<sight::viz::scene3d::SRender>(
+    service::base::sptr renderService                   = m_renderService.lock();
+    sight::viz::scene3d::render::sptr ogreRenderService = std::dynamic_pointer_cast<sight::viz::scene3d::render>(
         renderService
     );
 

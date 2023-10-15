@@ -36,7 +36,7 @@ namespace sight::ui::dialog
 /**
  * @brief   Defines the generic Progress dialog for IHM.
  *
- * @note    inherits from boost::signals2::trackable to autoDisconnect if handler is destroyed before the notifier.
+ * @note    inherits from boost::signals2::trackable to auto_disconnect if handler is destroyed before the notifier.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
  */
 class UI_CLASS_API progress_base : public ui::object,

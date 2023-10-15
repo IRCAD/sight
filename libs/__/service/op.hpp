@@ -22,12 +22,45 @@
 #pragma once
 
 #include <service/macros.hpp>
-#include <service/op/Add.hpp>
-#include <service/op/Get.hpp>
 #include <service/registry.hpp>
 
 namespace sight::service
 {
+
+/**
+ * @name Methods for creating and attaching services to object
+ */
+//@{
+/**
+ * @brief Create a service of type serviceType
+ * @return a pointer to the new service
+ */
+SERVICE_API service::base::sptr add(const std::string& _implType, const std::string& _id = "");
+
+/**
+ * @brief Create a service of type serviceType
+ * @return a pointer to the new service with the given template type
+ */
+template<class SERVICE>
+SPTR(SERVICE) add(const std::string& _implType, const std::string& _id = "");
+
+//@}
+
+//------------------------------------------------------------------------------
+
+template<class SERVICE>
+SPTR(SERVICE) add(const std::string& _implType, const std::string& _id)
+{
+    service::base::sptr genericSrv = service::add(_implType, _id);
+    auto srv                       = std::dynamic_pointer_cast<SERVICE>(genericSrv);
+    SIGHT_THROW_IF(
+        "Failed to cast service from factory type '" + _implType + "' into '"
+        + core::type_demangler<SERVICE>().get_classname() + "'",
+        !srv
+    );
+
+    return srv;
+}
 
 /**
  * @brief Remove an existing service.
@@ -38,6 +71,14 @@ inline void remove(const SPTR(service::base)& _srv)
 {
     service::unregisterService(_srv);
 }
+
+/**
+ * @brief Return a registered base having uid as unique universal identifier , its an alias on
+ * data::object::get_id(...) method
+ *
+
+ */
+SERVICE_API service::base::sptr get(std::string uid);
 
 //------------------------------------------------------------------------------
 

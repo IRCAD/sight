@@ -24,9 +24,9 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <data/Color.hpp>
-#include <data/Image.hpp>
-#include <data/Matrix4.hpp>
+#include <data/color.hpp>
+#include <data/image.hpp>
+#include <data/matrix4.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreImage.h>
@@ -50,13 +50,13 @@ class Text;
 namespace vr
 {
 
-class GridProxyGeometryFactory;
+class grid_proxy_geometry_factory;
 
 } // namespace vr
 namespace compositor
 {
 
-class MaterialMgrListener;
+class material_mgr_listener;
 
 } // namespace compositor
 
@@ -102,23 +102,23 @@ public:
      */
     VIZ_SCENE3D_API static void convertFromOgreTexture(
         Ogre::TexturePtr _texture,
-        const data::Image::sptr _imageFw,
+        const data::image::sptr _imageFw,
         bool flip = false
     );
 
     /**
      * @brief getPixelFormatOgre
-     * @param imageFw The Sight Image
-     * @return Pixel format of a data::Image
+     * @param imageFw The Sight image
+     * @return Pixel format of a data::image
      */
-    VIZ_SCENE3D_API static Ogre::PixelFormat getPixelFormatOgre(const data::Image& imageFw);
+    VIZ_SCENE3D_API static Ogre::PixelFormat getPixelFormatOgre(const data::image& imageFw);
 
     /**
      * @brief set the pixel format of an image from an Ogre pixel format
-     * @param _image The Sight Image
+     * @param _image The Sight image
      * @param _format Pixel format of Ogre
      */
-    VIZ_SCENE3D_API static std::pair<core::type, data::Image::PixelFormat> getPixelFormatFromOgre(
+    VIZ_SCENE3D_API static std::pair<core::type, data::image::PixelFormat> getPixelFormatFromOgre(
         Ogre::PixelFormat _format
     );
     /**
@@ -155,30 +155,30 @@ public:
      * @param[in] _ogreColor Color to convert into a Sight color
      * @return The converted Sight color
      */
-    VIZ_SCENE3D_API static data::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
+    VIZ_SCENE3D_API static data::color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
 
     /// Creates an ogre matrix from a Sight matrix.
-    VIZ_SCENE3D_API static Ogre::Matrix4 convertTM3DToOgreMx(const data::Matrix4::csptr& _tm3d);
+    VIZ_SCENE3D_API static Ogre::Matrix4 convertTM3DToOgreMx(const data::matrix4::csptr& _tm3d);
 
     /// Copies an ogre matrix to a Sight matrix.
     VIZ_SCENE3D_API static void copyOgreMxToTM3D(
         const Ogre::Matrix4& _mx,
-        const data::Matrix4::sptr& _tm3d
+        const data::matrix4::sptr& _tm3d
     );
 
     /// Copies the image's spacing and origin into Ogre vectors.
     VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convertSpacingAndOrigin(
-        const data::Image::csptr& _img
+        const data::image::csptr& _img
     );
 
     /// Copies the image's spacing and origin into Ogre vectors.
     /// Version with const reference of image
     VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convertSpacingAndOrigin(
-        const data::Image& _img
+        const data::image& _img
     );
 
     /// Converts world coordinates to slices indexes of _image if possible, thrown an exception if not.
-    VIZ_SCENE3D_API static Ogre::Vector3i worldToSlices(const data::Image& _image, const Ogre::Vector3& _world);
+    VIZ_SCENE3D_API static Ogre::Vector3i worldToSlices(const data::image& _image, const Ogre::Vector3& _world);
 
     /**
      * @brief Pick an object from a screen-space position.
@@ -204,7 +204,7 @@ public:
      * @return True if an object has been selected.
      */
     VIZ_SCENE3D_API static std::string pickImage(
-        const data::Image& _image,
+        const data::image& _image,
         const Ogre::Vector3& position,
         const Ogre::Vector3& origin,
         const Ogre::Vector3& spacing
@@ -232,8 +232,8 @@ private:
 
     static viz::scene3d::factory::R2VBRenderable* s_R2VBRenderableFactory;
     static viz::scene3d::factory::Text* s_textFactory;
-    static viz::scene3d::vr::GridProxyGeometryFactory* s_gridProxyGeometryFactory;
-    static viz::scene3d::compositor::MaterialMgrListener* s_oitMaterialListener;
+    static viz::scene3d::vr::grid_proxy_geometry_factory* s_grid_proxy_geometry_factory;
+    static viz::scene3d::compositor::material_mgr_listener* s_oitMaterialListener;
 };
 
 } // namespace sight::viz::scene3d

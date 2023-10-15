@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,7 +125,7 @@ typename itk::Image<std::uint8_t, DIM>::Pointer labeling(
     typedef itk::Image<IMAGE_TYPE, DIM> ImageType;
     typedef itk::Image<std::uint8_t, 3> LabelImageType;
 
-    // ITK Labeling
+    // ITK labeling
     // Connected component filter
     typedef itk::ConnectedComponentImageFilter<ImageType, LabelImageType> ConnectedComponentFilter;
     typename ConnectedComponentFilter::Pointer filterCC = ConnectedComponentFilter::New();
@@ -221,7 +221,7 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer fillHole2D(
         regionToExtract.SetSize(_direction, 0);
         regionToExtract.SetIndex(_direction, static_cast<std::int64_t>(plane));
         extractor->InPlaceOff();
-        extractor->SetInput(_image);
+        extractor->set_input(_image);
         extractor->SetExtractionRegion(regionToExtract);
         extractor->SetDirectionCollapseToIdentity();
         extractor->Update();
@@ -231,7 +231,7 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer fillHole2D(
         typedef typename itk::BinaryFillholeImageFilter<Image2D> FillHoleFilter;
         typename FillHoleFilter::Pointer fillHole = FillHoleFilter::New();
 
-        fillHole->SetInput(image2D);
+        fillHole->set_input(image2D);
         fillHole->SetForegroundValue(_foreground);
         fillHole->SetFullyConnected(true);
         fillHole->Update();

@@ -22,7 +22,7 @@
 
 #include "plugin.hpp"
 
-#include <activity/extension/Activity.hpp>
+#include <activity/extension/activity.hpp>
 
 namespace sight::module::activity
 {
@@ -36,7 +36,7 @@ plugin::~plugin() noexcept =
 
 void plugin::start()
 {
-    sight::activity::extension::Activity::getDefault()->parseBundleInformation();
+    sight::activity::extension::activity::getDefault()->parse_plugin_infos();
 }
 
 //------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ void plugin::start()
 void plugin::stop() noexcept
 {
     // Clear all operator configurations
-    sight::activity::extension::Activity::getDefault()->clearRegistry();
+    sight::activity::extension::activity::getDefault()->clear_registry();
 }
 
 } // namespace sight::module::activity

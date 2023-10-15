@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ public:
     bool operator()(const T* pose, T* residuals) const;
 
     /**
-     * @brief Factory to hide the construction of the CostFunction object from the client code.
+     * @brief factory to hide the construction of the CostFunction object from the client code.
      * @param _cameraMat: camera matrix 3x3 (with Fx, Fy, Cx, Cy)
      * @param _distCoef: distorsion coefficients
      * @param _imagePoints: a 2d point in the image

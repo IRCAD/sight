@@ -29,7 +29,7 @@ namespace sight::activity::validator::factory
 
 //------------------------------------------------------------------------------
 
-activity::validator::base::sptr make(const activity::validator::registry::KeyType& classname)
+activity::validator::base::sptr make(const activity::validator::registry::key_t& classname)
 {
     return activity::validator::registry::get()->create(classname);
 }

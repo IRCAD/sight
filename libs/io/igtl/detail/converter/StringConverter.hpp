@@ -30,7 +30,7 @@ namespace sight::io::igtl::detail::converter
 
 /**
  *
- * @brief class to manage conversion between data::String and igtl::StringMessage
+ * @brief class to manage conversion between data::string and igtl::StringMessage
  */
 class IO_IGTL_CLASS_API StringConverter :
     public base
@@ -44,18 +44,18 @@ public:
     IO_IGTL_API ~StringConverter() override;
 
     /**
-     * @brief convert a igtl::StringMessage to a data::String
+     * @brief convert a igtl::StringMessage to a data::string
      *
-     * @return an data::String converted from an igtl::StringMessage
+     * @return an data::string converted from an igtl::StringMessage
      */
-    [[nodiscard]] IO_IGTL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
+    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
 
     /**
-     * @brief convert a data::String to a igtl::StringMessage
+     * @brief convert a data::string to a igtl::StringMessage
      *
-     * @return an data::String converted from an igtl::StringMessage
+     * @return an data::string converted from an igtl::StringMessage
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const override;
 
     /**
      * @brief create new StringConverter

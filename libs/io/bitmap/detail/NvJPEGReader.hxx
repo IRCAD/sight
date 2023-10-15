@@ -92,7 +92,7 @@ public:
     }
 
     /// Reading
-    inline void read(data::Image& image, std::istream& istream, Flag /*flag*/)
+    inline void read(data::image& image, std::istream& istream, Flag /*flag*/)
     {
         // Get input size
         istream.seekg(0, std::ios::end);
@@ -178,7 +178,7 @@ public:
         image.resize(
             {width, height, 0},
             core::type::UINT8,
-            data::Image::PixelFormat::RGB
+            data::image::PixelFormat::RGB
         );
 
         // Synchronize CUDA streams

@@ -25,7 +25,7 @@
 #include "io/dicom/helper/SegmentedPropertyRegistry.hpp"
 #include "io/dicom/writer/ie/InformationEntity.hpp"
 
-#include <data/ModelSeries.hpp>
+#include <data/model_series.hpp>
 
 #include <gdcmSegment.h>
 
@@ -37,7 +37,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Surface Information Entity class
  */
-class IO_DICOM_CLASS_API Surface : public io::dicom::writer::ie::InformationEntity<data::ModelSeries>
+class IO_DICOM_CLASS_API Surface : public io::dicom::writer::ie::InformationEntity<data::model_series>
 {
 public:
 
@@ -54,7 +54,7 @@ public:
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
         SPTR(io::dicom::container::DicomInstance)imageInstance,
-        const data::ModelSeries::csptr& series,
+        const data::model_series::csptr& series,
         const core::log::logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr
@@ -93,7 +93,7 @@ protected:
      * @param[in] segmentNumber Segment number
      */
     IO_DICOM_API virtual void writeSegmentSequence(
-        const CSPTR(data::Reconstruction)& reconstruction,
+        const CSPTR(data::reconstruction)& reconstruction,
         gdcm::Item& segmentItem,
         const gdcm::SmartPointer<gdcm::Segment>& segment,
         std::uint16_t segmentNumber
@@ -107,7 +107,7 @@ protected:
      * @param[in] segmentNumber Associated segment number
      */
     IO_DICOM_API virtual void writeSurfaceSequence(
-        const CSPTR(data::Reconstruction)& reconstruction,
+        const CSPTR(data::reconstruction)& reconstruction,
         gdcm::Item& surfaceItem,
         const gdcm::SmartPointer<gdcm::Surface>& surface,
         std::uint16_t segmentNumber

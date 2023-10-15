@@ -90,6 +90,6 @@ struct assignable_traits<data::Access::out>
 };
 
 template<data::Access access>
-using access_traits = access_type_traits<sight::data::Object, access>;
+using access_traits = access_type_traits<sight::data::object, access>;
 
 } // namespace sight::data

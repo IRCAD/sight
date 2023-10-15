@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -90,7 +90,7 @@ void ClientServerTest::tearDown()
 
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-    if(s_server->isStarted())
+    if(s_server->started())
     {
         s_server->stop();
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -108,7 +108,7 @@ void ClientServerTest::clientToServer()
 
     s_client->sendMsg(static_cast< ::igtl::MessageBase::Pointer>(stringMsg));
 
-    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->isStarted());
+    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
     CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
     CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
 
@@ -144,7 +144,7 @@ void ClientServerTest::clientToServer()
 
 void ClientServerTest::clientToServerTimeout()
 {
-    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->isStarted());
+    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
     CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
     CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
 
@@ -163,7 +163,7 @@ void ClientServerTest::serverToClient()
     ::igtl::StringMessage::Pointer stringMsg = ::igtl::StringMessage::New();
     stringMsg->SetString("Hello from server!");
 
-    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->isStarted());
+    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
     CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
     CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
 
@@ -200,7 +200,7 @@ void ClientServerTest::serverToClient()
 
 void ClientServerTest::serverHeaderExceptionTest()
 {
-    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->isStarted());
+    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
     CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
     CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
 
@@ -217,7 +217,7 @@ void ClientServerTest::serverHeaderExceptionTest()
 
 void ClientServerTest::clientHeaderExceptionTest()
 {
-    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->isStarted());
+    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
     CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
     CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
 
@@ -245,7 +245,7 @@ void ClientServerTest::clientBodyExceptionTest()
     ::igtl::StringMessage::Pointer stringMsg = ::igtl::StringMessage::New();
     stringMsg->SetString("Hello from server!");
 
-    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->isStarted());
+    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
     CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
     CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
 
@@ -282,7 +282,7 @@ void ClientServerTest::serverBodyExceptionTest()
 
     s_client->sendMsg(static_cast< ::igtl::MessageBase::Pointer>(stringMsg));
 
-    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->isStarted());
+    CPPUNIT_ASSERT_MESSAGE("Server is started", s_server->started());
     CPPUNIT_ASSERT_MESSAGE("Client connected", s_client->isConnected());
     CPPUNIT_ASSERT_MESSAGE("Number of connected client", s_server->numClients() == 1);
 

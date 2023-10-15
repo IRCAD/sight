@@ -29,7 +29,7 @@
 #include <ui/testCore/helper/VideoControls.hpp>
 #include <ui/testCore/Tester.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <QLabel>
 
@@ -54,7 +54,7 @@ void VideoControls::test()
 {
     namespace helper = sight::ui::testCore::helper;
 
-    const std::filesystem::path videoPath = utestData::Data::dir()
+    const std::filesystem::path videoPath = utest_data::Data::dir()
                                             / "sight/ui/SightCalibrator/chessboard_calibration_test.mp4";
 
     start(

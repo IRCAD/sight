@@ -33,13 +33,13 @@
 #include <ui/qml/QmlEngine.hpp>
 #include <ui/qt/WorkerQt.hpp>
 
-#include <modules/ui/qml/activity/SSequencer.hpp>
-#include <modules/ui/qml/activity/SView.hpp>
-#include <modules/ui/qml/image/SSliceIndexPositionEditor.hpp>
+#include <modules/ui/qml/activity/sequencer.hpp>
+#include <modules/ui/qml/activity/view.hpp>
+#include <modules/ui/qml/image/slice_index_position_editor.hpp>
+#include <modules/ui/qml/model/model_series_list.hpp>
 #include <modules/ui/qml/model/OrganListModel.hpp>
-#include <modules/ui/qml/model/SModelSeriesList.hpp>
-#include <modules/ui/qml/reconstruction/SOrganMaterialEditor.hpp>
-#include <modules/ui/qml/reconstruction/SRepresentationEditor.hpp>
+#include <modules/ui/qml/reconstruction/organ_material_editor.hpp>
+#include <modules/ui/qml/reconstruction/representation_editor.hpp>
 
 #include <QIcon>
 #include <QQuickStyle>
@@ -84,13 +84,13 @@ void plugin::start()
     const auto path = core::runtime::get_module_resource_path("sight::module::ui::qml");
     engine->importModulePath(path);
 
-    qmlRegisterType<model::SModelSeriesList>("model", 1, 0, "SModelSeriesList");
+    qmlRegisterType<model::model_series_list>("model", 1, 0, "model_series_list");
     qmlRegisterType<model::OrganListModel>("model", 1, 0, "OrganListModel");
-    qmlRegisterType<image::SSliceIndexPositionEditor>("image", 1, 0, "SSliceIndexPositionEditor");
-    qmlRegisterType<reconstruction::SOrganMaterialEditor>("reconstruction", 1, 0, "SOrganMaterialEditor");
-    qmlRegisterType<reconstruction::SRepresentationEditor>("reconstruction", 1, 0, "SRepresentationEditor");
-    qmlRegisterType<activity::SView>("activitiesQml", 1, 0, "SView");
-    qmlRegisterType<activity::SSequencer>("activitiesQml", 1, 0, "SSequencer");
+    qmlRegisterType<image::slice_index_position_editor>("image", 1, 0, "slice_index_position_editor");
+    qmlRegisterType<reconstruction::organ_material_editor>("reconstruction", 1, 0, "organ_material_editor");
+    qmlRegisterType<reconstruction::representation_editor>("reconstruction", 1, 0, "representation_editor");
+    qmlRegisterType<activity::view>("activitiesQml", 1, 0, "view");
+    qmlRegisterType<activity::sequencer>("activitiesQml", 1, 0, "sequencer");
 
     QQuickStyle::setStyle("Material");
 

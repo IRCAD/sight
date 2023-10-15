@@ -22,9 +22,11 @@
 
 #include "adaptor.hpp"
 
-#include "viz/qt3d/registry/Adaptor.hpp"
+#include "viz/qt3d/registry/adaptor.hpp"
 
 #include <core/com/slots.hxx>
+
+#include <service/registry.hpp>
 
 namespace sight::viz::qt3d
 {
@@ -57,7 +59,7 @@ adaptor::~adaptor()
 
 void adaptor::configureParams()
 {
-    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
+    const config_t config = this->get_config().get_child("config.<xmlattr>");
     m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 }
 
@@ -68,9 +70,9 @@ void adaptor::initialize()
     // Retrieve the render service attached to the adaptor.
     if(m_renderService.expired())
     {
-        auto servicesVector = sight::service::getServices("sight::viz::qt3d::SRender");
+        auto servicesVector = sight::service::getServices("sight::viz::qt3d::render");
 
-        auto& registry       = viz::qt3d::registry::getAdaptorRegistry();
+        auto& registry       = viz::qt3d::registry::get_adaptor_registry();
         auto renderServiceId = registry[this->get_id()];
 
         auto result =
@@ -81,9 +83,9 @@ void adaptor::initialize()
             {
                 return srv->get_id() == renderServiceId;
             });
-        SIGHT_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
+        SIGHT_ASSERT("Can't find '" + renderServiceId + "' render service.", result != servicesVector.end());
 
-        m_renderService = std::dynamic_pointer_cast<viz::qt3d::SRender>(*result);
+        m_renderService = std::dynamic_pointer_cast<viz::qt3d::render>(*result);
     }
 }
 
@@ -126,7 +128,7 @@ void adaptor::setVisible(bool /*unused*/)
 
 //------------------------------------------------------------------------------
 
-SRender::sptr adaptor::getRenderService() const
+render::sptr adaptor::getRenderService() const
 {
     return m_renderService.lock();
 }

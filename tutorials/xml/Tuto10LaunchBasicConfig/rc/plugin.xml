@@ -7,17 +7,17 @@
     <!-- Allows to include a xml file containing a sub-configuration -->
     <xi:include href="BasicFrameConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>Tuto10LaunchBasicConfig_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="image" type="sight::data::Image" />
+            <object uid="image" type="sight::data::image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::frame" >
                 <gui>
                     <frame>
                         <name>Tuto10LaunchBasicConfig</name>
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::menu_bar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -43,7 +43,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::menu" >
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -62,11 +62,11 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="sight::module::ui::com::SStarter" >
+            <service uid="openImageAct" type="sight::module::ui::com::starter" >
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
             <!-- ************************ Configuration launchers ********************************* -->
 
@@ -75,7 +75,7 @@
                 This service allows to launch a sub-configuration.
                 The configuration is defined by its id.
             -->
-            <service uid="launchConfigAct" type="sight::module::ui::SConfigLauncher" >
+            <service uid="launchConfigAct" type="sight::module::ui::config_launcher" >
                 <appConfig id="Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg" />
                 <!--
                     replace ${image} in the sub-config by the uid of the object with the key
@@ -88,11 +88,11 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="imageReaderSrv" type="sight::module::ui::io::SSelector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector" >
                 <inout key="data" uid="image" />
             </service>
 
-            <service uid="imageRendereSrv" type="sight::module::viz::sample::SImage" >
+            <service uid="imageRendereSrv" type="sight::module::viz::sample::image" >
                 <in key="image" uid="image" />
             </service>
 

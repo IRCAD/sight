@@ -24,15 +24,15 @@
 
 #include <core/memory/buffer_manager.hpp>
 
-#include <data/ImageSeries.hpp>
-#include <data/ModelSeries.hpp>
+#include <data/image_series.hpp>
+#include <data/model_series.hpp>
 
 #include <io/dicom/Reader.hpp>
-#include <io/dicom/reader/SeriesSet.hpp>
+#include <io/dicom/reader/series_set.hpp>
 
 #include <utest/Filter.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <boost/compute/detail/sha1.hpp>
 
@@ -47,17 +47,17 @@ namespace sight::io::dicom::ut
 
 //------------------------------------------------------------------------------
 
-inline static sight::data::SeriesSet::sptr read(const std::filesystem::path path)
+inline static sight::data::series_set::sptr read(const std::filesystem::path path)
 {
     CPPUNIT_ASSERT_MESSAGE(
         "The dicom directory '" + path.string() + "' does not exist",
         std::filesystem::exists(path)
     );
 
-    auto seriesSet = std::make_shared<data::SeriesSet>();
+    auto seriesSet = std::make_shared<data::series_set>();
 
     auto reader = std::make_shared<io::dicom::Reader>();
-    reader->setObject(seriesSet);
+    reader->set_object(seriesSet);
     reader->set_folder(path);
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -99,10 +99,10 @@ void ReaderTest::readJMSSeriesSetTest()
     }
 
     // cspell: ignore Genou
-    const auto& seriesSet = read(utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou");
+    const auto& seriesSet = read(utest_data::Data::dir() / "sight/Patient/Dicom/JMSGenou");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-    const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->front());
+    const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->front());
     CPPUNIT_ASSERT(imageSeries);
 
     const auto& size = imageSeries->size();
@@ -120,10 +120,10 @@ void ReaderTest::readCTSeriesSetTest()
         return;
     }
 
-    const auto& seriesSet = read(utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER");
+    const auto& seriesSet = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-    const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->front());
+    const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->front());
     CPPUNIT_ASSERT(imageSeries);
 
     const double delta = 0.00001;
@@ -168,10 +168,10 @@ void ReaderTest::readMRSeriesSetTest()
         return;
     }
 
-    const auto& seriesSet = read(utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/46-MR-BARRE-MONO2-12-shoulder");
+    const auto& seriesSet = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/46-MR-BARRE-MONO2-12-shoulder");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-    const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->front());
+    const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->front());
     CPPUNIT_ASSERT(imageSeries);
 
     const double delta = 0.01;
@@ -216,10 +216,10 @@ void ReaderTest::readOTSeriesSetTest()
         return;
     }
 
-    const auto& seriesSet = read(utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/42-OT-BARRE-MONO2-8-colon");
+    const auto& seriesSet = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/42-OT-BARRE-MONO2-8-colon");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-    const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->front());
+    const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->front());
     CPPUNIT_ASSERT(imageSeries);
 
     const double delta = 0.01;
@@ -264,10 +264,10 @@ void ReaderTest::readMultipleRescaleSeriesSetTest()
         return;
     }
 
-    const auto& seriesSet = read(utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/83-CT-MultipleRescale");
+    const auto& seriesSet = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/83-CT-MultipleRescale");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-    const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->front());
+    const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->front());
     CPPUNIT_ASSERT(imageSeries);
 
     // Get internal buffer
@@ -298,12 +298,12 @@ void ReaderTest::readCTWithSurviewSeriesSetTest()
         return;
     }
 
-    const auto& seriesSet = read(utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/84-CT-Surview");
+    const auto& seriesSet = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/84-CT-Surview");
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), seriesSet->size());
 
     for(const auto& series : *seriesSet)
     {
-        const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
+        const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
         CPPUNIT_ASSERT(imageSeries);
     }
 }
@@ -317,12 +317,12 @@ void ReaderTest::readMRWithTemporalPositionSeriesSetTest()
         return;
     }
 
-    const auto& seriesSet = read(utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/85-MR-TemporalPosition");
+    const auto& seriesSet = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/85-MR-TemporalPosition");
     CPPUNIT_ASSERT_EQUAL(std::size_t(4), seriesSet->size());
 
     for(const auto& series : *seriesSet)
     {
-        const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
+        const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
         CPPUNIT_ASSERT(imageSeries);
     }
 }
@@ -336,10 +336,10 @@ void ReaderTest::readCTSeriesSetIssue01Test()
         return;
     }
 
-    const auto& seriesSet = read(utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/86-CT-Skull");
+    const auto& seriesSet = read(utest_data::Data::dir() / "sight/Patient/Dicom/DicomDB/86-CT-Skull");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-    const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->front());
+    const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->front());
     CPPUNIT_ASSERT(imageSeries);
 }
 
@@ -352,10 +352,10 @@ void ReaderTest::readEnhancedUSVolumeTest()
         return;
     }
 
-    const auto& seriesSet = read(utestData::Data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
+    const auto& seriesSet = read(utest_data::Data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-    const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->front());
+    const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->front());
     CPPUNIT_ASSERT(imageSeries);
 
     const double delta = 0.01;
@@ -403,12 +403,12 @@ void ReaderTest::readUltrasoundImageTest()
     // cspell:ignore Aixplorer
     // Aixplorer
     {
-        const auto& seriesSet = read(utestData::Data::dir() / "us/Ultrasound Image Storage/Aixplorer");
+        const auto& seriesSet = read(utest_data::Data::dir() / "us/Ultrasound Image Storage/Aixplorer");
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesSet->size());
 
         for(const auto& series : *seriesSet)
         {
-            const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
+            const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
             CPPUNIT_ASSERT(imageSeries);
 
             if(imageSeries->get_file().filename() == "us_monochrome2.dcm")
@@ -484,10 +484,10 @@ void ReaderTest::readUltrasoundImageTest()
 
     // GE, lossy JPEG
     {
-        const auto& seriesSet = read(utestData::Data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
+        const auto& seriesSet = read(utest_data::Data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-        const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->at(0));
+        const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->at(0));
         CPPUNIT_ASSERT(imageSeries);
 
         const double delta = 0.01;
@@ -527,14 +527,14 @@ void ReaderTest::readUltrasoundImageTest()
     // GE, pixel spacing, Kretztechnik non-cartesian volume
     {
         const auto& seriesSet = read(
-            utestData::Data::dir()
+            utest_data::Data::dir()
             / "us/Ultrasound Image Storage/GE, pixel spacing, Kretztechnik non-cartesian volume"
         );
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesSet->size());
 
         for(const auto& series : *seriesSet)
         {
-            const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
+            const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
             CPPUNIT_ASSERT(imageSeries);
 
             // cspell:ignore kretz
@@ -612,11 +612,11 @@ void ReaderTest::readUltrasoundImageTest()
     // Philips, 16 bit palette color, aspect ratio
     {
         const auto& seriesSet = read(
-            utestData::Data::dir() / "us/Ultrasound Image Storage/Philips, 16 bit palette color, aspect ratio"
+            utest_data::Data::dir() / "us/Ultrasound Image Storage/Philips, 16 bit palette color, aspect ratio"
         );
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-        const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->at(0));
+        const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->at(0));
         CPPUNIT_ASSERT(imageSeries);
 
         const double delta = 0.01;
@@ -655,10 +655,10 @@ void ReaderTest::readUltrasoundImageTest()
     // Philips, RLE, palette color
     {
         const auto& seriesSet =
-            read(utestData::Data::dir() / "us/Ultrasound Image Storage/Philips, RLE, palette color");
+            read(utest_data::Data::dir() / "us/Ultrasound Image Storage/Philips, RLE, palette color");
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-        const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->at(0));
+        const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->at(0));
         CPPUNIT_ASSERT(imageSeries);
 
         const double delta = 0.01;
@@ -708,13 +708,13 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
     // Acuson, 2D+t, lossy JPEG
     {
         const auto& seriesSet = read(
-            utestData::Data::dir() / "us/Ultrasound Multi-frame Image Storage/Acuson, 2D+t, lossy JPEG"
+            utest_data::Data::dir() / "us/Ultrasound Multi-frame Image Storage/Acuson, 2D+t, lossy JPEG"
         );
         CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesSet->size());
 
         for(const auto& series : *seriesSet)
         {
-            const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
+            const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
             CPPUNIT_ASSERT(imageSeries);
 
             if(imageSeries->get_file().filename() == "us_acuson.dcm")
@@ -790,10 +790,10 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
 
     // GE, 2D+t, RLE
     {
-        const auto& seriesSet = read(utestData::Data::dir() / "us/Ultrasound Multi-frame Image Storage/GE, 2D+t, RLE");
+        const auto& seriesSet = read(utest_data::Data::dir() / "us/Ultrasound Multi-frame Image Storage/GE, 2D+t, RLE");
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-        const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->at(0));
+        const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->at(0));
         CPPUNIT_ASSERT(imageSeries);
 
         const double delta = 0.01;
@@ -832,11 +832,11 @@ void ReaderTest::readUltrasoundMultiframeImageTest()
     // Philips, 2D+t,  lossy JPEG
     {
         const auto& seriesSet = read(
-            utestData::Data::dir() / "us/Ultrasound Multi-frame Image Storage/Philips, 2D+t,  lossy JPEG"
+            utest_data::Data::dir() / "us/Ultrasound Multi-frame Image Storage/Philips, 2D+t,  lossy JPEG"
         );
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
 
-        const auto& imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(seriesSet->at(0));
+        const auto& imageSeries = std::dynamic_pointer_cast<data::image_series>(seriesSet->at(0));
         CPPUNIT_ASSERT(imageSeries);
 
         const double delta = 0.01;

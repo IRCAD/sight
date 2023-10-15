@@ -2,7 +2,7 @@
 This config displays the editors to manage the ModelSeries: show/hide reconstructions, change the color, ...
 
 Example
-<service uid="..." type="sight::service::SConfigController">
+<service uid="..." type="sight::app::config_controller">
     <appConfig id="ModelSeriesManagerView" />
     <inout group="data">
         <key name="ORGAN_MANAGER_MODELSERIES" uid="..." />
@@ -10,7 +10,7 @@ Example
     <parameter replace="WID_PARENT" by="modelManagerView" />
 </service>
 -->
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>ModelSeriesManagerView</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -18,10 +18,10 @@ Example
     </parameters>
     <desc>Display the editors to manage the ModelSeries: show/hide reconstructions, change the color, ...</desc>
     <config>
-        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::ModelSeries" src="ref" />
-        <object uid="reconstruction" type="sight::data::Reconstruction" src="deferred" />
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::model_series" src="ref" />
+        <object uid="reconstruction" type="sight::data::reconstruction" src="deferred" />
 
-        <service uid="multiViewOrgans" type="sight::module::ui::SView">
+        <service uid="multiViewOrgans" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::toolbox">
                     <view caption="Organs" expanded="true" />
@@ -37,11 +37,11 @@ Example
             </registry>
         </service>
 
-        <service uid="reconstructionSelector" type="sight::module::data::SSelectObject">
+        <service uid="reconstructionSelector" type="sight::module::data::select_object">
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="organMaterialEditor" type="sight::module::ui::qt::reconstruction::SOrganMaterialEditor">
+        <service uid="organMaterialEditor" type="sight::module::ui::qt::reconstruction::organ_material_editor">
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
@@ -49,7 +49,7 @@ Example
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
-        <service uid="listOrganEditor" type="sight::module::ui::qt::model::SModelSeriesList" autoConnect="true">
+        <service uid="listOrganEditor" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
             <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
             <columns>
                 <organ_name/>

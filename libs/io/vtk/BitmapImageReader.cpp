@@ -75,7 +75,7 @@ void BitmapImageReader::read()
     SIGHT_ASSERT("The current object has expired.", !m_object.expired());
     SIGHT_ASSERT("Unable to lock object", m_object.lock());
 
-    data::Image::sptr pImage = getConcreteObject();
+    data::image::sptr pImage = getConcreteObject();
 
     // Use a vtkImageReader2Factory to automatically detect the type of the input file
     // And select the right reader for the file
@@ -113,7 +113,7 @@ void BitmapImageReader::read()
     }
     catch(std::exception& e)
     {
-        SIGHT_THROW("BitmapImage to data::Image failed " << e.what());
+        SIGHT_THROW("BitmapImage to data::image failed " << e.what());
     }
 }
 

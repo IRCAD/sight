@@ -25,13 +25,13 @@
 #include "io/dicom/container/sr/DicomSRNode.hpp"
 #include "io/dicom/reader/tid/TemplateID.hpp"
 
-#include <data/DicomSeries.hpp>
-#include <data/Image.hpp>
+#include <data/dicom_series.hpp>
+#include <data/image.hpp>
 
 namespace sight::data
 {
 
-class Point;
+class point;
 
 } // namespace sight::data
 
@@ -42,7 +42,7 @@ namespace sight::io::dicom::reader::tid
  * @brief Measurement TID
  * @see TID 300
  */
-class IO_DICOM_CLASS_API Measurement : public io::dicom::reader::tid::TemplateID<data::Image>
+class IO_DICOM_CLASS_API Measurement : public io::dicom::reader::tid::TemplateID<data::image>
 {
 public:
 
@@ -55,10 +55,10 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API Measurement(
-        const CSPTR(data::DicomSeries)& dicomSeries,
+        const CSPTR(data::dicom_series)& dicomSeries,
         const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Image::sptr& image,
+        const data::image::sptr& image,
         const core::log::logger::sptr& logger
     );
 
@@ -79,8 +79,8 @@ protected:
      * @param point2 Second point
      */
     void addDistance(
-        const SPTR(data::Point)& point1,
-        const SPTR(data::Point)& point2
+        const SPTR(data::point)& point1,
+        const SPTR(data::point)& point2
     );
 };
 

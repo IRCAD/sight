@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,11 +35,11 @@
 #include "io/dicom/writer/tid/Measurement.hpp"
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/PointList.hpp>
-#include <data/Series.hpp>
-#include <data/String.hpp>
+#include <data/point_list.hpp>
+#include <data/series.hpp>
+#include <data/string.hpp>
 #include <data/types.hpp>
-#include <data/Vector.hpp>
+#include <data/vector.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 
@@ -55,9 +55,9 @@ namespace sight::io::dicom::writer::tid
 MeasurementReport::MeasurementReport(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::Image::csptr& image
+    const data::image::csptr& image
 ) :
-    io::dicom::writer::tid::TemplateID<data::Image>(writer, instance, image)
+    io::dicom::writer::tid::TemplateID<data::image>(writer, instance, image)
 {
 }
 

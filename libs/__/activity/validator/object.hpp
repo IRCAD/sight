@@ -30,7 +30,7 @@
 namespace sight::data
 {
 
-class Object;
+class object;
 
 } // namespace sight::data
 
@@ -51,8 +51,8 @@ public:
 
     /// Does nothing.
     ACTIVITY_API return_t validate(
-        const extension::ActivityInfo& /*activityInfo*/,
-        const CSPTR(data::Vector)&
+        const extension::activity_info& /*activity_info*/,
+        const CSPTR(data::vector)&
         /*currentSelection*/
     ) const override
     {
@@ -66,7 +66,7 @@ public:
      * @brief Performs the validation of the given data.
      * @note  This data could be a single data, or a Vector or a Composite of one type of data.
      */
-    ACTIVITY_API virtual return_t validate(const CSPTR(data::Object)& currentData) const = 0;
+    ACTIVITY_API virtual return_t validate(const CSPTR(data::object)& currentData) const = 0;
 };
 
 } // namespace sight::activity::validator

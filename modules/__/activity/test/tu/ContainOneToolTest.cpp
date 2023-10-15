@@ -25,10 +25,10 @@
 #include <activity/validator/base.hpp>
 #include <activity/validator/object.hpp>
 
-#include <data/Composite.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/Reconstruction.hpp>
-#include <data/Vector.hpp>
+#include <data/composite.hpp>
+#include <data/model_series.hpp>
+#include <data/reconstruction.hpp>
+#include <data/vector.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::activity::validator::ut::ContainOneToolTest);
@@ -66,11 +66,11 @@ void ContainOneToolTest::testValidator()
 
     sight::activity::validator::return_t validation;
 
-    data::ModelSeries::sptr modelSeries = std::make_shared<data::ModelSeries>();
-    data::Reconstruction::sptr rec1     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec2     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec3     = std::make_shared<data::Reconstruction>();
-    data::ModelSeries::ReconstructionVectorType vect_rec;
+    data::model_series::sptr modelSeries = std::make_shared<data::model_series>();
+    data::reconstruction::sptr rec1      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec2      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec3      = std::make_shared<data::reconstruction>();
+    data::model_series::ReconstructionVectorType vect_rec;
 
     {
         validation = objValidator->validate(rec1);
@@ -160,20 +160,20 @@ void ContainOneToolTest::testValidatorWithVector()
 
     sight::activity::validator::return_t validation;
 
-    data::Vector::sptr vector = std::make_shared<data::Vector>();
+    data::vector::sptr vector = std::make_shared<data::vector>();
 
-    data::ModelSeries::sptr modelSeries1 = std::make_shared<data::ModelSeries>();
-    data::ModelSeries::sptr modelSeries2 = std::make_shared<data::ModelSeries>();
-    data::ModelSeries::sptr modelSeries3 = std::make_shared<data::ModelSeries>();
-    data::Reconstruction::sptr rec11     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec12     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec21     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec22     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec31     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec32     = std::make_shared<data::Reconstruction>();
-    data::ModelSeries::ReconstructionVectorType vec_rec1;
-    data::ModelSeries::ReconstructionVectorType vec_rec2;
-    data::ModelSeries::ReconstructionVectorType vec_rec3;
+    data::model_series::sptr modelSeries1 = std::make_shared<data::model_series>();
+    data::model_series::sptr modelSeries2 = std::make_shared<data::model_series>();
+    data::model_series::sptr modelSeries3 = std::make_shared<data::model_series>();
+    data::reconstruction::sptr rec11      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec12      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec21      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec22      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec31      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec32      = std::make_shared<data::reconstruction>();
+    data::model_series::ReconstructionVectorType vec_rec1;
+    data::model_series::ReconstructionVectorType vec_rec2;
+    data::model_series::ReconstructionVectorType vec_rec3;
 
     vec_rec1.push_back(rec11);
     vec_rec1.push_back(rec12);
@@ -290,20 +290,20 @@ void ContainOneToolTest::testValidatorWithComposite()
 
     sight::activity::validator::return_t validation;
 
-    data::Composite::sptr composite = std::make_shared<data::Composite>();
+    data::composite::sptr composite = std::make_shared<data::composite>();
 
-    data::ModelSeries::sptr modelSeries1 = std::make_shared<data::ModelSeries>();
-    data::ModelSeries::sptr modelSeries2 = std::make_shared<data::ModelSeries>();
-    data::ModelSeries::sptr modelSeries3 = std::make_shared<data::ModelSeries>();
-    data::Reconstruction::sptr rec11     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec12     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec21     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec22     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec31     = std::make_shared<data::Reconstruction>();
-    data::Reconstruction::sptr rec32     = std::make_shared<data::Reconstruction>();
-    data::ModelSeries::ReconstructionVectorType vec_rec1;
-    data::ModelSeries::ReconstructionVectorType vec_rec2;
-    data::ModelSeries::ReconstructionVectorType vec_rec3;
+    data::model_series::sptr modelSeries1 = std::make_shared<data::model_series>();
+    data::model_series::sptr modelSeries2 = std::make_shared<data::model_series>();
+    data::model_series::sptr modelSeries3 = std::make_shared<data::model_series>();
+    data::reconstruction::sptr rec11      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec12      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec21      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec22      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec31      = std::make_shared<data::reconstruction>();
+    data::reconstruction::sptr rec32      = std::make_shared<data::reconstruction>();
+    data::model_series::ReconstructionVectorType vec_rec1;
+    data::model_series::ReconstructionVectorType vec_rec2;
+    data::model_series::ReconstructionVectorType vec_rec3;
 
     vec_rec1.push_back(rec11);
     vec_rec1.push_back(rec12);

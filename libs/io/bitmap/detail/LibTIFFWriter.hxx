@@ -60,7 +60,7 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::Image& image,
+        const data::image& image,
         O& output,
         Writer::Mode mode,
         Flag = Flag::NONE
@@ -69,9 +69,9 @@ public:
         const auto& pixel_format = image.getPixelFormat();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
-            pixel_format != data::Image::PixelFormat::RGB
-            && pixel_format != data::Image::PixelFormat::RGBA
-            && pixel_format != data::Image::PixelFormat::GRAY_SCALE
+            pixel_format != data::image::PixelFormat::RGB
+            && pixel_format != data::image::PixelFormat::RGBA
+            && pixel_format != data::image::PixelFormat::GRAY_SCALE
         );
 
         const auto& pixel_type = image.getType();

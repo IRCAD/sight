@@ -7,7 +7,7 @@
     <requirement id="sight::module::io::vtk" />
     <requirement id="sight::module::io::session" />
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>Tuto16SceneQt3D_Sightdata_SrvCfg</id>
         <desc>Sight data</desc>
         <config>
@@ -16,7 +16,7 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::Config" >
+    <extension implements="sight::service::extension::config" >
         <id>Tuto16SceneQt3D_vtk_SrvCfg</id>
         <desc>VTK</desc>
         <config>
@@ -24,18 +24,18 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>Tuto16SceneQt3D_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="mesh" type="sight::data::Mesh" />
-            <object uid="material" type="sight::data::Material" />
+            <object uid="mesh" type="sight::data::mesh" />
+            <object uid="material" type="sight::data::material" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="sight::module::ui::SFrame" >
+            <service uid="mainView" type="sight::module::ui::frame" >
                 <gui>
                     <frame>
                         <name>Tuto16SceneQt3D</name>
@@ -50,7 +50,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::menu_bar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -61,7 +61,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::menu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -77,7 +77,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="sight::viz::qt3d::SRender" >
+            <service uid="genericSceneSrv" type="sight::viz::qt3d::render" >
                 <scene>
                     <background color="#2d2d2d" />
 
@@ -86,26 +86,26 @@
                 </scene>
             </service>
 
-            <service uid="materialAdp" type="sight::module::viz::qt3d::adaptor::SMaterial" autoConnect="true">
+            <service uid="materialAdp" type="sight::module::viz::qt3d::adaptor::material" auto_connect="true">
                 <inout key="material" uid="material" />
                 <config materialName="mat"/>
             </service>
 
-            <service uid="meshAdp" type="sight::module::viz::qt3d::adaptor::SMesh" autoConnect="true">
+            <service uid="meshAdp" type="sight::module::viz::qt3d::adaptor::mesh" auto_connect="true">
                 <inout key="mesh" uid="mesh" />
                 <config autoresetcamera="true" visible="true"  materialName="mat"/>
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="meshReaderAct" type="sight::module::ui::io::SSelector" >
+            <service uid="meshReaderAct" type="sight::module::ui::io::selector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
-                <config id="Tuto16SceneQt3D_Sightdata_SrvCfg" service="sight::module::io::session::SReader" />
-                <config id="Tuto16SceneQt3D_vtk_SrvCfg" service="sight::module::io::vtk::SMeshReader" />
+                <config id="Tuto16SceneQt3D_Sightdata_SrvCfg" service="sight::module::io::session::reader" />
+                <config id="Tuto16SceneQt3D_vtk_SrvCfg" service="sight::module::io::vtk::mesh_reader" />
             </service>
 
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
             <!-- ******************************* Start services ***************************************** -->
 

@@ -23,9 +23,9 @@
 
 #include <core/type.hpp>
 
-#include <data/Array.hpp>
+#include <data/array.hpp>
 
-#include <io/__/writer/ArrayWriter.hpp>
+#include <io/__/writer/array_writer.hpp>
 
 #include <filesystem>
 #include <numeric>
@@ -39,15 +39,15 @@ namespace sight::io::ut
 
 void ArrayWriterTest::basicTest()
 {
-    auto arrayWriter               = std::make_shared<writer::ArrayWriter>();
+    auto arrayWriter               = std::make_shared<writer::array_writer>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + arrayWriter->extension());
-    auto arrayIn                   = std::make_shared<data::Array>();
+    auto arrayIn                   = std::make_shared<data::array>();
     arrayIn->resize({16}, core::type::UINT8);
     {
         auto arrayLock = arrayIn->dump_lock();
         std::iota(arrayIn->begin<std::uint8_t>(), arrayIn->end<std::uint8_t>(), std::uint8_t(0));
     }
-    arrayWriter->setObject(arrayIn);
+    arrayWriter->set_object(arrayIn);
     std::filesystem::remove(filepath);
     arrayWriter->set_file(filepath);
     CPPUNIT_ASSERT_NO_THROW(arrayWriter->write());

@@ -32,7 +32,7 @@ namespace sight::activity
 
 //------------------------------------------------------------------------------
 
-int sequencer::parseActivities(data::ActivitySet& activity_set)
+int sequencer::parseActivities(data::activity_set& activity_set)
 {
     const auto scoped_emitter = activity_set.scoped_emit();
     std::size_t index         = 0;
@@ -66,9 +66,9 @@ int sequencer::parseActivities(data::ActivitySet& activity_set)
 //------------------------------------------------------------------------------
 
 void sequencer::storeActivityData(
-    const data::ActivitySet& activity_set,
+    const data::activity_set& activity_set,
     std::size_t index,
-    const data::Composite::csptr& overrides
+    const data::composite::csptr& overrides
 )
 {
     // Retrives the current activity data
@@ -88,16 +88,16 @@ void sequencer::storeActivityData(
 
 //------------------------------------------------------------------------------
 
-data::Activity::sptr sequencer::getActivity(
-    data::ActivitySet& activity_set,
+data::activity::sptr sequencer::getActivity(
+    data::activity_set& activity_set,
     std::size_t index,
     const core::com::slot_base::sptr& slot
 )
 {
-    data::Activity::sptr activity;
+    data::activity::sptr activity;
 
     const auto& activityId = m_activityIds[index];
-    const auto& info       = activity::extension::Activity::getDefault()->getInfo(activityId);
+    const auto& info       = activity::extension::activity::getDefault()->getInfo(activityId);
 
     if(activity_set.size() > index) // The activity already exists, update the data
     {
@@ -123,7 +123,7 @@ data::Activity::sptr sequencer::getActivity(
         }
 
         // Create the activity
-        activity = std::make_shared<data::Activity>();
+        activity = std::make_shared<data::activity>();
 
         activity->setActivityConfigId(info.id);
         activity->setDescription(info.description);
@@ -145,7 +145,7 @@ data::Activity::sptr sequencer::getActivity(
             else if(req.minOccurs == 0)
             {
                 // Create an empty composite for optional data
-                auto object = std::make_shared<data::Composite>();
+                auto object = std::make_shared<data::composite>();
                 activity->insert_or_assign(req.name, object);
                 m_requirements.insert_or_assign(req.name, object);
             }
@@ -156,7 +156,7 @@ data::Activity::sptr sequencer::getActivity(
 
         if(slot)
         {
-            auto sig = activity_set.signal<data::ActivitySet::added_signal_t>(data::ActivitySet::ADDED_OBJECTS_SIG);
+            auto sig = activity_set.signal<data::activity_set::added_signal_t>(data::activity_set::ADDED_OBJECTS_SIG);
             core::com::connection::blocker block(sig->get_connection(slot));
 
             // Force signal emission while blocker exists
@@ -169,7 +169,7 @@ data::Activity::sptr sequencer::getActivity(
 
 //------------------------------------------------------------------------------
 
-void sequencer::removeLastActivities(data::ActivitySet& activity_set, std::size_t index)
+void sequencer::removeLastActivities(data::activity_set& activity_set, std::size_t index)
 {
     if(activity_set.size() > index)
     {
@@ -193,7 +193,7 @@ void sequencer::cleanRequirements(std::size_t index)
     {
         // Get the information about the activity
         const auto& id   = m_activityIds[i];
-        const auto& info = extension::Activity::getDefault()->getInfo(id);
+        const auto& info = extension::activity::getDefault()->getInfo(id);
 
         // For all registered requirements of the current activity
         for(const auto& requirement : info.requirements)
@@ -213,7 +213,7 @@ void sequencer::cleanRequirements(std::size_t index)
                 }
                 else if(requirement.minOccurs == 0)
                 {
-                    const auto& composite = std::make_shared<data::Composite>();
+                    const auto& composite = std::make_shared<data::composite>();
                     object->shallow_copy(composite);
                 }
             }

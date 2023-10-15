@@ -3,7 +3,7 @@ sight_add_target(Tuto05Mesher TYPE APP)
 add_dependencies(
     Tuto05Mesher
     sightrun
-    module_appXml
+    module_app
     module_ui_qt
     data
     module_service
@@ -21,6 +21,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto05Mesher_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES Tuto05Mesher_AppCfg)
 
 sight_generate_profile(Tuto05Mesher)

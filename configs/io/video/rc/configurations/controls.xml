@@ -10,8 +10,8 @@
     video processing are not expected here.
 
 Inout:
-   camera  [sight::data::Camera]: camera used to display video.
-   frameTL  [sight::data::FrameTL]: timeline where to extract the video frames.
+   camera  [sight::data::camera]: camera used to display video.
+   frameTL  [sight::data::frame_tl]: timeline where to extract the video frames.
 
 ui elements:
    TOOLBAR: editor wid of a toolbar in which the play/pause/stop/loop buttons will be displayed.
@@ -43,12 +43,12 @@ channels - out (optional):
 channels - in (optional):
 
     parameterChannelIn(ui::parameter_t, std::string) : channel on which a signal is expected to notify the grabber that a named parameter is changed.
-    addROICenterChannelIn(sight::data::Point):        channel on which a signal is expected to notify the grabber that a new point has been selected.
-    removeROICenterChannelIn(sight::data::Point):     channel on which a signal is expected to notify the grabber that a point has been remove.
+    addROICenterChannelIn(sight::data::point):        channel on which a signal is expected to notify the grabber that a new point has been selected.
+    removeROICenterChannelIn(sight::data::point):     channel on which a signal is expected to notify the grabber that a point has been remove.
 
 Usage:
 
-        <service uid="..." type="sight::service::SConfigController">
+        <service uid="..." type="sight::app::config_controller">
             <appConfig id="sight::config::io::video::controls" />
             <inout group="data">
                 <key name="camera" uid="..." />
@@ -74,7 +74,7 @@ Usage:
 
         </service>
 -->
-<extension implements="sight::service::extension::AppConfig" >
+<extension implements="sight::app::extension::config" >
     <id>sight::config::io::video::controls</id>
     <parameters>
         <param name="camera" />
@@ -113,10 +113,10 @@ Usage:
     </parameters>
     <config>
 
-        <object uid="${camera}" type="sight::data::Camera" src="ref" />
-        <object uid="${frameTL}" type="sight::data::FrameTL" src="ref" />
+        <object uid="${camera}" type="sight::data::camera" src="ref" />
+        <object uid="${frameTL}" type="sight::data::frame_tl" src="ref" />
 
-        <service uid="containerViewSrv" type="sight::module::ui::SView" >
+        <service uid="containerViewSrv" type="sight::module::ui::view" >
             <gui>
                 <toolBar />
                 <layout type="sight::ui::layout::line" >
@@ -129,12 +129,12 @@ Usage:
             </registry>
         </service>
 
-        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
+        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera" >
             <inout key="camera" uid="${camera}" />
             <videoSupport>${videoSupport}</videoSupport>
         </service>
 
-        <service uid="toolbarViewSrv" type="sight::module::ui::SToolBar" >
+        <service uid="toolbarViewSrv" type="sight::module::ui::tool_bar" >
             <gui>
                 <layout>
                     <editor/>
@@ -155,7 +155,7 @@ Usage:
             </registry>
         </service>
 
-        <service uid="grabberProxySrv" type="sight::module::io::video::SGrabberProxy" >
+        <service uid="grabberProxySrv" type="sight::module::io::video::grabber_proxy" >
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="${frameTL}" />
         </service>
@@ -163,25 +163,25 @@ Usage:
         <!-- ******************************* Actions ****************************** -->
 
         <!-- Start the frame grabber -->
-        <service uid="startVideoAct" type="sight::module::ui::SAction" />
+        <service uid="startVideoAct" type="sight::module::ui::action" />
 
         <!-- Pause the frame grabber -->
-        <service uid="pauseVideoAct" type="sight::module::ui::SAction" >
+        <service uid="pauseVideoAct" type="sight::module::ui::action" >
             <state visible="false" />
         </service>
 
         <!-- Resume the frame grabber -->
-        <service uid="resumeVideoAct" type="sight::module::ui::SAction" >
+        <service uid="resumeVideoAct" type="sight::module::ui::action" >
             <state visible="false" />
         </service>
 
         <!-- Stop the frame grabber -->
-        <service uid="stopVideoAct" type="sight::module::ui::SAction" >
+        <service uid="stopVideoAct" type="sight::module::ui::action" >
             <state enabled="false" />
         </service>
 
         <!-- Loop the frame grabber -->
-        <service uid="loopVideoAct" type="sight::module::ui::SAction" >
+        <service uid="loopVideoAct" type="sight::module::ui::action" >
             <state enabled="false" />
         </service>
 

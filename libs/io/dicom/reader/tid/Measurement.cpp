@@ -28,11 +28,11 @@
 #include "io/dicom/container/sr/DicomSRTextNode.hpp"
 #include "io/dicom/helper/DicomDataTools.hpp"
 
-#include <data/Boolean.hpp>
+#include <data/boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/PointList.hpp>
-#include <data/String.hpp>
-#include <data/Vector.hpp>
+#include <data/point_list.hpp>
+#include <data/string.hpp>
+#include <data/vector.hpp>
 
 namespace sight::io::dicom::reader::tid
 {
@@ -40,13 +40,13 @@ namespace sight::io::dicom::reader::tid
 //------------------------------------------------------------------------------
 
 Measurement::Measurement(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
-    const data::Image::sptr& image,
+    const data::image::sptr& image,
     const core::log::logger::sptr& logger
 ) :
-    io::dicom::reader::tid::TemplateID<data::Image>(dicomSeries, reader, instance, image, logger)
+    io::dicom::reader::tid::TemplateID<data::image>(dicomSeries, reader, instance, image, logger)
 {
 }
 
@@ -88,12 +88,12 @@ void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& no
                                 std::size_t(frameNumber)
                             );
 
-                            auto origin = std::make_shared<data::Point>(
+                            auto origin = std::make_shared<data::point>(
                                 static_cast<double>(coordinates[0]),
                                 static_cast<double>(coordinates[1]),
                                 zCoordinate
                             );
-                            auto destination = std::make_shared<data::Point>(
+                            auto destination = std::make_shared<data::point>(
                                 static_cast<double>(coordinates[2]),
                                 static_cast<double>(coordinates[3]),
                                 zCoordinate
@@ -114,8 +114,8 @@ void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& no
                     io::dicom::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
                         scoord3DNode->getGraphicDataContainer();
                     this->addDistance(
-                        std::make_shared<data::Point>(coordinates[0], coordinates[1], coordinates[2]),
-                        std::make_shared<data::Point>(coordinates[3], coordinates[4], coordinates[5])
+                        std::make_shared<data::point>(coordinates[0], coordinates[1], coordinates[2]),
+                        std::make_shared<data::point>(coordinates[3], coordinates[4], coordinates[5])
                     );
                 }
             }
@@ -126,19 +126,19 @@ void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& no
 //------------------------------------------------------------------------------
 
 void Measurement::addDistance(
-    const SPTR(data::Point)& point1,
-    const SPTR(data::Point)& point2
+    const SPTR(data::point)& point1,
+    const SPTR(data::point)& point2
 )
 {
     auto distanceVector = data::helper::MedicalImage::getDistances(*m_object);
 
     if(!distanceVector)
     {
-        distanceVector = std::make_shared<data::Vector>();
+        distanceVector = std::make_shared<data::vector>();
         data::helper::MedicalImage::setDistances(*m_object, distanceVector);
     }
 
-    data::PointList::sptr pointList = std::make_shared<data::PointList>();
+    data::point_list::sptr pointList = std::make_shared<data::point_list>();
     pointList->getPoints().push_back(point1);
     pointList->getPoints().push_back(point2);
 

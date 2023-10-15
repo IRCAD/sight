@@ -72,7 +72,7 @@ static inline core::type gdcmToSightPf(const gdcm::PixelFormat& pf)
 
 //------------------------------------------------------------------------------
 
-static inline data::Image::PixelFormat gdcmToSightPi(
+static inline data::image::PixelFormat gdcmToSightPi(
     const gdcm::PhotometricInterpretation& pi,
     const gdcm::PixelFormat& pf
 )
@@ -80,7 +80,7 @@ static inline data::Image::PixelFormat gdcmToSightPi(
     if(pi == gdcm::PhotometricInterpretation::PALETTE_COLOR)
     {
         // PALETTE_COLOR is always expended as RGB
-        return data::Image::PixelFormat::RGB;
+        return data::image::PixelFormat::RGB;
     }
 
     const auto gdcm_sample_per_pixel = pf.GetSamplesPerPixel();
@@ -88,7 +88,7 @@ static inline data::Image::PixelFormat gdcmToSightPi(
     if(gdcm_sample_per_pixel == 1)
     {
         // No need to check, no color space conversion...
-        return data::Image::PixelFormat::GRAY_SCALE;
+        return data::image::PixelFormat::GRAY_SCALE;
     }
 
     if(gdcm_sample_per_pixel == 3
@@ -98,11 +98,11 @@ static inline data::Image::PixelFormat gdcmToSightPi(
            || pi == gdcm::PhotometricInterpretation::YBR_RCT
            || pi == gdcm::PhotometricInterpretation::RGB))
     {
-        return data::Image::PixelFormat::RGB;
+        return data::image::PixelFormat::RGB;
     }
 
     // Unsupported...
-    return data::Image::PixelFormat::UNDEFINED;
+    return data::image::PixelFormat::UNDEFINED;
 }
 
 //------------------------------------------------------------------------------
@@ -121,18 +121,18 @@ bool NvJpeg2K::Code(gdcm::DataElement const& in, gdcm::DataElement& out)
     const auto frame_size     = in_length / dims[2];
 
     // Create the image used as input buffer
-    auto image           = std::make_shared<data::Image>();
+    auto image           = std::make_shared<data::image>();
     const auto dump_lock = image->dump_lock();
 
     // Create the writer
     auto writer = std::make_shared<bitmap::Writer>();
-    writer->setObject(image);
+    writer->set_object(image);
 
     // The output buffer is resized by the writer if not big enough
     std::vector<std::uint8_t> output_buffer(frame_size);
 
     const auto& sight_type   = gdcmToSightPf(this->GetPixelFormat());
-    const auto& sight_size   = sight::data::Image::Size {dims[0], dims[1], 1};
+    const auto& sight_size   = sight::data::image::Size {dims[0], dims[1], 1};
     const auto& sight_format = gdcmToSightPi(this->GetPhotometricInterpretation(), this->GetPixelFormat());
 
     for(std::size_t z = 0, end = dims[2] ; z < end ; ++z)

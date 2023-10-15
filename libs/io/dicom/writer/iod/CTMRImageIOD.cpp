@@ -25,15 +25,15 @@
 #include "io/dicom/helper/FileWriter.hpp"
 #include "io/dicom/writer/ie/Equipment.hpp"
 #include "io/dicom/writer/ie/FrameOfReference.hpp"
-#include "io/dicom/writer/ie/Image.hpp"
+#include "io/dicom/writer/ie/image.hpp"
 #include "io/dicom/writer/ie/Patient.hpp"
-#include "io/dicom/writer/ie/Series.hpp"
+#include "io/dicom/writer/ie/series.hpp"
 #include "io/dicom/writer/ie/Study.hpp"
 
 #include <core/spy_log.hpp>
 
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
 
 #include <gdcmImageWriter.h>
 
@@ -61,10 +61,10 @@ CTMRImageIOD::~CTMRImageIOD()
 
 //------------------------------------------------------------------------------
 
-void CTMRImageIOD::write(const data::Series::csptr& series)
+void CTMRImageIOD::write(const data::series::csptr& series)
 {
     // Retrieve image series
-    data::ImageSeries::csptr imageSeries = std::dynamic_pointer_cast<const data::ImageSeries>(series);
+    data::image_series::csptr imageSeries = std::dynamic_pointer_cast<const data::image_series>(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create writer
@@ -73,10 +73,10 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
     // Create Information Entity helpers
     io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
     io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
-    io::dicom::writer::ie::Series seriesIE(writer, m_instance, series);
+    io::dicom::writer::ie::series seriesIE(writer, m_instance, series);
     io::dicom::writer::ie::FrameOfReference frameOfReferenceIE(writer, m_instance, series);
     io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);
-    io::dicom::writer::ie::Image imageIE(writer, m_instance, imageSeries);
+    io::dicom::writer::ie::image imageIE(writer, m_instance, imageSeries);
 
     // Write Patient Module - PS 3.3 C.7.1.1
     patientIE.writePatientModule();

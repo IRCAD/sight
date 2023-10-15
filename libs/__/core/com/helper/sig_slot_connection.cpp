@@ -88,7 +88,7 @@ void sig_slot_connection::connect(
 void sig_slot_connection::connect(
     const core::com::has_signals::csptr& has_signals,
     const core::com::has_slots::csptr& has_slots,
-    const key_connections_type& key_connections
+    const key_connections_t& key_connections
 )
 {
     SIGHT_ASSERT("Signal source is NULL", has_signals);

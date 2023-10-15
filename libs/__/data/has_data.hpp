@@ -24,7 +24,7 @@
 #include "data/config.hpp"
 
 #include <data/mt/weak_ptr.hpp>
-#include <data/Object.hpp>
+#include <data/object.hpp>
 #include <data/ptr_access.hpp>
 
 #include <optional>
@@ -54,7 +54,7 @@ public:
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
-    template<class DATATYPE = sight::data::Object, typename CDATATYPE = std::add_const_t<DATATYPE> >
+    template<class DATATYPE = sight::data::object, typename CDATATYPE = std::add_const_t<DATATYPE> >
     inline data::mt::weak_ptr<CDATATYPE> input(std::string_view key, std::optional<std::size_t> index = {}) const;
 
     /**
@@ -63,7 +63,7 @@ public:
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
-    template<class DATATYPE = sight::data::Object>
+    template<class DATATYPE = sight::data::object>
     inline data::mt::weak_ptr<DATATYPE> inout(std::string_view key, std::optional<std::size_t> index = {}) const;
 
     /**
@@ -72,7 +72,7 @@ public:
      * @param index of the data to retrieve.
      * @return weak data pointer in the right type, expired pointer if not found.
      */
-    template<class DATATYPE = sight::data::Object>
+    template<class DATATYPE = sight::data::object>
     inline data::mt::weak_ptr<DATATYPE> output(std::string_view key, std::optional<std::size_t> index = {}) const;
 
     /**
@@ -82,13 +82,13 @@ public:
      * @param _index optional index of the data to retrieve.
      * @return data object, nullptr if not found.
      */
-    DATA_API data::Object::csptr object(
+    DATA_API data::object::csptr object(
         std::string_view _key,
         data::Access _access,
         std::optional<std::size_t> index = {}) const;
 
     /**
-     * @brief Set an input object, and overrides the default autoConnect and optional settings.
+     * @brief Set an input object, and overrides the default auto_connect and optional settings.
      *
      * @param[in] _obj input object used by the service
      * @param[in] _key key of the object
@@ -96,15 +96,15 @@ public:
      * @param[in] _optional if true, the service can be started even if the objet is not present
      * @param[in] _index if specified, indicates the object is part of a group and gives its index
      */
-    DATA_API void setInput(
-        data::Object::csptr _obj,
+    DATA_API void set_input(
+        data::object::csptr _obj,
         std::string_view _key,
         std::optional<bool> _autoConnect  = {},
         std::optional<bool> _optional     = {},
         std::optional<std::size_t> _index = {});
 
     /**
-     * @brief Set an in/outs object, and overrides the default autoConnect and optional settings.
+     * @brief Set an in/outs object, and overrides the default auto_connect and optional settings.
      *
      * @param[in] _obj in/out object used by the service
      * @param[in] _key key of the object
@@ -112,8 +112,8 @@ public:
      * @param[in] _optional if true, the service can be started even if the objet is not present
      * @param[in] _index if specified, indicates the object is part of a group and gives its index
      */
-    DATA_API void setInOut(
-        data::Object::sptr _obj,
+    DATA_API void set_inout(
+        data::object::sptr _obj,
         std::string_view _key,
         std::optional<bool> _autoConnect  = {},
         std::optional<bool> _optional     = {},
@@ -125,13 +125,13 @@ public:
      * @param _object pointer to the object to register.
      * @param _index optional index of the key in the case of a member of a group of keys.
      * @warning The service manages the output object lifetime: if it creates a new object, it will be the only
-     * maintainer of this object, when calling setOutput, it allows to share the object with other services. But these
+     * maintainer of this object, when calling set_output, it allows to share the object with other services. But these
      * services will not maintain a reference to this object (only weak_ptr). When the service stops, it should remove
-     * its outputs by calling setOutput(key, nullptr). Otherwise, a service may work on an expired object.
+     * its outputs by calling set_output(key, nullptr). Otherwise, a service may work on an expired object.
      */
-    DATA_API void setOutput(
+    DATA_API void set_output(
         std::string_view _key,
-        data::Object::sptr _object,
+        data::object::sptr _object,
         std::optional<std::size_t> _index = {});
 
 protected:
@@ -146,8 +146,8 @@ protected:
      * @param[in] _autoConnect if true, the service will be connected to the object's signals
      * @param[in] _optional if true, the service can be started even if the objet is not present
      */
-    DATA_API void setObject(
-        data::Object::sptr _obj,
+    DATA_API void set_object(
+        data::object::sptr _obj,
         std::string_view _key,
         std::optional<std::size_t> _index,
         data::Access _access,
@@ -160,9 +160,8 @@ protected:
      *
      * @param[in] _key key of the object
      * @param[in] _index index of the data in the group
-     * @param[in] _access access to the object (in/inout/out)
      */
-    DATA_API void resetObject(std::string_view _key, std::optional<std::size_t> _index);
+    DATA_API void reset_object(std::string_view _key, std::optional<std::size_t> _index);
 
     /**
      * @brief Set the deferred identifier of a key. This is useful to declare an object that is not present at start of
@@ -171,7 +170,10 @@ protected:
      * @param[in] _id label of the object
      * @param[in] _index index of the data in the group
      */
-    DATA_API void setDeferredId(std::string_view _key, const std::string& _id, std::optional<std::size_t> _index = {});
+    DATA_API void set_deferred_id(
+        std::string_view _key,
+        const std::string& _id,
+        std::optional<std::size_t> _index = {});
 
     using container_t = std::map<std::pair<std::string_view, std::optional<std::size_t> >, base_ptr*>;
     DATA_API const container_t& container() const;
@@ -189,9 +191,9 @@ private:
     /// Unregisters a pointer
     DATA_API void unregisterPtr(base_ptr* _data);
     /// Notifies that a new object has been created and available
-    DATA_API virtual void notifyRegisterOut(data::Object::sptr, const std::string&) = 0;
+    DATA_API virtual void notify_register_out(data::object::sptr, const std::string&) = 0;
     /// Notifies that a new object is being destroyed and no longer available
-    DATA_API virtual void notifyUnregisterOut(data::Object::sptr, const std::string&) = 0;
+    DATA_API virtual void notify_unregister_out(data::object::sptr, const std::string&) = 0;
 
     /**
      * @brief Map of data pointers, data::ptr and data::ptr_vector.
@@ -226,7 +228,7 @@ inline data::mt::weak_ptr<DATATYPE> has_data::inout(std::string_view _key, std::
     data::mt::weak_ptr<DATATYPE> inout;
     inout =
         std::dynamic_pointer_cast<DATATYPE>(
-            std::const_pointer_cast<data::Object>(
+            std::const_pointer_cast<data::object>(
                 this->object(
                     _key,
                     data::Access::inout,
@@ -245,7 +247,7 @@ inline data::mt::weak_ptr<DATATYPE> has_data::output(std::string_view _key, std:
     data::mt::weak_ptr<DATATYPE> out;
     out =
         std::dynamic_pointer_cast<DATATYPE>(
-            std::const_pointer_cast<data::Object>(
+            std::const_pointer_cast<data::object>(
                 this->object(
                     _key,
                     data::Access::out,

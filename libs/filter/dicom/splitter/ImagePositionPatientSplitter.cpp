@@ -25,7 +25,7 @@
 #include "filter/dicom/exceptions/FilterFailure.hpp"
 #include "filter/dicom/registry/macros.hpp"
 
-#include <geometry/data/VectorFunctions.hpp>
+#include <geometry/data/vector_functions.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -61,7 +61,7 @@ std::string ImagePositionPatientSplitter::getDescription() const
 //-----------------------------------------------------------------------------
 
 ImagePositionPatientSplitter::DicomSeriesContainerType ImagePositionPatientSplitter::apply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr& logger
 )
 const
@@ -73,7 +73,7 @@ const
     unsigned int instanceNumber = 0;
     double spacingBetweenSlices = 0.;
     const double epsilon        = 1e-2; // Value used to find a gap
-    data::DicomSeries::sptr currentSeries;
+    data::dicom_series::sptr currentSeries;
     for(const auto& item : series->getDicomContainer())
     {
         const core::memory::buffer_object::sptr bufferObj = item.second;
@@ -145,7 +145,7 @@ const
             }
 
             instanceNumber = 0;
-            currentSeries  = std::make_shared<data::DicomSeries>();
+            currentSeries  = std::make_shared<data::dicom_series>();
             currentSeries->shallow_copy(series);
             currentSeries->clearDicomContainer();
         }

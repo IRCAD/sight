@@ -24,7 +24,7 @@
 
 #include "io/dicom/writer/ie/InformationEntity.hpp"
 
-#include <data/Series.hpp>
+#include <data/series.hpp>
 
 namespace sight::io::dicom::writer::ie
 {
@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Patient Information Entity class
  */
-class IO_DICOM_CLASS_API Patient : public io::dicom::writer::ie::InformationEntity<data::Series>
+class IO_DICOM_CLASS_API Patient : public io::dicom::writer::ie::InformationEntity<data::series>
 {
 public:
 
@@ -48,7 +48,7 @@ public:
     IO_DICOM_API Patient(
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Series::csptr& series,
+        const data::series::csptr& series,
         const core::log::logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr

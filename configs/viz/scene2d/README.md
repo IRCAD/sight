@@ -1,6 +1,6 @@
 # config::viz::scene2d
 
-Contains xml configurations related to 2D visualization. These configurations are used by SightViewer and can be reused in any custom application or activity, since they implement the extension `sight::service::extension::AppConfig`.
+Contains xml configurations related to 2D visualization. These configurations are used by SightViewer and can be reused in any custom application or activity, since they implement the extension `sight::app::extension::config`.
 
 ## Configurations
 
@@ -24,7 +24,7 @@ The `TransferFunctionWidget` configuration can be included with the following co
 
 ```xml
 
-<service uid="..."  type="sight::service::SConfigController" >
+<service uid="..."  type="sight::app::config_controller" >
     <appConfig id="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
     <parameter replace="WID_PARENT" by="..." />
     <inout group="data">
@@ -36,14 +36,14 @@ The `TransferFunctionWidget` configuration can be included with the following co
 
 where:
 - WID_PARENT is the identifier of the parent window view,
-- image is a `sight::data::Image`,
-- currentTF is a `sight::data::TransferFunction`.
+- image is a `sight::data::image`,
+- currentTF is a `sight::data::transfer_function`.
 
 The `TransferFunctionWindow` configuration can be included with the following code:
 
 ```xml
 
-<service uid="..."  type="sight::service::SConfigController" >
+<service uid="..."  type="sight::app::config_controller" >
     <appConfig id="sight::config::viz::scene2d::TransferFunctionWindowCfg" />
     <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
     <parameter replace="WINDOW_ICON" by="path/to/icon.svg" />
@@ -57,6 +57,6 @@ The `TransferFunctionWindow` configuration can be included with the following co
 
 where:
 - WID_PARENT is the identifier of the parent window view,
-- image is a `sight::data::Image`,
-- currentTF is a `sight::data::TransferFunction`.
-- presets is a `sight::data::Composite`.
+- image is a `sight::data::image`,
+- currentTF is a `sight::data::transfer_function`.
+- presets is a `sight::data::composite`.

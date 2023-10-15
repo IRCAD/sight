@@ -27,12 +27,12 @@
 #include <core/tools/dispatcher.hpp>
 #include <core/tools/numeric_round_cast.hxx>
 
-#include <data/Image.hpp>
-#include <data/Integer.hpp>
-#include <data/PointList.hpp>
+#include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/point_list.hpp>
 #include <data/thread/RegionThreader.hpp>
-#include <data/TransferFunction.hpp>
-#include <data/Vector.hpp>
+#include <data/transfer_function.hpp>
+#include <data/vector.hpp>
 
 #include <optional>
 
@@ -59,7 +59,7 @@ typedef enum
  * @param[in]   _pImg   image checked.
  * @return      true if the image is valid.
  */
-DATA_API bool checkImageValidity(data::Image::csptr _pImg);
+DATA_API bool checkImageValidity(data::image::csptr _pImg);
 
 /**
  * @brief       Check if the image is valid.
@@ -69,7 +69,7 @@ DATA_API bool checkImageValidity(data::Image::csptr _pImg);
  * @param[in]   _pImg   image checked.
  * @return      true if the image is valid.
  */
-DATA_API bool checkImageValidity(const data::Image& _image);
+DATA_API bool checkImageValidity(const data::image& _image);
 
 /**
  * @brief       Check if the image has slice index fields.
@@ -79,16 +79,16 @@ DATA_API bool checkImageValidity(const data::Image& _image);
  * @param       _pImg   image which must contains the field.
  * @return      true if the fields are added.
  */
-DATA_API bool checkImageSliceIndex(data::Image::sptr _pImg);
+DATA_API bool checkImageSliceIndex(data::image::sptr _pImg);
 
 /**
  * @brief Checks if buf contains zero, from begin to begin + len
  *
- * @param buf data::Image::BufferType* begin of the buffer.
+ * @param buf data::image::BufferType* begin of the buffer.
  * @param len unsigned int length, as begin+len.
  * @return boolean, true if null, false otherwise.
  */
-DATA_API bool isBufNull(const data::Image::BufferType* buf, unsigned int len);
+DATA_API bool isBufNull(const data::image::BufferType* buf, unsigned int len);
 
 /**
  * @brief Return a buffer of image type's size, containing 'value' casted to image data type
@@ -96,7 +96,7 @@ DATA_API bool isBufNull(const data::Image::BufferType* buf, unsigned int len);
  * @param[in] value : value to map
  */
 template<typename T>
-SPTR(data::Image::BufferType) getPixelInImageSpace(data::Image::sptr image, T & value);
+SPTR(data::image::BufferType) getPixelInImageSpace(data::image::sptr image, T & value);
 
 /**
  * @brief Return minimum and maximum values contained in image. If image
@@ -107,7 +107,7 @@ SPTR(data::Image::BufferType) getPixelInImageSpace(data::Image::sptr image, T & 
  * @param[out] _max : maximum value
  */
 template<typename MINMAXTYPE>
-void getMinMax(data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
+void getMinMax(data::image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
 
 // Getter/Setter for specific image fields
 
@@ -119,7 +119,7 @@ void getMinMax(data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
  * @param _orientation : desired orientation
  * @return the current index as a std::int64_t.
  */
-DATA_API std::optional<std::int64_t> getSliceIndex(const data::Image& _image, const orientation_t& _orientation);
+DATA_API std::optional<std::int64_t> getSliceIndex(const data::image& _image, const orientation_t& _orientation);
 
 /**
  * @brief Helper function to set current slice index on a medical image in a specific orientation (Axial, Sagittal,
@@ -130,7 +130,7 @@ DATA_API std::optional<std::int64_t> getSliceIndex(const data::Image& _image, co
  * @param _sliceCount : current slice index to set as std::int64_t.
  */
 DATA_API void setSliceIndex(
-    data::Image& _image,
+    data::image& _image,
     const orientation_t& _orientation,
     std::int64_t _sliceCount
 );
@@ -139,33 +139,33 @@ DATA_API void setSliceIndex(
  * @brief Helper function to get landmarks of a medical image.
  *
  * @param _image : input image reference.
- * @return a data::PointList::sptr containing landmarks, pointer can be null.
+ * @return a data::point_list::sptr containing landmarks, pointer can be null.
  */
-DATA_API data::PointList::sptr getLandmarks(const data::Image& _image);
+DATA_API data::point_list::sptr getLandmarks(const data::image& _image);
 
 /**
  * @brief Helper function to set landmarks in a medical image.
  *
  * @param _image : input image reference.
- * @param _landmarks : landmarks pointer as data::PointList::sptr.
+ * @param _landmarks : landmarks pointer as data::point_list::sptr.
  */
-DATA_API void setLandmarks(data::Image& _image, const data::PointList::sptr& _landmarks);
+DATA_API void setLandmarks(data::image& _image, const data::point_list::sptr& _landmarks);
 
 /**
- * @brief Helper function to get distances vector of a medical Image.
+ * @brief Helper function to get distances vector of a medical image.
  *
  * @param _image : input image reference.
- * @return a data::Vector::sptr containing distances, pointer can be null.
+ * @return a data::vector::sptr containing distances, pointer can be null.
  */
-DATA_API data::Vector::sptr getDistances(const data::Image& _image);
+DATA_API data::vector::sptr getDistances(const data::image& _image);
 
 /**
- * @brief Helper function to set distances in a medical image as a data::Vector::sptr.
+ * @brief Helper function to set distances in a medical image as a data::vector::sptr.
  *
  * @param _image : input image reference.
- * @param _distances : data::Vector::sptr containing distances.
+ * @param _distances : data::vector::sptr containing distances.
  */
-DATA_API void setDistances(data::Image& _image, const data::Vector::sptr& _distances);
+DATA_API void setDistances(data::image& _image, const data::vector::sptr& _distances);
 
 /**
  * @brief Helper function to get distance visibility on a medical image.
@@ -173,7 +173,7 @@ DATA_API void setDistances(data::Image& _image, const data::Vector::sptr& _dista
  * @param _image : input image reference.
  * @return boolean value (visible or not).
  */
-DATA_API bool getDistanceVisibility(const data::Image& _image);
+DATA_API bool getDistanceVisibility(const data::image& _image);
 
 /**
  * @brief Helper function to set distance visibility on a medical image.
@@ -181,7 +181,7 @@ DATA_API bool getDistanceVisibility(const data::Image& _image);
  * @param _image : input image reference.
  * @param _visibility : boolean to represents if distance is visible or not.
  */
-DATA_API void setDistanceVisibility(data::Image& _image, bool _visibility);
+DATA_API void setDistanceVisibility(data::image& _image, bool _visibility);
 
 /**
  * @brief Helper function to get landmarks visibility on a medical image.
@@ -189,7 +189,7 @@ DATA_API void setDistanceVisibility(data::Image& _image, bool _visibility);
  * @param _image : input image reference.
  * @return boolean value (visible or not).
  */
-DATA_API bool getLandmarksVisibility(const data::Image& _image);
+DATA_API bool getLandmarksVisibility(const data::image& _image);
 
 /**
  * @brief Helper function to set landmarks visibility on a medical image.
@@ -197,7 +197,7 @@ DATA_API bool getLandmarksVisibility(const data::Image& _image);
  * @param _image : input image reference.
  * @param _visibility : boolean to represents if landmarks are visible or not.
  */
-DATA_API void setLandmarksVisibility(data::Image& _image, bool _visibility);
+DATA_API void setLandmarksVisibility(data::image& _image, bool _visibility);
 
 /**
  * @brief Helper to get comment on medical image.
@@ -205,7 +205,7 @@ DATA_API void setLandmarksVisibility(data::Image& _image, bool _visibility);
  * @param _image : input image reference.
  * @return std::string the comment, can be empty.
  */
-DATA_API std::string getComment(const data::Image& _image);
+DATA_API std::string getComment(const data::image& _image);
 
 /**
  * @brief Helper function to set comment on medical image.
@@ -213,7 +213,7 @@ DATA_API std::string getComment(const data::Image& _image);
  * @param _image : input image reference.
  * @param _comment : std::string comment to add.
  */
-DATA_API void setComment(data::Image& _image, const std::string& _comment);
+DATA_API void setComment(data::image& _image, const std::string& _comment);
 
 /**
  * @brief Helper function to get label on a medical image.
@@ -221,7 +221,7 @@ DATA_API void setComment(data::Image& _image, const std::string& _comment);
  * @param _image : input image reference.
  * @return std::string the label, can be empty.
  */
-DATA_API std::string getLabel(const data::Image& _image);
+DATA_API std::string getLabel(const data::image& _image);
 
 /**
  * @brief Helper function to set label on medical image.
@@ -229,7 +229,7 @@ DATA_API std::string getLabel(const data::Image& _image);
  * @param _image : input image reference.
  * @param _label : std::string the label.
  */
-DATA_API void setLabel(data::Image& _image, const std::string& _label);
+DATA_API void setLabel(data::image& _image, const std::string& _label);
 
 // ------------------------------------------------------------------------------
 
@@ -243,7 +243,7 @@ public:
     public:
 
         typedef VALUE ValueType;
-        typedef SPTR(data::Image::BufferType) BufferTypeSptr;
+        typedef SPTR(data::image::BufferType) BufferTypeSptr;
 
         Param(ValueType& v) :
             value(v)
@@ -263,9 +263,9 @@ public:
 
         auto val = core::tools::numeric_round_cast<IMAGE>(param.value);
 
-        auto* buf = reinterpret_cast<data::Image::BufferType*>(&val);
+        auto* buf = reinterpret_cast<data::image::BufferType*>(&val);
 
-        SPTR(data::Image::BufferType) res(new data::Image::BufferType[imageTypeSize]);
+        SPTR(data::image::BufferType) res(new data::image::BufferType[imageTypeSize]);
         std::copy(buf, buf + imageTypeSize, res.get());
         param.res = res;
     }
@@ -291,7 +291,7 @@ public:
         {
         }
 
-        data::Image::sptr image;
+        data::image::sptr image;
         const ValueType& value;
         const PointType& point;
     };
@@ -303,7 +303,7 @@ public:
     {
         auto* buffer                  = static_cast<IMAGE*>(param.image->buffer());
         const INT_INDEX& p            = param.point;
-        const data::Image::Size& size = param.image->size();
+        const data::image::Size& size = param.image->size();
         const int& sx                 = size[0];
         const int& sy                 = size[1];
         const int& offset             = p[0] + sx * p[1] + p[2] * sx * sy;
@@ -314,8 +314,8 @@ public:
 // ------------------------------------------------------------------------------
 
 template<typename T>
-SPTR(data::Image::BufferType) getPixelInImageSpace(
-    data::Image::sptr image,
+SPTR(data::image::BufferType) getPixelInImageSpace(
+    data::image::sptr image,
     T & value
 )
 {
@@ -337,14 +337,14 @@ public:
     {
     public:
 
-        Param(data::Image::csptr _img, T& _min, T& _max) :
+        Param(data::image::csptr _img, T& _min, T& _max) :
             image(_img),
             min(_min),
             max(_max)
         {
         }
 
-        data::Image::csptr image;
+        data::image::csptr image;
         T& min;
         T& max;
     };
@@ -355,7 +355,7 @@ public:
 
     template<typename IMAGE>
     static void getMinMax(
-        const data::Image::const_iterator<IMAGE>& imgBegin,
+        const data::image::const_iterator<IMAGE>& imgBegin,
         result_vector_t& minRes,
         result_vector_t& maxRes,
         std::ptrdiff_t regionMin,
@@ -363,8 +363,8 @@ public:
         std::size_t i
 )
     {
-        const data::Image::const_iterator<IMAGE> begin = imgBegin + regionMin;
-        const data::Image::const_iterator<IMAGE> end   = imgBegin + regionMax;
+        const data::image::const_iterator<IMAGE> begin = imgBegin + regionMin;
+        const data::image::const_iterator<IMAGE> end   = imgBegin + regionMax;
 
         typedef std::numeric_limits<IMAGE> ImgLimits;
         IMAGE imin = ImgLimits::max();
@@ -400,7 +400,7 @@ public:
     template<typename IMAGE>
     void operator()(Param& param)
     {
-        const data::Image::csptr image = param.image;
+        const data::image::csptr image = param.image;
         const auto dumpLock            = image->dump_lock();
 
         result_vector_t min_result;
@@ -433,7 +433,7 @@ public:
 // ------------------------------------------------------------------------------
 
 template<typename MINMAXTYPE>
-void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max)
+void getMinMax(const data::image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max)
 {
     typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
 

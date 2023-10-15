@@ -24,7 +24,7 @@
 
 #include "ui/dicom/config.hpp"
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <filter/dicom/sorter/TagValueSorter.hpp>
 

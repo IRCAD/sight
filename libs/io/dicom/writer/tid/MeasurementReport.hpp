@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "io/dicom/container/sr/DicomSRNode.hpp"
 #include "io/dicom/writer/tid/TemplateID.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 namespace sight::io::dicom::writer::tid
 {
@@ -34,7 +34,7 @@ namespace sight::io::dicom::writer::tid
  * @brief Measurement Report TID - This a root template
  * @see TID t1tt1 FIXME: Set the final TID
  */
-class IO_DICOM_CLASS_API MeasurementReport : public io::dicom::writer::tid::TemplateID<data::Image>
+class IO_DICOM_CLASS_API MeasurementReport : public io::dicom::writer::tid::TemplateID<data::image>
 {
 public:
 
@@ -47,7 +47,7 @@ public:
     IO_DICOM_API MeasurementReport(
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Image::csptr& image
+        const data::image::csptr& image
     );
 
     /// Destructor

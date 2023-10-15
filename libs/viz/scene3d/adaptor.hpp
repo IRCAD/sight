@@ -23,7 +23,7 @@
 #pragma once
 
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/SRender.hpp"
+#include "viz/scene3d/render.hpp"
 
 #include <service/base.hpp>
 #include <service/has_services.hpp>
@@ -58,7 +58,7 @@ class VIZ_SCENE3D_CLASS_API adaptor :
     public service::base,
     public service::has_services
 {
-friend class SRender;
+friend class render;
 
 public:
 
@@ -75,10 +75,10 @@ public:
     VIZ_SCENE3D_API const std::string& getLayerID() const;
 
     /// Sets the render service using this adaptor.
-    VIZ_SCENE3D_API void setRenderService(SRender::sptr _service);
+    VIZ_SCENE3D_API void setRenderService(render::sptr _service);
 
     /// @returns the render service using this adaptor
-    VIZ_SCENE3D_API SRender::sptr getRenderService() const;
+    VIZ_SCENE3D_API render::sptr getRenderService() const;
 
     /// @returns the layer where this adaptor is attached.
     VIZ_SCENE3D_API Layer::sptr getLayer() const;
@@ -145,7 +145,7 @@ protected:
     std::string m_cfgLayerID;
 
     /// Contains the t=render service which this adaptor is attached.
-    viz::scene3d::SRender::wptr m_renderService;
+    viz::scene3d::render::wptr m_renderService;
 
     /// Enables the adaptor visibility.
     bool m_isVisible {true};

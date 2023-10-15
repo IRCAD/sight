@@ -21,9 +21,9 @@
 
 #include "GzBufferImageWriterTest.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <io/__/writer/GzBufferImageWriter.hpp>
+#include <io/__/writer/gz_buffer_image_writer.hpp>
 
 #include <zlib.h>
 
@@ -38,16 +38,16 @@ namespace sight::io::ut
 
 void GzBufferImageWriterTest::basicTest()
 {
-    auto gzBufferImageWriter       = std::make_shared<writer::GzBufferImageWriter>();
+    auto gzBufferImageWriter       = std::make_shared<writer::gz_buffer_image_writer>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path()
                                      / ("test" + gzBufferImageWriter->extension());
-    auto imageIn = std::make_shared<data::Image>();
-    imageIn->resize({16}, core::type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    auto imageIn = std::make_shared<data::image>();
+    imageIn->resize({16}, core::type::UINT8, data::image::PixelFormat::GRAY_SCALE);
     {
         auto imageLock = imageIn->dump_lock();
         std::iota(imageIn->begin<std::uint8_t>(), imageIn->end<std::uint8_t>(), std::uint8_t(0));
     }
-    gzBufferImageWriter->setObject(imageIn);
+    gzBufferImageWriter->set_object(imageIn);
     std::filesystem::remove(filepath);
     gzBufferImageWriter->set_file(filepath);
     /* TODO: fix

@@ -21,7 +21,7 @@
 
 #include "SessionWriter.hpp"
 
-#include "io/session/detail/core/SessionSerializer.hpp"
+#include "io/session/detail/core/session_serializer.hpp"
 
 #include <core/crypto/password_keeper.hpp>
 
@@ -62,7 +62,7 @@ public:
     inline void write()
     {
         // Retrieve the root object
-        auto root_object = std::dynamic_pointer_cast<const data::Object>(m_sessionWriter->getObject());
+        auto root_object = std::dynamic_pointer_cast<const data::object>(m_sessionWriter->getObject());
         SIGHT_FATAL_IF("Root object is null or not a data object.", !root_object);
 
         // Serialize the root object
@@ -76,7 +76,7 @@ public:
     }
 
     /// Session serializer which perform the serialization
-    detail::SessionSerializer m_sessionSerializer;
+    detail::session_serializer m_sessionSerializer;
 
     /// Pointer to the public interface
     SessionWriter* const m_sessionWriter;
@@ -145,14 +145,14 @@ void SessionWriter::setCustomSerializer(const std::string& className, serializer
 
 void SessionWriter::setSerializer(const std::string& className, serializer_t serializer)
 {
-    detail::SessionSerializer::setSerializer(className, serializer);
+    detail::session_serializer::setSerializer(className, serializer);
 }
 
 //------------------------------------------------------------------------------
 
 serializer_t SessionWriter::serializer(const std::string& className)
 {
-    return detail::SessionSerializer::serializer(className);
+    return detail::session_serializer::serializer(className);
 }
 
 } //namespace sight::io::session

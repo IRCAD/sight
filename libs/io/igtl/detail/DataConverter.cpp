@@ -26,8 +26,8 @@
 
 #include <core/lazy_instantiator.hpp>
 
-#include <data/Float.hpp>
-#include <data/Integer.hpp>
+#include <data/integer.hpp>
+#include <data/real.hpp>
 
 #include <igtlCapabilityMessage.h>
 #include <igtlStatusMessage.h>
@@ -61,7 +61,7 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer DataConverter::fromFwObject(data::Object::csptr src) const
+::igtl::MessageBase::Pointer DataConverter::fromFwObject(data::object::csptr src) const
 {
     const std::string classname = src->get_classname();
     for(const converter::base::sptr& converter : m_converters)
@@ -77,9 +77,9 @@ DataConverter::~DataConverter()
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr DataConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    data::Object::sptr obj;
+    data::object::sptr obj;
     const std::string deviceType = src->GetDeviceType();
 
     for(const converter::base::sptr& converter : m_converters)

@@ -2,17 +2,17 @@
 
     <requirement id="sight::module::service" />
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
-        <service>sight::module::io::session::SReader</service>
-        <object>sight::data::Object</object>
+        <service>sight::module::io::session::reader</service>
+        <object>sight::data::object</object>
         <desc>Session reader</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
         <type>sight::io::service::writer</type>
-        <service>sight::module::io::session::SWriter</service>
-        <object>sight::data::Object</object>
+        <service>sight::module::io::session::writer</service>
+        <object>sight::data::object</object>
         <desc>Session writer</desc>
     </extension>
 

@@ -27,7 +27,7 @@ The interface filter class is `sight::filter::filter`. All filters need to imple
 - **ImageOrientationSplitter**: uses the ImageOrientationPatient tag to split the instances.
 - **ImagePositionPatientSplitter**: uses the ImagePositionPatient tag to split the instances
 - **ImageTypeSplitter**: uses the ImageType tag to split the instances.
-- **SOPClassUIDSplitter**: uses the SOPClassUID tag to split the instances.
+- **sop_class_uid_splitter**: uses the sop_classUID tag to split the instances.
 - **TagValueInstanceRemoveSplitter**: removes instances according to tag value
 - **TagValueSplitter**: uses a random tag to split the instances
 - **TemporalPositionSplitter**: uses the TemporalPositionIdentifier tag to split the instances.

@@ -30,7 +30,7 @@
 #include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include <io/__/reader/registry/macros.hpp>
 
@@ -50,7 +50,7 @@ struct InrLoaderFunctor
 {
     struct Parameter
     {
-        data::Image::sptr m_dataImage;
+        data::image::sptr m_dataImage;
         std::string m_filename;
         io::itk::InrImageReader::sptr m_fwReader;
     };
@@ -128,7 +128,7 @@ void InrImageReader::read()
 
     core::tools::dispatcher<core::tools::intrinsic_types, InrLoaderFunctor>::invoke(type, param);
 
-    SIGHT_ASSERT("sight::data::Image is not well produced", m_object.lock()); // verify that data::Image is well
+    SIGHT_ASSERT("sight::data::image is not well produced", m_object.lock()); // verify that data::image is well
     // produced
     // Post Condition image with a pixel type
     SIGHT_ASSERT(

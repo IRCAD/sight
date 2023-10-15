@@ -1,25 +1,25 @@
-<extension implements="sight::service::extension::AppConfig" >
+<extension implements="sight::app::extension::config" >
     <id>Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg</id>
     <parameters><!-- Declared the required parameters -->
         <!--
-            CLOSE_CONFIG_CHANNEL is defined by SConfigLauncher. It allows to connect the frame signal "closed" to the
-            SConfigLauncher slot "stopConfig".
+            CLOSE_CONFIG_CHANNEL is defined by config_launcher. It allows to connect the frame signal "closed" to the
+            config_launcher slot "stopConfig".
             The default value "DummyChannel" is used if the paramter CLOSE_CONFIG_CHANNEL is not defined (for example if
             the configuration is launched from another service.
          -->
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
-        <!-- imageUid is defined by the previous configuration that called the SConfigLauncher. -->
+        <!-- imageUid is defined by the previous configuration that called the config_launcher. -->
         <param name="imageUid" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageUid}" type="sight::data::Image" src="ref" />
+        <object uid="${imageUid}" type="sight::data::image" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::SFrame" >
+        <service uid="mainFrame" type="sight::module::ui::frame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -34,7 +34,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="imageRendereSrv" type="sight::module::viz::sample::SImage" >
+        <service uid="imageRendereSrv" type="sight::module::viz::sample::image" >
             <in key="image" uid="${imageUid}" />
         </service>
 

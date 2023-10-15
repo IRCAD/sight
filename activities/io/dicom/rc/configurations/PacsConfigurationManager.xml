@@ -1,15 +1,15 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>PacsConfigurationManager</id>
     <parameters>
         <param name="PACS_CONFIGURATION" />
         <param name="ICON_PATH" />
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by config_launcher -->
     </parameters>
     <config>
         <object uid="${PACS_CONFIGURATION}" type="sight::io::dimse::data::PacsConfiguration" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="pacsConfigurationManagerFrame" type="sight::module::ui::SFrame" >
+        <service uid="pacsConfigurationManagerFrame" type="sight::module::ui::frame" >
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -24,7 +24,7 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="sight::module::ui::SView" >
+        <service uid="mainView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="pacsConfigurationEditor" type="sight::module::io::dimse::SPacsConfigurationEditor">
+        <service uid="pacsConfigurationEditor" type="sight::module::io::dimse::pacs_configuration_editor">
             <inout key="config" uid="${PACS_CONFIGURATION}" />
         </service>
 

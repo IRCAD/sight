@@ -30,12 +30,12 @@
 namespace sight::data
 {
 
-class Object;
+class object;
 
 namespace factory
 {
 
-DATA_API SPTR(data::Object) make(const data::registry::KeyType& classname);
+DATA_API SPTR(data::object) make(const data::registry::key_t& classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME) make()

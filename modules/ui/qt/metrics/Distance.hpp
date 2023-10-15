@@ -26,7 +26,7 @@
 
 #include <core/tools/failed.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -56,7 +56,7 @@ namespace sight::module::ui::qt::metrics
    @endcode
 
  * @subsection In-Out In-Out
- * -\b image [data::Image]: Image in which we calculate the distance.
+ * -\b image [data::image]: image in which we calculate the distance.
  */
 class MODULE_UI_QT_CLASS_API Distance : public QObject,
                                         public sight::ui::editor
@@ -118,7 +118,7 @@ private:
 
     DistanceRequestedSignalType::sptr m_sigDistanceRequested; /// signal emitted when a distance is requested
 
-    data::ptr<data::Image, data::Access::inout> m_image {this, "image"};
+    data::ptr<data::image, data::Access::inout> m_image {this, "image"};
 };
 
 } // namespace sight::module::ui::qt::metrics

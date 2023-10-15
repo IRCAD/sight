@@ -28,7 +28,7 @@
 
 #include <core/exception.hpp>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 #include <igtlMessageHeader.h>
 #include <igtlSocket.h>
@@ -63,7 +63,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IO_IGTL_API data::Object::sptr receiveObject(std::string& deviceName);
+    IO_IGTL_API data::object::sptr receiveObject(std::string& deviceName);
 
     /**
      * @brief generic method to receive object
@@ -73,7 +73,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IO_IGTL_API data::Object::sptr receiveObject(std::string& deviceName, double& timestamp);
+    IO_IGTL_API data::object::sptr receiveObject(std::string& deviceName, double& timestamp);
 
     /**
      * @brief generic method to send a object the type of object is determined by classname
@@ -81,7 +81,7 @@ public:
      *        a sigpipe signal
      * @param[in] dest object to send
      */
-    IO_IGTL_API bool sendObject(const data::Object::csptr& dest);
+    IO_IGTL_API bool sendObject(const data::object::csptr& dest);
 
     /**
      * @brief generic method to send a igtl Msg, this method is useful for redirect message

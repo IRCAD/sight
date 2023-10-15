@@ -27,9 +27,9 @@
 #include <core/crypto/secure_string.hpp>
 #include <core/location/single_file.hpp>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
-#include <io/__/reader/IObjectReader.hpp>
+#include <io/__/reader/object_reader.hpp>
 #include <io/zip/ArchiveReader.hpp>
 
 #include <boost/property_tree/ptree.hpp>
@@ -38,11 +38,11 @@ namespace sight::io::session
 {
 
 /// The deserializer function signature. This is used to register an object deserialization function.
-using deserializer_t = std::function<data::Object::sptr(
+using deserializer_t = std::function<data::object::sptr(
                                          zip::ArchiveReader&,
                                          const boost::property_tree::ptree&,
-                                         const std::map<std::string, data::Object::sptr>&,
-                                         data::Object::sptr,
+                                         const std::map<std::string, data::object::sptr>&,
+                                         data::object::sptr,
                                          const core::crypto::secure_string&
                                      )>;
 
@@ -59,12 +59,12 @@ using deserializer_t = std::function<data::Object::sptr(
  *
  */
 class IO_SESSION_CLASS_API SessionReader final :
-    public io::reader::IObjectReader,
+    public io::reader::object_reader,
     public core::location::single_file
 {
 public:
 
-    SIGHT_DECLARE_CLASS(SessionReader, io::reader::IObjectReader, io::reader::factory::make<SessionReader>);
+    SIGHT_DECLARE_CLASS(SessionReader, io::reader::object_reader, io::reader::factory::make<SessionReader>);
     SIGHT_ALLOW_SHARED_FROM_THIS()
     /// Delete default constructors and assignment operators
     SessionReader(const SessionReader&)            = delete;

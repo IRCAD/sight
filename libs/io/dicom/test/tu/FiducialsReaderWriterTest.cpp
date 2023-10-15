@@ -21,12 +21,12 @@
 
 #include "FiducialsReaderWriterTest.hpp"
 
-#include <data/ImageSeries.hpp>
+#include <data/image_series.hpp>
 
 #include <io/dicom/Reader.hpp>
 #include <io/dicom/Writer.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::FiducialsReaderWriterTest);
 
@@ -37,17 +37,17 @@ namespace sight::io::dicom::ut
 
 void FiducialsReaderWriterTest::basicTest()
 {
-    auto original = std::make_shared<data::SeriesSet>();
+    auto original = std::make_shared<data::series_set>();
     auto reader   = std::make_shared<io::dicom::Reader>();
-    reader->setObject(original);
-    reader->set_folder(utestData::Data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
+    reader->set_object(original);
+    reader->set_folder(utest_data::Data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
     CPPUNIT_ASSERT_NO_THROW(reader->read());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), original->size());
 
-    auto originalImageSeries = std::dynamic_pointer_cast<data::ImageSeries>(original->at(0));
+    auto originalImageSeries = std::dynamic_pointer_cast<data::image_series>(original->at(0));
     CPPUNIT_ASSERT(originalImageSeries);
     CPPUNIT_ASSERT(!originalImageSeries->hasFiducials());
-    data::FiducialsSeries::sptr originalFiducialsSeries = originalImageSeries->getFiducials();
+    data::fiducials_series::sptr originalFiducialsSeries = originalImageSeries->getFiducials();
 
     originalFiducialsSeries->setContentDate("1");
     originalFiducialsSeries->setContentTime("2");
@@ -56,9 +56,9 @@ void FiducialsReaderWriterTest::basicTest()
     originalFiducialsSeries->setContentDescription("5");
     originalFiducialsSeries->setContentCreatorName("6");
 
-    data::FiducialsSeries::FiducialSet fiducialSet;
+    data::fiducials_series::FiducialSet fiducialSet;
 
-    data::FiducialsSeries::ReferencedImage referencedImage;
+    data::fiducials_series::ReferencedImage referencedImage;
     referencedImage.referencedSOPClassUID    = data::dicom::sop::get(originalImageSeries->getSOPKeyword()).m_uid;
     referencedImage.referencedSOPInstanceUID = originalImageSeries->getSOPInstanceUID();
     referencedImage.referencedFrameNumber    = {7};
@@ -67,12 +67,12 @@ void FiducialsReaderWriterTest::basicTest()
 
     fiducialSet.frameOfReferenceUID = "9";
 
-    data::FiducialsSeries::Fiducial fiducial;
-    fiducial.shapeType           = data::FiducialsSeries::Shape::POINT;
+    data::fiducials_series::Fiducial fiducial;
+    fiducial.shapeType           = data::fiducials_series::Shape::POINT;
     fiducial.fiducialDescription = "10";
     fiducial.fiducialIdentifier  = "11";
 
-    data::FiducialsSeries::GraphicCoordinatesData graphicCoordinatesData;
+    data::fiducials_series::GraphicCoordinatesData graphicCoordinatesData;
     graphicCoordinatesData.referencedImageSequence.referencedSOPClassUID = data::dicom::sop::get(
         originalImageSeries->getSOPKeyword()
     ).m_uid;
@@ -99,22 +99,22 @@ void FiducialsReaderWriterTest::basicTest()
     originalFiducialsSeries->appendFiducialSet(fiducialSet);
 
     auto writer = std::make_shared<io::dicom::Writer>();
-    writer->setObject(original);
+    writer->set_object(original);
     std::filesystem::create_directories("/tmp/FiducialsReaderWriterTest");
     writer->set_folder("/tmp/FiducialsReaderWriterTest");
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    auto actual = std::make_shared<data::SeriesSet>();
-    reader->setObject(actual);
+    auto actual = std::make_shared<data::series_set>();
+    reader->set_object(actual);
     reader->set_folder("/tmp/FiducialsReaderWriterTest");
     CPPUNIT_ASSERT_NO_THROW(reader->read());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual->size());
 
-    auto actualImageSeries = std::dynamic_pointer_cast<data::ImageSeries>(actual->at(0));
+    auto actualImageSeries = std::dynamic_pointer_cast<data::image_series>(actual->at(0));
     CPPUNIT_ASSERT(actualImageSeries);
     auto actualFiducialsSeries = actualImageSeries->getFiducials();
     CPPUNIT_ASSERT(actualFiducialsSeries);
-    std::vector<data::FiducialsSeries::FiducialSet> actualFiducialSets = actualFiducialsSeries->getFiducialSets();
+    std::vector<data::fiducials_series::FiducialSet> actualFiducialSets = actualFiducialsSeries->getFiducialSets();
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), actualFiducialSets.size());
 
     CPPUNIT_ASSERT_EQUAL(originalFiducialsSeries->getContentDate(), actualFiducialsSeries->getContentDate());

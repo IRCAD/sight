@@ -25,7 +25,7 @@
 #include "filter/dicom/config.hpp"
 #include "filter/dicom/filter.hpp"
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 namespace sight::filter::dicom::composite
 {
@@ -49,7 +49,7 @@ public:
 
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
-        const data::DicomSeries::sptr& series,
+        const data::dicom_series::sptr& series,
         const core::log::logger::sptr& logger
     ) const override;
 
@@ -59,7 +59,7 @@ public:
      * @return Returns one or more Dicom Instance Group
      */
     FILTER_DICOM_API DicomSeriesContainerType forcedApply(
-        const data::DicomSeries::sptr& series,
+        const data::dicom_series::sptr& series,
         const core::log::logger::sptr& logger
     ) const;
 

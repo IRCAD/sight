@@ -62,7 +62,7 @@ public:
     using sptr = std::shared_ptr<object_test>;
 
     object_test() :
-        m_name("ObjectTest")
+        m_name("object_test")
     {
         core::mt::scoped_lock lock(s_mutex);
         ++s_counter;
@@ -76,7 +76,7 @@ public:
     }
 
     explicit object_test(int msec) :
-        m_name("ObjectTest+sleep")
+        m_name("object_test+sleep")
     {
         core::mt::scoped_lock lock(s_mutex);
         std::this_thread::sleep_for(std::chrono::milliseconds(msec));
@@ -132,7 +132,7 @@ void factory_registry_test::pointer_test()
     using factory_type = core::factory_registry<object_test::sptr()>;
     factory_type object_test_factory;
     object_test_factory.add_factory(
-        "ObjectTest",
+        "object_test",
         []() -> object_test::sptr
         {
             return std::make_shared<object_test>();
@@ -144,20 +144,20 @@ void factory_registry_test::pointer_test()
             return std::make_shared<derived_object_test>();
         });
 
-    factory_type::key_vector_type keys = {"ObjectTest", "DerivedObjectTest"};
+    factory_type::key_vector_type keys = {"object_test", "DerivedObjectTest"};
     std::sort(keys.begin(), keys.end());
     factory_type::key_vector_type vect_keys = object_test_factory.get_factory_keys();
     std::sort(vect_keys.begin(), vect_keys.end());
     CPPUNIT_ASSERT(keys == vect_keys);
 
-    object_test::sptr object_test1 = object_test_factory.create("ObjectTest");
+    object_test::sptr object_test1 = object_test_factory.create("object_test");
     CPPUNIT_ASSERT_EQUAL(1, object_test::s_counter);
 
-    object_test::sptr object_test2 = object_test_factory.create("ObjectTest");
+    object_test::sptr object_test2 = object_test_factory.create("object_test");
     CPPUNIT_ASSERT_EQUAL(2, object_test::s_counter);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest"), object_test1->name());
-    CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest"), object_test2->name());
+    CPPUNIT_ASSERT_EQUAL(std::string("object_test"), object_test1->name());
+    CPPUNIT_ASSERT_EQUAL(std::string("object_test"), object_test2->name());
 
     object_test::sptr derived_object_test1 = object_test_factory.create("DerivedObjectTest");
     CPPUNIT_ASSERT_EQUAL(3, object_test::s_counter);
@@ -178,7 +178,7 @@ void factory_registry_test::value_test()
 
     core::factory_registry<object_test()> object_test_factory;
     object_test_factory.add_factory(
-        "ObjectTest",
+        "object_test",
         []() -> object_test
         {
             return {};
@@ -190,14 +190,14 @@ void factory_registry_test::value_test()
             return {};
         });
 
-    object_test object_test1 = object_test_factory.create("ObjectTest");
+    object_test object_test1 = object_test_factory.create("object_test");
     CPPUNIT_ASSERT_EQUAL(1, object_test::s_counter);
 
-    object_test object_test2 = object_test_factory.create("ObjectTest");
+    object_test object_test2 = object_test_factory.create("object_test");
     CPPUNIT_ASSERT_EQUAL(2, object_test::s_counter);
 
-    CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest"), object_test1.name());
-    CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest"), object_test2.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("object_test"), object_test1.name());
+    CPPUNIT_ASSERT_EQUAL(std::string("object_test"), object_test2.name());
 
     object_test derived_object_test1 = object_test_factory.create("DerivedObjectTest");
     CPPUNIT_ASSERT_EQUAL(3, object_test::s_counter);
@@ -218,7 +218,7 @@ void factory_registry_test::arg_test()
 
     core::factory_registry<object_test::sptr(std::string)> object_test_factory;
     object_test_factory.add_factory(
-        "ObjectTest",
+        "object_test",
         [](const std::string& name) -> object_test::sptr
         {
             return std::make_shared<object_test>(name);
@@ -232,8 +232,8 @@ void factory_registry_test::arg_test()
 
     std::string obj_test1("ObjectTest1");
     std::string obj_test2("ObjectTest2");
-    object_test::sptr object_test1 = object_test_factory.create("ObjectTest", obj_test1);
-    object_test::sptr object_test2 = object_test_factory.create("ObjectTest", obj_test2);
+    object_test::sptr object_test1 = object_test_factory.create("object_test", obj_test1);
+    object_test::sptr object_test2 = object_test_factory.create("object_test", obj_test2);
     CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest1"), object_test1->name());
     CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest2"), object_test2->name());
 
@@ -260,7 +260,7 @@ struct use_factory_thread
     using sptr               = std::shared_ptr<use_factory_thread>;
     using object_vector_type = std::vector<object_test::sptr>;
 
-    explicit use_factory_thread(const thread_safety_test_factory_type& factory, std::string obj_type = "ObjectTest") :
+    explicit use_factory_thread(const thread_safety_test_factory_type& factory, std::string obj_type = "object_test") :
         m_factory(factory),
         m_object_type(std::move(obj_type))
     {
@@ -332,7 +332,7 @@ void factory_registry_test::thread_safety_test()
 
     thread_safety_test_factory_type object_test_factory;
     object_test_factory.add_factory(
-        "ObjectTest",
+        "object_test",
         [](int msec) -> object_test::sptr
         {
             return std::make_shared<object_test>(msec);

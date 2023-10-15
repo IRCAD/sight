@@ -16,7 +16,7 @@ Item {
             serviceCreated(sliceIndexEditor)
     }
 
-    SSliceIndexPositionEditor {
+    slice_index_position_editor {
         id: sliceIndexEditor
 
         sliceIndex: sliceIndexSelector.sliceOrientation

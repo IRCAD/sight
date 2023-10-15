@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-#include <data/tools/Color.hpp>
+#include <data/tools/color.hpp>
 
 #include <ui/__/macros.hpp>
 #include <ui/__/registry.hpp>
@@ -96,7 +96,7 @@ void cardinal::createLayout(ui::container::widget::sptr parent, const std::strin
             if(!viewInfo.m_backgroundColor.empty())
             {
                 std::array<std::uint8_t, 4> rgba {};
-                data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+                data::tools::color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                 std::stringstream ss;
                 ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
                 << static_cast<std::int16_t>(rgba[1]) << ','
@@ -114,7 +114,7 @@ void cardinal::createLayout(ui::container::widget::sptr parent, const std::strin
                 if(!viewInfo.m_backgroundColor.empty())
                 {
                     std::array<std::uint8_t, 4> rgba {};
-                    data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
+                    data::tools::color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                     std::stringstream ss;
                     ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
                     << static_cast<std::int16_t>(rgba[1]) << ','

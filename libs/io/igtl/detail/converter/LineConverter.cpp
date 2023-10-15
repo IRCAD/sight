@@ -24,7 +24,7 @@
 
 #include "io/igtl/detail/DataConverter.hpp"
 
-#include <data/Line.hpp>
+#include <data/line.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
 
@@ -36,7 +36,7 @@ namespace sight::io::igtl::detail::converter
 {
 
 const std::string LineConverter::s_IGTL_TYPE          = "POSITION";
-const std::string LineConverter::s_FWDATA_OBJECT_TYPE = data::Line::classname();
+const std::string LineConverter::s_FWDATA_OBJECT_TYPE = data::line::classname();
 
 converterRegisterMacro(io::igtl::detail::converter::LineConverter);
 
@@ -50,13 +50,13 @@ LineConverter::~LineConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer LineConverter::fromFwDataObject(data::Object::csptr src) const
+::igtl::MessageBase::Pointer LineConverter::fromFwDataObject(data::object::csptr src) const
 {
     std::array<float, 3> pos {};
     std::array<float, 4> direction {};
 
     ::igtl::PositionMessage::Pointer dest;
-    data::Line::csptr srcLine = std::dynamic_pointer_cast<const data::Line>(src);
+    data::line::csptr srcLine = std::dynamic_pointer_cast<const data::line>(src);
 
     dest = ::igtl::PositionMessage::New();
     std::transform(
@@ -78,18 +78,18 @@ LineConverter::~LineConverter()
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr LineConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     std::array<float, 3> igtlPos {};
     // While we only use the first three elements of direction, igtl::PositionMessage::GetQuaternion requires a
     // four-element array.
     std::array<float, 4> igtlDirection {};
 
-    data::Line::sptr dest                    = std::make_shared<data::Line>();
+    data::line::sptr dest                    = std::make_shared<data::line>();
     auto* msg                                = dynamic_cast< ::igtl::PositionMessage*>(src.GetPointer());
     ::igtl::PositionMessage::Pointer srcLine = ::igtl::PositionMessage::Pointer(msg);
-    dest->setPosition(std::make_shared<data::Point>());
-    dest->setDirection(std::make_shared<data::Point>());
+    dest->setPosition(std::make_shared<data::point>());
+    dest->setDirection(std::make_shared<data::point>());
     srcLine->GetPosition(igtlPos.data());
     srcLine->GetQuaternion(igtlDirection.data());
     std::transform(

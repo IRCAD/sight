@@ -23,9 +23,9 @@
 #pragma once
 
 #include "activity/config.hpp"
-#include "activity/extension/Activity.hpp"
+#include "activity/extension/activity.hpp"
 
-#include <data/Activity.hpp>
+#include <data/activity.hpp>
 
 namespace sight::activity
 {
@@ -37,11 +37,11 @@ class ACTIVITY_CLASS_API message
 {
 public:
 
-    typedef activity::extension::ActivityAppConfigParamsType ParametersType;
+    typedef activity::extension::activity_config_params_type ParametersType;
 
     ACTIVITY_API message(
-        const data::Activity::sptr& activity,
-        const activity::extension::ActivityInfo& info,
+        const data::activity::sptr& activity,
+        const activity::extension::activity_info& info,
         const ParametersType& parameters
     );
 
@@ -91,7 +91,7 @@ public:
     }
 
     /// Return activity
-    [[nodiscard]] const data::Activity::sptr& getActivity() const
+    [[nodiscard]] const data::activity::sptr& getActivity() const
     {
         return m_activity;
     }
@@ -113,7 +113,7 @@ private:
     /// Tab identifier
     std::string m_tabID;
 
-    /// AppConfig id
+    /// config id
     std::string m_appConfigID;
 
     /// tab information
@@ -126,7 +126,7 @@ private:
     std::string m_tooltip;
 
     /// activity
-    data::Activity::sptr m_activity;
+    data::activity::sptr m_activity;
 
     /// map containing string to replace in activity configuration.
     std::map<std::string, std::string> m_replacementMap;

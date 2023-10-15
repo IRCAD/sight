@@ -26,9 +26,9 @@
 
 #include <core/location/single_file.hpp>
 
-#include <data/Mesh.hpp>
+#include <data/mesh.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 #include <filesystem>
 
@@ -48,14 +48,14 @@ namespace sight::io::vtk
  */
 
 class IO_VTK_CLASS_API StlMeshWriter :
-    public writer::GenericObjectWriter<data::Mesh>,
+    public writer::generic_object_writer<data::mesh>,
     public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         StlMeshWriter,
-        io::writer::GenericObjectWriter<data::Mesh>,
+        io::writer::generic_object_writer<data::mesh>,
         io::writer::factory::make<StlMeshWriter>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()

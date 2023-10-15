@@ -24,10 +24,10 @@
 
 #include <activity/validator/registry/macros.hpp>
 
-#include <data/Composite.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/Reconstruction.hpp>
-#include <data/Vector.hpp>
+#include <data/composite.hpp>
+#include <data/model_series.hpp>
+#include <data/reconstruction.hpp>
+#include <data/vector.hpp>
 
 namespace sight::module::activity::validator::ModelSeries
 {
@@ -41,16 +41,16 @@ ContainOneSkin::~ContainOneSkin()
 
 //-----------------------------------------------------------------------------
 
-sight::activity::validator::return_t ContainOneSkin::validate(const data::Object::csptr& currentData) const
+sight::activity::validator::return_t ContainOneSkin::validate(const data::object::csptr& currentData) const
 {
     sight::activity::validator::return_t validation;
 
     validation.first  = true;
     validation.second = "";
 
-    data::ModelSeries::csptr modelSeries = std::dynamic_pointer_cast<const data::ModelSeries>(currentData);
-    data::Vector::csptr vector           = std::dynamic_pointer_cast<const data::Vector>(currentData);
-    data::Composite::csptr composite     = std::dynamic_pointer_cast<const data::Composite>(currentData);
+    data::model_series::csptr modelSeries = std::dynamic_pointer_cast<const data::model_series>(currentData);
+    data::vector::csptr vector            = std::dynamic_pointer_cast<const data::vector>(currentData);
+    data::composite::csptr composite      = std::dynamic_pointer_cast<const data::composite>(currentData);
 
     if(modelSeries)
     {
@@ -77,7 +77,7 @@ sight::activity::validator::return_t ContainOneSkin::validate(const data::Object
     {
         for(const auto& obj : *vector)
         {
-            data::ModelSeries::sptr model = std::dynamic_pointer_cast<data::ModelSeries>(obj);
+            data::model_series::sptr model = std::dynamic_pointer_cast<data::model_series>(obj);
             if(!model)
             {
                 validation.first  = false;
@@ -112,7 +112,7 @@ sight::activity::validator::return_t ContainOneSkin::validate(const data::Object
     {
         for(const auto& elt : *composite)
         {
-            data::ModelSeries::sptr model = std::dynamic_pointer_cast<data::ModelSeries>(elt.second);
+            data::model_series::sptr model = std::dynamic_pointer_cast<data::model_series>(elt.second);
             if(!model)
             {
                 validation.first  = false;

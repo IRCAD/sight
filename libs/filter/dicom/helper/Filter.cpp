@@ -40,7 +40,7 @@ bool Filter::applyFilter(
     DicomSeriesContainerType result;
 
     // On every DicomSeries
-    for(const data::DicomSeries::sptr& dicomSeries : dicomSeriesContainer)
+    for(const data::dicom_series::sptr& dicomSeries : dicomSeriesContainer)
     {
         // Apply filter and copy result
         DicomSeriesContainerType tempo;

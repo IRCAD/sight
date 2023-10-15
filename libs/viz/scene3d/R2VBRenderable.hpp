@@ -25,7 +25,7 @@
 #include "viz/scene3d/adaptor.hpp"
 #include "viz/scene3d/config.hpp"
 
-#include <data/Mesh.hpp>
+#include <data/mesh.hpp>
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreManualObject.h>
@@ -53,7 +53,7 @@ public:
         const std::string& _name,
         Ogre::SubEntity* _sourceObject,
         Ogre::SceneManager* _sceneManager,
-        data::Mesh::CellType _primitiveType,
+        data::mesh::CellType _primitiveType,
         const std::string& _mtlName
     );
 
@@ -98,7 +98,7 @@ public:
 
     viz::scene3d::adaptor::wptr m_materialAdaptor;
 
-    data::Mesh::CellType getInputPrimitiveType() const;
+    data::mesh::CellType getInputPrimitiveType() const;
 
 protected:
 
@@ -113,7 +113,7 @@ protected:
     bool m_dirty {false};
 
     /// Primitive type used as input
-    data::Mesh::CellType m_inputPrimitiveType {data::Mesh::CellType::TRIANGLE};
+    data::mesh::CellType m_inputPrimitiveType {data::mesh::CellType::TRIANGLE};
 
     /// Maximum number of vertices in output buffer
     std::size_t m_maxOutputVertexCount {0};
@@ -166,7 +166,7 @@ inline void R2VBRenderable::setRenderToBufferMaterial(const std::string& _mtlNam
 
 //------------------------------------------------------------------------------
 
-inline data::Mesh::CellType R2VBRenderable::getInputPrimitiveType() const
+inline data::mesh::CellType R2VBRenderable::getInputPrimitiveType() const
 {
     return m_inputPrimitiveType;
 }

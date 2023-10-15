@@ -287,7 +287,7 @@ std::shared_ptr<extension> module_descriptor_reader::process_extension(
         }
     }
 
-    if(point == "sight::service::extension::AppConfig")
+    if(point == "sight::app::extension::config")
     {
         cur_attr = nullptr;
     }

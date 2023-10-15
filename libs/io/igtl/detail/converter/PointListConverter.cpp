@@ -24,7 +24,7 @@
 
 #include "io/igtl/detail/DataConverter.hpp"
 
-#include <data/PointList.hpp>
+#include <data/point_list.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
 
@@ -36,7 +36,7 @@ namespace sight::io::igtl::detail::converter
 {
 
 const std::string PointListConverter::s_IGTL_TYPE          = "POINT";
-const std::string PointListConverter::s_FWDATA_OBJECT_TYPE = data::PointList::classname();
+const std::string PointListConverter::s_FWDATA_OBJECT_TYPE = data::point_list::classname();
 
 converterRegisterMacro(io::igtl::detail::converter::PointListConverter);
 
@@ -50,14 +50,14 @@ PointListConverter::~PointListConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer PointListConverter::fromFwDataObject(data::Object::csptr src) const
+::igtl::MessageBase::Pointer PointListConverter::fromFwDataObject(data::object::csptr src) const
 {
     std::array<float, 3> pos {};
     ::igtl::PointElement::Pointer elem;
-    data::PointList::csptr srcPoints = std::dynamic_pointer_cast<const data::PointList>(src);
+    data::point_list::csptr srcPoints = std::dynamic_pointer_cast<const data::point_list>(src);
 
     ::igtl::PointMessage::Pointer dest = ::igtl::PointMessage::New();
-    for(data::Point::sptr const& srcPoint : srcPoints->getPoints())
+    for(data::point::sptr const& srcPoint : srcPoints->getPoints())
     {
         std::transform(
             srcPoint->getCoord().begin(),
@@ -75,19 +75,19 @@ PointListConverter::~PointListConverter()
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr PointListConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr PointListConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     std::array<float, 3> igtlPos {};
     ::igtl::PointElement::Pointer elem;
-    std::vector<data::Point::sptr> fwPoints;
-    data::Point::sptr fwPoint;
+    std::vector<data::point::sptr> fwPoints;
+    data::point::sptr fwPoint;
 
     auto* msg                               = dynamic_cast< ::igtl::PointMessage*>(src.GetPointer());
     ::igtl::PointMessage::Pointer srcPoints = ::igtl::PointMessage::Pointer(msg);
-    data::PointList::sptr dest              = std::make_shared<data::PointList>();
+    data::point_list::sptr dest             = std::make_shared<data::point_list>();
     for(int i = 0 ; i < srcPoints->GetNumberOfPointElement() ; ++i)
     {
-        fwPoint = std::make_shared<data::Point>();
+        fwPoint = std::make_shared<data::point>();
         srcPoints->GetPointElement(i, elem);
         elem->GetPosition(igtlPos.data());
         std::transform(

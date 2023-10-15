@@ -25,10 +25,10 @@
 #include "ui/history/command.hpp"
 #include "ui/history/config.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <filter/image/Image.hpp>
-#include <filter/image/ImageDiff.hpp>
+#include <filter/image/image.hpp>
+#include <filter/image/image_diff.hpp>
 
 namespace sight::ui::history
 {
@@ -38,7 +38,7 @@ class UI_HISTORY_CLASS_API ImageDiffCommand : public command
 public:
 
     /// Constructor, uses an image and a change list for that image.
-    UI_HISTORY_API ImageDiffCommand(const data::Image::sptr& img, filter::image::ImageDiff diff);
+    UI_HISTORY_API ImageDiffCommand(const data::image::sptr& img, filter::image::image_diff diff);
 
     /// The diff size.
     [[nodiscard]] UI_HISTORY_API std::size_t size() const override;
@@ -49,16 +49,16 @@ public:
     /// Revert diff.
     UI_HISTORY_API bool undo() override;
 
-    /// Returns "ImageDiff".
+    /// Returns "image_diff".
     [[nodiscard]] UI_HISTORY_API std::string getDescription() const override;
 
 private:
 
-    data::Image::sptr m_img;
+    data::image::sptr m_img;
 
-    data::Image::BufferModifiedSignalType::sptr m_modifiedSig;
+    data::image::BufferModifiedSignalType::sptr m_modifiedSig;
 
-    filter::image::ImageDiff m_diff;
+    filter::image::image_diff m_diff;
 };
 
 } // namespace sight::ui::history

@@ -25,11 +25,11 @@
 #include "io/dicom/helper/DicomDataReader.hxx"
 #include "io/dicom/helper/DicomDataTools.hpp"
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/Image.hpp>
-#include <data/PointList.hpp>
-#include <data/String.hpp>
+#include <data/image.hpp>
+#include <data/point_list.hpp>
+#include <data/string.hpp>
 
 namespace sight::io::dicom::reader::ie
 {
@@ -37,15 +37,15 @@ namespace sight::io::dicom::reader::ie
 //------------------------------------------------------------------------------
 
 SpatialFiducials::SpatialFiducials(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
-    const data::Image::sptr& image,
+    const data::image::sptr& image,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::Image>(dicomSeries, reader, instance, image,
+    io::dicom::reader::ie::InformationEntity<data::image>(dicomSeries, reader, instance, image,
                                                           logger, progress, cancel)
 {
 }
@@ -59,11 +59,11 @@ SpatialFiducials::~SpatialFiducials()
 
 void SpatialFiducials::readLandmark(const gdcm::DataSet& fiducialDataset)
 {
-    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
+    data::point_list::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
 
     if(!pointList)
     {
-        pointList = std::make_shared<data::PointList>();
+        pointList = std::make_shared<data::point_list>();
         data::helper::MedicalImage::setLandmarks(*m_object, pointList);
     }
 
@@ -98,7 +98,7 @@ void SpatialFiducials::readLandmark(const gdcm::DataSet& fiducialDataset)
         double zCoordinate =
             io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object, std::size_t(frameNumber));
 
-        data::Point::sptr point = std::make_shared<data::Point>(
+        data::point::sptr point = std::make_shared<data::point>(
             static_cast<double>(pointValues[0]),
             static_cast<double>(pointValues[1]),
             zCoordinate

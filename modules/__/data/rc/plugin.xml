@@ -1,62 +1,62 @@
 <plugin id="sight::module::data" library="true">
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::controller</type>
-          <service>sight::module::data::SCopy</service>
-          <object>sight::data::Object</object>
+          <service>sight::module::data::copy</service>
+          <object>sight::data::object</object>
           <desc>This service copies an object and updates its own object or the defined target.</desc>
      </extension>
      
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::controller</type>
-          <service>sight::module::data::SManage</service>
-          <object key="object">sight::data::Object</object>
-          <object key="container">sight::data::Object</object>
+          <service>sight::module::data::manage</service>
+          <object key="object">sight::data::object</object>
+          <object key="container">sight::data::object</object>
           <desc>This service manages an object (add/swap/remove) into a container object (Composite, Vector, SeriesSet).</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::controller</type>
-          <service>sight::module::data::SSeriesSignal</service>
-          <object>sight::data::SeriesSet</object>
+          <service>sight::module::data::series_signal</service>
+          <object>sight::data::series_set</object>
           <desc>This service emits a signal for each added series (the signal contains the added series)</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::controller</type>
-          <service>sight::module::data::SSelectObject</service>
-          <object>sight::data::Composite</object>
+          <service>sight::module::data::select_object</service>
+          <object>sight::data::composite</object>
           <desc>Registers/unregisters the object given by the slots.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::controller</type>
-          <service>sight::module::data::SGetCamera</service>
-          <object key="cameraSet">sight::data::CameraSet</object>
-          <object key="camera">sight::data::Camera</object>
+          <service>sight::module::data::get_camera</service>
+          <object key="cameraSet">sight::data::camera_set</object>
+          <object key="camera">sight::data::camera</object>
           <desc>This service extracts camera parameters from a camera series</desc>
      </extension>
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
-        <service>sight::module::data::SGetMesh</service>
-        <object key="modelSeries">sight::data::ModelSeries</object>
-        <object key="mesh">sight::data::Mesh</object>
+        <service>sight::module::data::get_mesh</service>
+        <object key="modelSeries">sight::data::model_series</object>
+        <object key="mesh">sight::data::mesh</object>
         <desc>This service extracts meshes from a model series</desc>
     </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::controller</type>
-          <service>sight::module::data::SGetSeries</service>
-          <object key="seriesSet">sight::data::SeriesSet</object>
-          <object key="series">sight::data::Series</object>
+          <service>sight::module::data::get_series</service>
+          <object key="seriesSet">sight::data::series_set</object>
+          <object key="series">sight::data::series</object>
           <desc>This service extracts series from database of series</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::controller</type>
-          <service>sight::module::data::SGetVector</service>
-          <object key="vector">sight::data::Vector</object>
-          <object key="objects">sight::data::Object</object>
+          <service>sight::module::data::get_vector</service>
+          <object key="vector">sight::data::vector</object>
+          <object key="objects">sight::data::object</object>
           <desc>This service extracts objects from a vector</desc>
      </extension>
 

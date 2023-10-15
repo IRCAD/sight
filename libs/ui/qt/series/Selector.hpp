@@ -44,7 +44,7 @@ public:
     /// Defines a map associating icons to series (map\<series classname, icon path\>)
     using SeriesIconType = SelectorModel::SeriesIconType;
 
-    using SeriesVectorType = QVector<data::Series::sptr>;
+    using SeriesVectorType = QVector<data::series::sptr>;
 
     /// Initializes the tree view.
     UI_QT_API_QT Selector(const std::string& displayColumns, QWidget* _parent = nullptr);
@@ -60,13 +60,13 @@ public:
      * this study.
      * @param _series series to add in the tree.
      */
-    UI_QT_API_QT void addSeries(data::Series::sptr _series);
+    UI_QT_API_QT void addSeries(data::series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UI_QT_API_QT void removeSeries(data::Series::sptr _series);
+    UI_QT_API_QT void removeSeries(data::series::sptr _series);
 
     /// Returns the type of the item (SERIES or STUDY)
     UI_QT_API_QT SelectorModel::ItemType getItemType(const QModelIndex& _index) const;
@@ -111,15 +111,15 @@ Q_SIGNALS:
      * don't appear in this selection/deselection.
      */
     void seriesSelected(
-        QVector<data::Series::sptr> _selection,
-        QVector<data::Series::sptr> _deselection
+        QVector<data::series::sptr> _selection,
+        QVector<data::series::sptr> _deselection
     );
 
     /**
      * @brief Signal emitted when series are deleted.
      * @param _selection contains the deleted series.
      */
-    void removeSeries(QVector<data::Series::sptr> _selection);
+    void removeSeries(QVector<data::series::sptr> _selection);
 
 protected Q_SLOTS:
 

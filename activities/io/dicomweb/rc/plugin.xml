@@ -8,7 +8,7 @@
     <xi:include href="configurations/DicomWebWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DDicomWebPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>activity_io_dicomweb</id>
         <title>DicomWeb Reader</title>
         <desc>DicomWeb Reader activity</desc>
@@ -20,7 +20,7 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>DicomWebReaderConfig</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
@@ -28,7 +28,7 @@
         </config>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>DicomWebWriterActivity</id>
         <title>DicomWeb Writer</title>
         <desc>DicomWeb Writer activity</desc>

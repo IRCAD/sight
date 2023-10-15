@@ -1,0 +1,442 @@
+/************************************************************************
+ *
+ * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2020 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#include "modules/viz/scene3d/adaptor/axis.hpp"
+
+#include "modules/viz/scene3d/adaptor/transform.hpp"
+
+#include <core/com/slots.hxx>
+
+#include <data/color.hpp>
+
+#include <service/macros.hpp>
+
+#include <viz/scene3d/helper/ManualObject.hpp>
+#include <viz/scene3d/helper/Scene.hpp>
+#include <viz/scene3d/render.hpp>
+
+#include <OgreNode.h>
+
+namespace sight::module::viz::scene3d::adaptor
+{
+
+//-----------------------------------------------------------------------------
+
+axis::axis() noexcept
+{
+    new_slot("updateOriginColor", &axis::updateOriginColor, this);
+}
+
+//-----------------------------------------------------------------------------
+
+void axis::updateOriginColor(sight::data::color::sptr _newColor)
+{
+    if(m_origin == nullptr)
+    {
+        return;
+    }
+
+    m_originMaterial->setAmbient(_newColor);
+
+    const auto sig = m_originMaterial->signal<core::com::signal<void()> >(data::material::MODIFIED_SIG);
+    sig->async_emit();
+}
+
+//-----------------------------------------------------------------------------
+
+void axis::configuring()
+{
+    this->configureParams();
+
+    const config_t config = this->get_config();
+
+    const std::string transformId = config.get<std::string>(
+        module::viz::scene3d::adaptor::transform::s_TRANSFORM_CONFIG,
+        this->get_id() + "_transform"
+    );
+
+    this->setTransformId(transformId);
+
+    static const std::string s_LENGTH_CONFIG       = s_CONFIG + "length";
+    static const std::string s_LABEL_CONFIG        = s_CONFIG + "label";
+    static const std::string s_FONT_SIZE_CONFIG    = s_CONFIG + "fontSize";
+    static const std::string s_ORIGIN_CONFIG       = s_CONFIG + "origin";
+    static const std::string s_AXIS_CONFIG         = s_CONFIG + "axis";
+    static const std::string s_ORIGIN_COLOR_CONFIG = s_CONFIG + "originColor";
+    static const std::string s_AXIS_NAME           = s_CONFIG + "name";
+
+    m_length           = config.get<float>(s_LENGTH_CONFIG, m_length);
+    m_enableLabel      = config.get<bool>(s_LABEL_CONFIG, m_enableLabel);
+    m_fontSize         = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_originVisibility = config.get<bool>(s_ORIGIN_CONFIG, m_originVisibility);
+    m_axisVisibility   = config.get<bool>(s_AXIS_CONFIG, m_axisVisibility);
+    m_axisName         = config.get<std::string>(s_AXIS_NAME, m_axisName);
+
+    m_originColor = config.get<std::string>(s_ORIGIN_COLOR_CONFIG, m_originColor);
+    SIGHT_ASSERT(
+        "Color string should start with '#' and followed by 6 or 8 "
+        "hexadecimal digits. Given color: " << m_originColor,
+        m_originColor[0] == '#'
+        && (m_originColor.length() == 7 || m_originColor.length() == 9)
+    );
+
+    // Force disable label if axisVisibility is false.
+    m_enableLabel = m_axisVisibility ? m_enableLabel : false;
+}
+
+//-----------------------------------------------------------------------------
+
+void axis::starting()
+{
+    this->initialize();
+
+    this->getRenderService()->makeCurrent();
+
+    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
+    m_sceneNode = transformNode->createChildSceneNode(this->get_id() + "_mainNode");
+
+    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+
+    if(m_originVisibility)
+    {
+        m_origin = sceneMgr->createManualObject(this->get_id() + "_origin");
+    }
+
+    if(m_axisVisibility)
+    {
+        m_xLine = sceneMgr->createManualObject(this->get_id() + "_xLine");
+        m_yLine = sceneMgr->createManualObject(this->get_id() + "_yLine");
+        m_zLine = sceneMgr->createManualObject(this->get_id() + "_zLine");
+
+        m_xCone = sceneMgr->createManualObject(this->get_id() + "_xCone");
+        m_yCone = sceneMgr->createManualObject(this->get_id() + "_yCone");
+        m_zCone = sceneMgr->createManualObject(this->get_id() + "_zCone");
+    }
+
+    // set the material
+    m_material       = std::make_shared<data::material>();
+    m_originMaterial = std::make_shared<data::material>();
+
+    const module::viz::scene3d::adaptor::material::sptr materialAdaptor =
+        this->registerService<module::viz::scene3d::adaptor::material>(
+            "sight::module::viz::scene3d::adaptor::material"
+        );
+    materialAdaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
+    materialAdaptor->configure(
+        this->get_id() + materialAdaptor->get_id(),
+        this->get_id() + materialAdaptor->get_id(),
+        this->getRenderService(),
+        m_layerID
+    );
+    materialAdaptor->start();
+
+    materialAdaptor->getMaterialFw()->setHasVertexColor(true);
+    materialAdaptor->update();
+
+    const module::viz::scene3d::adaptor::material::sptr originMaterialAdaptor =
+        this->registerService<module::viz::scene3d::adaptor::material>(
+            "sight::module::viz::scene3d::adaptor::material",
+            this->get_id() + "_originMaterialAdp"
+        );
+    originMaterialAdaptor->set_inout(m_originMaterial, module::viz::scene3d::adaptor::material::s_MATERIAL_INOUT, true);
+    originMaterialAdaptor->configure(
+        this->get_id() + originMaterialAdaptor->get_id(),
+        this->get_id() + originMaterialAdaptor->get_id(),
+        this->getRenderService(),
+        m_layerID,
+        "ambient"
+    );
+    originMaterialAdaptor->start();
+    originMaterialAdaptor->update();
+
+    // Sizes
+    const float originRadius   = m_length * 0.1F;
+    const float cylinderLength = m_length * 0.85F;
+    const float cylinderRadius = m_length * 0.025F;
+    const float coneLength     = m_length - cylinderLength;
+    const float coneRadius     = cylinderRadius * 2.F;
+    const unsigned sample      = 64;
+
+    // Draw
+
+    // origin
+
+    if(m_originVisibility)
+    {
+        const data::color::sptr originColor = std::make_shared<data::color>();
+        originColor->setRGBA(m_originColor);
+        m_originMaterial->setAmbient(originColor);
+        m_originMaterial->setDiffuse(std::make_shared<data::color>(0.F, 0.F, 0.F, 1.F));
+
+        const auto sig = m_originMaterial->signal<core::com::signal<void()> >(data::material::MODIFIED_SIG);
+        sig->async_emit();
+
+        sight::viz::scene3d::helper::ManualObject::createSphere(
+            m_origin,
+            originMaterialAdaptor->getMaterialName(),
+            Ogre::ColourValue(
+                originColor->red(),
+                originColor->green(),
+                originColor->blue(),
+                originColor->alpha()
+            ),
+            originRadius,
+            sample
+        );
+
+        m_sceneNode->attachObject(m_origin);
+    }
+
+    Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
+
+    if(m_axisVisibility)
+    {
+        // X axis
+        sight::viz::scene3d::helper::ManualObject::createCylinder(
+            m_xLine,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Red),
+            cylinderRadius,
+            cylinderLength,
+            sample
+        );
+        Ogre::SceneNode* const xLineNode = m_sceneNode->createChildSceneNode(this->get_id() + "_xLine");
+        xLineNode->attachObject(m_xLine);
+        xLineNode->pitch(Ogre::Degree(90));
+
+        // Y axis
+        sight::viz::scene3d::helper::ManualObject::createCylinder(
+            m_yLine,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Green),
+            cylinderRadius,
+            cylinderLength,
+            sample
+        );
+        Ogre::SceneNode* const yLineNode = m_sceneNode->createChildSceneNode(this->get_id() + "_yLine");
+        yLineNode->attachObject(m_yLine);
+        yLineNode->roll(Ogre::Degree(90));
+
+        // Z axis
+        sight::viz::scene3d::helper::ManualObject::createCylinder(
+            m_zLine,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Blue),
+            cylinderRadius,
+            cylinderLength,
+            sample
+        );
+        Ogre::SceneNode* const zLineNode = m_sceneNode->createChildSceneNode(this->get_id() + "_zLine");
+        zLineNode->attachObject(m_zLine);
+        zLineNode->yaw(Ogre::Degree(-90));
+
+        // X cone
+        sight::viz::scene3d::helper::ManualObject::createCone(
+            m_xCone,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Red),
+            coneRadius,
+            coneLength,
+            sample
+        );
+        Ogre::SceneNode* const xConeNode = m_sceneNode->createChildSceneNode(this->get_id() + "_xCone");
+
+        if(m_enableLabel)
+        {
+            m_axisLabels[0] = sight::viz::scene3d::IText::make(this->getLayer());
+            m_axisLabels[0]->setText("X");
+            m_axisLabels[0]->setFontSize(m_fontSize);
+            m_axisLabels[0]->attachToNode(xConeNode, this->getLayer()->getDefaultCamera());
+        }
+
+        xConeNode->attachObject(m_xCone);
+        xConeNode->translate(cylinderLength, 0.F, 0.F);
+
+        // Y cone
+        sight::viz::scene3d::helper::ManualObject::createCone(
+            m_yCone,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Green),
+            coneRadius,
+            coneLength,
+            sample
+        );
+        Ogre::SceneNode* const yConeNode = m_sceneNode->createChildSceneNode(this->get_id() + "_yCone");
+        yConeNode->attachObject(m_yCone);
+
+        if(m_enableLabel)
+        {
+            m_axisLabels[1] = sight::viz::scene3d::IText::make(this->getLayer());
+            m_axisLabels[1]->setText("Y");
+            m_axisLabels[1]->setFontSize(m_fontSize);
+            m_axisLabels[1]->attachToNode(yConeNode, cam);
+        }
+
+        yConeNode->translate(0.F, cylinderLength, 0.F);
+        yConeNode->roll(Ogre::Degree(90));
+
+        // Z cone
+        sight::viz::scene3d::helper::ManualObject::createCone(
+            m_zCone,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Blue),
+            coneRadius,
+            coneLength,
+            sample
+        );
+        Ogre::SceneNode* const zConeNode = m_sceneNode->createChildSceneNode(this->get_id() + "_zCone");
+        zConeNode->attachObject(m_zCone);
+
+        if(m_enableLabel)
+        {
+            m_axisLabels[2] = sight::viz::scene3d::IText::make(this->getLayer());
+            m_axisLabels[2]->setText("Z");
+            m_axisLabels[2]->setFontSize(m_fontSize);
+            m_axisLabels[2]->attachToNode(zConeNode, this->getLayer()->getDefaultCamera());
+        }
+
+        zConeNode->translate(0.F, 0.F, cylinderLength);
+        zConeNode->yaw(Ogre::Degree(-90));
+    }
+
+    // Display Name if provided.
+    if(!m_axisName.empty())
+    {
+        m_axisNameTxt = sight::viz::scene3d::IText::make(this->getLayer());
+        m_axisNameTxt->setText(m_axisName);
+        m_axisNameTxt->setFontSize(m_fontSize);
+        m_axisNameTxt->attachToNode(m_sceneNode, cam);
+        const data::color::sptr txtColor = std::make_shared<data::color>();
+        txtColor->setRGBA(m_originColor);
+        m_axisNameTxt->setTextColor(
+            Ogre::ColourValue(
+                txtColor->red(),
+                txtColor->green(),
+                txtColor->blue()
+            )
+        );
+    }
+
+    this->updateVisibility(m_isVisible);
+
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void axis::updating()
+{
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void axis::stopping()
+{
+    this->getRenderService()->makeCurrent();
+
+    Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+
+    if(m_sceneNode != nullptr)
+    {
+        if(m_axisVisibility)
+        {
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_xLine");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_yLine");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_zLine");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_xCone");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_yCone");
+            m_sceneNode->removeAndDestroyChild(this->get_id() + "_zCone");
+        }
+    }
+
+    if(m_enableLabel)
+    {
+        for(auto& label : m_axisLabels)
+        {
+            SIGHT_ASSERT("label should not be null", label);
+            label->detachFromNode();
+            label.reset();
+        }
+    }
+
+    if(m_axisNameTxt != nullptr)
+    {
+        m_axisNameTxt->detachFromNode();
+        m_axisNameTxt.reset();
+    }
+
+    if(m_originVisibility)
+    {
+        sceneMgr->destroyManualObject(m_origin);
+    }
+
+    if(m_axisVisibility)
+    {
+        sceneMgr->destroyManualObject(m_xLine);
+        sceneMgr->destroyManualObject(m_yLine);
+        sceneMgr->destroyManualObject(m_zLine);
+
+        sceneMgr->destroyManualObject(m_xCone);
+        sceneMgr->destroyManualObject(m_yCone);
+        sceneMgr->destroyManualObject(m_zCone);
+    }
+
+    Ogre::SceneNode* const transformNode = this->getTransformNode();
+    if(transformNode != nullptr)
+    {
+        transformNode->removeAndDestroyChild(this->get_id() + "_mainNode");
+    }
+
+    this->unregisterServices();
+    m_material.reset();
+}
+
+//-----------------------------------------------------------------------------
+
+void axis::setVisible(bool _visible)
+{
+    if(m_sceneNode != nullptr)
+    {
+        m_sceneNode->setVisible(_visible);
+        if(m_enableLabel)
+        {
+            for(auto& label : m_axisLabels)
+            {
+                SIGHT_ASSERT("label should not be null", label);
+                label->setVisible(_visible);
+            }
+        }
+
+        if(m_axisNameTxt != nullptr)
+        {
+            m_axisNameTxt->setVisible(_visible);
+        }
+    }
+
+    this->updating();
+}
+
+//-----------------------------------------------------------------------------
+
+} // namespace sight::module::viz::scene3d::adaptor.

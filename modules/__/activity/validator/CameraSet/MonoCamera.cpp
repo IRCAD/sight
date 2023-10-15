@@ -24,8 +24,8 @@
 
 #include <activity/validator/registry/macros.hpp>
 
-#include <data/Camera.hpp>
-#include <data/CameraSet.hpp>
+#include <data/camera.hpp>
+#include <data/camera_set.hpp>
 
 namespace sight::module::activity::validator::CameraSet
 {
@@ -34,14 +34,14 @@ SIGHT_REGISTER_ACTIVITY_VALIDATOR(sight::module::activity::validator::CameraSet:
 
 //-----------------------------------------------------------------------------
 
-sight::activity::validator::return_t MonoCamera::validate(const data::Object::csptr& currentData) const
+sight::activity::validator::return_t MonoCamera::validate(const data::object::csptr& currentData) const
 {
     sight::activity::validator::return_t validation;
 
     validation.first  = true;
     validation.second = "";
 
-    const auto& camera_set = std::dynamic_pointer_cast<const data::CameraSet>(currentData);
+    const auto& camera_set = std::dynamic_pointer_cast<const data::camera_set>(currentData);
 
     if(!camera_set)
     {
@@ -52,7 +52,7 @@ sight::activity::validator::return_t MonoCamera::validate(const data::Object::cs
     {
         if(camera_set->size() == 1)
         {
-            data::Camera::csptr camera = camera_set->get_camera(0);
+            data::camera::csptr camera = camera_set->get_camera(0);
             if(!camera->getIsCalibrated())
             {
                 validation.first  = false;

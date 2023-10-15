@@ -22,7 +22,7 @@
 
 #include "MemoryConsumption.hpp"
 
-#include <data/Array.hpp>
+#include <data/array.hpp>
 
 #include <service/macros.hpp>
 
@@ -36,7 +36,7 @@ namespace sight::module::debug::action
 {
 
 /// Static variable shared by both actions
-static std::vector<data::Array::sptr> memoryConsumer;
+static std::vector<data::array::sptr> memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
@@ -46,8 +46,8 @@ void MemoryConsumption::pushNewArray(std::size_t memorySizeInBytes)
 {
     try
     {
-        data::Array::sptr buffer = std::make_shared<data::Array>();
-        data::Array::SizeType size(1, memorySizeInBytes);
+        data::array::sptr buffer = std::make_shared<data::array>();
+        data::array::SizeType size(1, memorySizeInBytes);
         buffer->resize(size, core::type::UINT8, true);
 
         SIGHT_INFO("Creating a data::array consuming " << memorySizeInBytes / (1024LL * 1024) << " Mo ");
@@ -91,7 +91,7 @@ void MemoryConsumption::updating()
     {
         if(!memoryConsumer.empty())
         {
-            SIGHT_INFO("Removing one data::Array");
+            SIGHT_INFO("Removing one data::array");
             memoryConsumer.pop_back();
         }
     }
@@ -103,7 +103,7 @@ void MemoryConsumption::configuring()
 {
     this->sight::ui::action::initialize();
 
-    const auto& config = this->getConfiguration();
+    const auto& config = this->get_config();
 
     const auto mode = config.get<std::string>("config.<xmlattr>.mode");
     SIGHT_ASSERT("Wrong value (" << mode << ") for mode tag", mode == "increase" || mode == "decrease");

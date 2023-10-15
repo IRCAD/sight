@@ -24,7 +24,7 @@
 
 #include "modules/ui/qt/video/formats.hpp"
 
-#include <data/Camera.hpp>
+#include <data/camera.hpp>
 
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/Preferences.hpp>
@@ -141,7 +141,7 @@ CameraDeviceDlg::CameraDeviceDlg(std::string xmlResolutionConfig) :
 
 //-----------------------------------------------------------------------------
 
-bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string& resolutionXMLOption)
+bool CameraDeviceDlg::getSelectedCamera(data::camera::sptr& camera, std::string& resolutionXMLOption)
 {
     int index = m_devicesComboBox->currentIndex();
     if(index >= 0)
@@ -153,7 +153,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
         QCameraImageCapture imageCapture(&cam);
         const QList<QSize> supportedResolutions = imageCapture.supportedResolutions();
 
-        [[maybe_unused]] data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
+        [[maybe_unused]] data::camera::PixelFormat format = data::camera::PixelFormat::INVALID;
 
         QListWidgetItem* item = m_camSettings->currentItem();
 
@@ -201,7 +201,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
                 const auto prefValue = std::to_string(settings.resolution().width()) + "x" + std::to_string(
                     settings.resolution().height()
                 );
-                resolutionPreference.put(SCamera::s_RESOLUTION_PREF_KEY, prefValue);
+                resolutionPreference.put(camera::s_RESOLUTION_PREF_KEY, prefValue);
             }
             catch(boost::property_tree::ptree_error&)
             {
@@ -257,7 +257,7 @@ bool CameraDeviceDlg::getSelectedCamera(data::Camera::sptr& camera, std::string&
 #ifndef __linux__
         camera->setPixelFormat(format);
 #endif
-        camera->setCameraSource(data::Camera::DEVICE);
+        camera->setCameraSource(data::camera::DEVICE);
         camera->setCameraID(camInfo.deviceName().toStdString());
         //Use our description.
         camera->setDescription(m_devicesComboBox->currentText().toStdString());
@@ -288,7 +288,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
         {
             for(const QVideoFrame::PixelFormat& pixFormat : pixFormats)
             {
-                data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
+                data::camera::PixelFormat format = data::camera::PixelFormat::INVALID;
 
                 PixelFormatTranslatorType::left_const_iterator iter;
                 iter = pixelFormatTranslator.left.find(pixFormat);
@@ -313,7 +313,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
                 std::stringstream stream;
                 stream << "[" << settings.resolution().width() << "X" << settings.resolution().height() << "]";
                 stream << "\t" << settings.maximumFrameRate() << " fps";
-                stream << "\tFormat:" << data::Camera::getPixelFormatName(format);
+                stream << "\tFormat:" << data::camera::getPixelFormatName(format);
                 auto* item = new QListWidgetItem(QString::fromStdString(stream.str()));
                 item->setData(Qt::UserRole, QVariant::fromValue(settings));
                 m_camSettings->addItem(item);
@@ -325,7 +325,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
         QList<QCameraViewfinderSettings> settingsList = cam->supportedViewfinderSettings();
         for(const QCameraViewfinderSettings& settings : settingsList)
         {
-            data::Camera::PixelFormat format = data::Camera::PixelFormat::INVALID;
+            data::camera::PixelFormat format = data::camera::PixelFormat::INVALID;
 
             PixelFormatTranslatorType::left_const_iterator iter;
             iter = pixelFormatTranslator.left.find(settings.pixelFormat());
@@ -342,7 +342,7 @@ void CameraDeviceDlg::onSelectDevice(int index)
             std::stringstream stream;
             stream << "[" << settings.resolution().width() << "X" << settings.resolution().height() << "]";
             stream << "\t" << settings.maximumFrameRate() << " fps";
-            stream << "\tFormat:" << data::Camera::getPixelFormatName(format);
+            stream << "\tFormat:" << data::camera::getPixelFormatName(format);
             QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(stream.str()));
             item->setData(Qt::UserRole, QVariant::fromValue(settings));
             m_camSettings->addItem(item);
@@ -383,7 +383,7 @@ QSize CameraDeviceDlg::getResolution(const std::string& resolutionXMLOption, con
         try
         {
             sight::ui::Preferences resolutionPreference;
-            auto resolutionPreferenceStr = resolutionPreference.get<std::string>(SCamera::s_RESOLUTION_PREF_KEY);
+            auto resolutionPreferenceStr = resolutionPreference.get<std::string>(camera::s_RESOLUTION_PREF_KEY);
             std::regex resPattern("(\\d*)[Xx](\\d*)");
             std::smatch match;
             std::regex_match(resolutionPreferenceStr, match, resPattern);

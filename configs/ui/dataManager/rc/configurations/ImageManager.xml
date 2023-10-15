@@ -4,7 +4,7 @@ for slices and transfer function.
 
 Example:
 
-<service uid="..." type="sight::service::SConfigController">
+<service uid="..." type="sight::app::config_controller">
     <appConfig id="ImageManager" />
     <parameter replace="WID_PARENT" by="referenceSceneEditor" />
     <inout group="data">
@@ -13,7 +13,7 @@ Example:
     </inout>
 </service>
 -->
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>ImageManager</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -24,10 +24,10 @@ Example:
     <desc>Displays sliders to manage the image (slice index, windowing)</desc>
     <config>
 
-        <object uid="${image}" type="sight::data::Image" src="ref" />
-        <object uid="${transferFunction}" type="sight::data::TransferFunction" src="ref" />
+        <object uid="${image}" type="sight::data::image" src="ref" />
+        <object uid="${transferFunction}" type="sight::data::transfer_function" src="ref" />
 
-        <service uid="imageManagerView" type="sight::module::ui::SView">
+        <service uid="imageManagerView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -43,7 +43,7 @@ Example:
             </registry>
         </service>
 
-        <service uid="sliderView" type="sight::module::ui::SView">
+        <service uid="sliderView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -56,13 +56,13 @@ Example:
         </service>
 
         <!-- Editor to manage slice index and image orientation (axial, frontal, sagittal) -->
-        <service uid="selectorSliderNegatoImage" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
+        <service uid="selectorSliderNegatoImage" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
             <inout key="image" uid="${image}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
         <!-- Editor to manage image windowing -->
-        <service uid="windowLevelImage" type="sight::module::ui::qt::image::SWindowLevel" autoConnect="true">
+        <service uid="windowLevelImage" type="sight::module::ui::qt::image::window_level" auto_connect="true">
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
         </service>

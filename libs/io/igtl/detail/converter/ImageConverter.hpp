@@ -30,7 +30,7 @@ namespace sight::io::igtl::detail::converter
 
 /**
  *
- * @brief class to manage conversion between data::Image and ::igtl::ImageMessage
+ * @brief class to manage conversion between data::image and ::igtl::ImageMessage
  */
 class IO_IGTL_CLASS_API ImageConverter :
     public base
@@ -44,18 +44,18 @@ public:
     IO_IGTL_API ~ImageConverter() override;
 
     /**
-     * @brief convert a ::igtl::ImageMessage to a data::Object
+     * @brief convert a ::igtl::ImageMessage to a data::object
      *
-     * @return an data::Image converted from an ::igtl::ImageMessage
+     * @return an data::image converted from an ::igtl::ImageMessage
      */
-    [[nodiscard]] IO_IGTL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
+    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
 
     /**
-     * @brief convert a data::Image to an ::igtl::MessageBase
+     * @brief convert a data::image to an ::igtl::MessageBase
      *
-     * @return an  ::igtl::ImageMessage converted from an data::Image
+     * @return an  ::igtl::ImageMessage converted from an data::image
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const override;
 
     /**
      * @brief create a new ImageConverter smart pointer

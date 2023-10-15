@@ -28,7 +28,7 @@ namespace sight::io::dicom::reader::iod
 //------------------------------------------------------------------------------
 
 InformationObjectDefinition::InformationObjectDefinition(
-    data::DicomSeries::csptr dicomSeries,
+    data::dicom_series::csptr dicomSeries,
     SPTR(io::dicom::container::DicomInstance)instance,
     core::log::logger::sptr logger,
     ProgressCallback progress,

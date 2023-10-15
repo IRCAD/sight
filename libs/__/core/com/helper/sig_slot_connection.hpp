@@ -43,7 +43,7 @@ class CORE_CLASS_API sig_slot_connection
 public:
 
     typedef std::pair<core::com::signals::signal_key_type, core::com::slots::key_t> key_connection_t;
-    typedef std::vector<key_connection_t> key_connections_type;
+    typedef std::vector<key_connection_t> key_connections_t;
 
     /// Constructor, do nothing
     CORE_API sig_slot_connection();
@@ -63,7 +63,7 @@ public:
     CORE_API void connect(
         const core::com::has_signals::csptr& has_signals,
         const core::com::has_slots::csptr& has_slots,
-        const key_connections_type& key_connections
+        const key_connections_t& key_connections
     );
 
     /// Add a connection

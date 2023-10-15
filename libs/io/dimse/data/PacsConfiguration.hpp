@@ -25,7 +25,7 @@
 #include "io/dimse/config.hpp"
 
 #include <data/factory/new.hpp>
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 namespace sight::io::dimse::data
 {
@@ -33,11 +33,11 @@ namespace sight::io::dimse::data
 /**
  * @brief   This class defines a Pacs configuration.
  */
-class IO_DIMSE_CLASS_API PacsConfiguration : public sight::data::Object
+class IO_DIMSE_CLASS_API PacsConfiguration : public sight::data::object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(PacsConfiguration, sight::data::Object, sight::data::factory::make<PacsConfiguration>);
+    SIGHT_DECLARE_CLASS(PacsConfiguration, sight::data::object, sight::data::factory::make<PacsConfiguration>);
 
     /// Destructor
     IO_DIMSE_API ~PacsConfiguration() noexcept override = default;
@@ -179,9 +179,9 @@ public:
 protected:
 
     /// Defines shallow copy
-    /// @throws data::Exception if an errors occurs during copy
+    /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    IO_DIMSE_API void shallow_copy(const sight::data::Object::csptr& source) override;
+    IO_DIMSE_API void shallow_copy(const sight::data::object::csptr& source) override;
 
     /// Local application title
     std::string m_localApplicationTitle;

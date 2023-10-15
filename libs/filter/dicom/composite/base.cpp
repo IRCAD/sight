@@ -43,7 +43,7 @@ filter::FilterType base::getFilterType() const
 //-----------------------------------------------------------------------------
 
 base::DicomSeriesContainerType base::apply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr& logger
 ) const
 {
@@ -54,7 +54,7 @@ base::DicomSeriesContainerType base::apply(
     {
         DicomSeriesContainerType filtered;
         // For every series
-        for(const data::DicomSeries::sptr& s : result)
+        for(const data::dicom_series::sptr& s : result)
         {
             DicomSeriesContainerType tempo = filter->apply(s, logger);
             filtered.reserve(filtered.size() + tempo.size());
@@ -70,7 +70,7 @@ base::DicomSeriesContainerType base::apply(
 //-----------------------------------------------------------------------------
 
 base::DicomSeriesContainerType base::forcedApply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr& logger
 ) const
 {
@@ -81,7 +81,7 @@ base::DicomSeriesContainerType base::forcedApply(
     {
         DicomSeriesContainerType filtered;
         // For every series
-        for(const data::DicomSeries::sptr& s : result)
+        for(const data::dicom_series::sptr& s : result)
         {
             try
             {

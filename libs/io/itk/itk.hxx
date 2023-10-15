@@ -37,7 +37,7 @@ namespace sight::io::itk
 template<class ITKIMAGE>
 void moveFromItk(
     typename ITKIMAGE::Pointer _itkImage,
-    data::Image::sptr _dataImage,
+    data::image::sptr _dataImage,
     bool _bufferManagerIsDataImage
 )
 {
@@ -45,9 +45,9 @@ void moveFromItk(
 
     // Add by arnaud
     std::uint8_t dim              = ITKIMAGE::ImageDimension;
-    data::Image::Spacing vSpacing = {0., 0., 0.};
-    data::Image::Origin vOrigin   = {0., 0., 0.};
-    data::Image::Size vSize       = {0, 0, 0};
+    data::image::Spacing vSpacing = {0., 0., 0.};
+    data::image::Origin vOrigin   = {0., 0., 0.};
+    data::image::Size vSize       = {0, 0, 0};
 
     for(std::uint8_t d = 0 ; d < dim ; ++d)
     {
@@ -72,7 +72,7 @@ void moveFromItk(
             true,
             pixelType,
             vSize,
-            data::Image::GRAY_SCALE,
+            data::image::GRAY_SCALE,
             std::make_shared<core::memory::buffer_new_policy>()
         );
         /// itk image release its management buffer. dataImage must now deal memory
@@ -85,7 +85,7 @@ void moveFromItk(
             false,
             pixelType,
             vSize,
-            data::Image::GRAY_SCALE
+            data::image::GRAY_SCALE
         );
     }
 
@@ -101,9 +101,9 @@ void moveFromItk(
 //------------------------------------------------------------------------------
 
 template<class ITKIMAGE>
-data::Image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage)
+data::image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage)
 {
-    data::Image::sptr data = std::make_shared<data::Image>();
+    data::image::sptr data = std::make_shared<data::image>();
     io::itk::moveFromItk<ITKIMAGE>(itkImage, data, bufferManagerIsDataImage);
     return data;
 }
@@ -111,7 +111,7 @@ data::Image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferMa
 //------------------------------------------------------------------------------
 
 template<class ITKIMAGE_PTR>
-void moveFromItk(ITKIMAGE_PTR itkImage, data::Image::sptr _dataImage)
+void moveFromItk(ITKIMAGE_PTR itkImage, data::image::sptr _dataImage)
 {
     moveFromItk<typename ITKIMAGE_PTR::ObjectType>(itkImage, _dataImage);
 }
@@ -119,7 +119,7 @@ void moveFromItk(ITKIMAGE_PTR itkImage, data::Image::sptr _dataImage)
 //------------------------------------------------------------------------------
 
 template<class ITKIMAGE>
-typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData)
+typename ITKIMAGE::Pointer moveToItk(data::image::csptr imageData)
 {
     // Pre Condition
     SIGHT_ASSERT(

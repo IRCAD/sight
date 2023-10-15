@@ -29,7 +29,7 @@
 
 #include <core/runtime/runtime.hpp>
 
-#include <data/Composite.hpp>
+#include <data/composite.hpp>
 #include <data/mt/locked_ptr.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
@@ -103,14 +103,14 @@ void launcher::parseConfiguration(const ConfigurationType& config, const InOutMa
 //------------------------------------------------------------------------------
 
 std::pair<bool, std::string> launcher::validateActivity(
-    const data::Activity::csptr& activity
+    const data::activity::csptr& activity
 )
 {
     bool isValid = true;
     std::string message;
     // Applies validator on activity to check the data
-    activity::extension::ActivityInfo info;
-    info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
+    activity::extension::activity_info info;
+    info = activity::extension::activity::getDefault()->getInfo(activity->getActivityConfigId());
 
     // load activity module
     core::runtime::start_module(info.bundleId);
@@ -140,12 +140,12 @@ std::pair<bool, std::string> launcher::validateActivity(
 
 //------------------------------------------------------------------------------
 
-data::Activity::sptr launcher::createMainActivity() const
+data::activity::sptr launcher::createMainActivity() const
 {
-    activity::extension::ActivityInfo info;
-    info = activity::extension::Activity::getDefault()->getInfo(m_mainActivityId);
+    activity::extension::activity_info info;
+    info = activity::extension::activity::getDefault()->getInfo(m_mainActivityId);
 
-    auto activity = std::make_shared<data::Activity>();
+    auto activity = std::make_shared<data::activity>();
     if(!info.requirements.empty())
     {
         for(const auto& req : info.requirements)

@@ -27,9 +27,9 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <data/Matrix4.hpp>
+#include <data/matrix4.hpp>
 
-#include <io/__/reader/Matrix4Reader.hpp>
+#include <io/__/reader/matrix4_reader.hpp>
 #include <io/__/service/reader.hpp>
 
 #include <service/macros.hpp>
@@ -123,27 +123,27 @@ void Matrix4ReaderService::updating()
     {
         // Retrieve object
         const auto locked = m_data.lock();
-        const auto matrix = std::dynamic_pointer_cast<data::Matrix4>(locked.get_shared());
+        const auto matrix = std::dynamic_pointer_cast<data::matrix4>(locked.get_shared());
 
         SIGHT_ASSERT(
             "The object is not a '"
-            + data::Matrix4::classname()
+            + data::matrix4::classname()
             + "' or '"
             + sight::io::service::s_DATA_KEY
             + "' is not correctly set.",
             matrix
         );
 
-        const auto reader = std::make_shared<sight::io::reader::Matrix4Reader>();
-        reader->setObject(matrix);
+        const auto reader = std::make_shared<sight::io::reader::matrix4_reader>();
+        reader->set_object(matrix);
         reader->set_file(this->get_file());
         reader->read();
 
         m_readFailed = false;
 
         // Notify reading
-        const auto sig = matrix->signal<data::Object::ModifiedSignalType>(
-            data::Object::MODIFIED_SIG
+        const auto sig = matrix->signal<data::object::ModifiedSignalType>(
+            data::object::MODIFIED_SIG
         );
         {
             core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));

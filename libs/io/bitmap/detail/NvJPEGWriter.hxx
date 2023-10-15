@@ -115,7 +115,7 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::Image& image,
+        const data::image& image,
         O& output,
         Writer::Mode mode,
         Flag = Flag::NONE
@@ -124,7 +124,7 @@ public:
         const auto& pixel_format = image.getPixelFormat();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
-            pixel_format != data::Image::PixelFormat::RGB && pixel_format != data::Image::PixelFormat::BGR
+            pixel_format != data::image::PixelFormat::RGB && pixel_format != data::image::PixelFormat::BGR
         );
 
         const auto& pixel_type = image.getType();
@@ -182,7 +182,7 @@ public:
                 m_state,
                 m_params,
                 &nv_image,
-                pixel_format == data::Image::PixelFormat::RGB ? NVJPEG_INPUT_RGBI : NVJPEG_INPUT_BGRI,
+                pixel_format == data::image::PixelFormat::RGB ? NVJPEG_INPUT_RGBI : NVJPEG_INPUT_BGRI,
                 int(sizes[0]),
                 int(sizes[1]),
                 m_stream

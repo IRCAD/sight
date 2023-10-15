@@ -26,12 +26,12 @@
 #include "io/dicom/helper/DicomDataReader.hxx"
 #include "io/dicom/helper/DicomDataTools.hpp"
 
-#include <data/Color.hpp>
-#include <data/Reconstruction.hpp>
+#include <data/color.hpp>
+#include <data/reconstruction.hpp>
 
-#include <io/__/reader/DictionaryReader.hpp>
+#include <io/__/reader/dictionary_reader.hpp>
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <boost/algorithm/clamp.hpp>
 
@@ -48,16 +48,16 @@ namespace sight::io::dicom::reader::ie
 //------------------------------------------------------------------------------
 
 Surface::Surface(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
-    const data::ModelSeries::sptr& series,
+    const data::model_series::sptr& series,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::ModelSeries>(dicomSeries, reader, instance, series,
-                                                                logger, progress, cancel)
+    io::dicom::reader::ie::InformationEntity<data::model_series>(dicomSeries, reader, instance, series,
+                                                                 logger, progress, cancel)
 {
 }
 
@@ -91,7 +91,7 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
     const auto& segmentContainer = surfaceReader->GetSegments();
 
     // Retrieve reconstruction DB
-    data::ModelSeries::ReconstructionVectorType reconstructionDB = m_object->getReconstructionDB();
+    data::model_series::ReconstructionVectorType reconstructionDB = m_object->getReconstructionDB();
 
     // Lambda used to display reading errors
     auto displayError = [&](const gdcm::SmartPointer<gdcm::Segment>& segment,
@@ -122,7 +122,7 @@ void Surface::readSurfaceSegmentationAndSurfaceMeshModules()
         }
 
         // Create the reconstruction
-        data::Reconstruction::sptr reconstruction = std::make_shared<data::Reconstruction>();
+        data::reconstruction::sptr reconstruction = std::make_shared<data::reconstruction>();
 
         // Retrieve the Segment Sequence Item
         const gdcm::Item& segmentItem = segmentSequence->GetItem(itemIndex++);
@@ -204,7 +204,7 @@ std::string getStructureTypeFromSegmentIdentification(
 //------------------------------------------------------------------------------
 
 void Surface::readSurfaceSegmentationModule(
-    const data::Reconstruction::sptr& reconstruction,
+    const data::reconstruction::sptr& reconstruction,
     const gdcm::SmartPointer<gdcm::Segment>& segment,
     const gdcm::Item& segmentItem
 )
@@ -253,19 +253,19 @@ void Surface::readSurfaceSegmentationModule(
     }
     else
     {
-        reconstruction->setComputedMaskVolume(data::Reconstruction::s_NO_COMPUTED_MASK_VOLUME);
+        reconstruction->setComputedMaskVolume(data::reconstruction::s_NO_COMPUTED_MASK_VOLUME);
     }
 }
 
 //------------------------------------------------------------------------------
 
 void Surface::readSurfaceMeshModule(
-    const data::Reconstruction::sptr& reconstruction,
+    const data::reconstruction::sptr& reconstruction,
     const gdcm::SmartPointer<gdcm::Surface>& surface
 )
 {
     // Create material
-    data::Material::sptr material = std::make_shared<data::Material>();
+    data::material::sptr material = std::make_shared<data::material>();
 
     // Convert CIE Lab to RGBA
     const std::uint16_t* lab = surface->GetRecommendedDisplayCIELabValue();
@@ -276,7 +276,7 @@ void Surface::readSurfaceMeshModule(
     colorVector.push_back(surface->GetRecommendedPresentationOpacity());
 
     // Adapt color to material
-    data::Color::ColorArray rgba;
+    data::color::ColorArray rgba;
     boost::algorithm::clamp_range(colorVector.begin(), colorVector.end(), rgba.begin(), 0.F, 1.F);
 
     // Set reconstruction's visibility
@@ -284,7 +284,7 @@ void Surface::readSurfaceMeshModule(
     reconstruction->setIsVisible(rgba[3] > epsilon);
 
     // Set reconstruction's color
-    data::Color::sptr color = std::make_shared<data::Color>();
+    data::color::sptr color = std::make_shared<data::color>();
     color->setRGBA(rgba);
     material->setDiffuse(color);
 
@@ -350,9 +350,9 @@ void Surface::readSurfaceMeshModule(
 
     // Create a new Mesh
     io::dicom::container::DicomSurface surfaceContainer(reinterpret_cast<const float*>(pointCoordinates->GetPointer()),
-                                                        data::Mesh::size_t(pointCoordinatesSize),
+                                                        data::mesh::size_t(pointCoordinatesSize),
                                                         reinterpret_cast<const uint32_t*>(pointIndices->GetPointer()),
-                                                        data::Mesh::size_t(indexSize),
+                                                        data::mesh::size_t(indexSize),
                                                         surface->GetVectorCoordinateData().IsEmpty() ? nullptr
                                                                                                      : reinterpret_cast<
                                                             const float*>(normalCoordinates->GetPointer()));

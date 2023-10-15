@@ -25,7 +25,7 @@
 #include "filter/dicom/config.hpp"
 #include "filter/dicom/filter.hpp"
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 namespace sight::filter::dicom::helper
 {
@@ -37,7 +37,7 @@ class FILTER_DICOM_CLASS_API Filter
 {
 public:
 
-    typedef std::vector<data::DicomSeries::sptr> DicomSeriesContainerType;
+    typedef std::vector<data::dicom_series::sptr> DicomSeriesContainerType;
 
     /**
      * @brief Apply a filter to the DicomSeries

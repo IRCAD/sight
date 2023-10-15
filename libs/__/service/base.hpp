@@ -45,18 +45,13 @@ class Worker;
 namespace sight::service
 {
 
+class base;
+class manager;
+
 namespace detail
 {
 
-class app_config_manager;
-class Service;
-
-}
-
-namespace helper
-{
-
-class Config;
+class service;
 
 }
 
@@ -64,13 +59,11 @@ using config_t = boost::property_tree::ptree;
 
 struct slots
 {
-    static inline const core::com::slots::key_t START   = "start";
-    static inline const core::com::slots::key_t STOP    = "stop";
-    static inline const core::com::slots::key_t UPDATE  = "update";
-    static inline const core::com::slots::key_t SWAPKEY = "swapKey";
+    static inline const core::com::slots::key_t START    = "start";
+    static inline const core::com::slots::key_t STOP     = "stop";
+    static inline const core::com::slots::key_t UPDATE   = "update";
+    static inline const core::com::slots::key_t swap_key = "swap_key";
 };
-
-class base;
 
 struct signals
 {
@@ -88,9 +81,9 @@ struct signals
 /// Helper to define the connections between a service and its data.
 struct SERVICE_CLASS_API connections_t
 {
-    using KeyConnectionPairType = std::pair<core::com::signals::key_t, core::com::slots::key_t>;
-    using key_connections_type  = std::vector<KeyConnectionPairType>;
-    using KeyConnectionsMapType = std::map<std::string_view, key_connections_type>;
+    using key_connection_pair_t = std::pair<core::com::signals::key_t, core::com::slots::key_t>;
+    using key_connections_t     = std::vector<key_connection_pair_t>;
+    using key_connections_map_t = std::map<std::string_view, key_connections_t>;
 
     connections_t() = default;
     SERVICE_API connections_t(
@@ -103,14 +96,14 @@ struct SERVICE_CLASS_API connections_t
         const core::com::signals::key_t& sig,
         const core::com::slots::key_t& slot
     );
-    [[nodiscard]] SERVICE_API KeyConnectionsMapType::const_iterator find(std::string_view key) const;
-    [[nodiscard]] SERVICE_API KeyConnectionsMapType::const_iterator end() const;
+    [[nodiscard]] SERVICE_API key_connections_map_t::const_iterator find(std::string_view key) const;
+    [[nodiscard]] SERVICE_API key_connections_map_t::const_iterator end() const;
     [[nodiscard]] SERVICE_API bool empty() const;
     [[nodiscard]] SERVICE_API std::size_t size() const;
 
     private:
 
-        KeyConnectionsMapType m_keyConnectionsMap;
+        key_connections_map_t m_keyConnectionsMap;
 };
 
 /**
@@ -130,7 +123,7 @@ struct SERVICE_CLASS_API connections_t
  * - \b start() : Start the service.
  * - \b update() : Update the service.
  * - \b stop() : Stop the service.
- * - \b swapKey(const KeyType&, data::Object::sptr) : Swap the object at the given key with the object in parameter.
+ * - \b swap_key(const key_t&, data::object::sptr) : Swap the object at the given key with the object in parameter.
  */
 class SERVICE_CLASS_API base : public core::tools::object,
                                public core::com::has_slots,
@@ -142,18 +135,12 @@ public:
     SIGHT_DECLARE_SERVICE(base, core::tools::object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    using config_t   = service::config_t;
-    using ConfigType = config_t; // For backwards compatibility
-
-    using IdType  = std::string;
-    using KeyType = std::string;
+    using config_t = service::config_t;
+    using key_t    = std::string;
 
     using connections_t = service::connections_t;
     using slots         = service::slots;
     using signals       = service::signals;
-
-    friend class detail::app_config_manager;
-    friend class helper::Config;
 
     /**
      * @name Definition of service status
@@ -200,7 +187,7 @@ public:
      */
 
     //@{
-    using SharedFutureType = std::shared_future<void>;
+    using shared_future_t = std::shared_future<void>;
 
     /// Sets a worker to all service slots
     SERVICE_API void set_worker(SPTR(core::thread::worker) worker);
@@ -218,11 +205,10 @@ public:
      * @param[in] ptree property tree
      * @post m_configurationState == UNCONFIGURED
      */
-    SERVICE_API void setConfiguration(const config_t& ptree);
+    SERVICE_API void set_config(const config_t& ptree);
 
     /// Return the service configuration
-    SERVICE_API const base::ConfigType& getConfiguration() const;
-    [[deprecated("Removed in sight 23.0.")]] SERVICE_API const base::ConfigType& getConfigTree() const;
+    SERVICE_API const base::config_t& get_config() const;
 
     //@}
 
@@ -250,7 +236,7 @@ public:
      * @brief Invoke starting() if m_globalState == STOPPED. Does nothing otherwise.
      * @post m_globalState == STARTED
      */
-    SERVICE_API SharedFutureType start();
+    SERVICE_API shared_future_t start();
 
     /**
      * @brief Invoke stopping() if m_globalState == STARTED. Does nothing otherwise. Stops all observations.
@@ -258,13 +244,13 @@ public:
      * @post m_globalState == STOPPED
      *
      */
-    SERVICE_API SharedFutureType stop();
+    SERVICE_API shared_future_t stop();
 
     /**
      * @brief Invoke updating() if m_globalState == STARTED. Does nothing otherwise.
      * @pre m_globalState == STARTED
      */
-    SERVICE_API SharedFutureType update();
+    SERVICE_API shared_future_t update();
 
     /**
      * @brief Associate the service to another object
@@ -272,7 +258,7 @@ public:
      * @param[in] _obj change object at given key to _obj
      * @pre m_globalState == STARTED
      */
-    SERVICE_API SharedFutureType swapKey(std::string_view _key, data::Object::sptr _obj);
+    SERVICE_API shared_future_t swap_key(std::string_view _key, data::object::sptr _obj);
     //@}
 
     /**
@@ -282,19 +268,19 @@ public:
     //@{
 
     /// Return the global process status
-    SERVICE_API GlobalStatus getStatus() const noexcept;
+    SERVICE_API GlobalStatus status() const noexcept;
 
     /// Return the configuration process status
-    SERVICE_API ConfigurationStatus getConfigurationStatus() const noexcept;
+    SERVICE_API ConfigurationStatus config_status() const noexcept;
 
     /// Test if the service is started or not
-    SERVICE_API bool isStarted() const noexcept;
+    SERVICE_API bool started() const noexcept;
 
     /// Test if the service is stopped or not
-    SERVICE_API bool isStopped() const noexcept;
+    SERVICE_API bool stopped() const noexcept;
 
     /// Return the update process status
-    SERVICE_API UpdatingStatus getUpdatingStatus() const noexcept;
+    SERVICE_API UpdatingStatus updating_status() const noexcept;
 
     //@}
 
@@ -344,7 +330,7 @@ protected:
      * If you need the old object, you need to keep a shared pointer on it inside your service implementation.
      *
      * @param key of the object
-     * @see swapKey()
+     * @see swap_key()
      * @todo This method must be pure virtual
      * @todo This method must have in parameter the new object or the old ?
      */
@@ -354,7 +340,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated objects signals,
      * this method is used for obj/srv auto connection
      */
-    SERVICE_API virtual connections_t getAutoConnections() const;
+    SERVICE_API virtual connections_t auto_connections() const;
 
     /**
      * @brief Write information in a stream.
@@ -367,11 +353,15 @@ protected:
 
 private:
 
-    SERVICE_API void notifyRegisterOut(data::Object::sptr, const std::string&) override;
-    SERVICE_API void notifyUnregisterOut(data::Object::sptr, const std::string&) override;
+    /// Notify about a newly deferred object
+    SERVICE_API void notify_register_out(data::object::sptr, const std::string&) override;
 
-    friend class detail::Service;
-    std::unique_ptr<detail::Service> m_pimpl;
+    /// Notify about a destroyed deferred object
+    SERVICE_API void notify_unregister_out(data::object::sptr, const std::string&) override;
+
+    friend class manager;
+    friend class detail::service;
+    std::unique_ptr<detail::service> m_pimpl;
 };
 
 //------------------------------------------------------------------------------

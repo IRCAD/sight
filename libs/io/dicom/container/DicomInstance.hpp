@@ -34,14 +34,8 @@
 namespace sight::data
 {
 
-class DicomSeries;
-
-} // namespace sight::data
-
-namespace sight::data
-{
-
-class Series;
+class dicom_series;
+class series;
 
 } // namespace sight::data
 
@@ -71,7 +65,7 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API DicomInstance(
-        const CSPTR(data::Series)& series,
+        const CSPTR(data::series)& series,
         SPTR(core::log::logger)logger = nullptr,
         bool isMultiFiles             = true
     );
@@ -82,7 +76,7 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API DicomInstance(
-        const CSPTR(data::DicomSeries)& dicomSeries,
+        const CSPTR(data::dicom_series)& dicomSeries,
         SPTR(core::log::logger)logger = nullptr
     );
 
@@ -107,13 +101,13 @@ public:
     /// Get SOP Class UID
     [[nodiscard]] const std::string& getSOPClassUID() const
     {
-        return m_SOPClassUID;
+        return m_sop_classUID;
     }
 
     /// Set SOP Class UID
-    void setSOPClassUID(const std::string& SOPClassUID)
+    void setSOPClassUID(const std::string& sop_classUID)
     {
-        m_SOPClassUID = SOPClassUID;
+        m_sop_classUID = sop_classUID;
     }
 
     /// Get Series Instance UID
@@ -173,22 +167,22 @@ public:
 protected:
 
     /**
-     * @brief Compute SOPClassUID
+     * @brief Compute sop_classUID
      * @param[in] series Series
      */
-    void computeSOPClassUID(const CSPTR(data::Series)& series);
+    void computesop_classUID(const CSPTR(data::series)& series);
 
     /**
      * @brief Generate SOPInstanceUIDs according to series type and dimension
      * @param[in] series Series
      */
-    void generateSOPInstanceUIDs(const CSPTR(data::Series)& series);
+    void generateSOPInstanceUIDs(const CSPTR(data::series)& series);
 
     /**
      * @brief Extract 'SOP Instance UIDs' and 'Frame of Reference UID' from a DICOM series
      * @param[in] dicomSeries DICOM Series from which the UIDs are extracted
      */
-    void readUIDFromDicomSeries(const CSPTR(data::DicomSeries)& dicomSeries);
+    void readUIDFromDicomSeries(const CSPTR(data::dicom_series)& dicomSeries);
 
 private:
 
@@ -196,7 +190,7 @@ private:
     bool m_isMultiFiles {true};
 
     /// SOP Class UID
-    std::string m_SOPClassUID;
+    std::string m_sop_classUID;
 
     /// Study Instance UID
     std::string m_studyInstanceUID;

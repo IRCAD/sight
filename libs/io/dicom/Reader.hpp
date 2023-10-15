@@ -27,14 +27,14 @@
 #include <core/location/multiple_files.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <data/SeriesSet.hpp>
+#include <data/series_set.hpp>
 
-#include <io/__/reader/GenericObjectReader.hpp>
+#include <io/__/reader/generic_object_reader.hpp>
 
 namespace sight::io::dicom
 {
 
-class IO_DICOM_CLASS_API Reader final : public reader::GenericObjectReader<data::SeriesSet>,
+class IO_DICOM_CLASS_API Reader final : public reader::generic_object_reader<data::series_set>,
                                         public core::location::single_folder,
                                         public core::location::multiple_files,
                                         public core::com::has_signals
@@ -43,7 +43,7 @@ public:
 
     SIGHT_DECLARE_CLASS(
         Reader,
-        io::reader::GenericObjectReader<data::SeriesSet>,
+        io::reader::generic_object_reader<data::series_set>,
         io::reader::factory::make<Reader>
     );
 
@@ -59,30 +59,31 @@ public:
     /// Returns a list of DICOM series by scanning files, either using get_files() or recursively using get_folder() as
     /// root directory.
     /// The files are NOT sorted!
-    /// @return data::SeriesSet::sptr: A set of series, with their associated files
+    /// @return data::series_set::sptr: A set of series, with their associated files
     /// @throw std::runtime_error if the root directory is not an existing folder
     /// @throw std::runtime_error if there is no dicom files are found
-    IO_DICOM_API data::SeriesSet::sptr scan();
+    IO_DICOM_API data::series_set::sptr scan();
 
     /// Returns a list of DICOM series with their associated files sorted.
     /// Also call scan() if there is no scanned series.
-    /// @return data::SeriesSet::sptr and double: A set of series, with their associated files sorted, and the z_spacing
-    IO_DICOM_API data::SeriesSet::sptr sort();
+    /// @return data::series_set::sptr and double: A set of series, with their associated files sorted, and the
+    /// z_spacing
+    IO_DICOM_API data::series_set::sptr sort();
 
     /// Getters/Setters
     /// @{
 
     /// Set SOP class filters to use when scanning for DICOM files (CTImageStorage, SpatialFiducialsStorage, ...).
     /// @param[in] filters SOP class filters
-    IO_DICOM_API void setFilters(const data::Series::SopKeywords& filters);
+    IO_DICOM_API void setFilters(const data::series::SopKeywords& filters);
 
     /// Set the scanned Series list, unsorted
     /// @param[in] scanned The Series with their associated files
-    IO_DICOM_API void setScanned(const data::SeriesSet::sptr& scanned);
+    IO_DICOM_API void setScanned(const data::series_set::sptr& scanned);
 
     /// Set the sorted Series list. These are the series that will be read
     /// @param[in] sorted The Series with their associated files
-    IO_DICOM_API void setSorted(const data::SeriesSet::sptr& sorted);
+    IO_DICOM_API void setSorted(const data::series_set::sptr& sorted);
 
     /// Set/get the current job
     IO_DICOM_API core::jobs::base::sptr getJob() const override;

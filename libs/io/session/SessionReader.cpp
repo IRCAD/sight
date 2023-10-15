@@ -21,7 +21,7 @@
 
 #include "SessionReader.hpp"
 
-#include "io/session/detail/core/SessionDeserializer.hpp"
+#include "io/session/detail/core/session_deserializer.hpp"
 
 #include <core/crypto/password_keeper.hpp>
 
@@ -72,7 +72,7 @@ public:
     }
 
     /// Session deserializer which perform the deserialization
-    detail::SessionDeserializer m_sessionDeserializer;
+    detail::session_deserializer m_sessionDeserializer;
 
     /// Use a shared_ptr to keep the object alive as it is the read() return value
     core::tools::object::sptr m_object;
@@ -105,7 +105,7 @@ void SessionReader::read()
     m_pimpl->read();
 
     // Save the object so the caller can get it with getObject();
-    setObject(m_pimpl->m_object);
+    set_object(m_pimpl->m_object);
 }
 
 //------------------------------------------------------------------------------
@@ -147,14 +147,14 @@ void SessionReader::setCustomDeserializer(const std::string& className, deserial
 
 void SessionReader::setDeserializer(const std::string& className, deserializer_t deserializer)
 {
-    detail::SessionDeserializer::setDeserializer(className, deserializer);
+    detail::session_deserializer::setDeserializer(className, deserializer);
 }
 
 //------------------------------------------------------------------------------
 
 deserializer_t SessionReader::deserializer(const std::string& className)
 {
-    return detail::SessionDeserializer::deserializer(className);
+    return detail::session_deserializer::deserializer(className);
 }
 
 } // namespace sight::io::session

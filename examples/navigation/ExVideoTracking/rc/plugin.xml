@@ -6,22 +6,22 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui" />
 
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>ExVideoTracking_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="camera" type="sight::data::Camera" />
-            <object uid="frameTL" type="sight::data::FrameTL">
+            <object uid="camera" type="sight::data::camera" />
+            <object uid="frameTL" type="sight::data::frame_tl">
                 <value>100</value>
             </object>
-            <object uid="markerMap" type="sight::data::MarkerMap" />
-            <object uid="videoImage" type="sight::data::Image" />
+            <object uid="markerMap" type="sight::data::marker_map" />
+            <object uid="videoImage" type="sight::data::image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="videoToolbarConfig" type="sight::service::SConfigController">
+            <service uid="videoToolbarConfig" type="sight::app::config_controller">
                 <appConfig id="sight::config::io::video::controls" />
                 <inout group="data">
                     <key name="camera" uid="camera" />
@@ -30,7 +30,7 @@
                 <parameter replace="TOOLBAR" by="subToolbarView" />
             </service>
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>ExVideoTracking</name>
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::tool_bar">
                 <gui>
                     <layout>
                         <editor />
@@ -56,7 +56,7 @@
                 </registry>
             </service>
 
-            <service uid="cameraView" type="sight::module::ui::SView">
+            <service uid="cameraView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
@@ -72,7 +72,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
                 <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -82,13 +82,13 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
                 <in key="image" uid="videoImage" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="parametersSrv" type="sight::module::ui::qt::SParameters">
+            <service uid="parametersSrv" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -142,7 +142,7 @@
                 </parameters>
             </service>
 
-            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer"  worker="videoWorker">
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::synchronizer"  worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
@@ -151,9 +151,9 @@
                 </inout>
             </service>
 
-            <service uid="trackerSrv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking">
+            <service uid="trackerSrv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking">
                 <in key="camera" uid="camera" />
-                <inout key="frame" uid="videoImage" autoConnect="true" />
+                <inout key="frame" uid="videoImage" auto_connect="true" />
                 <inout group="markerMap">
                     <key uid="markerMap" />
                 </inout>

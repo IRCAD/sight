@@ -26,8 +26,8 @@
 
 #include <core/tools/failed.hpp>
 
-#include <data/Array.hpp>
-#include <data/Mesh.hpp>
+#include <data/array.hpp>
+#include <data/mesh.hpp>
 
 namespace Tuto13MeshGeneratorCpp
 {
@@ -44,7 +44,7 @@ public:
 
     /// Computes the deformation or sets and initializes the algorithm if necessary.
     TUTO13MESHGENERATORCPP_API void computeDeformation(
-        sight::data::Mesh::sptr _mesh,
+        sight::data::mesh::sptr _mesh,
         unsigned int _nbStep,
         unsigned int _amplitude
     );
@@ -58,7 +58,7 @@ private:
      * @param _amplitude
      */
     void setParam(
-        sight::data::Mesh::sptr _mesh,
+        sight::data::mesh::sptr _mesh,
         unsigned int _nbStep,
         unsigned int _amplitude
     );
@@ -84,9 +84,9 @@ private:
 
     float m_yCenter {0};
 
-    sight::data::Mesh::wptr m_mesh;
+    sight::data::mesh::wptr m_mesh;
 
-    sight::data::Mesh::sptr m_originMesh;
+    sight::data::mesh::sptr m_originMesh;
 };
 
 } // namespace Tuto13MeshGeneratorCpp.

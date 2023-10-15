@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 namespace sight::viz::scene2d
 {
 
-class SRender;
+class render;
 
 class VIZ_SCENE2D_CLASS_API Scene2DGraphicsView : public QGraphicsView
 {
@@ -69,12 +69,12 @@ public:
 
     VIZ_SCENE2D_API void updateFromViewport(const scene2d::data::Viewport& viewport);
 
-    VIZ_SCENE2D_API void setSceneRender(SPTR(viz::scene2d::SRender) sceneRender);
+    VIZ_SCENE2D_API void setSceneRender(SPTR(viz::scene2d::render) sceneRender);
 
 protected:
 
     scene2d::data::Viewport m_viewport;
-    WPTR(viz::scene2d::SRender) m_scene2DRender;
+    WPTR(viz::scene2d::render) m_scene2DRender;
 
     static scene2d::data::Event::Button getScene2DButtonFromEvent(QMouseEvent* _event);
     static scene2d::data::Event::Modifier getScene2DModifierFromEvent(QInputEvent* _event);

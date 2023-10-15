@@ -30,7 +30,7 @@
 namespace sight::io::reader
 {
 
-class IObjectReader;
+class object_reader;
 
 namespace factory
 {
@@ -38,7 +38,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-IO_API SPTR(io::reader::IObjectReader) make(const io::reader::registry::KeyType& classname);
+IO_API SPTR(io::reader::object_reader) make(const io::reader::registry::key_t& classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make()

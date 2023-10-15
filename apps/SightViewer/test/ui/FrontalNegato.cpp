@@ -21,11 +21,11 @@
 
 #include "FrontalNegato.hpp"
 
-#include <utestData/Data.hpp>
-
 #include <ui/testCore/helper/Button.hpp>
 #include <ui/testCore/helper/Scene3d.hpp>
 #include <ui/testCore/helper/Slider.hpp>
+
+#include <utest_data/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::FrontalNegato);
 
@@ -43,7 +43,7 @@ void FrontalNegato::test()
     const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
     std::filesystem::remove(snapshotPath);
 
-    const std::filesystem::path referencePath = utestData::Data::dir() / "sight/ui/SightViewer" / imageName;
+    const std::filesystem::path referencePath = utest_data::Data::dir() / "sight/ui/SightViewer" / imageName;
 
     start(
         testName,
@@ -52,7 +52,7 @@ void FrontalNegato::test()
             openFile(
                 tester,
                 "Nifti or Inr images",
-                utestData::Data::dir() / "sight/image/inr/image.inr.gz"
+                utest_data::Data::dir() / "sight/image/inr/image.inr.gz"
             );
 
             // Firstly, we must drag the mouse in the 3D scene so that the camera is "in front of" the image

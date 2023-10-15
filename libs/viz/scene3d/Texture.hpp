@@ -24,7 +24,7 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include <viz/scene3d/resource.hpp>
 
@@ -36,10 +36,10 @@ namespace sight::viz::scene3d
 {
 
 /**
- * @brief This binds a sight::data::Image to a shared Ogre texture. It allows to share the GPU memory from multiple
+ * @brief This binds a sight::data::image to a shared Ogre texture. It allows to share the GPU memory from multiple
  * callers that use the same image, and only update the GPU buffer when necessary.
  */
-class VIZ_SCENE3D_CLASS_API Texture : public resource<data::Image,
+class VIZ_SCENE3D_CLASS_API Texture : public resource<data::image,
                                                       Ogre::Texture,
                                                       Texture>
 {
@@ -49,7 +49,7 @@ public:
     /// it wraps the existing one.
     /// @param object input image
     /// @param suffixId optional suffix to the object identifier, this allows to create different copies of the object
-    VIZ_SCENE3D_API Texture(const data::Image::csptr& _image, const std::string& suffixId = "");
+    VIZ_SCENE3D_API Texture(const data::image::csptr& _image, const std::string& suffixId = "");
     VIZ_SCENE3D_API ~Texture() override;
 
     /// Updates the TF texture according to the source image content, if any modification occurred since the last

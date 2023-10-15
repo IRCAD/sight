@@ -60,7 +60,7 @@ void VtiImageReader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::Image::sptr pImage = getConcreteObject();
+    data::image::sptr pImage = getConcreteObject();
 
     vtkSmartPointer<vtkXMLImageDataReader> reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
     reader->SetFileName(this->get_file().string().c_str());
@@ -95,7 +95,7 @@ void VtiImageReader::read()
     }
     catch(std::exception& e)
     {
-        SIGHT_THROW("VTIImage to data::Image failed " << e.what());
+        SIGHT_THROW("VTIImage to data::image failed " << e.what());
     }
 }
 

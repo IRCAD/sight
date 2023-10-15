@@ -24,7 +24,7 @@
 
 #include "io/dicom/exception/Failed.hpp"
 
-#include <geometry/data/Mesh.hpp>
+#include <geometry/data/mesh.hpp>
 
 namespace sight::io::dicom::container
 {
@@ -33,25 +33,25 @@ namespace sight::io::dicom::container
 
 struct CellDataOffsetGenerator
 {
-    data::Mesh::cell_t current {0};
+    data::mesh::cell_t current {0};
     CellDataOffsetGenerator()
     = default;
 
     //------------------------------------------------------------------------------
 
-    data::Mesh::cell_t operator()()
+    data::mesh::cell_t operator()()
     {
-        data::Mesh::cell_t res = current;
+        data::mesh::cell_t res = current;
         current += 3;
         return res;
     }
 };
 
 //------------------------------------------------------------------------------
-DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
+DicomSurface::DicomSurface(const data::reconstruction::csptr& reconstruction)
 {
     // Get mesh
-    data::Mesh::csptr mesh = reconstruction->getMesh();
+    data::mesh::csptr mesh = reconstruction->getMesh();
 
     // Coordinates
     {
@@ -79,7 +79,7 @@ DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
     }
 
     // Normals
-    if(mesh->has<data::Mesh::Attributes::POINT_NORMALS>())
+    if(mesh->has<data::mesh::Attributes::POINT_NORMALS>())
     {
         const auto begin = mesh->cbegin<data::iterator::point::nxyz>();
         const auto end   = mesh->cend<data::iterator::point::nxyz>();
@@ -93,11 +93,11 @@ DicomSurface::DicomSurface(const data::Reconstruction::csptr& reconstruction)
 //------------------------------------------------------------------------------
 
 DicomSurface::DicomSurface(
-    const data::Mesh::position_t* pointBuffer,
-    const data::Mesh::size_t pointBufferSize,
+    const data::mesh::position_t* pointBuffer,
+    const data::mesh::size_t pointBufferSize,
     const DicomCellValueType* cellBuffer,
-    const data::Mesh::size_t cellBufferSize,
-    const data::Mesh::normal_t* normalBuffer
+    const data::mesh::size_t cellBufferSize,
+    const data::mesh::normal_t* normalBuffer
 )
 {
     // Coordinates
@@ -123,22 +123,22 @@ DicomSurface::~DicomSurface()
 
 //------------------------------------------------------------------------------
 
-data::Mesh::sptr DicomSurface::convertToData()
+data::mesh::sptr DicomSurface::convertToData()
 {
-    data::Mesh::sptr mesh = std::make_shared<data::Mesh>();
+    data::mesh::sptr mesh = std::make_shared<data::mesh>();
     const auto lock       = mesh->dump_lock();
 
     // Initialize number of points
-    data::Mesh::Attributes attribute = data::Mesh::Attributes::NONE;
+    data::mesh::Attributes attribute = data::mesh::Attributes::NONE;
     if(!m_normalBuffer.empty())
     {
-        attribute = data::Mesh::Attributes::POINT_NORMALS;
+        attribute = data::mesh::Attributes::POINT_NORMALS;
     }
 
     mesh->resize(
-        data::Mesh::size_t(m_pointBuffer.size() / 3),
-        data::Mesh::size_t(m_cellBuffer.size() / 3),
-        data::Mesh::CellType::TRIANGLE,
+        data::mesh::size_t(m_pointBuffer.size() / 3),
+        data::mesh::size_t(m_cellBuffer.size() / 3),
+        data::mesh::CellType::TRIANGLE,
         attribute
     );
 
@@ -157,7 +157,7 @@ data::Mesh::sptr DicomSurface::convertToData()
             for(std::size_t i = 0 ; i < 3 ; ++i)
             {
                 // Index shall start at 0 in Sight
-                cell.pt[i] = static_cast<data::Mesh::point_t>(m_cellBuffer[index]) - 1;
+                cell.pt[i] = static_cast<data::mesh::point_t>(m_cellBuffer[index]) - 1;
                 ++index;
             }
         }

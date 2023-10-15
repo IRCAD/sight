@@ -69,7 +69,7 @@ public:
     }
 
     /// Reading
-    inline void read(data::Image& image, std::istream& istream, Flag /*flag*/)
+    inline void read(data::image& image, std::istream& istream, Flag /*flag*/)
     {
         // Get input size
         istream.seekg(0, std::ios::end);
@@ -178,12 +178,12 @@ public:
             ? core::type::UINT16
             : core::type::UINT8,
             image_info.num_components == 2
-            ? data::Image::PixelFormat::RG
+            ? data::image::PixelFormat::RG
             : image_info.num_components == 3
-            ? data::Image::PixelFormat::RGB
+            ? data::image::PixelFormat::RGB
             : image_info.num_components == 4
-            ? data::Image::PixelFormat::RGBA
-            : data::Image::PixelFormat::GRAY_SCALE
+            ? data::image::PixelFormat::RGBA
+            : data::image::PixelFormat::GRAY_SCALE
         );
 
         // Synchronize CUDA streams

@@ -48,7 +48,7 @@ add_dependencies(myTarget activity_navigation_calibration ... )
 Example with `calIntrinsicView` & `calExtrinsicView`
 
 ```xml
-    <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::SCameraConfigLauncher">
+    <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::camera_config_launcher">
         <inout key="cameraSet" uid="${cameraSet}" />
         <inout key="activity" uid="${AS_UID}" />
         <config>

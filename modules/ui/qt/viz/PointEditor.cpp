@@ -28,10 +28,10 @@
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 
-#include <data/Composite.hpp>
-#include <data/String.hpp>
+#include <data/composite.hpp>
+#include <data/string.hpp>
 
-#include <geometry/data/IntrasecTypes.hpp>
+#include <geometry/data/types.hpp>
 
 #include <service/base.hpp>
 #include <service/macros.hpp>
@@ -121,9 +121,9 @@ void PointEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void PointEditor::getInteraction(data::tools::PickingInfo info)
+void PointEditor::getInteraction(data::tools::picking_info info)
 {
-    if(info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_DOWN)
+    if(info.m_eventId == data::tools::picking_info::Event::MOUSE_LEFT_DOWN)
     {
         m_textCtrl_x->setText(QString("%1").arg(info.m_worldPos[0], 0, 'f', 3));
         m_textCtrl_y->setText(QString("%1").arg(info.m_worldPos[1], 0, 'f', 3));

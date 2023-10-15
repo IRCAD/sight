@@ -26,10 +26,10 @@
 #include <core/tools/id.hpp>
 
 #include <data/dicom/Sop.hpp>
-#include <data/Image.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/Series.hpp>
+#include <data/image.hpp>
+#include <data/image_series.hpp>
+#include <data/model_series.hpp>
+#include <data/series.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -120,12 +120,12 @@ enum class When
 struct ColumnDisplayInformation
 {
     std::string header;
-    std::function<QStandardItem* (data::Series::csptr, When)> getInfo;
+    std::function<QStandardItem* (data::series::csptr, When)> getInfo;
 };
 
 //------------------------------------------------------------------------------
 
-inline static QTextCodec* getCodec(data::Series::csptr series)
+inline static QTextCodec* getCodec(data::series::csptr series)
 {
     QTextCodec* codec = QTextCodec::codecForName(series->getEncoding().c_str());
     if(codec == nullptr)
@@ -139,7 +139,7 @@ inline static QTextCodec* getCodec(data::Series::csptr series)
 /* *INDENT-OFF* */
 static const std::map<std::string, ColumnDisplayInformation> columnMap {
     {"PatientName", {.header = "Name", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             if(when == When::SERIES)
             {
@@ -160,7 +160,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"SeriesInstanceUID", {.header = "Name", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             if(when == When::STUDY)
             {
@@ -178,7 +178,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"PatientName/SeriesInstanceUID", {.header = "Name", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             if(when == When::STUDY)
             {
@@ -204,14 +204,14 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"PatientSex", {.header = "Sex", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(when == When::STUDY ? series->getPatientSex() : ""));
         }
      }
     },
     {"PatientBirthDate", {.header = "Birthdate", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(
                 QString::fromStdString(when == When::STUDY ? formatDate(series->getPatientBirthDate()) : ""));
@@ -219,7 +219,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"Icon", {.header = "Icon", .getInfo =
-        [](data::Series::csptr /*series*/, When when)
+        [](data::series::csptr /*series*/, When when)
         {
             if(when == When::STUDY)
             {
@@ -233,7 +233,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"PatientBirthDate/Icon", {.header = "Birthdate", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             if(when == When::STUDY)
             {
@@ -247,14 +247,14 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"Modality", {.header = "Modality", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(when == When::SERIES ? series->getModality() : ""));
         }
      }
     },
     {"StudyDescription", {.header = "Description", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             if(when == When::STUDY)
             {
@@ -266,7 +266,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"SeriesDescription", {.header = "Description", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             if(when == When::STUDY)
             {
@@ -297,7 +297,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"StudyDescription/SeriesDescription", {.header = "Description", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             if(when == When::STUDY)
             {
@@ -328,7 +328,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"StudyDate", {.header = "Date", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(
                 QString::fromStdString(when == When::STUDY ? formatDate(series->getStudyDate()) : ""));
@@ -336,7 +336,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"SeriesDate", {.header = "Date", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(
                 QString::fromStdString(when == When::SERIES ? formatDate(series->getSeriesDate()) : ""));
@@ -344,7 +344,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"StudyDate/SeriesDate", {.header = "Date", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(
                 formatDate(when == When::STUDY ? series->getStudyDate() : series->getSeriesDate())));
@@ -352,7 +352,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"StudyTime", {.header = "Time", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(
                 QString::fromStdString(when == When::STUDY ? formatTime(series->getStudyTime()) : ""));
@@ -360,7 +360,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"SeriesTime", {.header = "Time", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(
                 QString::fromStdString(when == When::SERIES ? formatTime(series->getSeriesTime()) : ""));
@@ -368,7 +368,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"StudyTime/SeriesTime", {.header = "Time", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(
                 formatTime(when == When::STUDY ? series->getStudyTime() : series->getSeriesTime())));
@@ -376,64 +376,64 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
      }
     },
     {"PatientAge", {.header = "Patient age", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(when == When::STUDY ? series->getPatientAge() : ""));
         }
      }
     },
     {"BodyPartExamined", {.header = "Body part examined", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(
-                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                when == When::SERIES && series->getDicomType() == data::series::DicomType::IMAGE
                     ? series->getBodyPartExamined()
                     : ""));
         }
      }
     },
     {"PatientPositionString", {.header = "Patient position", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(
-                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                when == When::SERIES && series->getDicomType() == data::series::DicomType::IMAGE
                     ? series->getPatientPositionString()
                     : ""));
         }
      }
     },
     {"ContrastBolusAgent", {.header = "Contrast agent", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(
-                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                when == When::SERIES && series->getDicomType() == data::series::DicomType::IMAGE
                     ? series->getContrastBolusAgent()
                     : ""));
         }
      }
     },
     {"AcquisitionTime", {.header = "Acquisition time", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(
-                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                when == When::SERIES && series->getDicomType() == data::series::DicomType::IMAGE
                     ? formatTime(series->getAcquisitionTime())
                     : ""));
         }
      }
     },
     {"ContrastBolusStartTime", {.header = "Contrast/bolus time", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(
-                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                when == When::SERIES && series->getDicomType() == data::series::DicomType::IMAGE
                     ? formatTime(series->getContrastBolusStartTime())
                     : ""));
         }
      }
     },
     {"PatientID", {.header = "Patient ID", .getInfo =
-        [](data::Series::csptr series, When when)
+        [](data::series::csptr series, When when)
         {
             return new QStandardItem(QString::fromStdString(when == When::STUDY ? series->getPatientID() : ""));
         }
@@ -493,12 +493,12 @@ void SelectorModel::clear()
 
 //-----------------------------------------------------------------------------
 
-data::Image::Spacing roundSpacing(const data::Image::Spacing& _spacing)
+data::image::Spacing roundSpacing(const data::image::Spacing& _spacing)
 {
-    data::Image::Spacing roundSpacing;
+    data::image::Spacing roundSpacing;
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
-        data::Image::Spacing::value_type roundVal = boost::math::round(_spacing[i] * 100.) / 100.;
+        data::image::Spacing::value_type roundVal = boost::math::round(_spacing[i] * 100.) / 100.;
         roundSpacing[i] = roundVal;
     }
 
@@ -507,7 +507,7 @@ data::Image::Spacing roundSpacing(const data::Image::Spacing& _spacing)
 
 //------------------------------------------------------------------------------
 
-void SelectorModel::addSeries(data::Series::sptr _series)
+void SelectorModel::addSeries(data::series::sptr _series)
 {
     const auto studyInstanceUID  = _series->getStudyInstanceUID();
     auto itr                     = m_items.find(studyInstanceUID);
@@ -626,7 +626,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
 
 //-----------------------------------------------------------------------------
 
-void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _item)
+void SelectorModel::addSeriesIcon(data::series::sptr _series, QStandardItem* _item)
 {
     auto iter = m_seriesIcons.find(_series->get_classname());
     if(iter != m_seriesIcons.end())
@@ -637,11 +637,11 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
     {
         std::filesystem::path icon_path;
 
-        if(const auto& type = _series->getDicomType(); type == data::Series::DicomType::IMAGE)
+        if(const auto& type = _series->getDicomType(); type == data::series::DicomType::IMAGE)
         {
             icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "ImageSeries.svg");
         }
-        else if(type == data::Series::DicomType::MODEL)
+        else if(type == data::series::DicomType::MODEL)
         {
             icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "ModelSeries.svg");
         }
@@ -655,7 +655,7 @@ void SelectorModel::addSeriesIcon(data::Series::sptr _series, QStandardItem* _it
 
 //-----------------------------------------------------------------------------
 
-void SelectorModel::removeSeries(data::Series::sptr _series)
+void SelectorModel::removeSeries(data::series::sptr _series)
 {
     QStandardItem* seriesItem = this->findSeriesItem(_series);
 
@@ -750,7 +750,7 @@ bool SelectorModel::removeSeriesItem(QStandardItem* _item)
 
 //-----------------------------------------------------------------------------
 
-QStandardItem* SelectorModel::findSeriesItem(data::Series::sptr _series)
+QStandardItem* SelectorModel::findSeriesItem(data::series::sptr _series)
 {
     QStandardItem* seriesItem = nullptr;
     QStandardItem* studyItem  = this->findStudyItem(_series);
@@ -775,7 +775,7 @@ QStandardItem* SelectorModel::findSeriesItem(data::Series::sptr _series)
 
 //-----------------------------------------------------------------------------
 
-QStandardItem* SelectorModel::findStudyItem(data::Series::sptr _series)
+QStandardItem* SelectorModel::findStudyItem(data::series::sptr _series)
 {
     data::DicomValueType studyInstanceUid = _series->getStudyInstanceUID();
 

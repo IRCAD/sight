@@ -28,10 +28,10 @@
 #include "io/dicom/container/sr/DicomSRTextNode.hpp"
 #include "io/dicom/helper/DicomDataTools.hpp"
 
-#include <data/Boolean.hpp>
+#include <data/boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/PointList.hpp>
-#include <data/String.hpp>
+#include <data/point_list.hpp>
+#include <data/string.hpp>
 
 namespace sight::io::dicom::reader::tid
 {
@@ -39,13 +39,13 @@ namespace sight::io::dicom::reader::tid
 //------------------------------------------------------------------------------
 
 Fiducial::Fiducial(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
-    const data::Image::sptr& image,
+    const data::image::sptr& image,
     const core::log::logger::sptr& logger
 ) :
-    io::dicom::reader::tid::TemplateID<data::Image>(dicomSeries, reader, instance, image, logger)
+    io::dicom::reader::tid::TemplateID<data::image>(dicomSeries, reader, instance, image, logger)
 {
 }
 
@@ -140,14 +140,14 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
 
 void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
 {
-    data::Point::sptr point = std::make_shared<data::Point>(x, y, z);
+    data::point::sptr point = std::make_shared<data::point>(x, y, z);
     point->setLabel(label);
 
-    data::PointList::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
+    data::point_list::sptr pointList = data::helper::MedicalImage::getLandmarks(*m_object);
 
     if(!pointList)
     {
-        pointList = std::make_shared<data::PointList>();
+        pointList = std::make_shared<data::point_list>();
         data::helper::MedicalImage::setLandmarks(*m_object, pointList);
     }
 

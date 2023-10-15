@@ -6,15 +6,15 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui" />
 
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>ExIgtl_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="objectMeshUid" type="sight::data::Mesh" />
-            <object uid="cameraMatrix" type="sight::data::Matrix4" />
-            <object uid="meshMatrix" type="sight::data::Matrix4">
+            <object uid="objectMeshUid" type="sight::data::mesh" />
+            <object uid="cameraMatrix" type="sight::data::matrix4" />
+            <object uid="meshMatrix" type="sight::data::matrix4">
                 <matrix>
                     <![CDATA[
                         1    0    0    5
@@ -27,7 +27,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <toolBar />
                     <frame>
@@ -41,7 +41,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::tool_bar">
                 <gui>
                     <layout>
                         <editor />
@@ -70,18 +70,18 @@
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="loadMeshAct" type="sight::module::ui::SAction" />
+            <service uid="loadMeshAct" type="sight::module::ui::action" />
 
-            <service uid="startServerAct" type="sight::module::ui::com::SStarter">
+            <service uid="startServerAct" type="sight::module::ui::com::starter">
                 <start uid="matrixNetworkSenderSrv" />
             </service>
 
-            <service uid="stopServerAct" type="sight::module::ui::com::SStarter">
+            <service uid="stopServerAct" type="sight::module::ui::com::starter">
                 <stop uid="matrixNetworkSenderSrv" />
                 <state visible="false" />
             </service>
 
-            <service uid="configureServerAct" type="sight::module::ui::qt::SPreferencesConfiguration">
+            <service uid="configureServerAct" type="sight::module::ui::qt::preferences_configuration">
                 <preference>
                     <type>int</type>
                     <name>Server port</name>
@@ -90,16 +90,16 @@
                 </preference>
             </service>
 
-            <service uid="startClientAct" type="sight::module::ui::com::SStarter">
+            <service uid="startClientAct" type="sight::module::ui::com::starter">
                 <start uid="matrixNetworkListenerSrv" />
             </service>
 
-            <service uid="stopClientAct" type="sight::module::ui::com::SStarter">
+            <service uid="stopClientAct" type="sight::module::ui::com::starter">
                 <stop uid="matrixNetworkListenerSrv" />
                 <state visible="false" />
             </service>
 
-            <service uid="configureClientAct" type="sight::module::ui::qt::SPreferencesConfiguration">
+            <service uid="configureClientAct" type="sight::module::ui::qt::preferences_configuration">
                 <preference>
                     <type>text</type>
                     <name>Client IP address</name>
@@ -116,7 +116,7 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -129,32 +129,32 @@
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
                 <config priority="0" />
             </service>
 
-            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true">
+            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
                 <inout key="transform" uid="cameraMatrix" />
                 <config />
             </service>
 
-            <service uid="transformAdp" type="sight::module::viz::scene3d::adaptor::STransform" autoConnect="true">
+            <service uid="transformAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
                 <inout key="transform" uid="meshMatrix" />
                 <config transform="meshMatrixTransform" />
             </service>
 
-            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
+            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="objectMeshUid" />
                 <config transform="meshMatrixTransform" autoresetcamera="false" />
             </service>
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector">
+            <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="objectMeshUid" />
             </service>
 
-            <service uid="matrixNetworkListenerSrv" type="sight::module::io::igtl::SClientListener">
+            <service uid="matrixNetworkListenerSrv" type="sight::module::io::igtl::client_listener">
                 <inout group="objects">
                     <key uid="meshMatrix" deviceName="device01" />
                     <key uid="cameraMatrix" deviceName="device02" />
@@ -162,7 +162,7 @@
                 <server>%CLIENT_IP_KEY%:%CLIENT_PORT_KEY%</server>
             </service>
 
-            <service uid="matrixNetworkSenderSrv" type="sight::module::io::igtl::SServerSender" autoConnect="true">
+            <service uid="matrixNetworkSenderSrv" type="sight::module::io::igtl::server_sender" auto_connect="true">
                 <in group="objects">
                     <key uid="meshMatrix" deviceName="device01" />
                     <key uid="cameraMatrix" deviceName="device02" />

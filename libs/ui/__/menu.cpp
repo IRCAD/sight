@@ -27,7 +27,7 @@
 
 #include <core/thread/worker.hxx>
 
-#include <service/op/Get.hpp>
+#include <service/op.hpp>
 
 namespace sight::ui
 {
@@ -38,7 +38,7 @@ void menu::initialize()
 {
     m_registry = ui::detail::registry::Menu::make(this->get_id());
 
-    const auto& config = this->getConfiguration();
+    const auto& config = this->get_config();
 
     // find ViewRegistryManager configuration
     if(const auto registryConfig = config.get_child_optional("registry"); registryConfig.has_value())

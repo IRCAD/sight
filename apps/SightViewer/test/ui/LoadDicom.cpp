@@ -22,10 +22,10 @@
 
 #include "LoadDicom.hpp"
 
-#include <utestData/Data.hpp>
-
 #include <ui/testCore/helper/Button.hpp>
 #include <ui/testCore/helper/Scene3d.hpp>
+
+#include <utest_data/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::LoadDicom);
 
@@ -43,7 +43,7 @@ void LoadDicom::test()
     const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
     std::filesystem::remove(snapshotPath);
 
-    const std::filesystem::path referencePath(utestData::Data::dir() / "sight/ui/SightViewer" / imageName);
+    const std::filesystem::path referencePath(utest_data::Data::dir() / "sight/ui/SightViewer" / imageName);
 
     start(
         testName,
@@ -52,7 +52,7 @@ void LoadDicom::test()
             openFile(
                 tester,
                 "DICOM",
-                utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou"
+                utest_data::Data::dir() / "sight/Patient/Dicom/JMSGenou"
             );
 
             helper::Button::push(tester, "toolBarView/Show/hide volume");

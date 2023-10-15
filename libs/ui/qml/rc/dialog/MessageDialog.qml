@@ -50,12 +50,12 @@ Window {
         RowLayout {
             id: row
             anchors.fill: parent
-            Image {
+            image {
                 id: icon
 
                 width: 48
                 height: 48
-                fillMode: Image.PreserveAspectFit
+                fillMode: image.PreserveAspectFit
                 mipmap: true
                 source: message.icon
             }

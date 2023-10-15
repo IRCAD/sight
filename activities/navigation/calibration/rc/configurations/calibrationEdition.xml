@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>calibrationEdition</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -8,15 +8,15 @@
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
-        <object uid="${dataSet}" type="sight::data::Set" src="ref" />
-        <object uid="${cameraSet}" type="sight::data::CameraSet" src="ref" />
-        <object uid="newCameraSet" type="sight::data::CameraSet" src="deferred" />
-        <object uid="camera0" type="sight::data::Camera" src="deferred" />
-        <object uid="camera1" type="sight::data::Camera" src="deferred" />
+        <object uid="${dataSet}" type="sight::data::set" src="ref" />
+        <object uid="${cameraSet}" type="sight::data::camera_set" src="ref" />
+        <object uid="newCameraSet" type="sight::data::camera_set" src="deferred" />
+        <object uid="camera0" type="sight::data::camera" src="deferred" />
+        <object uid="camera1" type="sight::data::camera" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SView">
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <toolBar />
                 <layout type="sight::ui::layout::line">
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::tool_bar">
             <gui>
                 <layout>
                     <menuItem name="Export camera set" icon="sight::module::ui::flaticons/BlueSave.svg" />
@@ -58,7 +58,7 @@
             </registry>
         </service>
 
-        <service uid="camerasView" type="sight::module::ui::SView">
+        <service uid="camerasView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -72,7 +72,7 @@
             </registry>
         </service>
 
-        <service uid="cameraInfoView" type="sight::module::ui::SView">
+        <service uid="cameraInfoView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -90,25 +90,25 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="sight::module::ui::SAction"/>
+        <service uid="writeCalibrationAct" type="sight::module::ui::action"/>
 
-        <service uid="exportAct" type="sight::module::ui::SExportSet" autoConnect="true">
+        <service uid="exportAct" type="sight::module::ui::export_set" auto_connect="true">
             <inout key="container" uid="${dataSet}" />
             <inout key="data" uid="newCameraSet" />
         </service>
 
-        <service uid="CalibrationXmlWriter" type="sight::module::io::vision::SOpenCVWriter">
+        <service uid="CalibrationXmlWriter" type="sight::module::io::vision::open_cv_writer">
             <in key="data" uid="newCameraSet" />
         </service>
 
-        <service uid="startVideoAct" type="sight::module::ui::SAction"/>
-        <service uid="stopVideoAct" type="sight::module::ui::SAction"/>
-        <service uid="pauseVideoAct" type="sight::module::ui::SAction"/>
-        <service uid="loopVideoAct" type="sight::module::ui::SAction"/>
+        <service uid="startVideoAct" type="sight::module::ui::action"/>
+        <service uid="stopVideoAct" type="sight::module::ui::action"/>
+        <service uid="pauseVideoAct" type="sight::module::ui::action"/>
+        <service uid="loopVideoAct" type="sight::module::ui::action"/>
 
         <!-- ************************ Configuration launchers ********************************* -->
 
-        <service uid="camera0LauncherCfg" type="sight::service::SConfigController">
+        <service uid="camera0LauncherCfg" type="sight::app::config_controller">
             <appConfig id="videoEdition" />
             <inout group="data">
                 <key name="camera" uid="camera0" />
@@ -125,7 +125,7 @@
             <parameter replace="videoDurationModifiedChannel" by="videoDurationModified" />
         </service>
 
-        <service uid="camera1LauncherCfg" type="sight::service::SConfigController">
+        <service uid="camera1LauncherCfg" type="sight::app::config_controller">
             <appConfig id="videoEdition" />
             <inout group="data">
                 <key name="camera" uid="camera1" />
@@ -144,14 +144,14 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="videoSliderSrv" type="sight::module::ui::qt::video::SSlider" />
+        <service uid="videoSliderSrv" type="sight::module::ui::qt::video::slider" />
 
-        <service uid="copyCameraSetSrv" type="sight::module::data::SCopy">
+        <service uid="copyCameraSetSrv" type="sight::module::data::copy">
             <in key="source" uid="${cameraSet}" />
             <out key="outTarget" uid="newCameraSet" />
         </service>
 
-        <service uid="extractCamerasSrv" type="sight::module::data::SGetCamera">
+        <service uid="extractCamerasSrv" type="sight::module::data::get_camera">
             <inout key="CAMERASET" uid="newCameraSet" />
             <out group="camera">
                 <key index="0" uid="camera0" />
@@ -159,17 +159,17 @@
             </out>
         </service>
 
-        <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::SCameraSetEditor">
-            <in key="CAMERASET" uid="${cameraSet}" autoConnect="true" />
+        <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::camera_set_editor">
+            <in key="CAMERASET" uid="${cameraSet}" auto_connect="true" />
             <in key="notUsed" uid="camera1" />
             <!-- Not used, it allows to start this service only if we have a stereo calibration -->
         </service>
 
-        <service uid="cameraInfo1Srv" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="true">
+        <service uid="cameraInfo1Srv" type="sight::module::ui::qt::calibration::camera_information_editor" auto_connect="true">
             <in key="camera" uid="camera0" />
         </service>
 
-        <service uid="cameraInfo2Srv" type="sight::module::ui::qt::calibration::SCameraInformationEditor" autoConnect="true">
+        <service uid="cameraInfo2Srv" type="sight::module::ui::qt::calibration::camera_information_editor" auto_connect="true">
             <in key="camera" uid="camera1" />
         </service>
 

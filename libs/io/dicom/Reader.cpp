@@ -28,8 +28,8 @@
 
 #include <data/dicom/Sop.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/ModelSeries.hpp>
+#include <data/image_series.hpp>
+#include <data/model_series.hpp>
 
 #include <gdcmDirectory.h>
 #include <gdcmImageApplyLookupTable.h>
@@ -56,7 +56,7 @@ static constexpr double Z_EPSILON = 1e-3;
 
 struct FiducialSetWithMetadata
 {
-    data::FiducialsSeries::FiducialSet fiducialSet;
+    data::fiducials_series::FiducialSet fiducialSet;
     std::string contentDate;
     std::string contentTime;
     std::optional<std::int32_t> instanceNumber;
@@ -67,7 +67,7 @@ struct FiducialSetWithMetadata
 
 //------------------------------------------------------------------------------
 
-inline static data::SeriesSet::sptr scanGDCMFiles(
+inline static data::series_set::sptr scanGDCMFiles(
     const gdcm::Directory::FilenamesType& files,
     const std::set<data::dicom::sop::Keyword>& filters = {})
 {
@@ -144,10 +144,10 @@ inline static data::SeriesSet::sptr scanGDCMFiles(
     );
 
     // This map will used to merge DICOM instance that belongs to the same series
-    std::map<std::string, data::Series::sptr> unique_series;
+    std::map<std::string, data::series::sptr> unique_series;
 
     // The final list of series, with some attributes filled to allow sorting
-    auto series_set = std::make_shared<data::SeriesSet>();
+    auto series_set = std::make_shared<data::series_set>();
 
     // Convert to our own format
     for(const auto& file : files)
@@ -224,7 +224,7 @@ inline static data::SeriesSet::sptr scanGDCMFiles(
             // If the series is not found, we create it
             if(!series)
             {
-                series = std::make_shared<data::Series>();
+                series = std::make_shared<data::series>();
             }
 
             for(const auto& tag : REQUESTED_TAGS)
@@ -324,7 +324,7 @@ inline static auto convertGDCMImage(
 
 //------------------------------------------------------------------------------
 
-inline static data::Image::Size computeSize(const data::Series& source, const gdcm::Image& gdcm_image)
+inline static data::image::Size computeSize(const data::series& source, const gdcm::Image& gdcm_image)
 {
     const auto gdcm_num_dimensions = gdcm_image.GetNumberOfDimensions();
     const auto& gdcm_dimensions    = gdcm_image.GetDimensions();
@@ -396,7 +396,7 @@ inline static core::type computeType(
 
 //------------------------------------------------------------------------------
 
-inline static data::Image::PixelFormat computeFormat(
+inline static data::image::PixelFormat computeFormat(
     const gdcm::Image& gdcm_image,
     const std::string& filename
 )
@@ -406,7 +406,7 @@ inline static data::Image::PixelFormat computeFormat(
     if(gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::PALETTE_COLOR)
     {
         // PALETTE_COLOR is always expended as RGB
-        return data::Image::PixelFormat::RGB;
+        return data::image::PixelFormat::RGB;
     }
 
     const auto gdcm_sample_per_pixel = gdcm_image.GetPixelFormat().GetSamplesPerPixel();
@@ -414,7 +414,7 @@ inline static data::Image::PixelFormat computeFormat(
     if(gdcm_sample_per_pixel == 1)
     {
         // No need to check, no color space conversion...
-        return data::Image::PixelFormat::GRAY_SCALE;
+        return data::image::PixelFormat::GRAY_SCALE;
     }
 
     if(gdcm_sample_per_pixel == 3
@@ -424,7 +424,7 @@ inline static data::Image::PixelFormat computeFormat(
            || gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::YBR_RCT
            || gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::RGB))
     {
-        return data::Image::PixelFormat::RGB;
+        return data::image::PixelFormat::RGB;
     }
 
     SIGHT_THROW_IF(
@@ -437,12 +437,12 @@ inline static data::Image::PixelFormat computeFormat(
     );
 
     // Unsupported...
-    return data::Image::PixelFormat::UNDEFINED;
+    return data::image::PixelFormat::UNDEFINED;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::optional<double> computeFramePosition(const data::Series& series, std::size_t instance)
+inline static std::optional<double> computeFramePosition(const data::series& series, std::size_t instance)
 {
     auto position    = series.getImagePositionPatient(instance);
     auto orientation = series.getImageOrientationPatient(instance);
@@ -493,7 +493,7 @@ inline static std::optional<double> computeFramePosition(const data::Series& ser
 
 //------------------------------------------------------------------------------
 
-inline static std::optional<double> computeZSpacing(const data::Series& series)
+inline static std::optional<double> computeZSpacing(const data::series& series)
 {
     // Use a map to sort for us....
     std::map<std::int64_t, double> sorted_positions;
@@ -562,8 +562,8 @@ inline static std::optional<double> computeZSpacing(const data::Series& series)
 
 //------------------------------------------------------------------------------
 
-inline static data::Image::Spacing computeSpacing(
-    const data::Series& source,
+inline static data::image::Spacing computeSpacing(
+    const data::series& source,
     const gdcm::Image& gdcm_image
 )
 {
@@ -571,7 +571,7 @@ inline static data::Image::Spacing computeSpacing(
     const double* const gdcm_spacing = gdcm_image.GetSpacing();
 
     // Use absolute value since gdcm sometimes return negative spacing, which is odd.
-    data::Image::Spacing spacing {std::abs(gdcm_spacing[0]), std::abs(gdcm_spacing[1]), std::abs(gdcm_spacing[2])};
+    data::image::Spacing spacing {std::abs(gdcm_spacing[0]), std::abs(gdcm_spacing[1]), std::abs(gdcm_spacing[2])};
 
     // Z Spacing correction
     // Overwrite only if GDCM returned the default value (1.0), since GDCM usually knows to compute it right
@@ -590,8 +590,8 @@ inline static data::Image::Spacing computeSpacing(
 
 //------------------------------------------------------------------------------
 
-inline static data::ImageSeries::sptr newImageSeries(
-    const data::Series& source,
+inline static data::image_series::sptr newImageSeries(
+    const data::series& source,
     const core::jobs::job::sptr& job,
     const gdcm::Image& gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& gdcm_rescaler,
@@ -600,7 +600,7 @@ inline static data::ImageSeries::sptr newImageSeries(
 {
     // Create a new series and set the common dataset
     /// @note Window center / width is directly read from dataset, nothing to set here
-    auto image_series = std::make_shared<data::ImageSeries>();
+    auto image_series = std::make_shared<data::image_series>();
 
     // Retrieve the image information
     // Target sizes (that's easy)
@@ -610,11 +610,11 @@ inline static data::ImageSeries::sptr newImageSeries(
     const core::type& type = computeType(gdcm_image, gdcm_rescaler);
 
     // Target PixelFormat, even more complicated
-    const data::Image::PixelFormat& format = computeFormat(gdcm_image, filename);
+    const data::image::PixelFormat& format = computeFormat(gdcm_image, filename);
 
     SIGHT_THROW_IF(
         "Cannot guess the target pixel format to use while reading DICOM file '" << filename << "'.",
-        type == core::type::NONE || format == data::Image::PixelFormat::UNDEFINED
+        type == core::type::NONE || format == data::image::PixelFormat::UNDEFINED
     );
 
     if(job && job->cancel_requested())
@@ -846,12 +846,12 @@ inline static std::vector<double> tuneDirections(const double* const gdcm_direct
 
 //------------------------------------------------------------------------------
 
-inline static data::SeriesSet::sptr readImageInstance(
-    const data::Series& source,
+inline static data::series_set::sptr readImageInstance(
+    const data::series& source,
     const core::jobs::job::sptr& job,
     std::unique_ptr<std::vector<char> >& gdcm_instance_buffer,
-    std::size_t instance                  = 0,
-    data::SeriesSet::sptr splitted_series = nullptr
+    std::size_t instance                   = 0,
+    data::series_set::sptr splitted_series = nullptr
 )
 {
     if(job && job->cancel_requested())
@@ -957,7 +957,7 @@ inline static data::SeriesSet::sptr readImageInstance(
             // Add the series to a new dataset
             if(!splitted_series)
             {
-                splitted_series = std::make_shared<data::SeriesSet>();
+                splitted_series = std::make_shared<data::series_set>();
             }
 
             splitted_series->push_back(image_series);
@@ -970,7 +970,7 @@ inline static data::SeriesSet::sptr readImageInstance(
     }
 
     // Use the last series as current series
-    auto image_series    = std::static_pointer_cast<data::ImageSeries>(splitted_series->back());
+    auto image_series    = std::static_pointer_cast<data::image_series>(splitted_series->back());
     const auto dump_lock = image_series->dump_lock();
 
     // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
@@ -1009,7 +1009,7 @@ inline static data::SeriesSet::sptr readImageInstance(
 
 //------------------------------------------------------------------------------
 
-inline static data::SeriesSet::sptr readImage(const data::Series& source, const core::jobs::job::sptr& job)
+inline static data::series_set::sptr readImage(const data::series& source, const core::jobs::job::sptr& job)
 {
     if(job && job->cancel_requested())
     {
@@ -1040,7 +1040,7 @@ inline static data::SeriesSet::sptr readImage(const data::Series& source, const 
 
     for(const auto& series : *splitted_series)
     {
-        auto image_series = std::static_pointer_cast<data::ImageSeries>(series);
+        auto image_series = std::static_pointer_cast<data::image_series>(series);
 
         if(data::helper::MedicalImage::checkImageValidity(image_series))
         {
@@ -1055,9 +1055,9 @@ inline static data::SeriesSet::sptr readImage(const data::Series& source, const 
 
 //------------------------------------------------------------------------------
 
-inline static data::SeriesSet::sptr readModel(const data::Series& /*unused*/, const core::jobs::job::sptr& /*unused*/)
+inline static data::series_set::sptr readModel(const data::series& /*unused*/, const core::jobs::job::sptr& /*unused*/)
 {
-    data::SeriesSet::sptr splitted_series;
+    data::series_set::sptr splitted_series;
 
     /// @todo Implement model series reading
 
@@ -1066,18 +1066,18 @@ inline static data::SeriesSet::sptr readModel(const data::Series& /*unused*/, co
 
 //------------------------------------------------------------------------------
 
-inline static std::vector<FiducialSetWithMetadata> readFiducialSets(const data::Series& series)
+inline static std::vector<FiducialSetWithMetadata> readFiducialSets(const data::series& series)
 {
     gdcm::Reader reader;
     reader.SetFileName(series.get_file().string().c_str());
     reader.Read();
-    auto fiducialsSeries = std::make_shared<data::FiducialsSeries>();
+    auto fiducialsSeries = std::make_shared<data::fiducials_series>();
     fiducialsSeries->setDataSet(reader.GetFile().GetDataSet());
     std::vector<FiducialSetWithMetadata> res;
     std::ranges::transform(
         fiducialsSeries->getFiducialSets(),
         std::back_inserter(res),
-        [fiducialsSeries](data::FiducialsSeries::FiducialSet fs) -> FiducialSetWithMetadata
+        [fiducialsSeries](data::fiducials_series::FiducialSet fs) -> FiducialSetWithMetadata
         {
             return {
                 .fiducialSet        = fs,
@@ -1092,7 +1092,7 @@ inline static std::vector<FiducialSetWithMetadata> readFiducialSets(const data::
     return res;
 }
 
-/// Private SReader implementation
+/// Private reader implementation
 class Reader::ReaderImpl
 {
 public:
@@ -1117,10 +1117,10 @@ public:
 
     /// Returns a list of DICOM series by scanning files using get_files()
     /// The files are NOT sorted!
-    /// @return data::SeriesSet::sptr: A set of series, with their associated files
+    /// @return data::series_set::sptr: A set of series, with their associated files
     /// @throw std::runtime_error if the root directory is not an existing folder
     /// @throw std::runtime_error if there is no dicom files are found
-    [[nodiscard]] inline data::SeriesSet::sptr scanFiles(const std::vector<std::filesystem::path>& files) const
+    [[nodiscard]] inline data::series_set::sptr scanFiles(const std::vector<std::filesystem::path>& files) const
     {
         // Convert std::vector<std::filesystem::path> to std::vector<std::string>
         gdcm::Directory::FilenamesType gdcm_files;
@@ -1142,9 +1142,9 @@ public:
     }
 
     /// Returns a list of DICOM series with associated files sorted
-    /// @return data::SeriesSet::sptr: A set of series, with their associated files sorted
+    /// @return data::series_set::sptr: A set of series, with their associated files sorted
     /// @throw std::runtime_error if there is no scanned series
-    [[nodiscard]] inline data::SeriesSet::sptr sort() const
+    [[nodiscard]] inline data::series_set::sptr sort() const
     {
         SIGHT_THROW_IF(
             "There is no DICOM file to sort.",
@@ -1181,7 +1181,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sortInstancesByImagePosition(const data::Series::sptr& series)
+    inline static bool sortInstancesByImagePosition(const data::series::sptr& series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
@@ -1218,7 +1218,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sortInstancesByContentTime(const data::Series::sptr& series)
+    inline static bool sortInstancesByContentTime(const data::series::sptr& series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
@@ -1323,7 +1323,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sortInstancesByInstanceNumber(const data::Series::sptr& series)
+    inline static bool sortInstancesByInstanceNumber(const data::series::sptr& series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
@@ -1357,7 +1357,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sortInstancesByFilename(const data::Series::sptr& series)
+    inline static bool sortInstancesByFilename(const data::series::sptr& series)
     {
         // Use a map to sort for us....
         std::map<std::filesystem::path, std::size_t> sorter;
@@ -1399,15 +1399,15 @@ public:
         );
 
         // Instantiate or reuse the output series set
-        if(const auto& object = std::dynamic_pointer_cast<data::SeriesSet>(m_reader->m_object.lock()); object)
+        if(const auto& object = std::dynamic_pointer_cast<data::series_set>(m_reader->m_object.lock()); object)
         {
             m_read = object;
             m_read->clear();
         }
         else
         {
-            m_read = std::make_shared<data::SeriesSet>();
-            m_reader->setObject(m_read);
+            m_read = std::make_shared<data::series_set>();
+            m_reader->set_object(m_read);
         }
 
         std::vector<FiducialSetWithMetadata> fiducialSets;
@@ -1423,19 +1423,19 @@ public:
 
             // Very unusual but we can have a series with several volumes, like in 4D Volume US
             // Therefore, we use a series set, so we can split the series if needed.
-            data::SeriesSet::sptr splitted_series;
+            data::series_set::sptr splitted_series;
 
-            if(source->getDicomType() == data::Series::DicomType::IMAGE)
+            if(source->getDicomType() == data::series::DicomType::IMAGE)
             {
                 // Read an image series
                 splitted_series = readImage(*source, m_job);
             }
-            else if(source->getDicomType() == data::Series::DicomType::MODEL)
+            else if(source->getDicomType() == data::series::DicomType::MODEL)
             {
                 // Read a model series
                 splitted_series = readModel(*source, m_job);
             }
-            else if(source->getDicomType() == data::Series::DicomType::FIDUCIALS)
+            else if(source->getDicomType() == data::series::DicomType::FIDUCIALS)
             {
                 std::ranges::copy(readFiducialSets(*source), std::back_inserter(fiducialSets));
             }
@@ -1458,10 +1458,10 @@ public:
         // Associate the fiducials to their images/models
         for(const FiducialSetWithMetadata& fiducialSet : fiducialSets)
         {
-            for(const data::Series::sptr& series : *m_read)
+            for(const data::series::sptr& series : *m_read)
             {
-                auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
-                auto modelSeries = std::dynamic_pointer_cast<data::ModelSeries>(series);
+                auto imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
+                auto modelSeries = std::dynamic_pointer_cast<data::model_series>(series);
                 if(imageSeries == nullptr && modelSeries == nullptr)
                 {
                     break;
@@ -1473,7 +1473,7 @@ public:
                                              == fiducialSet.fiducialSet.frameOfReferenceUID;
                 if(!fiducialSetIsRelevant && fiducialSet.fiducialSet.referencedImageSequence)
                 {
-                    for(const data::FiducialsSeries::ReferencedImage& referencedImage :
+                    for(const data::fiducials_series::ReferencedImage& referencedImage :
                         *fiducialSet.fiducialSet.referencedImageSequence)
                     {
                         // TODO: Take ReferencedSegmentNumber into account for Segmentation IOD
@@ -1488,7 +1488,7 @@ public:
 
                 if(fiducialSetIsRelevant)
                 {
-                    data::FiducialsSeries::sptr fiducialsSeries;
+                    data::fiducials_series::sptr fiducialsSeries;
                     bool seriesHaveFiducials = false;
                     if(imageSeries != nullptr)
                     {
@@ -1547,19 +1547,19 @@ public:
     }
 
     /// The default filter to select only some type (Image, Model, ...) of DICOM files.
-    data::Series::SopKeywords m_filters {};
+    data::series::SopKeywords m_filters {};
 
     /// Contains the list of files to sort and read.
     /// Usually, it is filed by user after showing a selection dialog, but calling read() will fill it automatically.
-    data::SeriesSet::sptr m_scanned;
+    data::series_set::sptr m_scanned;
 
     /// Contains the list of sorted files to read.
     /// Usually, it is filed when calling read(), but user can set it to bypass default sort algorithms.
-    data::SeriesSet::sptr m_sorted;
+    data::series_set::sptr m_sorted;
 
     /// The final output
-    /// This allows to keep a reference as GenericObjectReader / IObjectReader only keep a weak_ptr to the output.
-    data::SeriesSet::sptr m_read;
+    /// This allows to keep a reference as generic_object_reader / object_reader only keep a weak_ptr to the output.
+    data::series_set::sptr m_read;
 
     /// The default job. Allows to watch for cancellation and report progress.
     core::jobs::job::sptr m_job;
@@ -1577,7 +1577,7 @@ Reader::~Reader() noexcept = default;
 
 //------------------------------------------------------------------------------
 
-data::SeriesSet::sptr Reader::scan()
+data::series_set::sptr Reader::scan()
 {
     auto files = get_files();
 
@@ -1625,7 +1625,7 @@ data::SeriesSet::sptr Reader::scan()
 
 //------------------------------------------------------------------------------
 
-data::SeriesSet::sptr Reader::sort()
+data::series_set::sptr Reader::sort()
 {
     if(!m_pimpl->m_scanned || m_pimpl->m_scanned->empty())
     {
@@ -1668,14 +1668,14 @@ void Reader::read()
 
 //------------------------------------------------------------------------------
 
-void Reader::setFilters(const data::Series::SopKeywords& filters)
+void Reader::setFilters(const data::series::SopKeywords& filters)
 {
     m_pimpl->m_filters = filters;
 }
 
 //------------------------------------------------------------------------------
 
-void Reader::setScanned(const data::SeriesSet::sptr& scanned)
+void Reader::setScanned(const data::series_set::sptr& scanned)
 {
     m_pimpl->m_scanned = scanned;
 
@@ -1685,7 +1685,7 @@ void Reader::setScanned(const data::SeriesSet::sptr& scanned)
 
 //------------------------------------------------------------------------------
 
-void Reader::setSorted(const data::SeriesSet::sptr& sorted)
+void Reader::setSorted(const data::series_set::sptr& sorted)
 {
     m_pimpl->m_sorted = sorted;
 

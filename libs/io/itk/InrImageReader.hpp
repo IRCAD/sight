@@ -27,14 +27,14 @@
 #include <core/location/single_file.hpp>
 #include <core/tools/progress_adviser.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <io/__/reader/GenericObjectReader.hpp>
+#include <io/__/reader/generic_object_reader.hpp>
 
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API InrImageReader : public reader::GenericObjectReader<data::Image>,
+class IO_ITK_CLASS_API InrImageReader : public reader::generic_object_reader<data::image>,
                                         public core::location::single_file,
                                         public core::tools::progress_adviser
 {
@@ -42,7 +42,7 @@ public:
 
     SIGHT_DECLARE_CLASS(
         InrImageReader,
-        io::reader::GenericObjectReader<data::Image>,
+        io::reader::generic_object_reader<data::image>,
         io::reader::factory::make<InrImageReader>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();

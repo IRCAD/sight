@@ -5,7 +5,7 @@
     <requirement id="sight::module::service" />
 
     <!-- This is a sub-config to exhibit how to integrate "subToolBars" -->
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>SubToolBarCfg</id>
         <parameters>
             <param name="TOOLBAR" />
@@ -13,7 +13,7 @@
         </parameters>
         <config>
 
-            <service uid="view" type="sight::module::ui::SView" >
+            <service uid="view" type="sight::module::ui::view" >
                 <gui>
                     <toolBar />
                     <layout type="sight::ui::layout::line" >
@@ -26,7 +26,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::SToolBar" >
+            <service uid="toolBarView" type="sight::module::ui::tool_bar" >
                 <gui>
                     <layout style="ToolButtonTextUnderIcon" >
                         <menuItem name="logo visibility (inverted)" style="check" icon="Tuto14Gui/icons/monkey.png" />
@@ -37,7 +37,7 @@
                 </registry>
             </service>
 
-            <service uid="view5VisibilityAct" type="sight::module::ui::SAction" >
+            <service uid="view5VisibilityAct" type="sight::module::ui::action" >
                 <state checked="true" inverse="true" />
             </service>
 
@@ -50,23 +50,23 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
     <id>Tuto14Gui_AppCfg</id>
         <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="text" type="sight::data::String" >
+        <object uid="text" type="sight::data::string" >
             <value>
             <![CDATA[
-                This is a STextStatus
+                This is a text_status
             ]]>
             </value>
         </object>
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::SFrame" >
+        <service uid="mainFrame" type="sight::module::ui::frame" >
             <gui>
                 <menuBar />
                 <toolBar />
@@ -83,7 +83,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
+        <service uid="menuBarView" type="sight::module::ui::menu_bar" >
             <gui>
                 <layout>
                     <menu name="My Menu" />
@@ -97,7 +97,7 @@
             </registry>
         </service>
 
-        <service uid="menu1View" type="sight::module::ui::SMenu" >
+        <service uid="menu1View" type="sight::module::ui::menu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" shortcut="1" style="check" />
@@ -121,7 +121,7 @@
             </registry>
         </service>
 
-        <service uid="menu2View" type="sight::module::ui::SMenu" >
+        <service uid="menu2View" type="sight::module::ui::menu" >
             <gui>
                 <layout>
                     <menuItem name="Item 1" style="check" />
@@ -137,7 +137,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::tool_bar" >
             <gui>
                 <layout style="ToolButtonTextUnderIcon" >
                     <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
@@ -179,11 +179,11 @@
             </registry>
         </service>
 
-        <service uid="hideShowToolbar" type="sight::module::ui::com::SSignal" >
+        <service uid="hideShowToolbar" type="sight::module::ui::com::signal" >
             <state checked="true" />
         </service>
 
-        <service uid="testHideShowView" type="sight::module::ui::SMenu" >
+        <service uid="testHideShowView" type="sight::module::ui::menu" >
             <gui>
                 <layout>
                     <menuItem name="start" icon="sight::module::ui::flaticons/GreenStart.svg" />
@@ -198,7 +198,7 @@
             </registry>
         </service>
 
-        <service uid="backgroundView" type="sight::module::ui::SView" >
+        <service uid="backgroundView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
@@ -210,7 +210,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="sight::module::ui::SView" >
+        <service uid="containerView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
@@ -224,7 +224,7 @@
             </registry>
         </service>
 
-        <service uid="sub1View" type="sight::module::ui::SView" >
+        <service uid="sub1View" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
@@ -241,7 +241,7 @@
             </registry>
         </service>
 
-        <service uid="sub2View" type="sight::module::ui::SView" >
+        <service uid="sub2View" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal" >
                     <view align="center" backgroundColor="#36393E" />
@@ -254,7 +254,7 @@
             </registry>
         </service>
 
-        <service uid="sub3View" type="sight::module::ui::SView" >
+        <service uid="sub3View" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::tab" >
                     <view caption="TabView1"  />
@@ -265,7 +265,7 @@
             <registry/>
         </service>
 
-        <service uid="sub4View" type="sight::module::ui::SView" >
+        <service uid="sub4View" type="sight::module::ui::view" >
         <gui>
             <layout type="sight::ui::layout::line" >
                 <orientation value="horizontal" />
@@ -275,11 +275,11 @@
             </layout>
         </gui>
          <registry>
-            <view sid="textStatusSrv" start="true" />
+            <view sid="text_statusSrv" start="true" />
         </registry>
         </service>
 
-        <service uid="sub5View" type="sight::module::ui::SView" >
+        <service uid="sub5View" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
@@ -293,7 +293,7 @@
             </registry>
         </service>
 
-        <service uid="view12" type="sight::module::ui::SView" >
+        <service uid="view12" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
@@ -311,7 +311,7 @@
             </registry>
         </service>
 
-        <service uid="toolbar2View" type="sight::module::ui::SToolBar" >
+        <service uid="toolbar2View" type="sight::module::ui::tool_bar" >
             <gui>
                 <layout>
                     <menuItem name="Item 2" style="radio" icon="sight::module::ui::flaticons/BlueParameters.svg" />
@@ -331,57 +331,57 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="item1Act" type="sight::module::ui::SAction" >
+        <service uid="item1Act" type="sight::module::ui::action" >
             <state checked="true" />
         </service>
 
-        <service uid="item2Act" type="sight::module::ui::SAction" >
+        <service uid="item2Act" type="sight::module::ui::action" >
             <state checked="true" />
         </service>
 
-        <service uid="item3Act" type="sight::module::ui::SAction" />
+        <service uid="item3Act" type="sight::module::ui::action" />
 
-        <service uid="item4Act" type="sight::module::ui::SAction" >
+        <service uid="item4Act" type="sight::module::ui::action" >
             <state checked="false" />
         </service>
 
-        <service uid="item5Act" type="sight::module::ui::SAction" >
+        <service uid="item5Act" type="sight::module::ui::action" >
             <state checked="true" />
         </service>
 
-        <service uid="startAct" type="sight::module::ui::SAction" >
+        <service uid="startAct" type="sight::module::ui::action" >
             <confirmation value="true" message="Are you sure you want to Start ?"/>
         </service>
 
-        <service uid="stopAct" type="sight::module::ui::SAction" >
+        <service uid="stopAct" type="sight::module::ui::action" >
             <state enabled="false" />
         </service>
 
-        <service uid="pauseAct" type="sight::module::ui::SAction" >
+        <service uid="pauseAct" type="sight::module::ui::action" >
             <state checked="true" visible="false" />
         </service>
 
-        <service uid="item16Act" type="sight::module::ui::SAction" >
+        <service uid="item16Act" type="sight::module::ui::action" >
             <state checked="true" />
         </service>
 
-        <service uid="item17Act" type="sight::module::ui::SAction" />
+        <service uid="item17Act" type="sight::module::ui::action" />
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="clickSrv" type="sight::module::ui::qt::com::SSignalButton" >
+        <service uid="clickSrv" type="sight::module::ui::qt::com::signal_button" >
             <config>
                 <text>Click</text>
             </config>
         </service>
 
-        <service uid="meSrv" type="sight::module::ui::qt::com::SSignalButton" >
+        <service uid="meSrv" type="sight::module::ui::qt::com::signal_button" >
             <config>
                 <text>Me</text>
             </config>
         </service>
 
-        <service uid="checkableSrv" type="sight::module::ui::qt::com::SSignalButton" >
+        <service uid="checkableSrv" type="sight::module::ui::qt::com::signal_button" >
             <config>
                 <checkable>true</checkable>
                 <icon>sight::module::ui::flaticons/GreenStart.svg</icon>
@@ -390,20 +390,20 @@
             </config>
         </service>
 
-        <service uid="ircadLogoSrv" type="sight::module::ui::qt::image::SImage" >
+        <service uid="ircadLogoSrv" type="sight::module::ui::qt::image::image" >
             <path>sight::module::ui::flaticons/ircad.svg</path>
             <height>70</height>
         </service>
 
-        <service uid="textStatusSrv" type="sight::module::ui::qt::STextStatus" >
+        <service uid="text_statusSrv" type="sight::module::ui::qt::text_status" >
              <in key="string" uid="text" />
              <label>Text status</label>
              <color>#6997BB</color>
          </service>
 
-        <service uid="quitAct" type="sight::module::ui::SQuit" />
+        <service uid="quitAct" type="sight::module::ui::quit" />
 
-        <service uid="subToolBarConfig" type="sight::service::SConfigController">
+        <service uid="subToolBarConfig" type="sight::app::config_controller">
             <appConfig id="SubToolBarCfg" />
             <parameter replace="TOOLBAR" by="subToolBarView" />
             <parameter replace="LOGO_VISIBILITY_CHANNEL" by="LOGO_VISIBILITY_CHANNEL" />

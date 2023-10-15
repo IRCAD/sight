@@ -22,7 +22,7 @@
 
 #include "io/dicom/helper/DicomAnonymizer.hpp"
 
-#include "io/__/reader/CsvReader.hpp"
+#include "io/__/reader/csv_reader.hpp"
 #include "io/dicom/exception/InvalidTag.hpp"
 #include "io/dicom/helper/DicomSearch.hpp"
 #include "io/dicom/helper/tags.hpp"
@@ -67,8 +67,8 @@ DicomAnonymizer::DicomAnonymizer() :
         "File '" + tagsPath.string() + "' must exists",
         std::filesystem::is_regular_file(tagsPath)
     );
-    io::reader::CsvReader csvReader(tagsPath);
-    io::reader::CsvReader::TokenContainerType tagVec = csvReader.getLine();
+    io::reader::csv_reader csv_reader(tagsPath);
+    io::reader::csv_reader::TokenContainerType tagVec = csv_reader.getLine();
 
     while(!tagVec.empty())
     {
@@ -115,7 +115,7 @@ DicomAnonymizer::DicomAnonymizer() :
             SIGHT_ERROR("Action code '" + actionCode + "' is not managed.");
         }
 
-        tagVec = csvReader.getLine();
+        tagVec = csv_reader.getLine();
     }
 }
 

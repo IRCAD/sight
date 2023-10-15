@@ -26,7 +26,7 @@
 #include <core/lazy_instantiator.hpp>
 
 #include <data/mt/locked_ptr.hpp>
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 
@@ -62,11 +62,11 @@ using resource_manager_traits_t = typename resource_manager_traits<T>::type;
  * the view is the GPU representation.
  *
  * The resource manager associates each document, uniquely identified by its ID (such as returned by
- * sight::data::Object::get_id()), with an Ogre GPU resource. This allows to share this GPU resource from multiple
+ * sight::data::object::get_id()), with an Ogre GPU resource. This allows to share this GPU resource from multiple
  * callers that use the same object.
  *
  * The resource manager also allows to avoid unnecessary updates of the resource. When calling load(), it will compare
- * the modification stamp held in the sight::data::Object against the stamp of the resource. Thus, the concrete
+ * the modification stamp held in the sight::data::object against the stamp of the resource. Thus, the concrete
  * implementation of the load code, internalLoad() will only be called once per update of the object, whatever the
  * number of times load() is called. Please keep in mind that any non-const locked_ptr access to a data will increase
  * the modification stamp, so they should only be done when necessary.

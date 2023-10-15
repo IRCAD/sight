@@ -2,58 +2,58 @@
      <requirement id="sight::module::service" />
      <requirement id="sight::module::ui::dicom" />
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::service::controller</type>
-          <service>sight::module::io::dicom::SDicomSeriesAnonymizer</service>
+          <service>sight::module::io::dicom::dicom_series_anonymizer</service>
           <desc>Service to anonymize a DicomSeries.</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::ui::action</type>
-          <service>sight::module::io::dicom::SDicomSeriesConverter</service>
-          <object>sight::data::SeriesSet</object>
+          <service>sight::module::io::dicom::dicom_series_converter</service>
+          <object>sight::data::series_set</object>
           <desc>This service is used to convert DicomSeries from source SeriesSet</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::io::service::reader</type>
-          <service>sight::module::io::dicom::SDicomSeriesSetReader</service>
-          <object>sight::data::SeriesSet</object>
+          <service>sight::module::io::dicom::dicom_series_set_reader</service>
+          <object>sight::data::series_set</object>
           <desc>GDCM Reader (DicomSeries)</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::io::service::writer</type>
-          <service>sight::module::io::dicom::SDicomSeriesWriter</service>
-          <object>sight::data::DicomSeries</object>
+          <service>sight::module::io::dicom::dicom_series_writer</service>
+          <object>sight::data::dicom_series</object>
           <desc>DICOM Writer (DicomSeries)</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::io::service::reader</type>
-          <service>sight::module::io::dicom::SSeriesSetReader</service>
-          <object>sight::data::SeriesSet</object>
+          <service>sight::module::io::dicom::series_set_reader</service>
+          <object>sight::data::series_set</object>
           <desc>GDCM Reader (ImageSeries/ModelSeries)</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::io::service::reader</type>
-          <service>sight::module::io::dicom::SReader</service>
-          <object>sight::data::SeriesSet</object>
+          <service>sight::module::io::dicom::reader</service>
+          <object>sight::data::series_set</object>
           <desc>DICOM Reader</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::io::service::writer</type>
-          <service>sight::module::io::dicom::SSeriesSetWriter</service>
-          <object>sight::data::Vector</object>
+          <service>sight::module::io::dicom::series_set_writer</service>
+          <object>sight::data::vector</object>
           <desc>DICOM Writer (ImageSeries/ModelSeries)</desc>
      </extension>
 
-     <extension implements="sight::service::extension::Factory">
+     <extension implements="sight::service::extension::factory">
           <type>sight::io::service::writer</type>
-          <service>sight::module::io::dicom::SSurfaceSegmentationWriter</service>
-          <object>sight::data::ModelSeries</object>
+          <service>sight::module::io::dicom::surface_segmentation_writer</service>
+          <object>sight::data::model_series</object>
           <desc>DICOM 3D Writer (ModelSeries)</desc>
      </extension>
 </plugin>

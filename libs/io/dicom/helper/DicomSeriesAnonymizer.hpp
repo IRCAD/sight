@@ -25,9 +25,9 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/helper/DicomAnonymizer.hpp"
 #include "io/dicom/helper/DicomSeriesWriter.hpp"
-#include "io/dicom/reader/SeriesSet.hpp"
+#include "io/dicom/reader/series_set.hpp"
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 namespace sight::core::jobs
 {
@@ -56,12 +56,12 @@ public:
     IO_DICOM_API virtual ~DicomSeriesAnonymizer();
 
     /// Anonymize the DicomSeries (modify the current object)
-    IO_DICOM_API void anonymize(const data::DicomSeries::sptr& source);
+    IO_DICOM_API void anonymize(const data::dicom_series::sptr& source);
 
     /// Anonymize the DicomSeries (doesn't modify the current object)
     IO_DICOM_API void anonymize(
-        const data::DicomSeries::sptr& source,
-        const data::DicomSeries::sptr& destination
+        const data::dicom_series::sptr& source,
+        const data::dicom_series::sptr& destination
     );
 
     /// Get job observer
@@ -76,7 +76,7 @@ protected:
     io::dicom::helper::DicomAnonymizer m_anonymizer;
 
     /// Dicom Reader
-    io::dicom::reader::SeriesSet::sptr m_reader;
+    io::dicom::reader::series_set::sptr m_reader;
 
     /// Job observer
     SPTR(core::jobs::aggregator) m_job;

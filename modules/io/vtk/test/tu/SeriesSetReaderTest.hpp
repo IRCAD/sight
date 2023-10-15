@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace ut
 {
 
 /**
- * @brief Test the reader and the writer of Mesh/Image using VTK.
+ * @brief Test the reader and the writer of Mesh/image using VTK.
  */
 class SeriesSetReaderTest : public CPPUNIT_NS::TestFixture
 {

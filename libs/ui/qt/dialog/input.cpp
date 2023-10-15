@@ -55,7 +55,7 @@ void input::setEchoMode(input::EchoMode echoMode)
 //------------------------------------------------------------------------------
 
 /// Set the input text in the input field
-void input::setInput(const std::string& text)
+void input::set_input(const std::string& text)
 {
     m_input = text;
 }

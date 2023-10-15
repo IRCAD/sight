@@ -28,6 +28,6 @@ namespace sight::data::registry
 {
 
 #define SIGHT_REGISTER_DATA(classname) \
-    static sight::data::Object::Registry<classname> BOOST_PP_CAT(s__factory__record__, __LINE__);
+    static sight::data::object::Registry<classname> BOOST_PP_CAT(s__factory__record__, __LINE__);
 
 } // namespace sight::data::registry

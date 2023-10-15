@@ -1,0 +1,113 @@
+/************************************************************************
+ *
+ * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2021 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#pragma once
+
+#include "modules/viz/scene3d/adaptor/material.hpp"
+#include "modules/viz/scene3d/config.hpp"
+
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/transformable.hpp>
+
+namespace sight::module::viz::scene3d::adaptor
+{
+
+/**
+ * @brief Displays an orientation "marker", marker is represented by a human body mesh,
+ * its orientation follows camera movement.
+ *
+ * @section Slots Slots
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::orientation_marker" auto_connect="true">
+        <in key="matrix" uid="..." />
+        <config resource="..." depth="-32.0" />
+    </service>
+   @endcode
+ *
+ * @subsection Input Input
+ *  - \b matrix [sight::data::matrix4]: matrix to follow (usually camera Matrix).
+ * @subsection Configuration Configuration:
+ * - \b resource (optional, string): name of the resource to use for the marker.
+ * - \b depth (optional, float): value of depth (z) where marker will be positioned, greater value to zoom-in , lower
+ * to zoom-out.
+ */
+class MODULE_VIZ_SCENE3D_CLASS_API orientation_marker final :
+    public sight::viz::scene3d::adaptor
+{
+public:
+
+    /// Generates default methods as New, dynamicCast, ...
+    SIGHT_DECLARE_SERVICE(orientation_marker, sight::viz::scene3d::adaptor);
+
+    /// Constructor
+    MODULE_VIZ_SCENE3D_API orientation_marker() noexcept = default;
+
+    /// Destructor
+    MODULE_VIZ_SCENE3D_API ~orientation_marker() noexcept final = default;
+
+protected:
+
+    /// Configures the service's parameters
+    MODULE_VIZ_SCENE3D_API void configuring() final;
+
+    /// Initializes and starts child services
+    MODULE_VIZ_SCENE3D_API void starting() final;
+
+    /// Updates internal matrix from the input transform
+    MODULE_VIZ_SCENE3D_API void updating() final;
+
+    /// Unregisters child services
+    MODULE_VIZ_SCENE3D_API void stopping() final;
+
+    /// Sets the visibility of the adaptor
+    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
+
+    /// Connects input matrix S_MODIFIED to UPDATE slot.
+    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+
+private:
+
+    /// Contains the material data.
+    data::material::sptr m_material {nullptr};
+
+    /// Updates the internal camera matrix from the input transform
+    void updateCameraMatrix();
+
+    /// Contains the scene node where all of manual objects are attached.
+    Ogre::SceneNode* m_sceneNode {nullptr};
+
+    /// Stores the entity associated to the marker mesh
+    Ogre::Entity* m_patientMesh {nullptr};
+
+    /// Resource used for the marker
+    std::string m_patientMeshRc {"human.mesh"};
+
+    /// Z coordinate of marker position, increase to zoom in, decrease to zoom out.
+    float m_markerDepth = -32.F;
+
+    static constexpr std::string_view s_MATRIX_IN = "matrix";
+    sight::data::ptr<sight::data::matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_IN};
+};
+
+} // namespace sight::module::viz::scene3d::adaptor.

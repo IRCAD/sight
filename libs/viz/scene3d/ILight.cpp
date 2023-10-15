@@ -42,8 +42,8 @@ const int viz::scene3d::ILight::s_OFFSET_RANGE = 180;
 //-----------------------------------------------------------------------------
 
 viz::scene3d::ILight::sptr ILight::createLightAdaptor(
-    data::Color::sptr _diffuse,
-    data::Color::sptr _specular
+    data::color::sptr _diffuse,
+    data::color::sptr _specular
 )
 {
     viz::scene3d::ILight::sptr lightAdaptor = viz::scene3d::lightFactory::make(viz::scene3d::ILight::REGISTRY_KEY);
@@ -51,8 +51,8 @@ viz::scene3d::ILight::sptr ILight::createLightAdaptor(
     SIGHT_ASSERT("The factory process to create an ILight failed.", lightAdaptor);
     SIGHT_ASSERT("The light adaptor must be registered with existing data objects.", _diffuse && _specular);
 
-    lightAdaptor->setInOut(_diffuse, "diffuseColor");
-    lightAdaptor->setInOut(_specular, "specularColor");
+    lightAdaptor->set_inout(_diffuse, "diffuseColor");
+    lightAdaptor->set_inout(_specular, "specularColor");
 
     return lightAdaptor;
 }

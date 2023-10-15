@@ -27,7 +27,7 @@
 
 #include <core/log/logger.hpp>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 #include <gdcmWriter.h>
 

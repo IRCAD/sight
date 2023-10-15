@@ -30,9 +30,9 @@
 #include <core/com/slot.hpp>
 #include <core/thread/worker.hpp>
 
-#include <viz/scene3d/compositor/ChainManager.hpp>
-#include <viz/scene3d/compositor/Core.hpp>
-#include <viz/scene3d/compositor/listener/AutoStereo.hpp>
+#include <viz/scene3d/compositor/chain_manager.hpp>
+#include <viz/scene3d/compositor/core.hpp>
+#include <viz/scene3d/compositor/listener/auto_stereo.hpp>
 #include <viz/scene3d/compositor/types.hpp>
 #include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/window_interactor.hpp>
@@ -50,14 +50,14 @@
 namespace sight::data
 {
 
-class Color;
+class color;
 
 } // namespace sight::data
 
 namespace sight::viz::scene3d
 {
 
-class SRender;
+class render;
 class adaptor;
 class ILight;
 
@@ -157,7 +157,7 @@ public:
     /// @returns true if the scene is created.
     VIZ_SCENE3D_API bool isSceneCreated() const;
 
-    /// Adds a disabled compositor name to the ChainManager.
+    /// Adds a disabled compositor name to the chain_manager.
     VIZ_SCENE3D_API void addAvailableCompositor(std::string compositorName);
 
     /// Enables/Disables a compositor according to the isEnabled flag.
@@ -191,16 +191,16 @@ public:
     VIZ_SCENE3D_API void set_worker(const core::thread::worker::sptr& _worker);
 
     /// @returns the render service.
-    VIZ_SCENE3D_API SPTR(viz::scene3d::SRender) getRenderService() const;
+    VIZ_SCENE3D_API SPTR(viz::scene3d::render) getRenderService() const;
 
     /// Sets the render service.
-    VIZ_SCENE3D_API void setRenderService(const SPTR(viz::scene3d::SRender)& _service);
+    VIZ_SCENE3D_API void setRenderService(const SPTR(viz::scene3d::render)& _service);
 
     /// Requests render.
     VIZ_SCENE3D_API void requestRender();
 
     /// Sets stereoscopic rendering.
-    VIZ_SCENE3D_API void setStereoMode(compositor::Core::StereoModeType mode);
+    VIZ_SCENE3D_API void setStereoMode(compositor::core::StereoModeType mode);
 
     /// Sets background color : specific to background Layer.
     VIZ_SCENE3D_API void setBackgroundColor(std::string topColor, std::string botColor);
@@ -216,8 +216,8 @@ public:
         bool enabled,
         std::string transparencyTechnique           = "",
         std::string numPeels                        = "",
-        compositor::Core::StereoModeType stereoMode =
-        compositor::Core::StereoModeType::NONE
+        compositor::core::StereoModeType stereoMode =
+        compositor::core::StereoModeType::NONE
     );
 
     /// Sets if this layer has a configured compositor chain.
@@ -239,10 +239,10 @@ public:
     VIZ_SCENE3D_API bool initialized() const;
 
     /// @returns the stereoscopic mode.
-    VIZ_SCENE3D_API compositor::Core::StereoModeType getStereoMode() const;
+    VIZ_SCENE3D_API compositor::core::StereoModeType getStereoMode() const;
 
     /// @returns the compositor chain.
-    VIZ_SCENE3D_API viz::scene3d::compositor::ChainManager::CompositorChainType getCompositorChain() const;
+    VIZ_SCENE3D_API viz::scene3d::compositor::chain_manager::CompositorChainType getCompositorChain() const;
 
     /// @returns the list of adaptors in the chain manager.
     VIZ_SCENE3D_API service::has_services::ServiceVector getRegisteredAdaptors() const;
@@ -295,7 +295,7 @@ public:
     /// Cancels interaction for all interactors with a lower priority than the one calling this.
     VIZ_SCENE3D_API void cancelFurtherInteraction();
 
-    /// Need to be enable if using SCamera with orthographic mode.
+    /// Need to be enable if using camera with orthographic mode.
     VIZ_SCENE3D_API void setOrthographicCamera(bool _ortho);
     /// Returns value of setOrthographicCamera.
     VIZ_SCENE3D_API bool isOrthographicCameraForce() const;
@@ -324,13 +324,13 @@ private:
     Ogre::RenderTarget* m_renderTarget {nullptr};
 
     /// Defines stereoscopic rendering mode.
-    compositor::Core::StereoModeType m_stereoMode {compositor::Core::StereoModeType::NONE};
+    compositor::core::StereoModeType m_stereoMode {compositor::core::StereoModeType::NONE};
 
     /// Stores configured compositor chain raw string if there is a one.
     std::string m_rawCompositorChain;
 
     /// Contains the Ogre default compositor for this layer.
-    SPTR(viz::scene3d::compositor::Core) m_coreCompositor {nullptr};
+    SPTR(viz::scene3d::compositor::core) m_coreCompositor {nullptr};
 
     /// Contains the Ogre default compositor default transparency technique.
     viz::scene3d::compositor::transparencyTechnique m_transparencyTechnique {viz::scene3d::compositor::DEFAULT};
@@ -340,7 +340,7 @@ private:
 
     /// Manages the list of available compositors.
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not.
-    viz::scene3d::compositor::ChainManager::uptr m_compositorChainManager;
+    viz::scene3d::compositor::chain_manager::uptr m_compositorChainManager;
 
     /// Defines the Z order of this viewport.
     int m_order {1};
@@ -373,9 +373,9 @@ private:
     core::com::helper::sig_slot_connection m_connections;
 
     /// Contains the render service which this layer is attached.
-    WPTR(viz::scene3d::SRender) m_renderService;
+    WPTR(viz::scene3d::render) m_renderService;
 
-    /// Defines the layer identifier as referenced in SRender.
+    /// Defines the layer identifier as referenced in render.
     std::string m_id;
 
     /// Enables default compositor's widgets (gui displays before scene creation).
@@ -394,17 +394,17 @@ private:
     SPTR(viz::scene3d::ILight) m_lightAdaptor {nullptr};
 
     /// Contains the diffuse color of the default light.
-    SPTR(data::Color) m_defaultLightDiffuseColor {nullptr};
+    SPTR(data::color) m_defaultLightDiffuseColor {nullptr};
 
     /// Contains the specular color of the specular light.
-    SPTR(data::Color) m_defaultLightSpecularColor {nullptr};
+    SPTR(data::color) m_defaultLightSpecularColor {nullptr};
 
     /// Defines the camera listener class used to pass the projection matrix for autostereo shaders.
     struct LayerCameraListener;
     LayerCameraListener* m_cameraListener {nullptr};
 
     /// Contains the autostereo listener.
-    compositor::listener::AutoStereoCompositorListener* m_autostereoListener {nullptr};
+    compositor::listener::auto_stereo_compositor_listener* m_autostereoListener {nullptr};
 
     /// Holds pairs of intrinsic/extrinsic calibrations for stereo cameras.
     CameraCalibrationsType m_stereoCameraCalibration;
@@ -412,7 +412,7 @@ private:
     /// Defines viewport parameters: left, top, width, height.
     ViewportConfigType m_viewportCfg {0.F, 0.F, 1.F, 1.F};
 
-    /// True when we are using dedicated SCamera adaptor with orthographic projection.
+    /// True when we are using dedicated camera adaptor with orthographic projection.
     bool m_cameraOrthographic {false};
 };
 

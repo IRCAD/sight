@@ -15,7 +15,7 @@ Item {
         serviceCreated(representationService)
     }
 
-    SRepresentationEditor {
+    representation_editor {
         id: representationService
 
         onStarted: {

@@ -810,7 +810,7 @@ void MacroSaver::save()
            && (prePostInteractions[i]->howToFindReceiver[0].className == "QPushButton"
                || prePostInteractions[i]->howToFindReceiver[0].className == "QToolButton"))
         {
-            if(prePostInteractions[i]->howToFindReceiver.back().string == "SPreferencesConfiguration")
+            if(prePostInteractions[i]->howToFindReceiver.back().string == "preferences_configuration")
             {
                 // Special case: Preferences Configuration pop up close button
                 if(InteractionHelperAPI* iha =
@@ -872,7 +872,7 @@ void MacroSaver::save()
         else if(prePostInteractions[i]->type == MODEL_VIEW_SELECT
                 && (prePostInteractions[i]->howToFindReceiver[0].className == "QCheckBox"
                     || prePostInteractions[i]->howToFindReceiver[0].className == "QComboBox")
-                && prePostInteractions[i]->howToFindReceiver.back().string == "SPreferencesConfiguration")
+                && prePostInteractions[i]->howToFindReceiver.back().string == "preferences_configuration")
         {
             const auto& imvs = static_cast<const PostInteractionModelViewSelect&>(*prePostInteractions[i]);
             QString arg      = QString(R"({"%1", "%2"})").arg(imvs.howToFindReceiver[0].string).arg(imvs.name);
@@ -984,7 +984,7 @@ void MacroSaver::save()
                         i++;
                     }
                 }
-                else if(prePostInteractions[i]->howToFindReceiver.back().string == "SPreferencesConfiguration")
+                else if(prePostInteractions[i]->howToFindReceiver.back().string == "preferences_configuration")
                 {
                     QString arg =
                         QString(R"({"%1", "%2"})").arg(prePostInteractions[i]->howToFindReceiver[0].string).arg(sequence);
@@ -1289,12 +1289,12 @@ void MacroSaver::save()
                     })
             );
         }
-        else if(prePostInteractions[i]->howToFindReceiver.back().string == "SPreferencesConfiguration"
+        else if(prePostInteractions[i]->howToFindReceiver.back().string == "preferences_configuration"
                 || std::ranges::any_of(
                     prePostInteractions[i]->howToFindReceiver,
                     [](const FindStrategy& f)
         {
-            return f.string == "SPreferencesConfigurationWindow";
+            return f.string == "preferences_configurationWindow";
         }))
         {
             // Ignore other interactions in PreferencesConfiguration
@@ -1839,7 +1839,7 @@ std::unique_ptr<PreInteraction> MacroSaver::createInteraction(QObject* target, Q
 
             if(auto* checkbox = qobject_cast<QCheckBox*>(
                    target
-            ); checkbox != nullptr && checkbox->window()->objectName() == "SPreferencesConfiguration")
+            ); checkbox != nullptr && checkbox->window()->objectName() == "preferences_configuration")
             {
                 // Exception for Preferences Configuration, in order to add it in helper::PreferencesConfiguration::fill
                 // map

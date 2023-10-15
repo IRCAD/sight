@@ -24,7 +24,7 @@
 
 #include <io/itk/itk.hpp>
 
-#include <utestData/generator/Image.hpp>
+#include <utest_data/generator/image.hpp>
 
 namespace sight::io::itk::ut
 {
@@ -36,13 +36,13 @@ void ImageConversionTest::stressTestForAType()
 {
     for(unsigned char k = 0 ; k < 5 ; k++)
     {
-        data::Image::sptr image = std::make_shared<data::Image>();
-        utestData::generator::Image::generateRandomImage(image, core::type::get<TYPE>());
+        data::image::sptr image = std::make_shared<data::image>();
+        utest_data::generator::image::generateRandomImage(image, core::type::get<TYPE>());
 
         typedef ::itk::Image<TYPE, 3> ImageType;
         typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
-        data::Image::sptr image2 = std::make_shared<data::Image>();
+        data::image::sptr image2 = std::make_shared<data::image>();
         io::itk::moveFromItk<ImageType>(itkImage, image2, false);
 
         image2->setWindowCenter(image->getWindowCenter());
@@ -50,7 +50,7 @@ void ImageConversionTest::stressTestForAType()
 
         CPPUNIT_ASSERT(*image == *image2);
 
-        data::Image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
+        data::image::sptr image3 = io::itk::moveFromItk<ImageType>(itkImage, false);
         image3->setWindowCenter(image->getWindowCenter());
         image3->setWindowWidth(image->getWindowWidth());
 

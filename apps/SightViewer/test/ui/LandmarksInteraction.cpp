@@ -26,13 +26,13 @@
 
 #include "ZoomOut.hpp"
 
-#include <utestData/Data.hpp>
+#include <ui/testCore/helper/Button.hpp>
+#include <ui/testCore/helper/Slider.hpp>
+
+#include <utest_data/Data.hpp>
 
 #include <qnamespace.h>
 #include <QTreeWidget>
-
-#include <ui/testCore/helper/Button.hpp>
-#include <ui/testCore/helper/Slider.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::LandmarksInteraction);
 
@@ -54,9 +54,9 @@ void LandmarksInteraction::test()
     const std::filesystem::path secondSnapshotPath(sight::ui::testCore::Tester::getImageOutputPath()
                                                    / (testName + "_2.png"));
     std::filesystem::remove(secondSnapshotPath);
-    const std::filesystem::path firstReferencePath(utestData::Data::dir() / "sight/ui/SightViewer"
+    const std::filesystem::path firstReferencePath(utest_data::Data::dir() / "sight/ui/SightViewer"
                                                    / (testName + "_1.png"));
-    const std::filesystem::path secondReferencePath(utestData::Data::dir() / "sight/ui/SightViewer"
+    const std::filesystem::path secondReferencePath(utest_data::Data::dir() / "sight/ui/SightViewer"
                                                     / (testName + "_2.png"));
 
     start(
@@ -66,7 +66,7 @@ void LandmarksInteraction::test()
             openFile(
                 tester,
                 "Nifti or Inr images",
-                utestData::Data::dir() / "sight/image/inr/image.inr.gz"
+                utest_data::Data::dir() / "sight/image/inr/image.inr.gz"
             );
 
             {

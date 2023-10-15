@@ -15,7 +15,7 @@ This sub-folder contains classes defining exceptions.
 
 ### helper
 
--**Series**: defines methods to help converting data::DicomSeries to http responses and more. 
+-**Series**: defines methods to help converting data::dicom_series to http responses and more. 
 
 
 ## How to use it

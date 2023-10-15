@@ -32,14 +32,14 @@
 namespace sight::data
 {
 
-class Object;
+class object;
 
 namespace registry
 {
 
-typedef std::string KeyType;
+typedef std::string key_t;
 
-typedef core::factory_registry<SPTR(data::Object)(), KeyType> Type;
+typedef core::factory_registry<SPTR(data::object)(), key_t> Type;
 
 DATA_API SPTR(Type) get();
 

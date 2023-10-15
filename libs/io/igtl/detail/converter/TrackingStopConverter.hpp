@@ -30,7 +30,7 @@ namespace sight::io::igtl::detail::converter
 
 /**
  *
- * @brief class to manage conversion between data::Composite and STP_TDATA in igtl::TrackingDataMessage
+ * @brief class to manage conversion between data::composite and STP_TDATA in igtl::TrackingDataMessage
  */
 class IO_IGTL_CLASS_API TrackingStopConverter : public base
 {
@@ -42,14 +42,14 @@ public:
     /// Destructor
     IO_IGTL_API ~TrackingStopConverter() override;
 
-    /// convert a ::igtl::MessageBase to a data::Object
-    [[nodiscard]] IO_IGTL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
+    /// convert a ::igtl::MessageBase to a data::object
+    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
 
     /**
-     * @brief convert a data::Composite to a igtl::TrackingDataMessage
-     * @return an igtl::TrackingDataMessage converted from an data::Composite
+     * @brief convert a data::composite to a igtl::TrackingDataMessage
+     * @return an igtl::TrackingDataMessage converted from an data::composite
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::object::csptr src) const override;
 
     /**
      * @brief create new TrackingStopConverter

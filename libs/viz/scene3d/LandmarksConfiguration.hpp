@@ -23,7 +23,7 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <data/Landmarks.hpp>
+#include <data/landmarks.hpp>
 
 #include <optional>
 #include <set>
@@ -40,13 +40,13 @@ struct VIZ_SCENE3D_CLASS_API LandmarksConfiguration
     std::optional<std::string> group {std::nullopt};
 
     /// Color of the landmarks.
-    std::optional<sight::data::Landmarks::ColorType> color {std::nullopt};
+    std::optional<sight::data::landmarks::ColorType> color {std::nullopt};
 
     /// Size of the landmarks.
-    std::optional<sight::data::Landmarks::SizeType> size {std::nullopt};
+    std::optional<sight::data::landmarks::SizeType> size {std::nullopt};
 
     /// Shape of the landmarks.
-    std::optional<sight::data::Landmarks::Shape> shape {std::nullopt};
+    std::optional<sight::data::landmarks::Shape> shape {std::nullopt};
 
     /// Maximum number of landmark in the group. Value < 0 means "no limit".
     std::optional<int> groupMax {std::nullopt};

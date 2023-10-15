@@ -22,11 +22,11 @@
 
 #include "plugin.hpp"
 
-#include "SConsumer.hpp"
+#include "consumer.hpp"
 
 #include <core/spy_log.hpp>
 
-#include <service/extension/Factory.hpp>
+#include <service/extension/factory.hpp>
 
 namespace ExTimeLine
 {

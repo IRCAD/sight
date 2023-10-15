@@ -25,9 +25,9 @@
 #include "io/dicom/helper/DicomDataReader.hxx"
 #include "io/dicom/reader/ie/SpatialFiducials.hpp"
 
-#include <data/ImageSeries.hpp>
-#include <data/PointList.hpp>
-#include <data/Vector.hpp>
+#include <data/image_series.hpp>
+#include <data/point_list.hpp>
+#include <data/vector.hpp>
 
 #include <memory>
 #include <utility>
@@ -38,7 +38,7 @@ namespace sight::io::dicom::reader::iod
 //------------------------------------------------------------------------------
 
 SpatialFiducialsIOD::SpatialFiducialsIOD(
-    const data::DicomSeries::csptr& dicomSeries,
+    const data::dicom_series::csptr& dicomSeries,
     const io::dicom::container::DicomInstance::sptr& instance,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
@@ -55,17 +55,17 @@ SpatialFiducialsIOD::~SpatialFiducialsIOD()
 
 //------------------------------------------------------------------------------
 
-void SpatialFiducialsIOD::read(data::Series::sptr series)
+void SpatialFiducialsIOD::read(data::series::sptr series)
 {
     // Retrieve images
-    data::ImageSeries::sptr imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
+    data::image_series::sptr imageSeries = std::dynamic_pointer_cast<data::image_series>(series);
     SIGHT_ASSERT("ImageSeries should not be null.", imageSeries);
 
     // Create GDCM Reader
     SPTR(gdcm::Reader) reader = std::make_shared<gdcm::Reader>();
 
     // Read the first file
-    data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
+    data::dicom_series::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
 
     if(dicomContainer.size() > 1)
     {

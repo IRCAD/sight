@@ -1,0 +1,311 @@
+/************************************************************************
+ *
+ * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2020 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#pragma once
+
+#include "modules/viz/scene3d/adaptor/texture.hpp"
+#include "modules/viz/scene3d/config.hpp"
+
+#include <core/com/slot.hpp>
+#include <core/com/slots.hpp>
+
+#include <data/image.hpp>
+#include <data/material.hpp>
+#include <data/mesh.hpp>
+
+#include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/IMaterialAdaptor.hpp>
+#include <viz/scene3d/material.hpp>
+#include <viz/scene3d/mesh.hpp>
+#include <viz/scene3d/ogre.hpp>
+#include <viz/scene3d/R2VBRenderable.hpp>
+
+#include <OGRE/OgreGpuProgramParams.h>
+#include <OGRE/OgreMaterial.h>
+
+#include <regex>
+
+namespace sight::data
+{
+
+class Material;
+
+} // namespace sight::data
+
+namespace sight::module::viz::scene3d::adaptor
+{
+
+/**
+ * @brief This adaptor adapts a data::material, allowing to tweak material parameters.
+ *
+ * @section Slots Slots
+ * - \b updateField(data::object::FieldsContainerType): listen to the fields in the data::material.
+ * - \b swapTexture(): listen to the module::viz::scene3d::adaptor::texture changes.
+ * - \b addTexture(): called when a texture is added in the data::material.
+ * - \b removeTexture(): called when a texture is removed in the data::material.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::material">
+        <inout key="material" uid="..." />
+        <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureName="texName"
+                shadingMode="phong" normalLength="0.1" representationMode="SURFACE" />
+    </service>
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b material [sight::data::material]: adapted material. The material may be modified to comply to the configuration
+ *      of the adaptor.
+ *
+ * @subsection Configuration Configuration:
+ * - \b materialTemplate (optional, string, default=""): name of the base Ogre material/
+ * - \b materialName (optional, string, default=""): name of the Ogre material. This is necessary to bind a
+ *      sight::module::viz::scene3d:mesh or a sight::module::viz::scene3d:model_series to this material;
+ *      simply specify the same Ogre material in its configuration.
+ * - \b textureName (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
+ *      reference a texture managed by an another module::viz::scene3d::adaptor::texture.
+ *  - \b shadingMode (optional, none/flat/phong, default=phong): name of the used shading mode.
+ *  - \b normalLength (optional, default=0.1): factor defining the length of the normals.
+ *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
+ *      representation mode as in data::material.
+ */
+class MODULE_VIZ_SCENE3D_CLASS_API material final : public sight::viz::scene3d::IMaterialAdaptor
+{
+public:
+
+    /// Generates default methods as New, dynamicCast, ...
+    SIGHT_DECLARE_SERVICE(material, sight::viz::scene3d::IMaterialAdaptor);
+
+    /**
+     * @name Slots API
+     * @{
+     */
+    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t UPDATE_FIELD_SLOT;
+    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t SWAP_TEXTURE_SLOT;
+    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t ADD_TEXTURE_SLOT;
+    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t REMOVE_TEXTURE_SLOT;
+    /** @} */
+
+    /**
+     * @name In-Out In-Out API
+     * @{
+     */
+    MODULE_VIZ_SCENE3D_API static const std::string s_MATERIAL_INOUT;
+    /** @} */
+
+    /// Initializes slots.
+    MODULE_VIZ_SCENE3D_API material() noexcept;
+
+    /// Destroys the adaptor.
+    MODULE_VIZ_SCENE3D_API ~material() noexcept override = default;
+
+    /// Configures the adaptor without using the XML configuration.
+    MODULE_VIZ_SCENE3D_API void configure(
+        const std::string& _id,
+        const std::string& _name,
+        sight::viz::scene3d::render::sptr _service,
+        const std::string& _layer,
+        const std::string& _shadingMode = "",
+        const std::string& _template    = sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
+    ) override;
+
+    /// Gets Ogre associated material.
+    MODULE_VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial() override;
+
+    /// Gets material name.
+    MODULE_VIZ_SCENE3D_API std::string getMaterialName() const override;
+
+    /// Retrieves the associated texture name.
+    MODULE_VIZ_SCENE3D_API void setTextureName(const std::string& _textureName) override;
+
+    /// Sets material name.
+    MODULE_VIZ_SCENE3D_API void setMaterialName(const std::string& _materialName) override;
+
+    /// Sets material template name.
+    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _materialName) override;
+
+    /// Tells if there is a texture currently bound.
+    MODULE_VIZ_SCENE3D_API bool hasDiffuseTexture() const override;
+
+    /// Gets the shading mode.
+    MODULE_VIZ_SCENE3D_API const std::string& getShadingMode() const override;
+
+    /// Sets the shading mode.
+    MODULE_VIZ_SCENE3D_API void setShadingMode(const std::string& _shadingMode) override;
+
+    /// Set the renderable object.
+    MODULE_VIZ_SCENE3D_API void setR2VBObject(sight::viz::scene3d::R2VBRenderable* _r2vbObject) override;
+
+    /// Gets the internal material code.
+    MODULE_VIZ_SCENE3D_API sight::viz::scene3d::material* getMaterialFw() const override;
+
+protected:
+
+    /// Configures the adaptor.
+    MODULE_VIZ_SCENE3D_API void configuring() override;
+
+    /// Creates the material.
+    MODULE_VIZ_SCENE3D_API void starting() override;
+
+    /**
+     * @brief Proposals to connect service slots to associated object signals.
+     * @return A map of each proposed connection.
+     *
+     * Connect data::material::MODIFIED_SIG of s_MATERIAL_INOUT to service::slots::UPDATE
+     * Connect data::material::ADDED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD_SLOT
+     * Connect data::material::CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD_SLOT
+     * Connect data::material::ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to ADD_TEXTURE_SLOT
+     * Connect data::material::REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to REMOVE_TEXTURE_SLOT
+     */
+    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+
+    /// Updates fixed function pipeline parameters.
+    MODULE_VIZ_SCENE3D_API void updating() override;
+
+    /// Release Ogre resources.
+    MODULE_VIZ_SCENE3D_API void stopping() override;
+
+private:
+
+    /**
+     * @brief SLOT: updates the material from the input data fields.
+     * @param _fields fields to update, only "ogreMaterial" is taken into account.
+     */
+    void updateField(data::object::FieldsContainerType _fields);
+
+    /// SLOT: swaps the texture of the material.
+    void swapTexture();
+
+    /// SLOT: creates a texture adaptor when a texture is added to the material.
+    /// This method is also called from the starting in order to create the texture adaptor if the material has a
+    /// default texture.
+    void createTextureAdaptor();
+
+    /// SLOT: removes the texture adaptor when the texture is removed from the material.
+    void removeTextureAdaptor();
+
+    /// Creates shader parameters adaptors from resources.
+    void createShaderParameterAdaptors();
+
+    /// Defines the material name. It is auto generated.
+    std::string m_materialName;
+
+    /// Defines the default template name, given by xml configuration.
+    /// It must refer an existing Ogre material which will be used in order to instantiate m_material
+    std::string m_materialTemplateName {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+
+    /// Contains the texture adaptor the material adaptor is listening to.
+    module::viz::scene3d::adaptor::texture::sptr m_texAdaptor {nullptr};
+
+    /// Defines the texture name.
+    std::string m_textureName;
+
+    /// Stores supported schemes.
+    std::vector<Ogre::String> m_schemesSupported;
+
+    /// Handles connections with texture adaptor.
+    core::com::helper::sig_slot_connection m_textureConnection;
+
+    /// Defines the configured shading mode.
+    std::string m_shadingMode;
+
+    /// Defines the configured representation mode.
+    std::string m_representationMode {"SURFACE"};
+
+    /// Stores a map to convert from string to data::material::RepresentationType (ex: "SURFACE" = SURFACE).
+    std::map<std::string, data::material::RepresentationType> m_representationDict;
+
+    /// Contains the Ogre material.
+    sight::viz::scene3d::material::uptr m_materialFw;
+
+    /// Contains the renderable object.
+    sight::viz::scene3d::R2VBRenderable* m_r2vbObject {nullptr};
+
+    data::ptr<data::material, data::Access::inout> m_materialData {this, s_MATERIAL_INOUT, true};
+};
+
+//------------------------------------------------------------------------------
+
+inline Ogre::MaterialPtr material::getMaterial()
+{
+    return Ogre::MaterialManager::getSingleton().getByName(m_materialName, sight::viz::scene3d::RESOURCE_GROUP);
+}
+
+//------------------------------------------------------------------------------
+
+inline void material::setMaterialTemplateName(const std::string& _materialName)
+{
+    m_materialTemplateName = _materialName;
+}
+
+//------------------------------------------------------------------------------
+
+inline void material::setMaterialName(const std::string& _materialName)
+{
+    m_materialName = _materialName;
+}
+
+//------------------------------------------------------------------------------
+
+inline std::string material::getMaterialName() const
+{
+    return m_materialName;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool material::hasDiffuseTexture() const
+{
+    return m_texAdaptor && m_texAdaptor->isValid();
+}
+
+//------------------------------------------------------------------------------
+
+inline const std::string& material::getShadingMode() const
+{
+    return m_shadingMode;
+}
+
+//------------------------------------------------------------------------------
+
+inline void material::setShadingMode(const std::string& _shadingMode)
+{
+    m_shadingMode = _shadingMode;
+}
+
+//------------------------------------------------------------------------------
+
+inline void material::setR2VBObject(sight::viz::scene3d::R2VBRenderable* _r2vbObject)
+{
+    m_r2vbObject = _r2vbObject;
+}
+
+//------------------------------------------------------------------------------
+
+inline sight::viz::scene3d::material* material::getMaterialFw() const
+{
+    return m_materialFw.get();
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace sight::module::viz::scene3d::adaptor.

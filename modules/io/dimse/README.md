@@ -4,19 +4,19 @@ Contains services used to deal with PACS through **DIMSE** protocol.
 
 ## Services
 
-- **SPacsConfigurationEditor**: edits a pacs configuration.
+- **pacs_configuration_editor**: edits a pacs configuration.
 
-- **SPacsConfigurationInitializer**: initializes a PACS Configuration data and synchronize it with a preference key.
+- **pacs_configuration_initializer**: initializes a PACS Configuration data and synchronize it with a preference key.
 
-- **SProgressBarController**: displays a progress bar.
+- **progress_bar_controller**: displays a progress bar.
 
-- **SQueryEditor**: allows to perform queries on a pacs.
+- **query_editor**: allows to perform queries on a pacs.
   
-- **SSeriesPuller**: pulls series from a PACS.
+- **series_puller**: pulls series from a PACS.
   
-- **SSeriesPusher**: pushes a DICOM series to a PACS.
+- **series_pusher**: pushes a DICOM series to a PACS.
   
-- **SSliceIndexDicomEditor**: This editor service is used to select a slice index and pull the image from the pacs if it is not available on the local computer.
+- **slice_index_dicom_editor**: This editor service is used to select a slice index and pull the image from the pacs if it is not available on the local computer.
 
 ## How to use it
 

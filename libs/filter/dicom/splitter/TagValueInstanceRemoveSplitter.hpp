@@ -25,7 +25,7 @@
 #include "filter/dicom/config.hpp"
 #include "filter/dicom/splitter/base.hpp"
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <dcmtk/dcmdata/dctagkey.h>
 
@@ -53,7 +53,7 @@ public:
 
     /// Override
     FILTER_DICOM_API DicomSeriesContainerType apply(
-        const data::DicomSeries::sptr& series,
+        const data::dicom_series::sptr& series,
         const core::log::logger::sptr& logger
     ) const override;
 

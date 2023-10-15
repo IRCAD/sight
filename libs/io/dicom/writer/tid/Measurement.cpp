@@ -33,11 +33,11 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/PointList.hpp>
-#include <data/Series.hpp>
-#include <data/String.hpp>
+#include <data/point_list.hpp>
+#include <data/series.hpp>
+#include <data/string.hpp>
 #include <data/types.hpp>
-#include <data/Vector.hpp>
+#include <data/vector.hpp>
 
 #include <boost/algorithm/string/split.hpp>
 
@@ -51,9 +51,9 @@ namespace sight::io::dicom::writer::tid
 Measurement::Measurement(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::Image::csptr& image
+    const data::image::csptr& image
 ) :
-    io::dicom::writer::tid::TemplateID<data::Image>(writer, instance, image)
+    io::dicom::writer::tid::TemplateID<data::image>(writer, instance, image)
 {
 }
 
@@ -69,13 +69,13 @@ void Measurement::createNodes(
     bool useSCoord3D
 )
 {
-    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*m_object);
+    data::vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*m_object);
     if(distanceVector)
     {
         unsigned int id = 1;
-        for(const data::Object::sptr& object : *distanceVector)
+        for(const data::object::sptr& object : *distanceVector)
         {
-            data::PointList::sptr pointList = std::dynamic_pointer_cast<data::PointList>(object);
+            data::point_list::sptr pointList = std::dynamic_pointer_cast<data::point_list>(object);
             if(pointList)
             {
                 this->createMeasurement(parent, pointList, id++, useSCoord3D);
@@ -88,13 +88,13 @@ void Measurement::createNodes(
 
 void Measurement::createMeasurement(
     const SPTR(io::dicom::container::sr::DicomSRNode)& parent,
-    const data::PointList::csptr& pointList,
+    const data::point_list::csptr& pointList,
     unsigned int /*id*/,
     bool useSCoord3D
 )
 {
-    const data::Point::sptr point1 = pointList->getPoints()[0];
-    const data::Point::sptr point2 = pointList->getPoints()[1];
+    const data::point::sptr point1 = pointList->getPoints()[0];
+    const data::point::sptr point2 = pointList->getPoints()[1];
 
     std::array coordinates {
         point1->getCoord()[0],

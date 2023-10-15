@@ -6,4 +6,4 @@ set_target_properties(module_ui_qtTest PROPERTIES AUTOMOC TRUE)
 
 add_dependencies(module_ui_qtTest module_service module_ui module_ui_qt)
 
-target_link_libraries(module_ui_qtTest PUBLIC utestData core data service)
+target_link_libraries(module_ui_qtTest PUBLIC utest_data core data service)

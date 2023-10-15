@@ -137,17 +137,17 @@ DATA_API const VR Attribute<Keyword::InstanceCoercionDateTime>::s_vr = VR::DT;
 template<>
 DATA_API const VM Attribute<Keyword::InstanceCoercionDateTime>::s_vm = VM::MIN_1_MAX_1;
 template<>
-DATA_API const Keyword Attribute<Keyword::SOPClassUID>::s_keyword = Keyword::SOPClassUID;
+DATA_API const Keyword Attribute<Keyword::sop_classUID>::s_keyword = Keyword::sop_classUID;
 template<>
-DATA_API const std::uint16_t Attribute<Keyword::SOPClassUID>::s_group = 0x0008;
+DATA_API const std::uint16_t Attribute<Keyword::sop_classUID>::s_group = 0x0008;
 template<>
-DATA_API const std::uint16_t Attribute<Keyword::SOPClassUID>::s_element = 0x0016;
+DATA_API const std::uint16_t Attribute<Keyword::sop_classUID>::s_element = 0x0016;
 template<>
-DATA_API const std::string_view Attribute<Keyword::SOPClassUID>::s_name = "SOP Class UID";
+DATA_API const std::string_view Attribute<Keyword::sop_classUID>::s_name = "SOP Class UID";
 template<>
-DATA_API const VR Attribute<Keyword::SOPClassUID>::s_vr = VR::UI;
+DATA_API const VR Attribute<Keyword::sop_classUID>::s_vr = VR::UI;
 template<>
-DATA_API const VM Attribute<Keyword::SOPClassUID>::s_vm = VM::MIN_1_MAX_1;
+DATA_API const VM Attribute<Keyword::sop_classUID>::s_vm = VM::MIN_1_MAX_1;
 template<>
 DATA_API const Keyword Attribute<Keyword::AcquisitionUID>::s_keyword = Keyword::AcquisitionUID;
 template<>
@@ -185,31 +185,32 @@ DATA_API const VR Attribute<Keyword::PyramidUID>::s_vr = VR::UI;
 template<>
 DATA_API const VM Attribute<Keyword::PyramidUID>::s_vm = VM::MIN_1_MAX_1;
 template<>
-DATA_API const Keyword Attribute<Keyword::RelatedGeneralSOPClassUID>::s_keyword = Keyword::RelatedGeneralSOPClassUID;
+DATA_API const Keyword Attribute<Keyword::RelatedGeneralsop_classUID>::s_keyword = Keyword::RelatedGeneralsop_classUID;
 template<>
-DATA_API const std::uint16_t Attribute<Keyword::RelatedGeneralSOPClassUID>::s_group = 0x0008;
+DATA_API const std::uint16_t Attribute<Keyword::RelatedGeneralsop_classUID>::s_group = 0x0008;
 template<>
-DATA_API const std::uint16_t Attribute<Keyword::RelatedGeneralSOPClassUID>::s_element = 0x001A;
+DATA_API const std::uint16_t Attribute<Keyword::RelatedGeneralsop_classUID>::s_element = 0x001A;
 template<>
-DATA_API const std::string_view Attribute<Keyword::RelatedGeneralSOPClassUID>::s_name = "Related General SOP Class UID";
+DATA_API const std::string_view Attribute<Keyword::RelatedGeneralsop_classUID>::s_name =
+    "Related General SOP Class UID";
 template<>
-DATA_API const VR Attribute<Keyword::RelatedGeneralSOPClassUID>::s_vr = VR::UI;
+DATA_API const VR Attribute<Keyword::RelatedGeneralsop_classUID>::s_vr = VR::UI;
 template<>
-DATA_API const VM Attribute<Keyword::RelatedGeneralSOPClassUID>::s_vm = VM::MIN_1_MAX_N;
+DATA_API const VM Attribute<Keyword::RelatedGeneralsop_classUID>::s_vm = VM::MIN_1_MAX_N;
 template<>
-DATA_API const Keyword Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_keyword =
-    Keyword::OriginalSpecializedSOPClassUID;
+DATA_API const Keyword Attribute<Keyword::OriginalSpecializedsop_classUID>::s_keyword =
+    Keyword::OriginalSpecializedsop_classUID;
 template<>
-DATA_API const std::uint16_t Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_group = 0x0008;
+DATA_API const std::uint16_t Attribute<Keyword::OriginalSpecializedsop_classUID>::s_group = 0x0008;
 template<>
-DATA_API const std::uint16_t Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_element = 0x001B;
+DATA_API const std::uint16_t Attribute<Keyword::OriginalSpecializedsop_classUID>::s_element = 0x001B;
 template<>
-DATA_API const std::string_view Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_name =
+DATA_API const std::string_view Attribute<Keyword::OriginalSpecializedsop_classUID>::s_name =
     "Original Specialized SOP Class UID";
 template<>
-DATA_API const VR Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_vr = VR::UI;
+DATA_API const VR Attribute<Keyword::OriginalSpecializedsop_classUID>::s_vr = VR::UI;
 template<>
-DATA_API const VM Attribute<Keyword::OriginalSpecializedSOPClassUID>::s_vm = VM::MIN_1_MAX_1;
+DATA_API const VM Attribute<Keyword::OriginalSpecializedsop_classUID>::s_vm = VM::MIN_1_MAX_1;
 template<>
 DATA_API const Keyword Attribute<Keyword::StudyDate>::s_keyword = Keyword::StudyDate;
 template<>
@@ -4020,17 +4021,17 @@ DATA_API const VR Attribute<Keyword::GPSSatellites>::s_vr = VR::UT;
 template<>
 DATA_API const VM Attribute<Keyword::GPSSatellites>::s_vm = VM::MIN_1_MAX_1;
 template<>
-DATA_API const Keyword Attribute<Keyword::GPSStatus>::s_keyword = Keyword::GPSStatus;
+DATA_API const Keyword Attribute<Keyword::GPstatus>::s_keyword = Keyword::GPstatus;
 template<>
-DATA_API const std::uint16_t Attribute<Keyword::GPSStatus>::s_group = 0x0016;
+DATA_API const std::uint16_t Attribute<Keyword::GPstatus>::s_group = 0x0016;
 template<>
-DATA_API const std::uint16_t Attribute<Keyword::GPSStatus>::s_element = 0x0079;
+DATA_API const std::uint16_t Attribute<Keyword::GPstatus>::s_element = 0x0079;
 template<>
-DATA_API const std::string_view Attribute<Keyword::GPSStatus>::s_name = "GPS Status";
+DATA_API const std::string_view Attribute<Keyword::GPstatus>::s_name = "GPS Status";
 template<>
-DATA_API const VR Attribute<Keyword::GPSStatus>::s_vr = VR::CS;
+DATA_API const VR Attribute<Keyword::GPstatus>::s_vr = VR::CS;
 template<>
-DATA_API const VM Attribute<Keyword::GPSStatus>::s_vm = VM::MIN_1_MAX_1;
+DATA_API const VM Attribute<Keyword::GPstatus>::s_vm = VM::MIN_1_MAX_1;
 template<>
 DATA_API const Keyword Attribute<Keyword::GPSMeasureMode>::s_keyword = Keyword::GPSMeasureMode;
 template<>
@@ -27274,8 +27275,8 @@ const IAttribute& get(Keyword keyword)
         case Keyword::InstanceCoercionDateTime:
             return get<Keyword::InstanceCoercionDateTime>();
 
-        case Keyword::SOPClassUID:
-            return get<Keyword::SOPClassUID>();
+        case Keyword::sop_classUID:
+            return get<Keyword::sop_classUID>();
 
         case Keyword::AcquisitionUID:
             return get<Keyword::AcquisitionUID>();
@@ -27286,11 +27287,11 @@ const IAttribute& get(Keyword keyword)
         case Keyword::PyramidUID:
             return get<Keyword::PyramidUID>();
 
-        case Keyword::RelatedGeneralSOPClassUID:
-            return get<Keyword::RelatedGeneralSOPClassUID>();
+        case Keyword::RelatedGeneralsop_classUID:
+            return get<Keyword::RelatedGeneralsop_classUID>();
 
-        case Keyword::OriginalSpecializedSOPClassUID:
-            return get<Keyword::OriginalSpecializedSOPClassUID>();
+        case Keyword::OriginalSpecializedsop_classUID:
+            return get<Keyword::OriginalSpecializedsop_classUID>();
 
         case Keyword::StudyDate:
             return get<Keyword::StudyDate>();
@@ -28207,8 +28208,8 @@ const IAttribute& get(Keyword keyword)
         case Keyword::GPSSatellites:
             return get<Keyword::GPSSatellites>();
 
-        case Keyword::GPSStatus:
-            return get<Keyword::GPSStatus>();
+        case Keyword::GPstatus:
+            return get<Keyword::GPstatus>();
 
         case Keyword::GPSMeasureMode:
             return get<Keyword::GPSMeasureMode>();
@@ -33758,7 +33759,7 @@ const IAttribute& get(std::uint16_t group, std::uint16_t element)
                     return get<Keyword::InstanceCoercionDateTime>();
 
                 case 0x0016:
-                    return get<Keyword::SOPClassUID>();
+                    return get<Keyword::sop_classUID>();
 
                 case 0x0017:
                     return get<Keyword::AcquisitionUID>();
@@ -33770,10 +33771,10 @@ const IAttribute& get(std::uint16_t group, std::uint16_t element)
                     return get<Keyword::PyramidUID>();
 
                 case 0x001A:
-                    return get<Keyword::RelatedGeneralSOPClassUID>();
+                    return get<Keyword::RelatedGeneralsop_classUID>();
 
                 case 0x001B:
-                    return get<Keyword::OriginalSpecializedSOPClassUID>();
+                    return get<Keyword::OriginalSpecializedsop_classUID>();
 
                 case 0x0020:
                     return get<Keyword::StudyDate>();
@@ -34718,7 +34719,7 @@ const IAttribute& get(std::uint16_t group, std::uint16_t element)
                     return get<Keyword::GPSSatellites>();
 
                 case 0x0079:
-                    return get<Keyword::GPSStatus>();
+                    return get<Keyword::GPstatus>();
 
                 case 0x007A:
                     return get<Keyword::GPSMeasureMode>();

@@ -37,8 +37,8 @@ buffer_object::buffer_object(bool auto_delete) :
 
 buffer_object::~buffer_object()
 {
-    // If the buffer is not owned like in sight::data::Array, we must destroy it by ourselves
-    ///@todo remove this when sight::data::DicomSeries will be removed
+    // If the buffer is not owned like in sight::data::array, we must destroy it by ourselves
+    ///@todo remove this when sight::data::dicom_series will be removed
     if(m_auto_delete)
     {
         m_buffer_manager->destroy_buffer(&m_buffer).get();

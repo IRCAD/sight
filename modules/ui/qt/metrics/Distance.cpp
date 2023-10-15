@@ -63,7 +63,7 @@ void Distance::starting()
 
     namespace fs = std::filesystem;
     fs::path pathImageDist = core::runtime::get_module_resource_file_path("sight::module::ui::qt", "distance.png");
-    SIGHT_ASSERT("Image " << pathImageDist << "is missing", fs::exists(pathImageDist));
+    SIGHT_ASSERT("image " << pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));
 

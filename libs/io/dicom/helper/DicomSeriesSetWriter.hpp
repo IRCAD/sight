@@ -27,14 +27,14 @@
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 #include <string>
 
 namespace sight::data
 {
 
-class SeriesSet;
+class series_set;
 
 }
 
@@ -54,7 +54,7 @@ namespace helper
 class DicomAnonymizer;
 
 class IO_DICOM_CLASS_API DicomSeriesSetWriter :
-    public io::writer::GenericObjectWriter<data::SeriesSet>,
+    public io::writer::generic_object_writer<data::series_set>,
     public core::location::single_folder,
     public core::location::single_file
 {
@@ -62,7 +62,7 @@ public:
 
     SIGHT_DECLARE_CLASS(
         DicomSeriesSetWriter,
-        io::writer::GenericObjectWriter<data::SeriesSet>,
+        io::writer::generic_object_writer<data::series_set>,
         io::writer::factory::make<DicomSeriesSetWriter>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();

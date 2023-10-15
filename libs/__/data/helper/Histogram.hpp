@@ -23,7 +23,7 @@
 
 #include "data/config.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include <vector>
 
@@ -40,7 +40,7 @@ public:
 
     using histogram_t = std::vector<double>;
 
-    Histogram(sight::data::Image::csptr image) :
+    Histogram(sight::data::image::csptr image) :
         m_image(image)
     {
     }
@@ -56,7 +56,7 @@ public:
 
 private:
 
-    sight::data::Image::csptr m_image;
+    sight::data::image::csptr m_image;
     histogram_t m_values;
     double m_max {std::numeric_limits<double>::lowest()};
     double m_min {std::numeric_limits<double>::max()};

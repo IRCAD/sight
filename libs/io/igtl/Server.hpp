@@ -83,12 +83,12 @@ public:
     /**
      * @brief method to test if the server started
      */
-    IO_IGTL_API bool isStarted() const;
+    IO_IGTL_API bool started() const;
 
     /**
      * @brief method to broadcast to all client the obj
      */
-    IO_IGTL_API void broadcast(const data::Object::csptr& obj);
+    IO_IGTL_API void broadcast(const data::object::csptr& obj);
 
     /**
      * @brief method to broadcast to all client a msg
@@ -136,7 +136,7 @@ public:
      *
      * @return a vector of smart pointer of fwData object
      */
-    IO_IGTL_API std::vector<data::Object::sptr> receiveObjects(std::vector<std::string>& deviceNames);
+    IO_IGTL_API std::vector<data::object::sptr> receiveObjects(std::vector<std::string>& deviceNames);
 
     /**
      * @brief set the device name when a message is sent

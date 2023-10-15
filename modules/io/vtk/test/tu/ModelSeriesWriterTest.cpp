@@ -24,16 +24,16 @@
 
 #include <core/os/temp_path.hpp>
 
-#include <data/ActivitySet.hpp>
-#include <data/Array.hpp>
-#include <data/Mesh.hpp>
-#include <data/ModelSeries.hpp>
-#include <data/Reconstruction.hpp>
-#include <data/SeriesSet.hpp>
+#include <data/activity_set.hpp>
+#include <data/array.hpp>
+#include <data/mesh.hpp>
+#include <data/model_series.hpp>
+#include <data/reconstruction.hpp>
+#include <data/series_set.hpp>
 
 #include <service/op.hpp>
 
-#include <utestData/generator/SeriesSet.hpp>
+#include <utest_data/generator/series_set.hpp>
 
 #include <filesystem>
 #include <string>
@@ -70,7 +70,7 @@ void ModelSeriesWriterTest::tearDown()
 void runModelSeriesSrv(
     const std::string& impl,
     const boost::property_tree::ptree& cfg,
-    const SPTR(data::Object)& obj
+    const SPTR(data::object)& obj
 )
 {
     service::base::sptr srv = service::add(impl);
@@ -79,14 +79,14 @@ void runModelSeriesSrv(
 
     if(srv->is_a("sight::io::service::reader"))
     {
-        srv->setInOut(obj, "data");
+        srv->set_inout(obj, "data");
     }
     else
     {
-        srv->setInput(obj, "data");
+        srv->set_input(obj, "data");
     }
 
-    CPPUNIT_ASSERT_NO_THROW(srv->setConfiguration(cfg));
+    CPPUNIT_ASSERT_NO_THROW(srv->set_config(cfg));
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
     CPPUNIT_ASSERT_NO_THROW(srv->update().wait());
@@ -121,7 +121,7 @@ boost::property_tree::ptree getIOCfgFromFiles(const FileContainerType& files)
 
 void ModelSeriesWriterTest::testWriteMeshes()
 {
-    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesSet::createModelSeries(5);
+    data::model_series::sptr modelSeries = utest_data::generator::series_set::createModelSeries(5);
 
     const std::vector<std::string> allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
@@ -136,7 +136,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
         cfg.add("extension", ext);
 
         runModelSeriesSrv(
-            "sight::module::io::vtk::SModelSeriesWriter",
+            "sight::module::io::vtk::model_series_writer",
             cfg,
             modelSeries
         );
@@ -159,20 +159,20 @@ void ModelSeriesWriterTest::testWriteMeshes()
             files.size()
         );
 
-        auto series_set = std::make_shared<data::SeriesSet>();
+        auto series_set = std::make_shared<data::series_set>();
 
         runModelSeriesSrv(
-            "sight::module::io::vtk::SSeriesSetReader",
+            "sight::module::io::vtk::series_set_reader",
             getIOCfgFromFiles(files),
             series_set
         );
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesSet Size", (std::size_t) 1, series_set->size());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("series_set Size", (std::size_t) 1, series_set->size());
 
-        data::ModelSeries::sptr readSeries = std::dynamic_pointer_cast<data::ModelSeries>(series_set->at(0));
+        data::model_series::sptr readSeries = std::dynamic_pointer_cast<data::model_series>(series_set->at(0));
         CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
 
-        using RecVecType = data::ModelSeries::ReconstructionVectorType;
+        using RecVecType = data::model_series::ReconstructionVectorType;
         const RecVecType& readRecs = readSeries->getReconstructionDB();
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of reconstructions", files.size(), readRecs.size());
 
@@ -182,8 +182,8 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
         for( ; itRef != refRecs.end() ; ++itRef, ++itRead)
         {
-            data::Mesh::csptr refMesh  = (*itRef)->getMesh();
-            data::Mesh::csptr readMesh = (*itRead)->getMesh();
+            data::mesh::csptr refMesh  = (*itRef)->getMesh();
+            data::mesh::csptr readMesh = (*itRead)->getMesh();
 
             const auto reflock      = refMesh->dump_lock();
             const auto readMeshLock = readMesh->dump_lock();
@@ -255,12 +255,12 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
 void ModelSeriesWriterTest::testWriteReconstructions()
 {
-    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesSet::createModelSeries(5);
+    data::model_series::sptr modelSeries = utest_data::generator::series_set::createModelSeries(5);
 
     core::os::temp_dir tmpDir;
 
     runModelSeriesSrv(
-        "sight::module::io::vtk::SModelSeriesObjWriter",
+        "sight::module::io::vtk::model_series_obj_writer",
         getIOCfgFromFolder(tmpDir),
         modelSeries
     );

@@ -4,8 +4,8 @@ Module containing sample user interface widgets displaying sight data.
 
 ## Services
 
-- **SImage**: renders a 3D negatoscope of a medical image.
-- **SMesh**: renders a 3D mesh.
+- **image**: renders a 3D negatoscope of a medical image.
+- **mesh**: renders a 3D mesh.
 
 ## How to use it
 

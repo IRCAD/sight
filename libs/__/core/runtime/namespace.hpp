@@ -25,9 +25,9 @@
  * The modules in the \p \<requirement\> section of the \b plugin.xml are started when the module is started.
  *
  * In Sight, we can automatically start modules in two case:
- * - The module contains an AppConfig or an Activity: the module will be started when the config or the activity is
+ * - The module contains an config or an Activity: the module will be started when the config or the activity is
  *   launched
- * - The module contains services: the module will be started when one of the services is used in an AppConfig to
+ * - The module contains services: the module will be started when one of the services is used in an config to
  * launch.
  *
  * But in some case, we must define the modules to start manually using the \p \<requirement\> tag.

@@ -26,9 +26,9 @@
 #include "io/dicom/container/DicomCodedAttribute.hpp"
 #include "io/dicom/exception/Failed.hpp"
 
-#include <data/Image.hpp>
-#include <data/Material.hpp>
-#include <data/Point.hpp>
+#include <data/image.hpp>
+#include <data/material.hpp>
+#include <data/point.hpp>
 
 #include <gdcmImage.h>
 #include <gdcmSurface.h>
@@ -58,7 +58,7 @@ public:
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
     IO_DICOM_API static gdcm::PhotometricInterpretation getPhotometricInterpretation(
-        const data::Image::csptr& image
+        const data::image::csptr& image
     );
 
     /**
@@ -68,7 +68,7 @@ public:
      * @return Corresponding recommended presentation type.
      */
     IO_DICOM_API static gdcm::Surface::VIEWType convertToPresentationType(
-        data::Material::RepresentationType representationMode
+        data::material::RepresentationType representationMode
     );
 
     /**
@@ -76,7 +76,7 @@ public:
      * @param[in] presentationType Surface recommended presentation type.
      * @return Corresponding representation mode
      */
-    IO_DICOM_API static data::Material::RepresentationType convertToRepresentationMode(
+    IO_DICOM_API static data::material::RepresentationType convertToRepresentationMode(
         gdcm::Surface::VIEWType presentationType
     );
 
@@ -87,8 +87,8 @@ public:
      * @throw io::dicom::exception::Failed
      */
     IO_DICOM_API static std::size_t convertPointToFrameNumber(
-        const data::Image::csptr& image,
-        const data::Point::csptr& point
+        const data::image::csptr& image,
+        const data::point::csptr& point
     );
 
     /**
@@ -98,7 +98,7 @@ public:
      * @throw io::dicom::exception::Failed
      */
     IO_DICOM_API static double convertFrameNumberToZCoordinate(
-        const data::Image::csptr& image,
+        const data::image::csptr& image,
         std::size_t frameNumber
     );
 };

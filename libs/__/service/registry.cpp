@@ -23,9 +23,7 @@
 #include "service/registry.hpp"
 
 #include "service/base.hpp"
-#include "service/extension/AppConfig.hpp"
-#include "service/extension/Config.hpp"
-#include "service/extension/Factory.hpp"
+#include "service/extension/factory.hpp"
 
 #include <core/lazy_instantiator.hpp>
 #include <core/logic_stamp.hpp>
@@ -93,7 +91,7 @@ public:
 
     /**
      * @brief Return registered services matching serviceType
-     * @note Invoke getServices( data::Object::sptr , const std::string & ) for each registered object
+     * @note Invoke getServices( data::object::sptr , const std::string & ) for each registered object
      */
     SERVICE_API service_vector_t getServices(const std::string& serviceType) const;
 
@@ -112,13 +110,13 @@ private:
 std::string ObjectService::getRegistryInformation() const
 {
     std::stringstream info;
-    data::Object::csptr previousObj;
+    data::object::csptr previousObj;
     core::mt::read_lock lock(m_containerMutex);
 
     for(const auto& service : m_services)
     {
         info << "Service : uid = " << service->get_id() << " , classname = " << service->get_classname()
-        << " , service is stopped = " << (service->isStopped() ? "true" : "false") << std::endl;
+        << " , service is stopped = " << (service->stopped() ? "true" : "false") << std::endl;
     }
 
     return info.str();
@@ -140,7 +138,7 @@ void ObjectService::unregisterService(service::base::sptr service)
 
     SIGHT_ASSERT(
         "The service ( " + service->get_id() + " ) must be stopped before being unregistered.",
-        service->isStopped()
+        service->stopped()
     );
 
     auto it = m_services.find(service);

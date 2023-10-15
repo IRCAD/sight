@@ -26,9 +26,9 @@
 
 #include <core/location/single_file.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 #include <vtkActor.h>
 
@@ -47,16 +47,16 @@ namespace sight::io::vtk
 /**
  * @brief   Write an image.
  *
- * Write a VTK Image using the VTK lib
+ * Write a VTK image using the VTK lib
  */
-class IO_VTK_CLASS_API ImageWriter : public writer::GenericObjectWriter<data::Image>,
+class IO_VTK_CLASS_API ImageWriter : public writer::generic_object_writer<data::image>,
                                      public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         ImageWriter,
-        io::writer::GenericObjectWriter<data::Image>,
+        io::writer::generic_object_writer<data::image>,
         io::writer::factory::make<ImageWriter>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();

@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>dicomXplorerBase</id>
     <parameters>
         <param name="appName" />
@@ -6,24 +6,24 @@
         <param name="appVersion" />
     </parameters>
     <config>
-        <object uid="seriesSet" type="sight::data::SeriesSet" />
+        <object uid="seriesSet" type="sight::data::series_set" />
 
-        <service uid="action_open" type="sight::module::ui::series::SDBMerger">
+        <service uid="action_open" type="sight::module::ui::series::db_merger">
             <inout key="seriesSet" uid="seriesSet" />
             <IOSelectorSrvConfig name="SDBSessionReaderIOSelectorConfig" />
         </service>
-        <service uid="action_save" type="sight::module::ui::com::SStarter">
+        <service uid="action_save" type="sight::module::ui::com::starter">
             <start uid="SDBWriter" />
         </service>
-        <service uid="SDBWriter" type="sight::module::ui::io::SSelector">
+        <service uid="SDBWriter" type="sight::module::ui::io::selector">
             <inout key="data" uid="seriesSet" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::session::SWriter" />
-            <config id="SightDataConfig" service="sight::module::io::session::SWriter" />
+            <addSelection service="sight::module::io::session::writer" />
+            <config id="SightDataConfig" service="sight::module::io::session::writer" />
         </service>
 
-        <service uid="mainFrame" type="sight::module::ui::SFrame">
+        <service uid="mainFrame" type="sight::module::ui::frame">
             <gui>
                 <frame>
                     <name>${appName}</name>
@@ -39,7 +39,7 @@
             </registry>
         </service>
 
-        <service uid="menuBar" type="sight::module::ui::SMenuBar">
+        <service uid="menuBar" type="sight::module::ui::menu_bar">
             <gui>
                 <layout>
                     <menu name="File" />
@@ -54,7 +54,7 @@
             </registry>
         </service>
 
-        <service uid="menu_file" type="sight::module::ui::SMenu">
+        <service uid="menu_file" type="sight::module::ui::menu">
             <gui>
                 <layout>
                     <menuItem name="Open" shortcut="Ctrl+O" />
@@ -69,7 +69,7 @@
             </registry>
         </service>
 
-        <service uid="menu_preferences" type="sight::module::ui::SMenu">
+        <service uid="menu_preferences" type="sight::module::ui::menu">
             <gui>
                 <layout>
                     <menuItem name="Preferences configuration"/>
@@ -80,7 +80,7 @@
             </registry>
         </service>
 
-        <service uid="menu_help" type="sight::module::ui::SMenu">
+        <service uid="menu_help" type="sight::module::ui::menu">
             <gui>
                 <layout>
                     <menuItem name="About" specialAction="ABOUT" />
@@ -91,9 +91,9 @@
             </registry>
         </service>
 
-        <service uid="action_quit" type="sight::module::ui::SQuit" />
+        <service uid="action_quit" type="sight::module::ui::quit" />
 
-        <service uid="action_configuration" type="sight::module::ui::qt::SPreferencesConfiguration">
+        <service uid="action_configuration" type="sight::module::ui::qt::preferences_configuration">
             <preference>
                 <type>text</type>
                 <name>Pacs Server Hostname</name>
@@ -115,11 +115,11 @@
              </preference>
         </service>
 
-        <service uid="action_about" type="sight::module::ui::qt::SShowAbout">
+        <service uid="action_about" type="sight::module::ui::qt::show_about">
             <filename id="dicomxplorer/about/about.html" />
         </service>
 
-        <service uid="dynamicView" type="sight::module::ui::qt::activity::SDynamicView">
+        <service uid="dynamicView" type="sight::module::ui::qt::activity::dynamic_view">
             <inout group="data">
                 <key name="SERIES_SET" uid="seriesSet" />
             </inout>
@@ -131,9 +131,9 @@
             </parameters>
         </service>
 
-        <service uid="progress_statusbar" type="sight::module::ui::SJobBar" />
+        <service uid="progress_statusbar" type="sight::module::ui::job_bar" />
 
-         <service uid="qtSelector" type="sight::module::ui::qt::SStyleSelector" />
+         <service uid="qtSelector" type="sight::module::ui::qt::style_selector" />
 
         <connect channel="progressStatus">
             <signal>SDBWriter/jobCreated</signal>

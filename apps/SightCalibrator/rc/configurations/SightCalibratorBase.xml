@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>SightCalibrator_AppCfg</id>
     <parameters>
         <param name="APP_NAME" />
@@ -9,12 +9,12 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="dataSet" type="sight::data::Set"/>
-        <object uid="activitySet" type="sight::data::ActivitySet"/>
+        <object uid="dataSet" type="sight::data::set"/>
+        <object uid="activitySet" type="sight::data::activity_set"/>
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::SFrame" >
+        <service uid="mainFrame" type="sight::module::ui::frame" >
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>
@@ -30,7 +30,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
+        <service uid="menuBarView" type="sight::module::ui::menu_bar" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -43,7 +43,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="sight::module::ui::SMenu" >
+        <service uid="menuFileView" type="sight::module::ui::menu" >
             <gui>
                 <layout>
                     <menuItem name="Open data set..." shortcut="Ctrl+O" />
@@ -62,7 +62,7 @@
             </registry>
         </service>
 
-        <service uid="menuPreferencesView" type="sight::module::ui::SMenu" >
+        <service uid="menuPreferencesView" type="sight::module::ui::menu" >
             <gui>
                 <layout>
                     <menuItem name="Video directory" />
@@ -74,7 +74,7 @@
         </service>
 
 
-        <service uid="mainview" type="sight::module::ui::SView" >
+        <service uid="mainview" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
@@ -85,7 +85,7 @@
             </registry>
         </service>
 
-        <service uid="dynamicView" type="sight::module::ui::qt::activity::SDynamicView" >
+        <service uid="dynamicView" type="sight::module::ui::qt::activity::dynamic_view" >
             <mainActivity id="SightCalibratorActivitySelector_Activity" closable="false" />
             <parameters>
                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
@@ -101,7 +101,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="videoDirectoryAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
+        <service uid="videoDirectoryAct" type="sight::module::ui::qt::preferences_configuration" >
             <preference>
                 <type>path</type>
                 <name>Video directory</name>
@@ -110,41 +110,41 @@
             </preference>
         </service>
 
-        <service uid="openDataSetAct" type="sight::module::ui::com::SStarter">
+        <service uid="openDataSetAct" type="sight::module::ui::com::starter">
             <start uid="dataSetReaderSrv" />
         </service>
 
-        <service uid="openActivityAct" type="sight::module::ui::com::SStarter">
+        <service uid="openActivityAct" type="sight::module::ui::com::starter">
             <start uid="activitySetReaderSrv" />
         </service>
 
         <!-- Actions to save all type of series (jsonz, json, ...). -->
-        <service uid="saveAct" type="sight::module::ui::com::SStarter">
+        <service uid="saveAct" type="sight::module::ui::com::starter">
             <start uid="dataSetWriterSrv" />
         </service>
 
         <!-- Save current activity. -->
-        <service uid="saveActivityAct" type="sight::module::ui::com::SStarter">
+        <service uid="saveActivityAct" type="sight::module::ui::com::starter">
             <start uid="activitySetWriterSrv" />
         </service>
 
-        <service uid="quitAct" type="sight::module::ui::SQuit" />
+        <service uid="quitAct" type="sight::module::ui::quit" />
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="dataSetReaderSrv" type="sight::module::ui::io::SSelector" config="SDBSessionReaderIOSelectorConfig" >
+        <service uid="dataSetReaderSrv" type="sight::module::ui::io::selector" config="SDBSessionReaderIOSelectorConfig" >
             <inout key="data" uid="dataSet" />
         </service>
 
-        <service uid="dataSetWriterSrv" type="sight::module::ui::io::SSelector" config="SDBSessionWriterIOSelectorConfig" >
+        <service uid="dataSetWriterSrv" type="sight::module::ui::io::selector" config="SDBSessionWriterIOSelectorConfig" >
             <inout key="data" uid="dataSet" />
         </service>
 
-        <service uid="activitySetReaderSrv" type="sight::module::ui::io::SSelector" config="ActivityReaderConfig" >
+        <service uid="activitySetReaderSrv" type="sight::module::ui::io::selector" config="ActivityReaderConfig" >
             <inout key="data" uid="activitySet" />
         </service>
 
-        <service uid="activitySetWriterSrv" type="sight::module::ui::io::SSelector" config="ActivityWriterConfig" >
+        <service uid="activitySetWriterSrv" type="sight::module::ui::io::selector" config="ActivityWriterConfig" >
             <inout key="data" uid="activitySet" />
         </service>
 

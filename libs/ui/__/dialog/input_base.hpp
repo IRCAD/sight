@@ -60,7 +60,7 @@ public:
     UI_API virtual void setTitle(const std::string& title) = 0;
 
     /// Set the input text in the input field
-    UI_API virtual void setInput(const std::string& text) = 0;
+    UI_API virtual void set_input(const std::string& text) = 0;
 
     /// Get the input text in the input field
     UI_API virtual std::pair<std::string, bool> getInput() = 0;

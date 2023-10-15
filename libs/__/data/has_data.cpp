@@ -30,7 +30,7 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-data::Object::csptr has_data::object(
+data::object::csptr has_data::object(
     std::string_view _key,
     data::Access _access,
     std::optional<std::size_t> _index
@@ -50,8 +50,8 @@ data::Object::csptr has_data::object(
 
 //------------------------------------------------------------------------------
 
-void has_data::setInput(
-    data::Object::csptr _obj,
+void has_data::set_input(
+    data::object::csptr _obj,
     std::string_view _key,
     std::optional<bool> _autoConnect,
     std::optional<bool> _optional,
@@ -61,13 +61,13 @@ void has_data::setInput(
     auto data = m_dataContainer.find({_key, {}});
     SIGHT_ASSERT("Could not find any registered data pointer with key '" << _key << "'", data != m_dataContainer.end());
     SIGHT_ASSERT("Key '" << _key << "' is not an input.", data->second->access() == data::Access::INPUT);
-    data->second->set(std::const_pointer_cast<sight::data::Object>(_obj), _autoConnect, _optional, _index);
+    data->second->set(std::const_pointer_cast<sight::data::object>(_obj), _autoConnect, _optional, _index);
 }
 
 //------------------------------------------------------------------------------
 
-void has_data::setInOut(
-    data::Object::sptr _obj,
+void has_data::set_inout(
+    data::object::sptr _obj,
     std::string_view _key,
     std::optional<bool> _autoConnect,
     std::optional<bool> _optional,
@@ -82,7 +82,7 @@ void has_data::setInOut(
 
 //-----------------------------------------------------------------------------
 
-void has_data::setOutput(std::string_view _key, data::Object::sptr _obj, std::optional<std::size_t> _index)
+void has_data::set_output(std::string_view _key, data::object::sptr _obj, std::optional<std::size_t> _index)
 {
     auto data = m_dataContainer.find({_key, {}});
     SIGHT_ASSERT("Could not find any registered data pointer with key '" << _key << "'", data != m_dataContainer.end());
@@ -92,8 +92,8 @@ void has_data::setOutput(std::string_view _key, data::Object::sptr _obj, std::op
 
 //------------------------------------------------------------------------------
 
-void has_data::setObject(
-    data::Object::sptr _obj,
+void has_data::set_object(
+    data::object::sptr _obj,
     std::string_view _key,
     std::optional<std::size_t> _index,
     [[maybe_unused]] data::Access _access,
@@ -109,7 +109,7 @@ void has_data::setObject(
 
 //------------------------------------------------------------------------------
 
-void has_data::resetObject(std::string_view _key, std::optional<std::size_t> _index)
+void has_data::reset_object(std::string_view _key, std::optional<std::size_t> _index)
 {
     auto data = m_dataContainer.find({_key, {}});
     SIGHT_ASSERT("Could not find any registered data pointer with key '" << _key << "'", data != m_dataContainer.end());
@@ -118,14 +118,14 @@ void has_data::resetObject(std::string_view _key, std::optional<std::size_t> _in
 
 //-----------------------------------------------------------------------------
 
-void has_data::setDeferredId(std::string_view _key, const std::string& _id, std::optional<std::size_t> _index)
+void has_data::set_deferred_id(std::string_view _key, const std::string& _id, std::optional<std::size_t> _index)
 {
     auto itData = m_dataContainer.find({_key, {}});
     SIGHT_ASSERT(
         "Could not find any registered data pointer with key '" << _key << "'",
         itData != m_dataContainer.end()
     );
-    itData->second->setDeferredId(_id, _index);
+    itData->second->set_deferred_id(_id, _index);
 }
 
 //------------------------------------------------------------------------------

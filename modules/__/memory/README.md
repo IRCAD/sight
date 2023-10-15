@@ -5,7 +5,7 @@ Contains services to manage memory and lock objects to prevent dump.
 ## Services
 
 - **LockDumpSrv** : performs dumps-locks on objects. They are unlocked when the service stops.
-- **SDumpPolicy** : configures dumping policy.
+- **dump_policy** : configures dumping policy.
 
 ## How to use it
 

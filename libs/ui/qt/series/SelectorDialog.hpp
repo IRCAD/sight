@@ -23,7 +23,7 @@
 
 #include "ui/qt/config.hpp"
 
-#include <data/SeriesSet.hpp>
+#include <data/series_set.hpp>
 
 #include <QDialog>
 
@@ -41,7 +41,7 @@ public:
     /// @param series the series to select.
     /// @param parent the parent widget.
     UI_QT_API_QT selector(
-        data::SeriesSet::csptr series_set,
+        data::series_set::csptr series_set,
         const std::string& displayedColumn,
         QWidget* parent = nullptr
     );
@@ -50,7 +50,7 @@ public:
     UI_QT_API_QT ~selector() noexcept override;
 
     /// Returns the selected series.
-    UI_QT_API_QT data::SeriesSet::sptr get_selection() const;
+    UI_QT_API_QT data::series_set::sptr get_selection() const;
 
 private:
 

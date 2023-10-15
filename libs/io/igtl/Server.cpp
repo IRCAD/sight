@@ -54,7 +54,7 @@ Server::~Server()
 
 //------------------------------------------------------------------------------
 
-bool Server::isStarted() const
+bool Server::started() const
 {
     core::mt::scoped_lock lock(m_mutex);
 
@@ -74,7 +74,7 @@ void Server::runServer()
 {
     Client::sptr newClient;
 
-    while(this->isStarted())
+    while(this->started())
     {
         newClient = this->waitForConnection();
         if(newClient != nullptr)
@@ -92,7 +92,7 @@ void Server::runServer()
 
 //------------------------------------------------------------------------------
 
-void Server::broadcast(const data::Object::csptr& obj)
+void Server::broadcast(const data::object::csptr& obj)
 {
     std::vector<Client::sptr>::iterator it;
 
@@ -211,7 +211,7 @@ void Server::stop()
 
 std::size_t Server::numClients() const
 {
-    if(this->isStarted())
+    if(this->started())
     {
         core::mt::scoped_lock lock(m_mutex);
 
@@ -340,9 +340,9 @@ std::vector< ::igtl::MessageHeader::Pointer> Server::receiveHeaders()
 
 //------------------------------------------------------------------------------
 
-std::vector<data::Object::sptr> Server::receiveObjects(std::vector<std::string>& deviceNames)
+std::vector<data::object::sptr> Server::receiveObjects(std::vector<std::string>& deviceNames)
 {
-    std::vector<data::Object::sptr> objVect;
+    std::vector<data::object::sptr> objVect;
     std::vector< ::igtl::MessageHeader::Pointer> headerMsgVect = this->receiveHeaders();
     unsigned int client                                        = 0;
     for(const auto& headerMsg : headerMsgVect)

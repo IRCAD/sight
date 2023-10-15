@@ -25,8 +25,8 @@
 #include <activity/validator/base.hpp>
 #include <activity/validator/object.hpp>
 
-#include <data/Camera.hpp>
-#include <data/CameraSet.hpp>
+#include <data/camera.hpp>
+#include <data/camera_set.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::activity::validator::ut::MonoCameraTest);
@@ -64,9 +64,9 @@ void MonoCameraTest::testValidator()
 
     sight::activity::validator::return_t validation;
 
-    data::CameraSet::sptr camera_set = std::make_shared<data::CameraSet>();
-    data::Camera::sptr camera        = std::make_shared<data::Camera>();
-    data::Camera::sptr camera2       = std::make_shared<data::Camera>();
+    data::camera_set::sptr camera_set = std::make_shared<data::camera_set>();
+    data::camera::sptr camera         = std::make_shared<data::camera>();
+    data::camera::sptr camera2        = std::make_shared<data::camera>();
 
     {
         validation = objValidator->validate(camera_set);

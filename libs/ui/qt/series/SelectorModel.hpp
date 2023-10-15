@@ -24,7 +24,7 @@
 
 #include "ui/qt/config.hpp"
 
-#include <data/Series.hpp>
+#include <data/series.hpp>
 
 #include <QPointer>
 #include <QStandardItem>
@@ -74,13 +74,13 @@ public:
      * @brief Add the Series in the tree. If the associated study already exist in the tree, the series is added to
      * this study.
      */
-    UI_QT_API_QT void addSeries(data::Series::sptr _series);
+    UI_QT_API_QT void addSeries(data::series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UI_QT_API_QT void removeSeries(data::Series::sptr _series);
+    UI_QT_API_QT void removeSeries(data::series::sptr _series);
 
     /// Clears all items in the model.
     UI_QT_API_QT void clear();
@@ -105,10 +105,10 @@ public:
     UI_QT_API_QT void removeRows(const QModelIndexList _indexes);
 
     /// Returns the series item representing the series.
-    UI_QT_API_QT QStandardItem* findSeriesItem(data::Series::sptr _series);
+    UI_QT_API_QT QStandardItem* findSeriesItem(data::series::sptr _series);
 
     /// Returns the item representing the study.
-    UI_QT_API_QT QStandardItem* findStudyItem(data::Series::sptr _series);
+    UI_QT_API_QT QStandardItem* findStudyItem(data::series::sptr _series);
 
     /**
      * @brief Sets the specific icons for series in selector.
@@ -160,7 +160,7 @@ private:
     bool removeSeriesItem(QStandardItem* _item);
 
     /// Adds the icon corresponding to the type of series.
-    void addSeriesIcon(data::Series::sptr _series, QStandardItem* _item);
+    void addSeriesIcon(data::series::sptr _series, QStandardItem* _item);
 
     /// Initializes model. Sets headers of the selector.
     void init();

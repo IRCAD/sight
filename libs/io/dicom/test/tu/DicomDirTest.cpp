@@ -24,13 +24,13 @@
 
 #include <core/log/logger.hpp>
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 #include <io/dicom/helper/DicomDir.hpp>
 
 #include <utest/Filter.hpp>
 
-#include <utestData/Data.hpp>
+#include <utest_data/Data.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 
@@ -70,7 +70,7 @@ void DicomDirTest::readDicomDir()
         return;
     }
 
-    const std::filesystem::path path = utestData::Data::dir()
+    const std::filesystem::path path = utest_data::Data::dir()
                                        / "sight/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
     const std::string pathStr = boost::algorithm::replace_all_copy(path.string(), "\\", "/");
 
@@ -79,7 +79,7 @@ void DicomDirTest::readDicomDir()
         std::filesystem::exists(path)
     );
 
-    std::vector<data::DicomSeries::sptr> seriesContainer;
+    std::vector<data::dicom_series::sptr> seriesContainer;
 
     core::log::logger::sptr logger = std::make_shared<core::log::logger>();
 

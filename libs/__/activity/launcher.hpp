@@ -23,9 +23,9 @@
 #pragma once
 
 #include "activity/config.hpp"
-#include "activity/extension/Activity.hpp"
+#include "activity/extension/activity.hpp"
 
-#include <data/Activity.hpp>
+#include <data/activity.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -42,8 +42,8 @@ class ACTIVITY_CLASS_API launcher
 public:
 
     typedef boost::property_tree::ptree ConfigurationType;
-    typedef activity::extension::ActivityAppConfigParam ParameterType;
-    typedef activity::extension::ActivityAppConfigParamsType ParametersType;
+    typedef activity::extension::activity_config_param ParameterType;
+    typedef activity::extension::activity_config_params_type ParametersType;
     typedef std::map<std::string, std::string> ReplaceMapType;
     typedef std::vector<std::string> InOutMapType;
 
@@ -62,14 +62,14 @@ protected:
     );
 
     /// Create the activity given in 'mainActivity' configuration
-    [[nodiscard]] ACTIVITY_API virtual data::Activity::sptr createMainActivity() const;
+    [[nodiscard]] ACTIVITY_API virtual data::activity::sptr createMainActivity() const;
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
     static ACTIVITY_API std::pair<bool, std::string> validateActivity(
-        const data::Activity::csptr& activity
+        const data::activity::csptr& activity
     );
 
     std::string m_mainActivityId; ///< configuration id of the main activity

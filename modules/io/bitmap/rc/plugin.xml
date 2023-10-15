@@ -1,17 +1,17 @@
 <plugin id="sight::module::io::bitmap" library="true">
     <requirement id="sight::module::service" />
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
         <type>sight::io::service::writer</type>
-        <service>sight::module::io::bitmap::SWriter</service>
-        <object>sight::data::Image</object>
+        <service>sight::module::io::bitmap::writer</service>
+        <object>sight::data::image</object>
         <desc>Bitmap Writer</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
-        <service>sight::module::io::bitmap::SReader</service>
-        <object>sight::data::Image</object>
+        <service>sight::module::io::bitmap::reader</service>
+        <object>sight::data::image</object>
         <desc>Bitmap Reader</desc>
     </extension>
 </plugin>

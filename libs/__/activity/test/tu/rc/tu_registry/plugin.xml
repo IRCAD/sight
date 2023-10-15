@@ -1,15 +1,15 @@
 <plugin id="tu_registry">
 
-    <extension-point id="sight::activity::extension::Activity" schema="activity/activity.xsd" />
+    <extension-point id="sight::activity::extension" schema="activity/activity.xsd" />
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestRegistry0</id>
         <title>Title Test0</title>
         <desc>Desc Test0</desc>
         <icon>Icon Test0</icon>
         <requirements>
-            <requirement name="param1" type="sight::data::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
-            <requirement name="param2" type="sight::data::Mesh" maxOccurs="8">
+            <requirement name="param1" type="sight::data::image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <requirement name="param2" type="sight::data::mesh" maxOccurs="8">
                 <key>key1</key>
                 <key>key2</key>
                 <key>key3</key>
@@ -19,7 +19,7 @@
                 <key>key7</key>
                 <key>key8</key>
             </requirement>
-            <requirement name="param3" type="sight::data::Mesh" maxOccurs="10">
+            <requirement name="param3" type="sight::data::mesh" maxOccurs="10">
                 <!-- '*' not managed right now -->
                 <key>key1</key>
                 <key>key2</key>
@@ -32,11 +32,11 @@
                 <key>key9</key>
                 <key>key10</key>
             </requirement>
-            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="0" maxOccurs="2">
+            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="0" maxOccurs="2">
                 <key>key1</key>
                 <key>key2</key>
             </requirement>
-            <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="sight::data::model_series" minOccurs="1" maxOccurs="1" />
             <!--# ...-->
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
@@ -48,13 +48,13 @@
     </extension>
 
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestRegistry1</id>
         <title>Title Test1</title>
         <desc>1 image</desc>
         <icon>Icon Test1</icon>
         <requirements>
-            <requirement name="param1" type="sight::data::Image" />
+            <requirement name="param1" type="sight::data::image" />
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg1">
@@ -62,14 +62,14 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestRegistry2</id>
         <title>Title Test2</title>
         <desc>1 image, 1 mesh</desc>
         <icon>Icon Test2</icon>
         <requirements>
-            <requirement name="img" type="sight::data::Image" />
-            <requirement name="mesh" type="sight::data::Mesh" />
+            <requirement name="img" type="sight::data::image" />
+            <requirement name="mesh" type="sight::data::mesh" />
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg2">
@@ -77,13 +77,13 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestRegistry3</id>
         <title>Title Test3</title>
         <desc>1-2 image</desc>
         <icon>Icon Test3</icon>
         <requirements>
-            <requirement name="param1" type="sight::data::Image" maxOccurs="2">
+            <requirement name="param1" type="sight::data::image" maxOccurs="2">
                 <key>key1</key>
                 <key>key2</key>
             </requirement>
@@ -94,13 +94,13 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestRegistry4</id>
         <title>Title Test4</title>
         <desc>* image</desc>
         <icon>Icon Test4</icon>
         <requirements>
-            <requirement name="param1" type="sight::data::Image" maxOccurs="10">
+            <requirement name="param1" type="sight::data::image" maxOccurs="10">
                 <!-- '*' not managed right now -->
                 <key>key1</key>
                 <key>key2</key>
@@ -120,13 +120,13 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestRegistry5</id>
         <title>Title Test5</title>
         <desc>4-8 image</desc>
         <icon>Icon Test5</icon>
         <requirements>
-            <requirement name="param1" type="sight::data::Image" minOccurs="4" maxOccurs="8">
+            <requirement name="param1" type="sight::data::image" minOccurs="4" maxOccurs="8">
                 <key>key1</key>
                 <key>key2</key>
                 <key>key3</key>
@@ -143,14 +143,14 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestRegistry6</id>
         <title>Title Test6</title>
         <desc>2 image</desc>
         <icon>Icon Test6</icon>
         <requirements>
-            <requirement name="param1" type="sight::data::Image" />
-            <requirement name="param2" type="sight::data::Image" />
+            <requirement name="param1" type="sight::data::image" />
+            <requirement name="param2" type="sight::data::image" />
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg6">
@@ -158,14 +158,14 @@
         </appConfig>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestRegistry7</id>
         <title>Title Test7</title>
         <desc>1 image, 0-1 mesh</desc>
         <icon>Icon Test3</icon>
         <requirements>
-            <requirement name="img" type="sight::data::Image" />
-            <requirement name="mesh" type="sight::data::Mesh" minOccurs="0">
+            <requirement name="img" type="sight::data::image" />
+            <requirement name="mesh" type="sight::data::mesh" minOccurs="0">
                 <key>key1</key>
             </requirement>
         </requirements>

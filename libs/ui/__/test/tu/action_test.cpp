@@ -96,7 +96,7 @@ void actionTest::configuringTest()
         boost::property_tree::ptree config;
         boost::property_tree::read_xml(xmlConfig, config);
 
-        action->setConfiguration(config);
+        action->set_config(config);
         action->configure();
         action->start();
 
@@ -119,7 +119,7 @@ void actionTest::configuringTest()
         boost::property_tree::ptree config;
         boost::property_tree::read_xml(xmlConfig, config);
 
-        action->setConfiguration(config);
+        action->set_config(config);
         action->configure();
         action->start();
 
@@ -137,12 +137,12 @@ void actionTest::configuringTest()
         auto action = std::make_shared<TestAction>();
         std::stringstream xmlConfig;
         xmlConfig << ""
-                     "<state inverse=\"true\" active=\"true\" executable=\"false\" />"
+                     "<state inverse=\"true\" checked=\"true\" enabled=\"false\" />"
                      "";
         boost::property_tree::ptree config;
         boost::property_tree::read_xml(xmlConfig, config);
 
-        action->setConfiguration(config);
+        action->set_config(config);
         action->configure();
         action->start();
 
@@ -150,8 +150,6 @@ void actionTest::configuringTest()
         CPPUNIT_ASSERT_EQUAL(false, action->enabled());
         CPPUNIT_ASSERT_EQUAL(true, action->visible());
         CPPUNIT_ASSERT_EQUAL(true, action->inverted());
-        CPPUNIT_ASSERT_EQUAL(true, action->isVisible());
-        CPPUNIT_ASSERT_EQUAL(true, action->isInverted());
 
         action->stop();
     }
@@ -167,8 +165,6 @@ void actionTest::propertiesTest()
 
         CPPUNIT_ASSERT_EQUAL(false, action->checked());
         CPPUNIT_ASSERT_EQUAL(true, action->enabled());
-        CPPUNIT_ASSERT_EQUAL(true, action->isVisible());
-        CPPUNIT_ASSERT_EQUAL(false, action->isInverted());
 
         action->start();
 
@@ -193,38 +189,10 @@ void actionTest::propertiesTest()
         CPPUNIT_ASSERT_EQUAL(false, action->checked());
 
         action->slot("hide")->run();
-        CPPUNIT_ASSERT_EQUAL(false, action->isVisible());
+        CPPUNIT_ASSERT_EQUAL(false, action->visible());
         action->slot("show")->run();
-        CPPUNIT_ASSERT_EQUAL(true, action->isVisible());
+        CPPUNIT_ASSERT_EQUAL(true, action->visible());
 
-        {
-            // Deprecated slots
-            action->slot("setInexecutable")->run();
-            CPPUNIT_ASSERT_EQUAL(false, action->enabled());
-            CPPUNIT_ASSERT_EQUAL(false, action->getIsExecutable());
-            action->slot("setExecutable")->run();
-            CPPUNIT_ASSERT_EQUAL(true, action->enabled());
-            CPPUNIT_ASSERT_EQUAL(true, action->getIsExecutable());
-            std::dynamic_pointer_cast<bool_slot_t>(action->slot("setIsExecutable"))->run(false);
-            CPPUNIT_ASSERT_EQUAL(false, action->enabled());
-            CPPUNIT_ASSERT_EQUAL(false, action->getIsExecutable());
-            std::dynamic_pointer_cast<bool_slot_t>(action->slot("setIsExecutable"))->run(true);
-            CPPUNIT_ASSERT_EQUAL(true, action->enabled());
-            CPPUNIT_ASSERT_EQUAL(true, action->getIsExecutable());
-
-            action->slot("activate")->run();
-            CPPUNIT_ASSERT_EQUAL(true, action->checked());
-            CPPUNIT_ASSERT_EQUAL(true, action->getIsActive());
-            action->slot("deactivate")->run();
-            CPPUNIT_ASSERT_EQUAL(false, action->checked());
-            CPPUNIT_ASSERT_EQUAL(false, action->getIsActive());
-            std::dynamic_pointer_cast<bool_slot_t>(action->slot("setIsActive"))->run(true);
-            CPPUNIT_ASSERT_EQUAL(true, action->checked());
-            CPPUNIT_ASSERT_EQUAL(true, action->getIsActive());
-            std::dynamic_pointer_cast<bool_slot_t>(action->slot("setIsActive"))->run(false);
-            CPPUNIT_ASSERT_EQUAL(false, action->checked());
-            CPPUNIT_ASSERT_EQUAL(false, action->getIsActive());
-        }
         action->stop();
     }
 }

@@ -42,7 +42,7 @@ constexpr exporter<C>::exporter()
 
 //------------------------------------------------------------------------------
 template<class C>
-typename exporter<C>::connections_t exporter<C>::getAutoConnections() const
+typename exporter<C>::connections_t exporter<C>::auto_connections() const
 {
     return {
         {s_CONTAINER_INOUT, C::ADDED_OBJECTS_SIG, CHECK_ADDED_OBJECTS_SLOT},

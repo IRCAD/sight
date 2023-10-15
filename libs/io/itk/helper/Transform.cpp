@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@ namespace sight::io::itk::helper
 
 //-----------------------------------------------------------------------------
 
-Transform::MatrixType Transform::convertToITK(const data::Matrix4::csptr& _inTrf)
+Transform::MatrixType Transform::convertToITK(const data::matrix4::csptr& _inTrf)
 {
     MatrixType itkMat;
 
@@ -44,7 +44,7 @@ Transform::MatrixType Transform::convertToITK(const data::Matrix4::csptr& _inTrf
 
 //-----------------------------------------------------------------------------
 
-void Transform::convertFromITK(const MatrixType& _inTrf, data::Matrix4::sptr& _outTrf)
+void Transform::convertFromITK(const MatrixType& _inTrf, data::matrix4::sptr& _outTrf)
 {
     SIGHT_ASSERT("Input itk Matrix should be 4x4", _inTrf.ColumnDimensions == 4 && _inTrf.RowDimensions == 4);
 

@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene3d::imageSplitViews</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -37,14 +37,14 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
-        <object uid="${image}" type="sight::data::ImageSeries" src="deferred" />
-        <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
-        <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
+        <object uid="${modelSeries}" type="sight::data::model_series" src="deferred" />
+        <object uid="${image}" type="sight::data::image_series" src="deferred" />
+        <object uid="${volumeTF}" type="sight::data::transfer_function" src="ref" />
+        <object uid="${extrudedModelSeries}" type="sight::data::model_series" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SView">
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -60,7 +60,7 @@
         </service>
 
 
-        <service uid="topScenesView" type="sight::module::ui::SView">
+        <service uid="topScenesView" type="sight::module::ui::view">
             <gui>
               <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
@@ -74,7 +74,7 @@
            </registry>
         </service>
 
-        <service uid="bottomScenesView" type="sight::module::ui::SView">
+        <service uid="bottomScenesView" type="sight::module::ui::view">
             <gui>
               <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
@@ -90,7 +90,7 @@
 
         <!-- ******************************* Begin 3D Scene ******************************* -->
 
-        <service uid="mainSceneCfg" type="sight::service::SConfigController" >
+        <service uid="mainSceneCfg" type="sight::app::config_controller" >
             <appConfig id="sight::config::viz::scene3d::volumeRendering" />
             <parameter replace="WID_PARENT" by="mainSceneView" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SCENE3D_VISIBILITY_RECEIVER_CHANNEL" />
@@ -127,7 +127,7 @@
 
         <!-- ************************************* 2D Negato views ************************************ -->
 
-        <service uid="axialNegatoCfg" type="sight::service::SConfigController" >
+        <service uid="axialNegatoCfg" type="sight::app::config_controller" >
             <appConfig id="sight::config::viz::scene3d::negato2D" />
             <parameter replace="WID_PARENT" by="axialSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -145,7 +145,7 @@
             </inout>
         </service>
 
-        <service uid="sagittalNegatoCfg" type="sight::service::SConfigController" >
+        <service uid="sagittalNegatoCfg" type="sight::app::config_controller" >
             <appConfig id="sight::config::viz::scene3d::negato2D" />
             <parameter replace="WID_PARENT" by="sagittalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -163,7 +163,7 @@
             </inout>
         </service>
 
-        <service uid="frontalNegatoCfg" type="sight::service::SConfigController" >
+        <service uid="frontalNegatoCfg" type="sight::app::config_controller" >
             <appConfig id="sight::config::viz::scene3d::negato2D" />
             <parameter replace="WID_PARENT" by="frontalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -183,7 +183,7 @@
 
         <!-- ************************************* Actions ************************************ -->
 
-        <service uid="mainSceneVisibilityAct" type="sight::module::ui::SModifyLayout" >
+        <service uid="mainSceneVisibilityAct" type="sight::module::ui::modify_layout" >
             <status checked="false"/>
             <config>
                 <toggle wid="axialSceneView" />
@@ -192,7 +192,7 @@
             </config>
         </service>
 
-        <service uid="axialNegatoVisibilityAct" type="sight::module::ui::SModifyLayout" >
+        <service uid="axialNegatoVisibilityAct" type="sight::module::ui::modify_layout" >
             <config>
                 <toggle wid="mainSceneView" />
                 <toggle wid="sagittalSceneView" />
@@ -200,7 +200,7 @@
             </config>
         </service>
 
-        <service uid="sagittalNegatoVisibilityAct" type="sight::module::ui::SModifyLayout" >
+        <service uid="sagittalNegatoVisibilityAct" type="sight::module::ui::modify_layout" >
             <config>
                 <toggle wid="mainSceneView" />
                 <toggle wid="axialSceneView" />
@@ -208,7 +208,7 @@
             </config>
         </service>
 
-        <service uid="frontalNegatoVisibilityAct" type="sight::module::ui::SModifyLayout" >
+        <service uid="frontalNegatoVisibilityAct" type="sight::module::ui::modify_layout" >
             <config>
                 <toggle wid="mainSceneView" />
                 <toggle wid="axialSceneView" />
@@ -216,7 +216,7 @@
             </config>
         </service>
 
-        <service uid="negatoVisibilityAct" type="sight::module::ui::SModifyLayout" >
+        <service uid="negatoVisibilityAct" type="sight::module::ui::modify_layout" >
             <config>
                 <show wid="mainSceneView" />
                 <show wid="axialSceneView" />
@@ -225,7 +225,7 @@
             </config>
         </service>
 
-        <service uid="volumeVisibilityAct" type="sight::module::ui::SModifyLayout" >
+        <service uid="volumeVisibilityAct" type="sight::module::ui::modify_layout" >
             <config>
                 <show wid="mainSceneView" />
                 <hide wid="axialSceneView" />

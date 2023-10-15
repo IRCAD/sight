@@ -22,10 +22,8 @@
 
 #include "plugin.hpp"
 
-#include <service/extension/AppConfig.hpp>
-#include <service/extension/AppConfigParameters.hpp>
-#include <service/extension/Config.hpp>
-#include <service/extension/Factory.hpp>
+#include <service/extension/config.hpp>
+#include <service/extension/factory.hpp>
 
 namespace sight::module::service
 {
@@ -34,17 +32,10 @@ SIGHT_REGISTER_PLUGIN("sight::module::service::plugin");
 
 //-----------------------------------------------------------------------------
 
-plugin::~plugin() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void plugin::start()
 {
-    sight::service::extension::Factory::getDefault()->parseBundleInformation();
-    sight::service::extension::Config::getDefault()->parseBundleInformation();
-    sight::service::extension::AppConfig::getDefault()->parseBundleInformation();
-    sight::service::extension::AppConfigParameters::getDefault()->parseBundleInformation();
+    sight::service::extension::factory::get()->parse_plugin_infos();
+    sight::service::extension::config::getDefault()->parse_plugin_infos();
 }
 
 //-----------------------------------------------------------------------------
@@ -52,16 +43,10 @@ void plugin::start()
 void plugin::stop() noexcept
 {
     // Clear all service configs
-    sight::service::extension::Config::getDefault()->clearRegistry();
-
-    // Clear all app configuration
-    sight::service::extension::AppConfig::getDefault()->clearRegistry();
-
-    // Clear all app configuration parameters
-    sight::service::extension::AppConfigParameters::getDefault()->clearRegistry();
+    sight::service::extension::config::getDefault()->clear_registry();
 
     // Clear all service factories
-    sight::service::extension::Factory::getDefault()->clearFactory();
+    sight::service::extension::factory::get()->clear_factory();
 }
 
 //-----------------------------------------------------------------------------

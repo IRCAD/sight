@@ -24,9 +24,9 @@ An input dialog asking for a password will be shown when:
   argument.
 - for preferences, if the appropriate `password` and `encryption` `policy` is set in module `ui` configuration
   > take a look at `libs/ui/__/Preferences.hpp`.
-- for session files, if the appropriate `password` and `encryption` `policy` is set in SReader and SWriter service
+- for session files, if the appropriate `password` and `encryption` `policy` is set in reader and writer service
   configuration
-  > take a look at `modules/io/session/SReader.hpp` and `modules/io/session/SWriter.hpp`.
+  > take a look at `modules/io/session/reader.hpp` and `modules/io/session/writer.hpp`.
 
 In all case, the entered password will be kept (obfuscated) in memory, allowing to only ask the password once, until, of
 course, it is explicitly configured to not do so.

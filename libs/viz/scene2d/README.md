@@ -9,7 +9,7 @@ The generic element cover background size, position, viewports, scenes and mouse
 
 * **Scene2DGraphicsView**: contains the view dedicated element: viewport, as well as all the mouse interaction methods. 
 
-* **SRender**: renders the QT scene. 
+* **render**: renders the QT scene. 
  
 ### Data
 
@@ -27,7 +27,7 @@ The generic element cover background size, position, viewports, scenes and mouse
  
 ### Registry
 
-* **Adaptor**: Handles a map containing Adaptor-SRender association for the sight registry.
+* **adaptor**: Handles a map containing adaptor-render association for the sight registry.
 
  
 ## How to use it

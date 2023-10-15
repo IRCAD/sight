@@ -45,7 +45,7 @@ struct InrSaverFunctor
     struct Parameter
     {
         std::string m_filename;
-        data::Image::csptr m_dataImage;
+        data::image::csptr m_dataImage;
         io::itk::InrImageWriter::sptr m_fwWriter;
     };
 

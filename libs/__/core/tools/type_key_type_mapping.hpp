@@ -37,7 +37,7 @@ namespace sight::core::tools
  */
 
 /**
- * @brief   Template specialization for defining KeyType mapping ( here numeric) with their value.
+ * @brief   Template specialization for defining key_t mapping ( here numeric) with their value.
  *
  * Header declare function already specialized while src provide definition
  * @warning isMapping does not need to be exported since fwTools Library is builded as static

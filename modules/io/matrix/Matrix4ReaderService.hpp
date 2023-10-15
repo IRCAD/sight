@@ -32,7 +32,7 @@ namespace sight::module::io::matrix
 {
 
 /**
- * @brief This service read a data::Matrix4 from a .trf file.
+ * @brief This service read a data::matrix4 from a .trf file.
  *
  * This format is basic: an ascii file which contains matrix 4x4 values.
  *
@@ -44,7 +44,7 @@ namespace sight::module::io::matrix
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b data [sight::data::Matrix4]: matrix to read.
+ * - \b data [sight::data::matrix4]: matrix to read.
  */
 class MODULE_IO_MATRIX_CLASS_API Matrix4ReaderService : public sight::io::service::reader
 {
@@ -105,7 +105,7 @@ protected:
      * @brief Updating method. This method is called by update() from base service ( service::base )
      *
      * This method is used to update the service.
-     * The transformation matrix is read with the reader io::reader::Matrix4Reader.
+     * The transformation matrix is read with the reader io::reader::matrix4_reader.
      * Notify reading.
      */
     MODULE_IO_MATRIX_API void updating() override;

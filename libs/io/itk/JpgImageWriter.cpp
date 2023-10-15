@@ -28,11 +28,11 @@
 #include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 
-#include <data/Composite.hpp>
+#include <data/composite.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/Image.hpp>
-#include <data/Integer.hpp>
-#include <data/TransferFunction.hpp>
+#include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/transfer_function.hpp>
 
 #include <io/__/writer/registry/macros.hpp>
 
@@ -62,7 +62,7 @@ struct JpgITKSaverFunctor
     struct Parameter
     {
         std::string m_directoryPath;
-        data::Image::csptr m_dataImage;
+        data::image::csptr m_dataImage;
         io::itk::JpgImageWriter::sptr m_fwWriter;
     };
 
@@ -71,9 +71,9 @@ struct JpgITKSaverFunctor
     template<class PIXELTYPE>
     void operator()(const Parameter& param)
     {
-        SIGHT_DEBUG("itk::ImageSeriesWriter with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
+        SIGHT_DEBUG("itk::image_series_writer with PIXELTYPE " << core::type::get<PIXELTYPE>().name());
 
-        data::Image::csptr image = param.m_dataImage;
+        data::image::csptr image = param.m_dataImage;
 
         // Reader IO (*1*)
         auto imageIOWrite = ::itk::ImageIOFactory::CreateImageIO("image.jpg", ::itk::ImageIOFactory::WriteMode);

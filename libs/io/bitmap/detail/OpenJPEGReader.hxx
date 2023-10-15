@@ -80,7 +80,7 @@ public:
     inline ~OpenJPEGReader() noexcept = default;
 
     /// Reading
-    inline void read(data::Image& image, std::istream& istream, Flag flag)
+    inline void read(data::image& image, std::istream& istream, Flag flag)
     {
         // Create an RAII to be sure everything is cleaned at exit
         struct Keeper final
@@ -203,11 +203,11 @@ public:
                     case OPJ_CLRSPC_GRAY:
                     {
                         SIGHT_THROW_IF(
-                            "data::Image::PixelFormat::GRAY_SCALE must have exactly one component.",
+                            "data::image::PixelFormat::GRAY_SCALE must have exactly one component.",
                             keeper.m_image->numcomps != 1
                         );
 
-                        return data::Image::PixelFormat::GRAY_SCALE;
+                        return data::image::PixelFormat::GRAY_SCALE;
                     }
 
                     case OPJ_CLRSPC_SRGB:
@@ -215,10 +215,10 @@ public:
                         switch(keeper.m_image->numcomps)
                         {
                             case 3:
-                                return data::Image::PixelFormat::RGB;
+                                return data::image::PixelFormat::RGB;
 
                             case 4:
-                                return data::Image::PixelFormat::RGBA;
+                                return data::image::PixelFormat::RGBA;
 
                             default:
                                 SIGHT_THROW(
@@ -233,13 +233,13 @@ public:
                         switch(keeper.m_image->numcomps)
                         {
                             case 1:
-                                return data::Image::PixelFormat::GRAY_SCALE;
+                                return data::image::PixelFormat::GRAY_SCALE;
 
                             case 3:
-                                return data::Image::PixelFormat::RGB;
+                                return data::image::PixelFormat::RGB;
 
                             case 4:
-                                return data::Image::PixelFormat::RGBA;
+                                return data::image::PixelFormat::RGBA;
 
                             default:
                                 SIGHT_THROW(
@@ -390,11 +390,11 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename T>
-    inline static void toSight(const opj_image_t& opj_image, data::Image& image)
+    inline static void toSight(const opj_image_t& opj_image, data::image& image)
     {
         switch(image.getPixelFormat())
         {
-            case data::Image::GRAY_SCALE:
+            case data::image::GRAY_SCALE:
             {
                 struct Pixel
                 {
@@ -405,7 +405,7 @@ private:
                 break;
             }
 
-            case data::Image::RGB:
+            case data::image::RGB:
             {
                 struct Pixel
                 {
@@ -418,7 +418,7 @@ private:
                 break;
             }
 
-            case data::Image::RGBA:
+            case data::image::RGBA:
             {
                 struct Pixel
                 {
@@ -432,7 +432,7 @@ private:
                 break;
             }
 
-            case data::Image::BGR:
+            case data::image::BGR:
             {
                 struct Pixel
                 {
@@ -445,7 +445,7 @@ private:
                 break;
             }
 
-            case data::Image::BGRA:
+            case data::image::BGRA:
             {
                 struct Pixel
                 {
@@ -467,7 +467,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename P>
-    inline static void toSightPixels(const opj_image_t& opj_image, data::Image& image)
+    inline static void toSightPixels(const opj_image_t& opj_image, data::image& image)
     {
         const auto& sizes = image.size();
 

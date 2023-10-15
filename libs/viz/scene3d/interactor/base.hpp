@@ -28,7 +28,7 @@
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
 
-#include <data/tools/PickingInfo.hpp>
+#include <data/tools/picking_info.hpp>
 
 #include <viz/scene3d/config.hpp>
 #include <viz/scene3d/factory/new.hpp>

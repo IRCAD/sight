@@ -28,9 +28,9 @@
 #include <core/tools/os.hpp>
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <geometry/data/MeshFunctions.hpp>
+#include <geometry/data/mesh_functions.hpp>
 
 #include <vtkCell.h>
 #include <vtkCellType.h>
@@ -164,7 +164,7 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
 
 // -----------------------------------------------------------------------------
 
-void toVTKImage(data::Image::csptr data, vtkImageData* dst)
+void toVTKImage(data::image::csptr data, vtkImageData* dst)
 {
     vtkSmartPointer<vtkImageImport> importer = vtkSmartPointer<vtkImageImport>::New();
 
@@ -246,16 +246,16 @@ void fromRGBBufferColor(void* input, std::size_t size, void*& destBuffer)
 
 // -----------------------------------------------------------------------------
 
-void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
+void fromVTKImage(vtkImageData* source, data::image::sptr destination)
 {
-    SIGHT_ASSERT("vtkImageData source and/or data::Image destination are not correct", destination && source);
+    SIGHT_ASSERT("vtkImageData source and/or data::image destination are not correct", destination && source);
 
     // ensure image size correct
 //    source->UpdateInformation();
 //    source->PropagateUpdateExtent();
 
     int dim = source->GetDataDimension();
-    data::Image::Size imageSize;
+    data::image::Size imageSize;
 
     if(dim == 2)
     {
@@ -263,11 +263,11 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
                      static_cast<std::size_t>(source->GetDimensions()[1]), 0
         };
 
-        const data::Image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.
+        const data::image::Spacing spacing = {source->GetSpacing()[0], source->GetSpacing()[1], 0.
         };
         destination->setSpacing(spacing);
 
-        const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], 0.
+        const data::image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], 0.
         };
         destination->setOrigin(origin);
     }
@@ -278,12 +278,12 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
                      static_cast<std::size_t>(source->GetDimensions()[2])
         };
 
-        const data::Image::Spacing spacing =
+        const data::image::Spacing spacing =
         {source->GetSpacing()[0], source->GetSpacing()[1], source->GetSpacing()[2]
         };
         destination->setSpacing(spacing);
 
-        const data::Image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]
+        const data::image::Origin origin = {source->GetOrigin()[0], source->GetOrigin()[1], source->GetOrigin()[2]
         };
         destination->setOrigin(origin);
     }
@@ -303,22 +303,22 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
     {
         void* destBuffer = nullptr;
 
-        sight::data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
+        sight::data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
         if(nbComponents == 1)
         {
-            format = data::Image::PixelFormat::GRAY_SCALE;
+            format = data::image::PixelFormat::GRAY_SCALE;
         }
         else if(nbComponents == 2)
         {
-            format = data::Image::PixelFormat::RG;
+            format = data::image::PixelFormat::RG;
         }
         else if(nbComponents == 3)
         {
-            format = data::Image::PixelFormat::RGB;
+            format = data::image::PixelFormat::RGB;
         }
         else if(nbComponents == 4)
         {
-            format = data::Image::PixelFormat::RGBA;
+            format = data::image::PixelFormat::RGBA;
         }
         else
         {
@@ -339,7 +339,7 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
 
 // ------------------------------------------------------------------------------
 
-void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _pDataImage)
+void configureVTKImageImport(vtkImageImport* _pImageImport, data::image::csptr _pDataImage)
 {
     const auto dumpLock = _pDataImage->dump_lock();
 
@@ -406,7 +406,7 @@ void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _
 
 // -----------------------------------------------------------------------------
 
-vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(data::Matrix4::csptr _transfoMatrix)
+vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(data::matrix4::csptr _transfoMatrix)
 {
     auto matrix = vtkSmartPointer<vtkMatrix4x4>::New();
     for(std::uint8_t l = 0 ; l < 4 ; l++)
@@ -422,7 +422,7 @@ vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(data::Matrix4::csptr _transfoMatrix)
 
 // -----------------------------------------------------------------------------
 
-bool fromVTKMatrix(vtkMatrix4x4* _matrix, data::Matrix4::sptr _transfoMatrix)
+bool fromVTKMatrix(vtkMatrix4x4* _matrix, data::matrix4::sptr _transfoMatrix)
 {
     bool res = true;
     for(std::uint8_t l = 0 ; l < 4 ; l++)

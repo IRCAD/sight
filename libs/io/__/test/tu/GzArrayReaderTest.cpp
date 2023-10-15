@@ -21,9 +21,9 @@
 
 #include "GzArrayReaderTest.hpp"
 
-#include <data/Array.hpp>
+#include <data/array.hpp>
 
-#include <io/__/reader/GzArrayReader.hpp>
+#include <io/__/reader/gz_array_reader.hpp>
 
 #include <zlib.h>
 
@@ -39,16 +39,16 @@ namespace sight::io::ut
 
 void GzArrayReaderTest::basicTest()
 {
-    auto gzArrayReader             = std::make_shared<reader::GzArrayReader>();
+    auto gzArrayReader             = std::make_shared<reader::gz_array_reader>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + gzArrayReader->extension());
     std::array<std::uint8_t, 16> arrayIn {};
     std::iota(arrayIn.begin(), arrayIn.end(), std::uint8_t(0));
     gzFile out = gzopen(filepath.string().c_str(), "wb");
     gzwrite(out, reinterpret_cast<char*>(arrayIn.data()), 16);
     gzclose(out);
-    auto arrayOut = std::make_shared<data::Array>();
+    auto arrayOut = std::make_shared<data::array>();
     arrayOut->resize({16}, core::type::UINT8);
-    gzArrayReader->setObject(arrayOut);
+    gzArrayReader->set_object(arrayOut);
     gzArrayReader->set_file(filepath);
     CPPUNIT_ASSERT_NO_THROW(gzArrayReader->read());
     {

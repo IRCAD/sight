@@ -24,7 +24,7 @@
 
 #include <ui/history/ImageDiffCommand.hpp>
 
-#include <utestData//generator/Image.hpp>
+#include <utest_data//generator/image.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::history::ut::ImageDiffCommandTest);
@@ -48,33 +48,33 @@ void ImageDiffCommandTest::tearDown()
 
 void ImageDiffCommandTest::undoredoTest()
 {
-    const data::Image::Size SIZE          = {{32, 32, 32}};
-    const data::Image::Spacing SPACING    = {{1., 1., 1.}};
-    const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
+    const data::image::Size SIZE          = {{32, 32, 32}};
+    const data::image::Spacing SPACING    = {{1., 1., 1.}};
+    const data::image::Origin ORIGIN      = {{0., 0., 0.}};
     const core::type TYPE                 = core::type::UINT8;
-    const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
+    const data::image::PixelFormat format = data::image::GRAY_SCALE;
 
-    data::Image::sptr image = std::make_shared<data::Image>();
+    data::image::sptr image = std::make_shared<data::image>();
 
-    utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
+    utest_data::generator::image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
     const auto dumpLock = image->dump_lock();
 
-    filter::image::ImageDiff diff(image->getType().size());
+    filter::image::image_diff diff(image->getType().size());
 
     std::uint8_t NEWVALUE = 1;
 
-    auto* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
+    auto* newBufferValue = reinterpret_cast<data::image::BufferType*>(&NEWVALUE);
 
-    const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
+    const std::vector<data::image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
     for(std::size_t i = 0 ; i < 8 ; ++i)
     {
-        const data::Image::IndexType index = indices[i];
+        const data::image::IndexType index = indices[i];
 
-        const data::Image::BufferType* pixBuf =
-            reinterpret_cast<data::Image::BufferType*>(image->getPixel(index));
+        const data::image::BufferType* pixBuf =
+            reinterpret_cast<data::image::BufferType*>(image->getPixel(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixel(index, newBufferValue);
@@ -117,33 +117,33 @@ void ImageDiffCommandTest::undoredoTest()
 
 void ImageDiffCommandTest::getSizeTest()
 {
-    const data::Image::Size SIZE          = {{32, 32, 32}};
-    const data::Image::Spacing SPACING    = {{1., 1., 1.}};
-    const data::Image::Origin ORIGIN      = {{0., 0., 0.}};
+    const data::image::Size SIZE          = {{32, 32, 32}};
+    const data::image::Spacing SPACING    = {{1., 1., 1.}};
+    const data::image::Origin ORIGIN      = {{0., 0., 0.}};
     const core::type TYPE                 = core::type::UINT8;
-    const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
+    const data::image::PixelFormat format = data::image::GRAY_SCALE;
 
-    data::Image::sptr image = std::make_shared<data::Image>();
+    data::image::sptr image = std::make_shared<data::image>();
 
-    utestData::generator::Image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
+    utest_data::generator::image::generateImage(image, SIZE, SPACING, ORIGIN, TYPE, format);
 
     const auto dumpLock = image->dump_lock();
 
-    filter::image::ImageDiff diff(image->getType().size() * 64);
+    filter::image::image_diff diff(image->getType().size() * 64);
 
     std::uint8_t NEWVALUE = 1;
 
-    auto* newBufferValue = reinterpret_cast<data::Image::BufferType*>(&NEWVALUE);
+    auto* newBufferValue = reinterpret_cast<data::image::BufferType*>(&NEWVALUE);
 
-    const std::vector<data::Image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
+    const std::vector<data::image::IndexType> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
     // Add 8 elements to the diff. Write new values to the image.
     for(std::size_t i = 0 ; i < 8 ; ++i)
     {
-        const data::Image::IndexType index = indices[i];
+        const data::image::IndexType index = indices[i];
 
-        const data::Image::BufferType* pixBuf =
-            reinterpret_cast<data::Image::BufferType*>(image->getPixel(index));
+        const data::image::BufferType* pixBuf =
+            reinterpret_cast<data::image::BufferType*>(image->getPixel(index));
 
         diff.addDiff(index, pixBuf, newBufferValue);
         image->setPixel(index, newBufferValue);

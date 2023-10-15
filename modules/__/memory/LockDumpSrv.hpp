@@ -42,7 +42,7 @@ namespace sight::module::memory
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b target [sight::data::Object]: object to dump lock.
+ * - \b target [sight::data::object]: object to dump lock.
  */
 class MODULE_MEMORY_CLASS_API LockDumpSrv : public service::controller
 {
@@ -75,7 +75,7 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_target {this, "target"};
+    sight::data::ptr<sight::data::object, sight::data::Access::inout> m_target {this, "target"};
 
     std::vector<core::memory::buffer_object::lock_t> m_locks;
 };

@@ -62,7 +62,7 @@ Q_PROPERTY(
 )
 Q_PROPERTY(
     Qt3DInput::QInputSettings* inputSettings
-    READ getInputSettings WRITE setInputSettings NOTIFY inputSettingsChanged
+    READ getInputSettings WRITE SetInputSettings NOTIFY inputSettingsChanged
 )
 Q_PROPERTY(
     Qt3DRender::QRenderSettings* renderSettings
@@ -99,7 +99,7 @@ public:
     VIZ_QT3D_API_QT void setCameraController(Qt3DExtras::QAbstractCameraController* _cameraController);
 
     /// Updates the scene's QInputSettings object (only used in QML applications).
-    VIZ_QT3D_API_QT void setInputSettings(Qt3DInput::QInputSettings* _inputSettings);
+    VIZ_QT3D_API_QT void SetInputSettings(Qt3DInput::QInputSettings* _inputSettings);
 
     /// Updates the scene's render settings object (only used in QML applications).
     VIZ_QT3D_API_QT void setRenderSettings(Qt3DRender::QRenderSettings* _renderSettings);

@@ -26,7 +26,7 @@
 
 #include <core/hires_clock.hpp>
 
-#include <data/FrameTL.hpp>
+#include <data/frame_tl.hpp>
 
 #include <service/base.hpp>
 
@@ -67,7 +67,7 @@ public:
     SERVICE_API static constexpr std::string_view s_FRAME_INOUT    = "frame";
 
     /// Defines the auto-connection between the timeline and the 'track' slot
-    SERVICE_API service::connections_t getAutoConnections() const override;
+    SERVICE_API service::connections_t auto_connections() const override;
 
     /// Return true if the tracking is started.
     bool isTracking() const
@@ -126,7 +126,7 @@ protected:
     /// If false, the trackMethod does nothing
     bool m_isTracking {false};
 
-    sight::data::ptr<sight::data::FrameTL, sight::data::Access::in> m_timeline {this, s_TIMELINE_INPUT};
+    sight::data::ptr<sight::data::frame_tl, sight::data::Access::in> m_timeline {this, s_TIMELINE_INPUT};
 };
 
 } // namespace sight::service

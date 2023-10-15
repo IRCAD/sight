@@ -1,10 +1,10 @@
 <!--
 This example shows how to display notifications popups.
 
-Mode 1: Using SNotifier service (recommanded) and 'notified' signal from base
-connected to SNotifier slots 'pop'.
+Mode 1: Using notifier service (recommanded) and 'notified' signal from base
+connected to notifier slots 'pop'.
 
-Mode 2: Standalone by calling directly the notification dialog inside your service (see SDisplayTestNotifications.cpp)
+Mode 2: Standalone by calling directly the notification dialog inside your service (see display_test_notifications.cpp)
 this mode is not recommanded since each service can pop notification without any knowlegde of how many notifications
 are already displayed and where they are displayed on screen.
 
@@ -15,19 +15,19 @@ are already displayed and where they are displayed on screen.
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::ui" />
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
         <type>sight::ui::action</type>
-        <service>ExNotifications::SDisplayTestNotifications</service>
-        <object>sight::data::Object</object>
+        <service>ExNotifications::display_test_notifications</service>
+        <object>sight::data::object</object>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>ExNotifications_AppCfg</id>
         <config>
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>ExNotifications</name>
@@ -42,7 +42,7 @@ are already displayed and where they are displayed on screen.
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::SToolBar">
+            <service uid="toolbarView" type="sight::module::ui::tool_bar">
                 <gui>
                     <layout>
                         <editor />
@@ -72,7 +72,7 @@ are already displayed and where they are displayed on screen.
                 </registry>
             </service>
 
-            <service uid="mainview" type="sight::module::ui::SView">
+            <service uid="mainview" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
@@ -82,48 +82,48 @@ are already displayed and where they are displayed on screen.
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="useNotifierAct" type="sight::module::ui::qt::SParameters">
+            <service uid="useNotifierAct" type="sight::module::ui::qt::parameters">
                 <parameters>
-                    <param type="bool" name="Use SNotifier to centralize." key="useSNotifier" defaultValue="true" />
+                    <param type="bool" name="Use notifier to centralize." key="usenotifier" defaultValue="true" />
                 </parameters>
             </service>
 
-            <service uid="maxChar" type="sight::module::ui::qt::SParameters">
+            <service uid="maxChar" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <param type="bool" name="Reach max. characters" key="reachMaxCharacters" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="durationAct" type="sight::module::ui::qt::SParameters">
+            <service uid="durationAct" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <param type="enum" name="Duration" key="duration" defaultValue="3000" values="3000,1000,infinite" />
                 </parameters>
             </service>
 
-            <service uid="typeAct" type="sight::module::ui::qt::SParameters">
+            <service uid="typeAct" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <param type="enum" name="Type" key="type" defaultValue="INFO" values="INFO,SUCCESS,FAILURE" />
                 </parameters>
             </service>
 
-            <service uid="positionAct" type="sight::module::ui::qt::SParameters">
+            <service uid="positionAct" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <param type="enum" name="Position" key="position" defaultValue="TOP_RIGHT" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
                 </parameters>
             </service>
 
-            <service uid="channelAct" type="sight::module::ui::qt::SParameters">
+            <service uid="channelAct" type="sight::module::ui::qt::parameters">
                 <parameters>
                     <param type="enum" name="Channel" key="channel" defaultValue="GLOBAL" values="GLOBAL,CHANNEL1,CHANNEL2" />
                 </parameters>
             </service>
 
-            <service uid="notifyAct" type="sight::module::ui::SAction" />
+            <service uid="notifyAct" type="sight::module::ui::action" />
 
-            <service uid="closeAct" type="sight::module::ui::SAction" />
+            <service uid="closeAct" type="sight::module::ui::action" />
 
             <!-- preference to apply new theme on app -->
-            <service uid="changeThemeAct" type="sight::module::ui::qt::SPreferencesConfiguration">
+            <service uid="changeThemeAct" type="sight::module::ui::qt::preferences_configuration">
                 <preference>
                     <type>combobox</type>
                     <name>Color Theme</name>
@@ -136,15 +136,15 @@ are already displayed and where they are displayed on screen.
             <!-- ******************************* Services ******************************* -->
 
             <!-- Dummy service only used to test notifications -->
-            <service uid="testNotifierSrv" type="ExNotifications::SDisplayTestNotifications">
+            <service uid="testNotifierSrv" type="ExNotifications::display_test_notifications">
                 <notification>
                     <channel key="CHANNEL1" uid="CHANNEL1" />
                     <channel key="CHANNEL2" uid="CHANNEL2" />
                 </notification>
             </service>
 
-            <!-- SNotifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
-            <service uid="notifierSrv" type="sight::module::ui::qt::SNotifier">
+            <!-- notifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
+            <service uid="notifierSrv" type="sight::module::ui::qt::notifier">
                 <parent uid="mainview" /> <!-- Parent container where notifications will be displayed, use the xmlattr uid hack to generate the generic_uid prefix of "maiview" -->
                 <message>Default Message</message><!-- Default message printed if empty string is emitted in notify* signals -->
                 <channels>
@@ -155,11 +155,11 @@ are already displayed and where they are displayed on screen.
                 </channels>
             </service>
 
-            <service uid="sight::module::ui::qtChangerSrv" type="sight::module::ui::qt::SStyleSelector" />
+            <service uid="sight::module::ui::qtChangerSrv" type="sight::module::ui::qt::style_selector" />
 
             <!-- ******************************* Connections ***************************************** -->
 
-            <!-- connection from base notify signals to the SNotifier,you can add as many service as you need -->
+            <!-- connection from base notify signals to the notifier,you can add as many service as you need -->
             <connect>
                 <signal>testNotifierSrv/notified</signal>
                 <slot>notifierSrv/pop</slot>

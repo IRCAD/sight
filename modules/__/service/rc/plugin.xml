@@ -1,94 +1,9 @@
 <plugin id="sight::module::service" library="true" >
 
-    <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
-    <extension-point id="sight::service::extension::AppConfig" schema="appConfig.xsd"/>
-
-    <!-- EXTENSION POINT FOR APP CONFIGURATION PARAMETERS-->
-    <extension-point id="sight::service::extension::AppConfigParameters" schema="appConfigParameters.xsd"/>
-
     <!-- EXTENSION POINT FOR A SERVICE FACTORY -->
-    <extension-point id="sight::service::extension::Factory" schema="serviceFactory.xsd"/>
+    <extension-point id="sight::service::extension::factory" schema="service_factory.xsd"/>
 
     <!-- EXTENSION POINT FOR A SERVICE CONFIGURATION -->
-    <extension-point id="sight::service::extension::Config"  schema="serviceConfig.xsd"/>
-
-    <!-- SPECIFIC SERVICES -->
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::Color</service>
-        <object>sight::data::Color</object>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::Composite</service>
-        <object>sight::data::Composite</object>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::Image</service>
-        <object>sight::data::Image</object>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::Matrix4</service>
-        <object>sight::data::Matrix4</object>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::Object</service>
-        <object>sight::data::Object</object>
-    </extension>
-
-     <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::Vector</service>
-        <object>sight::data::Vector</object>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::Boolean</service>
-        <object>sight::data::Boolean</object>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::Float</service>
-        <object>sight::data::Float</object>
-    </extension>
-
-     <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::Integer</service>
-        <object>sight::data::Integer</object>
-    </extension>
-
-     <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::String</service>
-        <object>sight::data::String</object>
-    </extension>
-
-     <extension implements="sight::service::extension::Factory">
-        <type>sight::service::object_parser</type>
-        <service>sight::service::parser::TransferFunction</service>
-        <object>sight::data::TransferFunction</object>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::service::controller</type>
-        <service>sight::service::SConfigController</service>
-        <object>sight::data::Object</object>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::service::controller</type>
-        <service>sight::service::SMultiConfigController</service>
-        <object>sight::data::Object</object>
-    </extension>
+    <extension-point id="sight::service::extension::config"  schema="service_config.xsd"/>
 
 </plugin>

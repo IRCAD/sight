@@ -3,18 +3,18 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>Tuto04SignalSlot_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <!-- The main data object is sight::data::Mesh. -->
-            <object uid="mesh" type="sight::data::Mesh" />
+            <!-- The main data object is sight::data::mesh. -->
+            <object uid="mesh" type="sight::data::mesh" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::frame" >
                 <gui>
                     <frame>
                         <name>Tuto04SignalSlot</name>
@@ -29,7 +29,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::menu_bar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -40,7 +40,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::menu" >
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -63,7 +63,7 @@
                 Each <view> declared into the <layout> tag, must have its associated <view> into the <registry> tag.
                 A minimum window height and a width are given to the two non-central views.
             -->
-            <service uid="containerView" type="sight::module::ui::SView" >
+            <service uid="containerView" type="sight::module::ui::view" >
                 <gui>
                     <layout type="sight::ui::layout::cardinal" >
                         <view align="center" />
@@ -80,12 +80,12 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="sight::module::ui::SAction" />
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
+            <service uid="openMeshAct" type="sight::module::ui::action" />
+            <service uid="quitAct" type="sight::module::ui::quit" />
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector" >
+            <service uid="meshReaderSrv" type="sight::module::ui::io::selector" >
                 <inout key="data" uid="mesh" />
                 <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
             </service>
@@ -95,16 +95,16 @@
                 We have three rendering service representing a 3D scene displaying the loaded mesh. The scene are
                 shown in the windows defines in 'view' service.
             -->
-            <service uid="rendering1Srv" type="sight::module::viz::sample::SMesh" >
-                <in key="mesh" uid="mesh" autoConnect="true" />
+            <service uid="rendering1Srv" type="sight::module::viz::sample::mesh" >
+                <in key="mesh" uid="mesh" auto_connect="true" />
             </service>
 
-            <service uid="rendering2Srv" type="sight::module::viz::sample::SMesh" >
-                <in key="mesh" uid="mesh" autoConnect="true" />
+            <service uid="rendering2Srv" type="sight::module::viz::sample::mesh" >
+                <in key="mesh" uid="mesh" auto_connect="true" />
             </service>
 
-            <service uid="rendering3Srv" type="sight::module::viz::sample::SMesh" >
-                <in key="mesh" uid="mesh" autoConnect="true" />
+            <service uid="rendering3Srv" type="sight::module::viz::sample::mesh" >
+                <in key="mesh" uid="mesh" auto_connect="true" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

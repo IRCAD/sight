@@ -24,7 +24,7 @@
 
 #include <core/com/signal.hxx>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 namespace sight::module::io::igtl
 {
@@ -49,7 +49,7 @@ network_sender::~network_sender()
 
 void network_sender::updating()
 {
-    if(this->isStarted())
+    if(this->started())
     {
         const std::size_t numObjects = m_objects.size();
         // Grab the objects to send.
@@ -67,10 +67,10 @@ void network_sender::updating()
 
 //-----------------------------------------------------------------------------
 
-service::connections_t network_sender::getAutoConnections() const
+service::connections_t network_sender::auto_connections() const
 {
     service::connections_t connections;
-    connections.push(s_OBJECTS_INPUT, data::Object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(s_OBJECTS_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
 

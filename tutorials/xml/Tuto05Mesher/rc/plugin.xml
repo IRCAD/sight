@@ -1,21 +1,21 @@
 <plugin id="Tuto05Mesher">
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
-    <extension implements="sight::service::extension::AppConfig">
+    <extension implements="sight::app::extension::config">
         <id>Tuto05Mesher_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Mesh object associated to the uid 'myMesh' -->
-            <object uid="myMesh" type="sight::data::Mesh" src="deferred" />
+            <object uid="myMesh" type="sight::data::mesh" src="deferred" />
             <!-- ModelSeries object associated to the key 'modelSeries' -->
-            <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
+            <object uid="modelSeries" type="sight::data::model_series" src="deferred" />
             <!-- ImageSeries object associated to the key 'imageSeries' -->
-            <object uid="imageSeries" type="sight::data::ImageSeries" />
+            <object uid="imageSeries" type="sight::data::image_series" />
 
             <!-- ******************************* UI declaration *********************************** -->
-            <service uid="mainFrame" type="sight::module::ui::SFrame">
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>Tuto05Mesher</name>
@@ -30,7 +30,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::SMenuBar">
+            <service uid="menuBarView" type="sight::module::ui::menu_bar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -43,7 +43,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::SMenu">
+            <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -64,7 +64,7 @@
                 </registry>
             </service>
 
-            <service uid="menuMesherView" type="sight::module::ui::SMenu">
+            <service uid="menuMesherView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Compute Mesh (VTK)" />
@@ -82,7 +82,7 @@
                 It is possible to add a 'proportion' attribute for the <view> to defined the proportion
                 used by the view compared to the others.
             -->
-            <service uid="containerView" type="sight::module::ui::SView">
+            <service uid="containerView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
@@ -97,22 +97,22 @@
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
-            <service uid="quitAct" type="sight::module::ui::SQuit" />
-            <service uid="openImageAct" type="sight::module::ui::com::SStarter">
+            <service uid="quitAct" type="sight::module::ui::quit" />
+            <service uid="openImageAct" type="sight::module::ui::com::starter">
                 <start uid="imageReaderSrv" />
             </service>
-            <service uid="saveImageAct" type="sight::module::ui::com::SStarter">
+            <service uid="saveImageAct" type="sight::module::ui::com::starter">
                 <start uid="imageWriterSrv" />
             </service>
-            <service uid="openMeshAct" type="sight::module::ui::com::SStarter">
+            <service uid="openMeshAct" type="sight::module::ui::com::starter">
                 <start uid="meshReaderSrv" />
             </service>
-            <service uid="saveMeshAct" type="sight::module::ui::com::SStarter">
+            <service uid="saveMeshAct" type="sight::module::ui::com::starter">
                 <start uid="meshWriterSrv" />
             </service>
-            <service uid="createMeshAct" type="sight::module::ui::SAction"/>
+            <service uid="createMeshAct" type="sight::module::ui::action"/>
 
-            <service uid="mesher50Srv" type="sight::module::filter::mesh::SVTKMesher">
+            <service uid="mesher50Srv" type="sight::module::filter::mesh::vtk_mesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
                 <config percentReduction="0" threshold="255" />
@@ -122,22 +122,22 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Add a shortcut in the application (key "v") -->
-            <service uid="shortcutSrv" type="sight::module::ui::qt::com::SSignalShortcut">
+            <service uid="shortcutSrv" type="sight::module::ui::qt::com::signal_shortcut">
                 <config shortcut="v" sid="containerView" />
             </service>
 
             <!--
-                Services associated to the Image data :
+                Services associated to the image data :
                 Visualization, reading and writing service creation.
             -->
-            <service uid="imageReaderSrv" type="sight::module::ui::io::SSelector">
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="imageSeries" />
                 <type mode="reader" />
             </service>
-            <service uid="imageSrv" type="sight::module::viz::sample::SImage">
-                <in key="image" uid="imageSeries" autoConnect="true" />
+            <service uid="imageSrv" type="sight::module::viz::sample::image">
+                <in key="image" uid="imageSeries" auto_connect="true" />
             </service>
-            <service uid="imageWriterSrv" type="sight::module::ui::io::SSelector">
+            <service uid="imageWriterSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="imageSeries" />
                 <type mode="writer" />
             </service>
@@ -147,20 +147,20 @@
                 Visualization, reading and writing service creation.
             -->
             <!-- Extract mesh in the model series -->
-            <service uid="extractMeshSrv" type="sight::module::data::SGetMesh">
+            <service uid="extractMeshSrv" type="sight::module::data::get_mesh">
                 <in key="modelSeries" uid="modelSeries" />
                 <out group="mesh">
                     <key index="0" uid="myMesh" />
                 </out>
             </service>
-            <service uid="meshSrv" type="sight::module::viz::sample::SMesh">
-                <in key="mesh" uid="myMesh" autoConnect="true" />
+            <service uid="meshSrv" type="sight::module::viz::sample::mesh">
+                <in key="mesh" uid="myMesh" auto_connect="true" />
             </service>
-            <service uid="meshReaderSrv" type="sight::module::ui::io::SSelector">
+            <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="myMesh" />
                 <type mode="reader" />
             </service>
-            <service uid="meshWriterSrv" type="sight::module::ui::io::SSelector">
+            <service uid="meshWriterSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="myMesh" />
                 <type mode="writer" />
             </service>

@@ -1,13 +1,13 @@
 <plugin id="tu_validator">
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestValidator0</id>
         <title>Title Test0</title>
         <desc>Desc Test0</desc>
         <icon>Icon Test0</icon>
         <requirements>
-            <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
-            <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="0" maxOccurs="2">
+            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="sight::data::model_series" minOccurs="0" maxOccurs="2">
                 <key>key1</key>
                 <key>key2</key>
             </requirement>
@@ -16,31 +16,31 @@
         <appConfig id="TestValidatorCfg0" />
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>TestValidator1</id>
         <title>test 1</title>
         <desc>This is test 1.</desc>
         <icon>Icon</icon>
         <requirements>
-            <requirement name="imageSeries" type="sight::data::ImageSeries">
+            <requirement name="imageSeries" type="sight::data::image_series">
                 <!-- default: minOccurs="1" maxOccurs="1" -->
                 <desc>Image Series that could be displayed in a 3D scene.</desc>
             </requirement>
-            <requirement name="modelSeries" type="sight::data::ModelSeries">
+            <requirement name="modelSeries" type="sight::data::model_series">
                 <desc>Organs segmented from the image series that could be displayed in the 3D scene.</desc>
             </requirement>
-            <requirement name="vectorImage" type="sight::data::ImageSeries" minOccurs="2" maxOccurs="*" container="vector">
+            <requirement name="vectorImage" type="sight::data::image_series" minOccurs="2" maxOccurs="*" container="vector">
                 <desc>Some image series...</desc>
-                <validator>sight::activity::validator::ImageProperties</validator>
+                <validator>sight::activity::validator::image_properties</validator>
             </requirement>
-            <requirement name="vectorModel" type="sight::data::ModelSeries" minOccurs="2" maxOccurs="*" container="vector">
+            <requirement name="vectorModel" type="sight::data::model_series" minOccurs="2" maxOccurs="*" container="vector">
                 <desc>
                     <![CDATA[
                 Vector containing at least <b>two</b> model series.
                 ]]>
                 </desc>
             </requirement>
-            <requirement name="transformationMatrix" type="sight::data::Matrix4" minOccurs="0" maxOccurs="1" create="true">
+            <requirement name="transformationMatrix" type="sight::data::matrix4" minOccurs="0" maxOccurs="1" create="true">
                 <desc>
                     <![CDATA[
                 Optional <b>matrix</b>.
@@ -49,19 +49,19 @@
                 ]]>
                 </desc>
             </requirement>
-            <requirement name="float" type="sight::data::Float" minOccurs="1" maxOccurs="1">
-                <desc>This is a sight::data::Float, we can also have sight::data::Integer and sight::data::String.</desc>
+            <requirement name="float" type="sight::data::real" minOccurs="1" maxOccurs="1">
+                <desc>This is a sight::data::real, we can also have sight::data::integer and sight::data::string.</desc>
             </requirement>
-            <requirement name="int" type="sight::data::Integer" minOccurs="0" maxOccurs="0">
-                <desc>This is a sight::data::Integer, it will be automatically created and cannot be updated by the user.</desc>
+            <requirement name="int" type="sight::data::integer" minOccurs="0" maxOccurs="0">
+                <desc>This is a sight::data::integer, it will be automatically created and cannot be updated by the user.</desc>
             </requirement>
-            <requirement name="boolean" type="sight::data::Boolean" minOccurs="1" maxOccurs="1">
+            <requirement name="boolean" type="sight::data::boolean" minOccurs="1" maxOccurs="1">
                 <desc>This is a boolean. I don't think it can be useful, but it exists ;)</desc>
             </requirement>
-            <requirement name="String" type="sight::data::String" minOccurs="0" maxOccurs="4">
+            <requirement name="String" type="sight::data::string" minOccurs="0" maxOccurs="4">
                 <desc>
                     <![CDATA[
-                Currently, it is not visible in the editor, but the following strings will be store into a <b>sight::data::Composite</b>
+                Currently, it is not visible in the editor, but the following strings will be store into a <b>sight::data::composite</b>
                 with the keys:<br />
                 - Item1 <br />
                 - Item2 <br />

@@ -22,7 +22,7 @@
 
 #include "TransformTest.hpp"
 
-#include <data/Matrix4.hpp>
+#include <data/matrix4.hpp>
 
 #include <io/itk/helper/Transform.hpp>
 
@@ -53,7 +53,7 @@ void TransformTest::tearDown()
 void TransformTest::testConversion()
 {
     ::itk::Matrix<double, 4, 4> mat;
-    data::Matrix4::sptr sightMat = std::make_shared<data::Matrix4>();
+    data::matrix4::sptr sightMat = std::make_shared<data::matrix4>();
 
     for(std::uint8_t i = 0 ; i < 4 ; ++i)
     {
@@ -73,7 +73,7 @@ void TransformTest::testConversion()
         }
     }
 
-    data::Matrix4::csptr sightMat2 = sightMat;
+    data::matrix4::csptr sightMat2 = sightMat;
 
     ::itk::Matrix<double, 4, 4> mat2 = io::itk::helper::Transform::convertToITK(sightMat2);
 

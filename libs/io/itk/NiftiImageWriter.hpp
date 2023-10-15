@@ -26,14 +26,14 @@
 #include <core/location/single_file.hpp>
 #include <core/tools/progress_adviser.hpp>
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API NiftiImageWriter : public writer::GenericObjectWriter<data::Image>,
+class IO_ITK_CLASS_API NiftiImageWriter : public writer::generic_object_writer<data::image>,
                                           public core::location::single_file,
                                           public core::tools::progress_adviser
 {
@@ -41,7 +41,7 @@ public:
 
     SIGHT_DECLARE_CLASS(
         NiftiImageWriter,
-        io::writer::GenericObjectWriter<data::Image>,
+        io::writer::generic_object_writer<data::image>,
         io::writer::factory::make<NiftiImageWriter>
     );
     SIGHT_ALLOW_SHARED_FROM_THIS();

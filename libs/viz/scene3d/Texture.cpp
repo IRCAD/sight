@@ -22,16 +22,16 @@
 
 #include "viz/scene3d/Texture.hpp"
 
-#include <viz/scene3d/detail/TextureManager.hpp>
+#include <viz/scene3d/detail/texture_manager.hpp>
 
 namespace sight::viz::scene3d
 {
 
 //-----------------------------------------------------------------------------
 
-Texture::Texture(const data::Image::csptr& _image, const std::string& suffixId)
+Texture::Texture(const data::image::csptr& _image, const std::string& suffixId)
 {
-    m_resource = detail::TextureManager::get()->instantiate(_image, suffixId);
+    m_resource = detail::texture_manager::get()->instantiate(_image, suffixId);
 }
 
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ Texture::~Texture()
 {
     if(m_resource)
     {
-        detail::TextureManager::get()->release(m_resource);
+        detail::texture_manager::get()->release(m_resource);
     }
 }
 
@@ -48,7 +48,7 @@ Texture::~Texture()
 
 void Texture::update()
 {
-    m_window = viz::scene3d::detail::TextureManager::get()->load(m_resource).second;
+    m_window = viz::scene3d::detail::texture_manager::get()->load(m_resource).second;
 }
 
 //-----------------------------------------------------------------------------

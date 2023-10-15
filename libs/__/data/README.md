@@ -8,7 +8,7 @@ assisted surgery such as images, segmentations, etc...
 
 ## Data classes
 
-The base data class is `sight::data::Object`. It provides a default slot to warn subscribers when its content changes.
+The base data class is `sight::data::object`. It provides a default slot to warn subscribers when its content changes.
 All concrete data classes implement this interface.
 
 ### Basic
@@ -23,7 +23,7 @@ All concrete data classes implement this interface.
 - **Integer**: integer value.
 - **Object**: base class for each data object.
 - **Set**: generic and dynamic set of elements.
-- **SeriesSet**: series container.
+- **series_set**: series container.
 - **String**: character array.
 - **TimeLine**: generic definition for collection of objects, each object being associated with a timestamp. It is intended to store lightweight objects.
 - **Vector**: generic and dynamic 1D array.
@@ -32,12 +32,12 @@ All concrete data classes implement this interface.
 ### Medical
 
 - **Activity**: contains information and data of an application activity.
-- **DicomSeries**: contains a DICOM series.
+- **dicom_series**: contains a DICOM series.
 - **Equipment**: contains an equipment information.
-- **Histogram**: contains the histogram of a `sight::data::Image`.
-- **ImageSeries**: a `sight::data::Image` with the associated medical data.
+- **Histogram**: contains the histogram of a `sight::data::image`.
+- **image_series**: a `sight::data::image` with the associated medical data.
 - **Landmarks**: defines a set of spatial (3D) or color (4D) points.
-- **ModelSeries**: holds a medical data.
+- **model_series**: holds a medical data.
 - **Patient**: holds a patient information.
 - **Reconstruction**: defines a reconstruction object.
 - **ReconstructionTraits**: defines Reconstruction traits containing an identifier, a mask a mesh and a structure traits associated to the reconstruction.
@@ -45,10 +45,10 @@ All concrete data classes implement this interface.
 - **ResectionDB**: defines a resection container.
 - **ROITraits**: defines ROI traits containing an identifier, an evaluated expression, a ROI mask node used for ROIand a structure traits associated to the ROI.
 - **Series**: defines medical data.
-- **SeriesSet**: holds `sight::data::series`
-- **StructureTraits**: defines a structure traits containing various data all optional (type, category, class, color, native ROI expression,... )
-- **StructureTraitsDictionary**: dictionary of `sight::data::StructureTraits`.
-- **StructureTraitsHelper**: helper of `sight::data::StructureTraits`.
+- **series_set**: holds `sight::data::series`
+- **structure_traits**: defines a structure traits containing various data all optional (type, category, class, color, native ROI expression,... )
+- **StructureTraitsDictionary**: dictionary of `sight::data::structure_traits`.
+- **StructureTraitsHelper**: helper of `sight::data::structure_traits`.
 - **Study**: contains a medical study information.
 - **TransferFunction**: defines a transfer function which associates color and values
 
@@ -57,7 +57,7 @@ All concrete data classes implement this interface.
 - **CalibrationInfo**: stores calibration images used to compute camera calibration.
 - **Camera**: contains intrinsic and extrinsic parameters of a camera.
 - **CameraSet**: stores a collection of cameras.
-- **FrameTL**: defines a timeline of `sight::data::Image`.
+- **FrameTL**: defines a timeline of `sight::data::image`.
 - **MarkerMap**: stores a map of optical markers (2D).
 - **MarkerTL**: defines a timeline of 2D markers from their four corner positions.
 - **MatrixTL**: defines a timeline of raw 4x4 matrices.
@@ -69,10 +69,10 @@ All concrete data classes implement this interface.
 - **Matrix4**: 4x4 transformation matrix.
 - **Material**: material is represented by an ambient color and a diffuse color.
 - **Mesh**: geometrical mesh composed of points, lines, triangles, quads or polygons.
-- **Plane**: plane defined by three `sight::data::Point`.
-- **PlaneList**: list of `sight::data::Plane`.
+- **Plane**: plane defined by three `sight::data::point`.
+- **PlaneList**: list of `sight::data::plane`.
 - **Point**: 3D point.
-- **PointList**: list of 3D `sight::data::Point`.
+- **PointList**: list of 3D `sight::data::point`.
 - **TransformationMatrix3D**: 4x4 transformation matrix.
 
 ### Graph
@@ -85,7 +85,7 @@ All concrete data classes implement this interface.
 ### Technical
 
 - **Exception**: implements exception related to data.
-- **GenericTL**: defines a timeline of template objects.
+- **generic_tl**: defines a timeline of template objects.
 
 ## How to use it
 

@@ -26,7 +26,7 @@
 
 #include <core/location/single_folder.hpp>
 
-#include <io/__/writer/GenericObjectWriter.hpp>
+#include <io/__/writer/generic_object_writer.hpp>
 
 #include <filesystem>
 
@@ -40,7 +40,7 @@ class Reconstruction;
 namespace sight::data
 {
 
-class ModelSeries;
+class model_series;
 
 } // namespace sight::data
 
@@ -55,18 +55,18 @@ namespace sight::io::vtk
 {
 
 /**
- * @brief   Write a data::Reconstruction.
+ * @brief   Write a data::reconstruction.
  *
- * Write a data::Reconstruction as .obj file using the VTK lib and the obj format.
+ * Write a data::reconstruction as .obj file using the VTK lib and the obj format.
  */
-class ModelSeriesObjWriter : public io::writer::GenericObjectWriter<data::ModelSeries>,
+class ModelSeriesObjWriter : public io::writer::generic_object_writer<data::model_series>,
                              public core::location::single_folder
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         ModelSeriesObjWriter,
-        io::writer::GenericObjectWriter<data::ModelSeries>,
+        io::writer::generic_object_writer<data::model_series>,
         io::writer::factory::make<ModelSeriesObjWriter>
     )
 

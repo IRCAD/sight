@@ -3,15 +3,15 @@
 
     <requirement id="sight::module::ui"/>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::ui::qml::editor</type>
-         <service>sight::module::ui::qml::activity::SSequencer</service>
+         <service>sight::module::ui::qml::activity::sequencer</service>
          <desc>This editor displays an activity stepper that allows to select the activity to launch, and display the</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::ui::qml::editor</type>
-         <service>sight::module::ui::qml::activity::SView</service>
+         <service>sight::module::ui::qml::activity::view</service>
          <desc>This editor displays activities in a single view (when a new activity is launched, it replaces the previous</desc>
     </extension>
 </plugin>

@@ -32,13 +32,13 @@
 #include <core/runtime/path.hpp>
 #include <core/tools/date_and_time.hpp>
 
-#include <data/Reconstruction.hpp>
-#include <data/Series.hpp>
+#include <data/reconstruction.hpp>
+#include <data/series.hpp>
 #include <data/types.hpp>
 
-#include <geometry/data/Mesh.hpp>
+#include <geometry/data/mesh.hpp>
 
-#include <io/__/reader/DictionaryReader.hpp>
+#include <io/__/reader/dictionary_reader.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -57,13 +57,13 @@ Surface::Surface(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
     SPTR(io::dicom::container::DicomInstance)imageInstance,
-    const data::ModelSeries::csptr& series,
+    const data::model_series::csptr& series,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::ModelSeries>(writer, instance, series,
-                                                                logger, std::move(progress), std::move(cancel)),
+    io::dicom::writer::ie::InformationEntity<data::model_series>(writer, instance, series,
+                                                                 logger, std::move(progress), std::move(cancel)),
     m_imageInstance(std::move(imageInstance))
 {
     SIGHT_ASSERT("Image instance should not be null.", imageInstance);
@@ -289,7 +289,7 @@ void writeSegmentIdentification(
 //------------------------------------------------------------------------------
 
 void writePrivateTags(
-    const data::Reconstruction::csptr& reconstruction,
+    const data::reconstruction::csptr& reconstruction,
     gdcm::DataSet& dataset
 )
 {
@@ -326,7 +326,7 @@ void writePrivateTags(
 //------------------------------------------------------------------------------
 
 void Surface::writeSegmentSequence(
-    const data::Reconstruction::csptr& reconstruction,
+    const data::reconstruction::csptr& reconstruction,
     gdcm::Item& segmentItem,
     const gdcm::SmartPointer<gdcm::Segment>& segment,
     std::uint16_t segmentNumber
@@ -395,7 +395,7 @@ void Surface::writeSegmentSequence(
         {
             const std::vector<std::string>& referencedSOPInstanceUIDContainer =
                 m_imageInstance->getSOPInstanceUIDContainer();
-            const std::string& referencedSOPClassUID = m_imageInstance->getSOPClassUID();
+            const std::string& ReferencedSOPClassUID = m_imageInstance->getSOPClassUID();
 
             //=====================================================
             // Table 10-11. SOP Instance Reference Macro Attributes
@@ -409,7 +409,7 @@ void Surface::writeSegmentSequence(
 
                 // Referenced SOP Class UID - Type 1
                 io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1150>(
-                    referencedSOPClassUID,
+                    ReferencedSOPClassUID,
                     imageSOPDataset
                 );
 
@@ -437,7 +437,7 @@ void Surface::writeSegmentSequence(
 //------------------------------------------------------------------------------
 
 void Surface::writeSurfaceSequence(
-    const data::Reconstruction::csptr& reconstruction,
+    const data::reconstruction::csptr& reconstruction,
     gdcm::Item& surfaceItem,
     const gdcm::SmartPointer<gdcm::Surface>& surface,
     std::uint16_t segmentNumber
@@ -447,7 +447,7 @@ void Surface::writeSurfaceSequence(
     gdcm::DataSet& surfaceItemDataset = surfaceItem.GetNestedDataSet();
 
     // Retrieve material
-    data::Material::csptr material = reconstruction->getMaterial();
+    data::material::csptr material = reconstruction->getMaterial();
 
     // Set DicomSurface data - NOTE: must be called before points and primitives writing
     io::dicom::container::DicomSurface surfaceContainer(reconstruction);
@@ -480,7 +480,7 @@ void Surface::writeSurfaceSequence(
 
     // Finite Volume (0x0066,0x000E) - Type 1
     surface->SetFiniteVolume(
-        geometry::data::Mesh::isClosed(reconstruction->getMesh()) ? (gdcm::Surface::YES)
+        geometry::data::mesh::isClosed(reconstruction->getMesh()) ? (gdcm::Surface::YES)
                                                                   : (gdcm::Surface::NO)
     );
 

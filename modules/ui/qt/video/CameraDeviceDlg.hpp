@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
+#include "camera.hpp"
 
-#include "SCamera.hpp"
+#include "modules/ui/qt/config.hpp"
 
 #include <core/macros.hpp>
 
@@ -60,7 +60,7 @@ public:
     /// destructor
     MODULE_UI_QT_API ~CameraDeviceDlg() override = default;
 
-    MODULE_UI_QT_API bool getSelectedCamera(SPTR(data::Camera) & camera, std::string& resolutionXMLOption);
+    MODULE_UI_QT_API bool getSelectedCamera(SPTR(data::camera) & camera, std::string& resolutionXMLOption);
     // Filter the list of supported resolution to extract the lowest, highest and medium resolution in relation to
     // `resolutionType`
     MODULE_UI_QT_API QSize getResolution(

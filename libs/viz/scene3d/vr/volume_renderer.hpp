@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include "data/Image.hpp"
-#include "data/TransferFunction.hpp"
+#include "data/image.hpp"
+#include "data/transfer_function.hpp"
 
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/ogre.hpp"
-#include "viz/scene3d/TransferFunction.hpp"
+#include "viz/scene3d/transfer_function.hpp"
 #include "viz/scene3d/Utils.hpp"
-#include "viz/scene3d/vr/PreIntegrationTable.hpp"
+#include "viz/scene3d/vr/pre_integration_table.hpp"
 
 #include <viz/scene3d/Texture.hpp>
 
@@ -130,9 +130,9 @@ public:
         std::string parentId,
         Ogre::SceneManager* sceneManager,
         Ogre::SceneNode* volumeNode,
-        sight::data::Image::csptr image,
-        sight::data::Image::csptr mask,
-        sight::data::TransferFunction::csptr tf,
+        sight::data::image::csptr image,
+        sight::data::image::csptr mask,
+        sight::data::transfer_function::csptr tf,
         std::uint16_t samples,
         bool with_buffer    = false,
         bool preintegration = false
@@ -142,10 +142,10 @@ public:
     VIZ_SCENE3D_API virtual ~volume_renderer();
 
     ///@brief Update the renderer. Base implementation only updates the samples.
-    VIZ_SCENE3D_API virtual void update(const data::TransferFunction::csptr& tf) = 0;
+    VIZ_SCENE3D_API virtual void update(const data::transfer_function::csptr& tf) = 0;
 
     /// Called when the image being rendered is modified.
-    VIZ_SCENE3D_API virtual void updateImage(data::Image::csptr image, data::TransferFunction::csptr tf) = 0;
+    VIZ_SCENE3D_API virtual void updateImage(data::image::csptr image, data::transfer_function::csptr tf) = 0;
 
     /// @brief Loads the 3D texture onto the GPU.
     VIZ_SCENE3D_API virtual void loadImage();
@@ -154,10 +154,10 @@ public:
     VIZ_SCENE3D_API virtual void loadMask();
 
     /// Called when the transfer function is updated.
-    VIZ_SCENE3D_API virtual void updateVolumeTF(const data::TransferFunction::csptr&) = 0;
+    VIZ_SCENE3D_API virtual void updateVolumeTF(const data::transfer_function::csptr&) = 0;
 
     /// Sets the number of samples per view ray.
-    VIZ_SCENE3D_API virtual void setSampling(uint16_t nbSamples, const data::TransferFunction::csptr& tf) = 0;
+    VIZ_SCENE3D_API virtual void setSampling(uint16_t nbSamples, const data::transfer_function::csptr& tf) = 0;
 
     /// Sets/unsets pre-integrated rendering.
     VIZ_SCENE3D_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) = 0;
@@ -181,8 +181,8 @@ protected:
 
     /// Scale the volume based on the image's spacing and move it to the image origin.
     VIZ_SCENE3D_API void scaleTranslateCube(
-        const data::Image::Spacing& spacing,
-        const data::Image::Origin& origin
+        const data::image::Spacing& spacing,
+        const data::image::Origin& origin
     );
 
     /// Updates the sampling distance according to the current camera plane and slice number. Also updates
@@ -202,7 +202,7 @@ protected:
     Texture::sptr m_maskTexture;
 
     /// TF texture used for rendering.
-    TransferFunction::sptr m_gpuVolumeTF;
+    transfer_function::sptr m_gpuVolumeTF;
 
     /// Contains the buffering texture for the 3D image.
     Texture::sptr m_bufferingTexture;
@@ -214,7 +214,7 @@ protected:
     const bool m_with_buffer;
 
     /// Pre-integration table.
-    PreIntegrationTable m_preIntegrationTable;
+    pre_integration_table m_preIntegrationTable;
 
     /// Use pre-integration.
     bool m_preintegration = false;

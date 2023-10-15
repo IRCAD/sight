@@ -1,54 +1,54 @@
 <plugin id="sight::module::io::dimse" library="true" >
     <requirement id="sight::module::ui::qt"/>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::ui::editor</type>
-         <service>sight::module::io::dimse::SPacsConfigurationEditor</service>
+         <service>sight::module::io::dimse::pacs_configuration_editor</service>
          <object key="config">sight::io::dimse::data::PacsConfiguration</object>
          <desc>This editor is used to edit a pacs configuration.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::service::controller</type>
-         <service>sight::module::io::dimse::SPacsConfigurationInitializer</service>
+         <service>sight::module::io::dimse::pacs_configuration_initializer</service>
          <desc>This service is used to initialize a PACS Configuration data and synchronize it with a preference key.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::service::controller</type>
-         <service>sight::module::io::dimse::SProgressBarController</service>
+         <service>sight::module::io::dimse::progress_bar_controller</service>
          <desc>This editor service is used to display a progress bar.</desc>
     </extension>
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::ui::editor</type>
-         <service>sight::module::io::dimse::SQueryEditor</service>
+         <service>sight::module::io::dimse::query_editor</service>
          <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
-         <object key="seriesSet">sight::data::Object</object>
+         <object key="seriesSet">sight::data::object</object>
          <desc>This editor allows to perform queries on a pacs.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::service::controller</type>
-         <service>sight::module::io::dimse::SSeriesPuller</service>
+         <service>sight::module::io::dimse::series_puller</service>
          <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
-         <object key="selectedSeries">sight::data::Vector</object>
-         <object key="seriesSet">sight::data::SeriesSet</object>
+         <object key="selectedSeries">sight::data::vector</object>
+         <object key="seriesSet">sight::data::series_set</object>
          <desc>This service is used to pull series from a PACS.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::service::controller</type>
-         <service>sight::module::io::dimse::SSeriesPusher</service>
-         <object>sight::data::Object</object>
+         <service>sight::module::io::dimse::series_pusher</service>
+         <object>sight::data::object</object>
          <desc>This service is used to push a DICOM series to a PACS.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::ui::editor</type>
-         <service>sight::module::io::dimse::SSliceIndexDicomEditor</service>
+         <service>sight::module::io::dimse::slice_index_dicom_editor</service>
          <object key="pacsConfig">sight::io::dimse::data::PacsConfiguration</object>
-         <object key="series">sight::data::DicomSeries</object>
-         <object key="image">sight::data::Image</object>
+         <object key="series">sight::data::dicom_series</object>
+         <object key="image">sight::data::image</object>
          <desc>This editor service is used to select a slice index and pull the image from the pacs if it is not</desc>
     </extension>
 

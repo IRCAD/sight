@@ -27,7 +27,7 @@
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 
-#include <data/BufferTL.hpp>
+#include <data/buffer_tl.hpp>
 
 //-----------------------------------------------------------------------------
 
@@ -58,7 +58,7 @@ tracker::~tracker()
 
 void tracker::configuring()
 {
-    const service::config_t config = this->getConfiguration();
+    const service::config_t config = this->get_config();
     if(config.count("dropObj") != 0U)
     {
         const auto dropStr = config.get<std::string>("dropObj");
@@ -108,9 +108,9 @@ void tracker::track(core::hires_clock::type timestamp)
 
 //-----------------------------------------------------------------------------
 
-service::connections_t tracker::getAutoConnections() const
+service::connections_t tracker::auto_connections() const
 {
-    return {{s_TIMELINE_INPUT, data::BufferTL::OBJECT_PUSHED_SIG, TRACK_SLOT}};
+    return {{s_TIMELINE_INPUT, data::timeline::signals::PUSHED, TRACK_SLOT}};
 }
 
 //-----------------------------------------------------------------------------

@@ -29,9 +29,9 @@
 #include <core/tools/progress_adviser.hpp>
 
 #include <data/container.hpp>
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include <io/__/reader/GenericObjectReader.hpp>
+#include <io/__/reader/generic_object_reader.hpp>
 
 #include <ostream>
 
@@ -55,7 +55,7 @@ namespace sight::io::bitmap
  * The performance should still be better than VTK or even OpenCV because of direct API calls and avoided unneeded
  * buffer copy.
  */
-class IO_BITMAP_CLASS_API Reader final : public io::reader::GenericObjectReader<data::Image>,
+class IO_BITMAP_CLASS_API Reader final : public io::reader::generic_object_reader<data::image>,
                                          public core::location::single_file,
                                          public core::tools::progress_adviser
 {
@@ -63,7 +63,7 @@ public:
 
     SIGHT_DECLARE_CLASS(
         Reader,
-        io::reader::GenericObjectReader<data::Image>,
+        io::reader::generic_object_reader<data::image>,
         io::reader::factory::make<Reader>
     );
 
@@ -79,7 +79,7 @@ public:
     IO_BITMAP_API Reader();
     IO_BITMAP_API ~Reader() override;
 
-    /// Main writing method from GenericObjectReader
+    /// Main writing method from generic_object_reader
     IO_BITMAP_API void read() override;
 
     /// Specialized writing method that allows to specify the backend and the mode (Fast or Best compression)

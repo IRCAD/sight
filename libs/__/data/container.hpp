@@ -22,7 +22,7 @@
 #pragma once
 
 #include "data/config.hpp"
-#include "data/Object.hpp"
+#include "data/object.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/tools/compare.hpp>
@@ -656,12 +656,12 @@ public:
 
 /// Generic Sight data container class.
 template<class C>
-class DATA_CLASS_API container : public Object,
+class DATA_CLASS_API container : public object,
                                  public ContainerWrapper<C>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(container<C>, Object);
+    SIGHT_DECLARE_CLASS(container<C>, object);
 
     /// Could be usefull to keep the underlying container
     using container_type = C;
@@ -724,17 +724,17 @@ public:
     [[nodiscard]] constexpr auto scoped_emit() const noexcept;
 
     /// Defines shallow copy
-    /// @throws data::Exception if an errors occurs during copy
+    /// @throws data::exception if an errors occurs during copy
     /// @param[in] source the source object to copy
-    inline void shallow_copy(const Object::csptr& source) override;
+    inline void shallow_copy(const object::csptr& source) override;
 
     /// Defines deep copy
-    /// @throws data::Exception if an errors occurs during copy
+    /// @throws data::exception if an errors occurs during copy
     /// @param source source object to copy
     /// @param cache cache used to deduplicate pointers
     inline void deep_copy(
-        const Object::csptr& source,
-        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+        const object::csptr& source,
+        const std::unique_ptr<deep_copy_cache_t>& cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 };
 

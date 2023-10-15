@@ -25,12 +25,12 @@
 #include "ui/__/config.hpp"
 #include "ui/__/service.hpp"
 
-#include <activity/extension/Activity.hpp>
+#include <activity/extension/activity.hpp>
 #include <activity/launcher.hpp>
 
 #include <core/com/slots.hpp>
 
-#include <data/Activity.hpp>
+#include <data/activity.hpp>
 
 namespace sight::ui::view
 {
@@ -39,11 +39,11 @@ namespace sight::ui::view
  * @brief Defines the base class for services displaying activity view
  *
  * @section Slots Slots
- * - \b launchActivity( data::Activity::sptr ): This slot allows to create a view for the given activity.
+ * - \b launchActivity( data::activity::sptr ): This slot allows to create a view for the given activity.
  *
  *  * @section XML XML Configuration
  * @code{.xml}
-   <service type="sight::module::ui::qt::activity::SDynamicView" autoConnect="true" >
+   <service type="sight::module::ui::qt::activity::dynamic_view" auto_connect="true" >
      <mainActivity id="SDBActivity" />
      <parameters>
          <parameter replace="SERIES_SET" by="medicalData"  />
@@ -56,7 +56,7 @@ namespace sight::ui::view
  *   - \b id : identifier of the activity
  * - \b parameters (optional) : additional parameters used to launch the activities
  *    - \b parameter: defines a parameter
- *        - \b replace: name of the parameter as defined in the AppConfig
+ *        - \b replace: name of the parameter as defined in the config
  *        - \b by: defines the string that will replace the parameter name.
  */
 class UI_CLASS_API IActivityView : public ui::service,
@@ -70,8 +70,8 @@ public:
 
 protected:
 
-    typedef activity::extension::ActivityAppConfigParam ParameterType;
-    typedef activity::extension::ActivityAppConfigParamsType ParametersType;
+    typedef activity::extension::activity_config_param ParameterType;
+    typedef activity::extension::activity_config_params_type ParametersType;
 
     /// Constructor. Do nothing.
     UI_API IActivityView();
@@ -86,19 +86,19 @@ protected:
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity cannot be launch in two different tabs.
      */
-    UI_API virtual void launchActivity(data::Activity::sptr activity) = 0;
+    UI_API virtual void launchActivity(data::activity::sptr activity) = 0;
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
-    UI_API virtual bool validateActivity(data::Activity::sptr activity) const;
+    UI_API virtual bool validateActivity(data::activity::sptr activity) const;
 
     /// Create the activity given in 'mainActivity' configuration
-    UI_API data::Activity::sptr createMainActivity() const override;
+    UI_API data::activity::sptr createMainActivity() const override;
 
     /// Input data to pass to the configuration
-    data::ptr_vector<data::Object, data::Access::inout> m_data {this, "data"};
+    data::ptr_vector<data::object, data::Access::inout> m_data {this, "data"};
 };
 
 } // namespace sight::ui::view

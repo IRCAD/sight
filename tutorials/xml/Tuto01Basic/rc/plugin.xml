@@ -8,13 +8,13 @@
     <requirement id="sight::module::ui::qt" />
 
     <!-- Defines the App-config -->
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::app::extension::config" >
         <id>Tuto01Basic_AppCfg</id><!-- identifier of the configuration -->
         <config>
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="myFrame" type="sight::module::ui::SFrame" >
+            <service uid="myFrame" type="sight::module::ui::frame" >
                 <gui>
                     <frame>
                         <name>Tuto01Basic</name>

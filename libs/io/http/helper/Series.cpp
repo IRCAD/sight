@@ -24,9 +24,9 @@
 
 #include <core/spy_log.hpp>
 
-#include <data/DicomSeries.hpp>
-#include <data/ImageSeries.hpp>
-#include <data/ModelSeries.hpp>
+#include <data/dicom_series.hpp>
+#include <data/image_series.hpp>
+#include <data/model_series.hpp>
 
 namespace sight::io::http::helper
 {
@@ -38,7 +38,7 @@ Series::DicomSeriesContainer Series::toFwMedData(const QJsonObject& seriesJson)
     DicomSeriesContainer seriesContainer;
 
     // Create series
-    data::DicomSeries::sptr series = std::make_shared<data::DicomSeries>();
+    data::dicom_series::sptr series = std::make_shared<data::dicom_series>();
 
     // ==================================
     // Series
@@ -89,7 +89,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 {
     InstanceUIDContainer result;
 
-    for(const data::Series::sptr& s : series)
+    for(const data::series::sptr& s : series)
     {
         result.push_back(s->getSeriesInstanceUID());
     }

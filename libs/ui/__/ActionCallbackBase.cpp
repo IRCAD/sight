@@ -28,7 +28,7 @@
 
 #include <service/base.hpp>
 #include <service/macros.hpp>
-#include <service/op/Get.hpp>
+#include <service/op.hpp>
 
 namespace sight::ui
 {

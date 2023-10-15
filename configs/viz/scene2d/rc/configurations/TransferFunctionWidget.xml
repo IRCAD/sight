@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig" >
+<extension implements="sight::app::extension::config" >
     <id>sight::config::viz::scene2d::TransferFunctionWidgetCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -12,16 +12,16 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::Image" src="ref" />
-        <object uid="${currentTF}" type="sight::data::TransferFunction" src="ref" />
-        <object uid="${presets}" type="sight::data::Composite" src="deferred" />
+        <object uid="${image}" type="sight::data::image" src="ref" />
+        <object uid="${currentTF}" type="sight::data::transfer_function" src="ref" />
+        <object uid="${presets}" type="sight::data::composite" src="deferred" />
 
         <object uid="viewport" type="sight::viz::scene2d::data::Viewport" />
         <object uid="viewportShutter" type="sight::viz::scene2d::data::Viewport" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="tfView" type="sight::module::ui::SView" >
+        <service uid="tfView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
@@ -38,7 +38,7 @@
             </registry>
         </service>
 
-        <service uid="transferFunctionEditorView" type="sight::module::ui::SView" >
+        <service uid="transferFunctionEditorView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
@@ -53,7 +53,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneMultipleTF" type="sight::viz::scene2d::SRender">
+        <service uid="genericSceneMultipleTF" type="sight::viz::scene2d::render">
               <scene>
                 <scene x="-3000" y="-1.1" width="6000" height="1.2" antialiasing="true" background="#36393E" />
 
@@ -74,52 +74,52 @@
             </scene>
         </service>
 
-        <service uid="TFViewportRangeUpdaterAdp" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="true" >
+        <service uid="TFViewportRangeUpdaterAdp" type="sight::module::viz::scene2d::adaptor::viewport_updater" auto_connect="true" >
             <inout key="viewport" uid="viewport" />
             <config xAxis="xAxis" yAxis="yAxis"/>
         </service>
 
-        <service uid="TFGridAdp" type="sight::module::viz::scene2d::adaptor::SGrid2D" >
+        <service uid="TFGridAdp" type="sight::module::viz::scene2d::adaptor::grid2d" >
             <config xMin="-3100" xMax="3100" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.6" color="#565A54" xAxis="xAxis" yAxis="yAxis" zValue="1" />
         </service>
 
-        <service uid="TFCenterAbscissaLineAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
+        <service uid="TFCenterAbscissaLineAdp" type="sight::module::viz::scene2d::adaptor::line" >
             <config x1="0" y1="0" x2="0" y2="1.1" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
         </service>
 
-        <service uid="TFMaxOpacityAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
+        <service uid="TFMaxOpacityAdp" type="sight::module::viz::scene2d::adaptor::line" >
             <config x1="-3100" y1="1" x2="6100" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
         </service>
 
-        <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
+        <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::axis" auto_connect="true">
              <in key="viewport"  uid="viewport" />
             <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="8" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" >
                 <labels color="#FFFFFF" fontSize="12"/>
             </config>
         </service>
 
-        <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
+        <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::axis" auto_connect="true">
             <in key="viewport"  uid="viewport" />
             <config min="-3000" max="3000" interval="10" align="bottom" tickSize="8" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" >
                 <labels color="#FFFFFF" fontSize="12"/>
             </config>
         </service>
 
-        <service uid="TFMultipleTFAdp" type="sight::module::viz::scene2d::adaptor::STransferFunction" >
+        <service uid="TFMultipleTFAdp" type="sight::module::viz::scene2d::adaptor::transfer_function" >
             <in key="viewport" uid="viewport" />
             <inout key="tf" uid="${currentTF}" />
             <config pointColor="#FFFFFF" opacity="0.9" secondOpacity="0.15" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="6" />
         </service>
 
-        <service uid="TFHistogramAdp" type="sight::module::viz::scene2d::adaptor::SHistogram" >
-            <in key="image" uid="${image}" autoConnect="true"/>
+        <service uid="TFHistogramAdp" type="sight::module::viz::scene2d::adaptor::histogram" >
+            <in key="image" uid="${image}" auto_connect="true"/>
             <inout key="viewport"  uid="viewport" />
             <config xAxis="xAxis" yAxis="axeHistogramY" color="#E5FFC66D" zValue="5" borderWidth="2.0">
                 <cursor color="#6897BB" borderColor="#2E4C64" size="12" fontSize="16" />
             </config>
         </service>
 
-        <service uid="TFHistogramAxisAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
+        <service uid="TFHistogramAxisAdp" type="sight::module::viz::scene2d::adaptor::axis" auto_connect="true">
             <in key="viewport"  uid="viewport" />
             <config min="0.0" max="1.0" interval="0.1" align="right" tickSize="8" color="#FFC66D" xAxis="xAxis" yAxis="axeHistogramY" zValue="7" >
                 <labels color="#FFC66D" fontSize="12" />
@@ -128,7 +128,7 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::SRender">
+        <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::render">
             <scene>
                 <scene x="-5000" y="-1.1" width="10000" height="1.2" antialiasing="true" background="#36393E" />
 
@@ -136,30 +136,30 @@
                 <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
                 <axis id="axeHistogramY" origin="0.0" scale="-1.0" scaleType="LINEAR" />
 
-                <adaptor uid="VSHistogramAdp" />
-                <adaptor uid="VSTransferFunctionAdp" />
+                <adaptor uid="VhistogramAdp" />
+                <adaptor uid="Vtransfer_functionAdp" />
                 <adaptor uid="VSMaxOpacityAdp" />
                 <adaptor uid="VSRangeSelectorAdp" />
             </scene>
         </service>
 
-        <service uid="VSHistogramAdp" type="sight::module::viz::scene2d::adaptor::SHistogram">
-            <in key="image" uid="${image}" autoConnect="true"/>
+        <service uid="VhistogramAdp" type="sight::module::viz::scene2d::adaptor::histogram">
+            <in key="image" uid="${image}" auto_connect="true"/>
             <inout key="viewport" uid="viewportShutter" />
             <config color="#FFC66D" xAxis="xAxis" yAxis="axeHistogramY" zValue="1" />
         </service>
 
-        <service uid="VSTransferFunctionAdp" type="sight::module::viz::scene2d::adaptor::STransferFunction" >
+        <service uid="Vtransfer_functionAdp" type="sight::module::viz::scene2d::adaptor::transfer_function" >
             <in key="viewport" uid="viewportShutter" />
             <inout key="tf" uid="${currentTF}" />
             <config pointColor="#565A54" opacity="0.8" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="2" interactive="false" />
         </service>
 
-        <service uid="VSMaxOpacityAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
+        <service uid="VSMaxOpacityAdp" type="sight::module::viz::scene2d::adaptor::line" >
             <config x1="-3100" x2="3100" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
         </service>
 
-        <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector">
+        <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::viewport_range_selector">
             <inout key="viewport"  uid="viewportShutter" />
             <inout key="selectedViewport" uid="viewport"/>
             <in key="image" uid="${image}" />
@@ -169,7 +169,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="transferFunctionEditorSrv" type="sight::module::ui::qt::image::STransferFunction" >
+        <service uid="transferFunctionEditorSrv" type="sight::module::ui::qt::image::transfer_function" >
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${currentTF}" />
             <inout key="presets" uid="${presets}" />
@@ -192,8 +192,8 @@
         <start uid="transferFunctionEditorSrv" />
 
         <start uid="VSRangeSelectorAdp" />
-        <start uid="VSHistogramAdp" />
-        <start uid="VSTransferFunctionAdp" />
+        <start uid="VhistogramAdp" />
+        <start uid="Vtransfer_functionAdp" />
         <start uid="VSMaxOpacityAdp" />
 
         <start uid="TFViewportRangeUpdaterAdp" />

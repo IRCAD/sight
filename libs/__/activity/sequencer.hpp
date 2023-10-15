@@ -25,8 +25,8 @@
 #include "activity/config.hpp"
 #include "activity/launcher.hpp"
 
-#include <data/ActivitySet.hpp>
-#include <data/Composite.hpp>
+#include <data/activity_set.hpp>
+#include <data/composite.hpp>
 
 namespace sight::activity
 {
@@ -53,13 +53,13 @@ protected:
      *
      * @warning This method remove the activity that are not in the list of activity to launch
      */
-    ACTIVITY_API int parseActivities(data::ActivitySet& activity_set);
+    ACTIVITY_API int parseActivities(data::activity_set& activity_set);
 
     /// Store the data of the activity at the given index
     ACTIVITY_API void storeActivityData(
-        const data::ActivitySet& activity_set,
+        const data::activity_set& activity_set,
         std::size_t index,
-        const data::Composite::csptr& overrides = nullptr
+        const data::composite::csptr& overrides = nullptr
     );
 
     /**
@@ -73,8 +73,8 @@ protected:
      * @param slot slot to block in case the activity is created. It is usefull if the service listen notification on
      * the activity_set
      */
-    ACTIVITY_API data::Activity::sptr getActivity(
-        data::ActivitySet& activity_set,
+    ACTIVITY_API data::activity::sptr getActivity(
+        data::activity_set& activity_set,
         std::size_t index,
         const core::com::slot_base::sptr& slot = nullptr
     );
@@ -87,7 +87,7 @@ protected:
      * @param activity_set ActivitySet containing all the activities
      * @param index the activity in index and all the following will be removed
      */
-    ACTIVITY_API void removeLastActivities(data::ActivitySet& activity_set, std::size_t index);
+    ACTIVITY_API void removeLastActivities(data::activity_set& activity_set, std::size_t index);
 
     /**
      * @brief Reset all data created by activities (create="true", minOccurs="0") at index and beyond.
@@ -106,7 +106,7 @@ protected:
     int m_currentActivity {-1};
 
     /// Map containing all the data produced by the activities. It is used to create the next one.
-    std::map<std::string, data::Object::sptr> m_requirements;
+    std::map<std::string, data::object::sptr> m_requirements;
 };
 
 } // namespace sight::activity

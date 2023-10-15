@@ -1,9 +1,9 @@
 <plugin id="sight::module::navigation::optics" library="true" >
     <requirement id="sight::module::service"/>
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::service::tracker</type>
-         <service>sight::module::navigation::optics::SArucoTracker</service>
+         <service>sight::module::navigation::optics::aruco_tracker</service>
          <desc>Class used to track multiple tags with ArUco.</desc>
     </extension>
 </plugin>

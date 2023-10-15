@@ -26,7 +26,7 @@
 
 #include <core/macros.hpp>
 
-#include <service/op/Add.hpp>
+#include <service/op.hpp>
 
 #include <vector>
 

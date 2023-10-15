@@ -59,7 +59,7 @@ public:
         > = true
     >
     inline std::size_t write(
-        const data::Image& image,
+        const data::image& image,
         O& output,
         Writer::Mode mode,
         Flag = Flag::NONE
@@ -108,15 +108,15 @@ public:
             {
                 switch(pixelFormat)
                 {
-                    case data::Image::PixelFormat::RGB:
-                    case data::Image::PixelFormat::BGR:
+                    case data::image::PixelFormat::RGB:
+                    case data::image::PixelFormat::BGR:
                         return PNG_COLOR_TYPE_RGB;
 
-                    case data::Image::PixelFormat::RGBA:
-                    case data::Image::PixelFormat::BGRA:
+                    case data::image::PixelFormat::RGBA:
+                    case data::image::PixelFormat::BGRA:
                         return PNG_COLOR_TYPE_RGB_ALPHA;
 
-                    case data::Image::PixelFormat::GRAY_SCALE:
+                    case data::image::PixelFormat::GRAY_SCALE:
                         return PNG_COLOR_TYPE_GRAY;
 
                     default:
@@ -184,7 +184,7 @@ public:
 
         int transform = PNG_TRANSFORM_IDENTITY;
 
-        if(pixelFormat == data::Image::PixelFormat::BGR || pixelFormat == data::Image::PixelFormat::BGRA)
+        if(pixelFormat == data::image::PixelFormat::BGR || pixelFormat == data::image::PixelFormat::BGRA)
         {
             transform |= PNG_TRANSFORM_BGR;
         }

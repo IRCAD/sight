@@ -30,7 +30,7 @@
 #include <core/log/logger.hpp>
 #include <core/tools/object.hpp>
 
-#include <data/DicomSeries.hpp>
+#include <data/dicom_series.hpp>
 
 namespace sight::filter::dicom
 {
@@ -46,7 +46,7 @@ public:
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' )
      *
-     * @tparam T Factory product type
+     * @tparam T factory product type
      */
     template<typename T>
     class Registry
@@ -61,7 +61,7 @@ public:
 
     SIGHT_DECLARE_CLASS(filter, core::tools::object);
 
-    typedef std::vector<data::DicomSeries::sptr> DicomSeriesContainerType;
+    typedef std::vector<data::dicom_series::sptr> DicomSeriesContainerType;
 
     /**
      * @brief Filter types
@@ -83,7 +83,7 @@ public:
      * @return Returns one or more Dicom Instance Group
      */
     FILTER_DICOM_API virtual DicomSeriesContainerType apply(
-        const data::DicomSeries::sptr& series,
+        const data::dicom_series::sptr& series,
         const core::log::logger::sptr& logger
     ) const = 0;
 

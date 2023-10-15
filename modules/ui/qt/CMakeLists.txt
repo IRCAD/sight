@@ -57,16 +57,7 @@ add_dependencies(module_ui_qt module_ui_qt_DARKSTYLE_RCC)
 add_dependencies(module_ui_qt module_ui_qt_FLATDARK_RCC)
 add_dependencies(module_ui_qt module_ui_qt_IRCAD_RCC)
 
-target_link_libraries(
-    module_ui_qt
-    PUBLIC activity
-           core
-           data
-           geometry_data
-           io
-           service
-           ui_qt
-)
+target_link_libraries(module_ui_qt PUBLIC activity app geometry_data io ui_qt)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)

@@ -3,7 +3,7 @@ sight_add_target(ExFrameByFrame TYPE APP UNIQUE ON)
 add_dependencies(
     ExFrameByFrame
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_viz_scene3d
     module_ui_qt
@@ -23,6 +23,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES ExFrameByFrame_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES ExFrameByFrame_AppCfg)
 
 sight_generate_profile(ExFrameByFrame)

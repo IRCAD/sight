@@ -3,7 +3,7 @@ sight_add_target(ExDetectCamMotion TYPE APP)
 add_dependencies(
     ExDetectCamMotion
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_viz_scene3d
     module_ui_qt
@@ -23,6 +23,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES ExDetectCamMotion_AppCgf)
+module_param(module_app PARAM_LIST config PARAM_VALUES ExDetectCamMotion_AppCgf)
 
 sight_generate_profile(ExDetectCamMotion)

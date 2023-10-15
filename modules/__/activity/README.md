@@ -25,7 +25,7 @@ add_dependencies(myTarget module_activity ... )
 example of activity factory:
 
  ```xml
-<extension implements="sight::activity::extension::Activity">
+<extension implements="sight::activity::extension">
     <id>myActivity</id>
     <title>SDB</title>
     <desc>Series Selector</desc>

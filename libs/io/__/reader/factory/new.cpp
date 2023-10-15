@@ -22,14 +22,14 @@
 
 #include "io/__/reader/factory/new.hpp"
 
-#include "io/__/reader/IObjectReader.hpp"
+#include "io/__/reader/object_reader.hpp"
 
 namespace sight::io::reader::factory
 {
 
 //------------------------------------------------------------------------------
 
-io::reader::IObjectReader::sptr make(const io::reader::registry::KeyType& classname)
+io::reader::object_reader::sptr make(const io::reader::registry::key_t& classname)
 {
     return io::reader::registry::get()->create(classname);
 }

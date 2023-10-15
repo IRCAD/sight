@@ -21,9 +21,9 @@
 
 #include "Matrix4WriterTest.hpp"
 
-#include <data/Matrix4.hpp>
+#include <data/matrix4.hpp>
 
-#include <io/__/writer/Matrix4Writer.hpp>
+#include <io/__/writer/matrix4_writer.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -38,11 +38,11 @@ namespace sight::io::ut
 
 void Matrix4WriterTest::basicTest()
 {
-    auto matrixWriter              = std::make_shared<writer::Matrix4Writer>();
+    auto matrixWriter              = std::make_shared<writer::matrix4_writer>();
     std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + matrixWriter->extension());
-    auto matrixIn                  = std::make_shared<data::Matrix4>();
+    auto matrixIn                  = std::make_shared<data::matrix4>();
     std::iota(matrixIn->begin(), matrixIn->end(), 0);
-    matrixWriter->setObject(matrixIn);
+    matrixWriter->set_object(matrixIn);
     std::filesystem::remove(filepath);
     matrixWriter->set_file(filepath);
     CPPUNIT_ASSERT_NO_THROW(matrixWriter->write());

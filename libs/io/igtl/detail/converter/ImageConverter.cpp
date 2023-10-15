@@ -26,7 +26,7 @@
 #include "io/igtl/detail/ImageTypeConverter.hpp"
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
 
@@ -38,7 +38,7 @@ namespace sight::io::igtl::detail::converter
 {
 
 const std::string ImageConverter::s_IGTL_TYPE          = "IMAGE";
-const std::string ImageConverter::s_FWDATA_OBJECT_TYPE = data::Image::classname();
+const std::string ImageConverter::s_FWDATA_OBJECT_TYPE = data::image::classname();
 
 converterRegisterMacro(io::igtl::detail::converter::ImageConverter);
 
@@ -52,9 +52,9 @@ ImageConverter::~ImageConverter()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer ImageConverter::fromFwDataObject(data::Object::csptr src) const
+::igtl::MessageBase::Pointer ImageConverter::fromFwDataObject(data::object::csptr src) const
 {
-    data::Image::csptr srcImg = std::dynamic_pointer_cast<const data::Image>(src);
+    data::image::csptr srcImg = std::dynamic_pointer_cast<const data::image>(src);
     ::igtl::Matrix4x4 matrix;
 
     const auto dumpLock = srcImg->dump_lock();
@@ -82,18 +82,18 @@ ImageConverter::~ImageConverter()
 
 //-----------------------------------------------------------------------------
 
-data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
+data::object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
     ::igtl::ImageMessage::Pointer srcImg;
     char* igtlImageBuffer     = nullptr;
-    data::Image::sptr destImg = std::make_shared<data::Image>();
+    data::image::sptr destImg = std::make_shared<data::image>();
     const auto dumpLock       = destImg->dump_lock();
     std::array<float, 3> igtlSpacing {};
     std::array<float, 3> igtlOrigins {};
     std::array<int, 3> igtlDimensions {};
-    data::Image::Spacing spacing;
-    data::Image::Origin origins;
-    data::Image::Size size;
+    data::image::Spacing spacing;
+    data::image::Origin origins;
+    data::image::Size size;
 
     srcImg = ::igtl::ImageMessage::Pointer(dynamic_cast< ::igtl::ImageMessage*>(src.GetPointer()));
     srcImg->GetSpacing(igtlSpacing.data());
@@ -105,18 +105,18 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
     destImg->setOrigin(origins);
     destImg->setSpacing(spacing);
 
-    sight::data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
+    sight::data::image::PixelFormat format = data::image::PixelFormat::GRAY_SCALE;
     if(srcImg->GetNumComponents() == 1)
     {
-        format = data::Image::PixelFormat::GRAY_SCALE;
+        format = data::image::PixelFormat::GRAY_SCALE;
     }
     else if(srcImg->GetNumComponents() == 3)
     {
-        format = data::Image::PixelFormat::RGB;
+        format = data::image::PixelFormat::RGB;
     }
     else if(srcImg->GetNumComponents() == 4)
     {
-        format = data::Image::PixelFormat::RGBA;
+        format = data::image::PixelFormat::RGBA;
     }
     else
     {

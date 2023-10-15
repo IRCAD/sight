@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig" >
+<extension implements="sight::app::extension::config" >
     <id>ExDicomSegmentation_Base_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -9,12 +9,12 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesSet}" type="sight::data::SeriesSet" src="ref" />
-        <object uid="selection" type="sight::data::Vector" />
+        <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />
+        <object uid="selection" type="sight::data::vector" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::SView" >
+        <service uid="mainView" type="sight::module::ui::view" >
             <gui>
                 <layout type="sight::ui::layout::line" >
                     <orientation value="vertical" />
@@ -27,7 +27,7 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="sight::module::ui::SView" >
+        <service uid="containerView" type="sight::module::ui::view" >
             <gui>
                 <toolBar/>
                 <layout type="sight::ui::layout::line" >
@@ -44,7 +44,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::SToolBar" >
+        <service uid="toolBarView" type="sight::module::ui::tool_bar" >
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::flaticons/BlueLoad.svg" />
@@ -63,12 +63,12 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="importAct" type="sight::module::ui::series::SDBMerger" >
+        <service uid="importAct" type="sight::module::ui::series::db_merger" >
             <inout key="seriesSet" uid="${seriesSet}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true" >
+        <service uid="exportAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true" >
             <in key="series" uid="selection" />
             <config>
                 <mode>immediate</mode>
@@ -83,7 +83,7 @@
             </config>
         </service>
 
-        <service uid="mesherAct" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true" >
+        <service uid="mesherAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -96,7 +96,7 @@
             </config>
         </service>
 
-        <service uid="thresholdAct" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true" >
+        <service uid="thresholdAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true" >
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -111,17 +111,17 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="true" >
+        <service uid="selectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true" >
             <inout key="seriesSet" uid="${seriesSet}" />
             <inout key="selection" uid="selection" />
         </service>
 
-        <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::SViewer" autoConnect="true" >
+        <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::viewer" auto_connect="true" >
             <in key="series" uid="selection" />
             <parentView wid="previewView" />
             <configs>
-                <config id="2DSimpleConfig" type="sight::data::ImageSeries" />
-                <config id="3DSimpleConfig" type="sight::data::ModelSeries" />
+                <config id="2DSimpleConfig" type="sight::data::image_series" />
+                <config id="3DSimpleConfig" type="sight::data::model_series" />
             </configs>
         </service>
 

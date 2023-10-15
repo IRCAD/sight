@@ -37,7 +37,7 @@ namespace sight::viz
  * @brief   Defines the service interface managing the rendering service for object.
  *
  * Use the base service methods :
- * @li The service is configured with methods setConfiguration(cfg) and configure()
+ * @li The service is configured with methods set_config(cfg) and configure()
  * @li The method start() initialize the service
  * @li Use update() method to update data
  * @li To react on modifications use update(msg)

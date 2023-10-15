@@ -1,2 +1,2 @@
 add_subdirectory(ExNotifications)
-add_subdirectory(ExSParameters)
+add_subdirectory(ex_parameters)

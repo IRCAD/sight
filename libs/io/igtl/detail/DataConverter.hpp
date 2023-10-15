@@ -72,15 +72,15 @@ public:
     };
 
     /**
-     * @brief convert a data::Object to a ::igtl::MessageBase
+     * @brief convert a data::object to a ::igtl::MessageBase
      * @return a ::igtl::MessageBase smart pointer
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwObject(data::Object::csptr src) const;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwObject(data::object::csptr src) const;
 
     /**
-     * @brief convert a ::igtl::MessageBase to a data::Object
+     * @brief convert a ::igtl::MessageBase to a data::object
      */
-    [[nodiscard]] IO_IGTL_API data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
+    [[nodiscard]] IO_IGTL_API data::object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
 
     /**
      * @brief get status message

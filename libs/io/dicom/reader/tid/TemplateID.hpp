@@ -27,7 +27,7 @@
 
 #include <core/log/logger.hpp>
 
-#include <data/Object.hpp>
+#include <data/object.hpp>
 
 #include <gdcmReader.h>
 
@@ -51,7 +51,7 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API TemplateID(
-        CSPTR(data::DicomSeries)dicomSeries,
+        CSPTR(data::dicom_series)dicomSeries,
         SPTR(gdcm::Reader)reader,
         SPTR(io::dicom::container::DicomInstance)instance,
         SPTR(DATATYPE)object,
@@ -64,7 +64,7 @@ public:
 protected:
 
     /// Dicom Series
-    CSPTR(data::DicomSeries) m_dicomSeries;
+    CSPTR(data::dicom_series) m_dicomSeries;
 
     /// GDCM Reader
     SPTR(gdcm::Reader) m_reader;
@@ -83,7 +83,7 @@ protected:
 
 template<class DATATYPE>
 TemplateID<DATATYPE>::TemplateID(
-    CSPTR(data::DicomSeries)dicomSeries,
+    CSPTR(data::dicom_series)dicomSeries,
     SPTR(gdcm::Reader)reader,
     SPTR(io::dicom::container::DicomInstance)instance,
     SPTR(DATATYPE)object,

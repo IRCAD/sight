@@ -12,4 +12,4 @@ else()
     target_include_directories(geometry_visionTest SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
 endif()
 
-target_link_libraries(geometry_visionTest PUBLIC core data utestData geometry_data geometry_vision)
+target_link_libraries(geometry_visionTest PUBLIC core data utest_data geometry_data geometry_vision)

@@ -24,11 +24,10 @@
 
 #include <core/com/slots.hxx>
 
-#include <service/helper/Config.hpp>
 #include <service/macros.hpp>
 #include <service/registry.hpp>
 
-#include <viz/scene3d/registry/Adaptor.hpp>
+#include <viz/scene3d/registry/adaptor.hpp>
 #include <viz/scene3d/Utils.hpp>
 
 namespace sight::viz::scene3d
@@ -63,7 +62,7 @@ void adaptor::info(std::ostream& _sstream)
 
 void adaptor::configureParams()
 {
-    const ConfigType config = this->getConfiguration();
+    const config_t config = this->get_config();
     m_cfgLayerID = config.get<std::string>("config.<xmlattr>.layer", "");
     m_isVisible  = config.get<bool>("config.<xmlattr>.visible", m_isVisible);
 
@@ -80,9 +79,9 @@ void adaptor::initialize()
 {
     if(m_renderService.expired())
     {
-        auto servicesVector = sight::service::getServices("sight::viz::scene3d::SRender");
+        auto servicesVector = sight::service::getServices("sight::viz::scene3d::render");
 
-        auto& registry = viz::scene3d::registry::getAdaptorRegistry();
+        auto& registry = viz::scene3d::registry::get_adaptor_registry();
         auto layerCfg  = registry[this->get_id()];
 
         auto result =
@@ -93,9 +92,9 @@ void adaptor::initialize()
             {
                 return srv->get_id() == layerCfg.render;
             });
-        SIGHT_ASSERT("Can't find '" + layerCfg.render + "' SRender service.", result != servicesVector.end());
+        SIGHT_ASSERT("Can't find '" + layerCfg.render + "' render service.", result != servicesVector.end());
 
-        m_renderService = std::dynamic_pointer_cast<viz::scene3d::SRender>(*result);
+        m_renderService = std::dynamic_pointer_cast<viz::scene3d::render>(*result);
 
         m_layerID = layerCfg.layer.empty() ? m_cfgLayerID : layerCfg.layer;
     }
@@ -117,17 +116,17 @@ const std::string& adaptor::getLayerID() const
 
 //------------------------------------------------------------------------------
 
-void adaptor::setRenderService(SRender::sptr _service)
+void adaptor::setRenderService(render::sptr _service)
 {
     SIGHT_ASSERT("service not instanced", _service);
-    SIGHT_ASSERT("The adaptor ('" + this->get_id() + "') is not stopped", this->isStopped());
+    SIGHT_ASSERT("The adaptor ('" + this->get_id() + "') is not stopped", this->stopped());
 
     m_renderService = _service;
 }
 
 //------------------------------------------------------------------------------
 
-SRender::sptr adaptor::getRenderService() const
+render::sptr adaptor::getRenderService() const
 {
     return m_renderService.lock();
 }
@@ -151,9 +150,9 @@ Ogre::SceneManager* adaptor::getSceneManager()
 void adaptor::requestRender()
 {
     auto renderService = this->getRenderService();
-    if((renderService->getStatus() == service::base::STARTED
-        || renderService->getStatus() == service::base::SWAPPING)
-       && renderService->getRenderMode() == viz::scene3d::SRender::RenderMode::AUTO)
+    if((renderService->status() == service::base::STARTED
+        || renderService->status() == service::base::SWAPPING)
+       && renderService->getRenderMode() == viz::scene3d::render::RenderMode::AUTO)
     {
         renderService->requestRender();
     }

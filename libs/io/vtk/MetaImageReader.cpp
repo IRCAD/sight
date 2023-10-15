@@ -60,7 +60,7 @@ void MetaImageReader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    data::Image::sptr pImage = this->getConcreteObject();
+    data::image::sptr pImage = this->getConcreteObject();
 
     vtkSmartPointer<vtkMetaImageReader> reader = vtkSmartPointer<vtkMetaImageReader>::New();
     reader->SetFileName(this->get_file().string().c_str());
@@ -94,7 +94,7 @@ void MetaImageReader::read()
     }
     catch(std::exception& e)
     {
-        SIGHT_THROW("MetaImage to data::Image failed : " << e.what());
+        SIGHT_THROW("MetaImage to data::image failed : " << e.what());
     }
 }
 

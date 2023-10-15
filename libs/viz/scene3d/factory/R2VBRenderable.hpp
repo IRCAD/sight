@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace sight::viz::scene3d::factory
 {
 
 /**
- * @brief Factory used to create a R2VBRenderable.
+ * @brief factory used to create a R2VBRenderable.
  */
 class VIZ_SCENE3D_CLASS_API R2VBRenderable : public Ogre::MovableObjectFactory
 {

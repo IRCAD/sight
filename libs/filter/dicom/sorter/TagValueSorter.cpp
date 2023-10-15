@@ -77,7 +77,7 @@ bool TagValueSorter::isConfigurationRequired() const
 //-----------------------------------------------------------------------------
 
 TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
-    const data::DicomSeries::sptr& series,
+    const data::dicom_series::sptr& series,
     const core::log::logger::sptr& logger
 )
 const
@@ -90,7 +90,7 @@ const
 
     DicomSeriesContainerType result;
 
-    data::DicomSeries::DicomContainerType sortedDicom;
+    data::dicom_series::DicomContainerType sortedDicom;
 
     OFCondition status;
     for(const auto& item : series->getDicomContainer())

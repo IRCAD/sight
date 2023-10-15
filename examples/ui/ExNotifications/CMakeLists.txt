@@ -3,7 +3,7 @@ sight_add_target(ExNotifications TYPE APP)
 add_dependencies(
     ExNotifications
     sightrun
-    module_appXml
+    module_app
     module_ui
     module_ui_qt
     module_service
@@ -19,6 +19,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES ExNotifications_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES ExNotifications_AppCfg)
 
 sight_generate_profile(ExNotifications)

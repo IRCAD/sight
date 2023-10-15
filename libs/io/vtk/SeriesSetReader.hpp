@@ -26,10 +26,10 @@
 
 #include <core/location/multiple_files.hpp>
 
-#include <data/Series.hpp>
-#include <data/SeriesSet.hpp>
+#include <data/series.hpp>
+#include <data/series_set.hpp>
 
-#include <io/__/reader/GenericObjectReader.hpp>
+#include <io/__/reader/generic_object_reader.hpp>
 
 #include <filesystem>
 
@@ -44,19 +44,19 @@ namespace sight::io::vtk
 {
 
 /**
- * @brief   Read a SeriesSet.
+ * @brief   Read a series_set.
  *
- * Read VTK Mesh or Image files using the VTK lib, convert to ModelSeries or ImageSeries and push to SeriesSet.
+ * Read VTK Mesh or image files using the VTK lib, convert to ModelSeries or ImageSeries and push to series_set.
  */
 class IO_VTK_CLASS_API SeriesSetReader :
-    public io::reader::GenericObjectReader<data::SeriesSet>,
+    public io::reader::generic_object_reader<data::series_set>,
     public core::location::multiple_files
 {
 public:
 
     SIGHT_DECLARE_CLASS(
         SeriesSetReader,
-        io::reader::GenericObjectReader<data::SeriesSet>,
+        io::reader::generic_object_reader<data::series_set>,
         io::reader::factory::make<SeriesSetReader>
     )
     SIGHT_ALLOW_SHARED_FROM_THIS()

@@ -56,7 +56,7 @@ public:
     QPointer<Selector> m_selector_widget {nullptr};
 };
 
-selector::selector(data::SeriesSet::csptr series_set, const std::string& displayedColumn, QWidget* parent) :
+selector::selector(data::series_set::csptr series_set, const std::string& displayedColumn, QWidget* parent) :
     QDialog(parent),
     m_pimpl(std::make_unique<SelectorDialogImpl>(this))
 {
@@ -87,12 +87,12 @@ selector::~selector() noexcept = default;
 
 //------------------------------------------------------------------------------
 
-data::SeriesSet::sptr selector::get_selection() const
+data::series_set::sptr selector::get_selection() const
 {
     if(!m_pimpl->m_selector_widget.isNull())
     {
         const auto& selected_series = m_pimpl->m_selector_widget->getSelectedSeries();
-        auto series_set             = std::make_shared<data::SeriesSet>();
+        auto series_set             = std::make_shared<data::series_set>();
         series_set->insert(series_set->end(), selected_series.cbegin(), selected_series.cend());
 
         return series_set;

@@ -74,8 +74,8 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="toolbar2" type="ui::toolbar" impl="sight::module::ui::SToolBar"
-     * autoConnect="false"
+       <service uid="toolbar2" type="ui::toolbar" impl="sight::module::ui::tool_bar"
+     * auto_connect="false"
      *>
            <gui>
                <layout hideActions="false" style="ToolButtonIconOnly">

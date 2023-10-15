@@ -54,7 +54,7 @@ public:
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' )
      *
-     * @tparam T Factory product type
+     * @tparam T factory product type
      */
     template<typename T>
     class Registry

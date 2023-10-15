@@ -32,14 +32,14 @@ const std::string transformable::s_TRANSFORM_CONFIG = "config.<xmlattr>.transfor
 
 //------------------------------------------------------------------------------
 
-void transformable::setTransformId(viz::scene3d::SRender::OgreObjectIdType _id)
+void transformable::setTransformId(viz::scene3d::render::OgreObjectIdType _id)
 {
     m_transformId = _id;
 }
 
 //------------------------------------------------------------------------------
 
-viz::scene3d::SRender::OgreObjectIdType transformable::getTransformId() const
+viz::scene3d::render::OgreObjectIdType transformable::getTransformId() const
 {
     return m_transformId;
 }

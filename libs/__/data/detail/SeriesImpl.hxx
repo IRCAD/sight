@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "data/Series.hpp"
+#include "data/series.hpp"
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/join.hpp>
@@ -328,7 +328,7 @@ public:
     /// @}
 
     /// Constructor
-    inline explicit SeriesImpl(sight::data::Series* const series) noexcept :
+    inline explicit SeriesImpl(sight::data::series* const series) noexcept :
         m_series(series),
         m_frame_datasets(1)
     {
@@ -1670,7 +1670,7 @@ public:
     }
 
     /// Pointer to the public class
-    sight::data::Series* const m_series {nullptr};
+    sight::data::series* const m_series {nullptr};
 
     /// Dicom data set instances specific to a frame
     FrameDatasets m_frame_datasets;

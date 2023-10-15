@@ -25,7 +25,7 @@
 #include "io/dicom/exception/Failed.hpp"
 #include "io/dicom/writer/ie/InformationEntity.hpp"
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
 namespace sight::io::dicom::writer::ie
 {
@@ -33,7 +33,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Spatial Fiducials Information Entity class
  */
-class IO_DICOM_CLASS_API SpatialFiducials : public io::dicom::writer::ie::InformationEntity<data::Image>
+class IO_DICOM_CLASS_API SpatialFiducials : public io::dicom::writer::ie::InformationEntity<data::image>
 {
 public:
 
@@ -49,7 +49,7 @@ public:
     IO_DICOM_API SpatialFiducials(
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Image::csptr& series,
+        const data::image::csptr& series,
         const core::log::logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr

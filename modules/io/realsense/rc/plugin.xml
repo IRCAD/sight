@@ -1,20 +1,20 @@
 <plugin id="sight::module::io::realsense" library="true" >
 
-    <extension implements="sight::service::extension::Factory">
+    <extension implements="sight::service::extension::factory">
          <type>sight::io::service::rgbd_grabber</type>
-         <service>sight::module::io::realsense::SScan</service>
-         <object key="depthTL">sight::data::FrameTL</object>
-         <object key="frameTL">sight::data::FrameTL</object>
-         <object key="cameraSet">sight::data::CameraSet</object>
-         <object key="pointcloud">sight::data::Mesh</object>
+         <service>sight::module::io::realsense::scan</service>
+         <object key="depthTL">sight::data::frame_tl</object>
+         <object key="frameTL">sight::data::frame_tl</object>
+         <object key="cameraSet">sight::data::camera_set</object>
+         <object key="pointcloud">sight::data::mesh</object>
          <desc>RealSense Camera Grabber</desc>
          <tags>FILE, DEVICE</tags>
     </extension>
 
        <!-- Service config used grab infrared frames from RealSense camera without the IR emitter -->
-    <extension implements="sight::service::extension::Config">
+    <extension implements="sight::service::extension::config">
         <id>InfraredRealsenseGrabberConfig</id>
-        <service>sight::module::io::realsense::SScan</service>
+        <service>sight::module::io::realsense::scan</service>
         <desc>Infrared grabber without IR emitter </desc>
         <config>
             <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true" IREmitter="false" />

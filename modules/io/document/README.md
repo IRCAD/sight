@@ -4,7 +4,7 @@ Module containing services to output data to document files.
 
 ## Services
 
-- **SPdfWriter**: creates and writes a PDF containing images.
+- **pdf_writer**: creates and writes a PDF containing images.
 
 ## How to use it
 

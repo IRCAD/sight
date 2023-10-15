@@ -35,12 +35,12 @@ namespace sight::io::dicom::writer::ie
 Study::Study(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::Series::csptr& series,
+    const data::series::csptr& series,
     const core::log::logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::Series>(writer, instance, series,
+    io::dicom::writer::ie::InformationEntity<data::series>(writer, instance, series,
                                                            logger, progress, cancel)
 {
 }
