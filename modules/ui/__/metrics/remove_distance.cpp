@@ -156,21 +156,20 @@ data::point_list::sptr remove_distance::getDistanceToRemove(const data::image::c
 
         if(!selections.empty())
         {
-            const sight::ui::dialog::selector::sptr selector =
-                std::make_shared<sight::ui::dialog::selector>();
-            selector->setTitle("Select a distance to remove");
-            selector->set_choices(selections);
-            std::string selection = selector->show()[0];
-            if(!selection.empty())
+            sight::ui::dialog::selector selector;
+            selector.setTitle("Select a distance to remove");
+            selector.set_choices(selections);
+            if(const auto& choices = selector.show(); !choices.empty())
             {
-                if(selection == "ALL")
+                const auto choice = choices.front();
+                if(choice == "ALL")
                 {
                     _removeAll = true;
                 }
                 else
                 {
                     _removeAll   = false;
-                    distToRemove = correspondence[selection];
+                    distToRemove = correspondence[choice];
                 }
             }
         }

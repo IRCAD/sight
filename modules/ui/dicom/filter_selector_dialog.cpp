@@ -144,13 +144,19 @@ void filter_selector_dialog::updating()
         // Selection of extension when availableFilterNames.size() > 1
         if(availableFilterNames.size() > 1)
         {
-            sight::ui::dialog::selector::sptr selector =
-                std::make_shared<sight::ui::dialog::selector>();
+            sight::ui::dialog::selector selector;
 
-            selector->setTitle("Filter to use");
-            selector->set_choices(availableFilterNames);
-            filterName                = selector->show()[0];
-            filterSelectionIsCanceled = filterName.empty();
+            selector.setTitle("Filter to use");
+            selector.set_choices(availableFilterNames);
+
+            if(const auto& choices = selector.show(); choices.empty())
+            {
+                filterSelectionIsCanceled = true;
+            }
+            else
+            {
+                filterName = choices.front();
+            }
 
             SIGHT_ASSERT(
                 "Unable to find the selected filter name in the filter map.",

@@ -219,28 +219,28 @@ void selector::updating()
         // Selection of extension when availableExtensions.size() > 1
         if(availableExtensionsSelector.size() > 1)
         {
-            sight::ui::dialog::selector::sptr selector =
-                std::make_shared<sight::ui::dialog::selector>();
+            sight::ui::dialog::selector selector;
 
             if(m_mode != READER_MODE)
             {
-                selector->setTitle("Writer to use");
+                selector.setTitle("Writer to use");
             }
             else
             {
-                selector->setTitle("Reader to use");
+                selector.setTitle("Reader to use");
             }
 
-            selector->set_choices(availableExtensionsSelector);
-            std::string selection = selector->show()[0];
-            if(!selection.empty())
+            selector.set_choices(availableExtensionsSelector);
+
+            if(const auto& choices = selector.show(); !choices.empty())
             {
+                const auto& choice    = choices.front();
                 bool extensionIdFound = false;
 
                 using PairType = std::pair<std::string, std::string>;
                 for(const PairType& pair : availableExtensionsMap)
                 {
-                    if(pair.second == selection)
+                    if(pair.second == choice)
                     {
                         extensionId      = pair.first;
                         extensionIdFound = true;

@@ -231,12 +231,20 @@ bool series_set_writer::selectFiducialsExportMode()
         exportModes.push_back(comprehensive3DSRIOD);
 
         // Create selector
-        auto selector = std::make_shared<sight::ui::dialog::selector>();
+        sight::ui::dialog::selector selector;
 
-        selector->setTitle("Fiducials export mode");
-        selector->set_choices(exportModes);
-        const std::string mode             = selector->show()[0];
-        const bool modeSelectionIsCanceled = mode.empty();
+        selector.setTitle("Fiducials export mode");
+        selector.set_choices(exportModes);
+        const auto& modes                  = selector.show();
+        const bool modeSelectionIsCanceled = modes.empty();
+
+        if(modeSelectionIsCanceled)
+        {
+            m_writeFailed = true;
+            return false;
+        }
+
+        const auto& mode = modes.front();
 
         if(mode == fiducialIOD)
         {
@@ -250,13 +258,6 @@ bool series_set_writer::selectFiducialsExportMode()
         {
             m_fiducialsExportMode = sight::io::dicom::writer::series::COMPREHENSIVE_3D_SR;
         }
-
-        if(mode.empty())
-        {
-            m_writeFailed = true;
-        }
-
-        return !modeSelectionIsCanceled;
     }
 
     return true;

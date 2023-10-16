@@ -411,11 +411,11 @@ void grabber_proxy::startTargetCamera(std::string impl)
                     // Sort the description list.
                     std::sort(std::begin(descriptions), std::end(descriptions));
 
-                    auto selector = std::make_shared<sight::ui::dialog::selector>();
-                    selector->setTitle(m_guiTitle);
-                    selector->set_choices(descriptions);
-
-                    selectedDesc = selector->show()[0];
+                    sight::ui::dialog::selector selector;
+                    selector.setTitle(m_guiTitle);
+                    selector.set_choices(descriptions);
+                    const auto& choices = selector.show();
+                    selectedDesc = choices.empty() ? std::string() : choices.front();
                 }
 
                 std::tie(m_grabberImpl, m_grabberConfig) = descToExtension[selectedDesc];

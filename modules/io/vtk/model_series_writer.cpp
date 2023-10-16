@@ -138,8 +138,10 @@ void model_series_writer::openLocationDialog()
             extensionDialog.setMessage("Choose the extensions: ");
             extensionDialog.set_choices(descriptions);
 
-            const auto selected = extensionDialog.show()[0];
-            m_selectedExtension = descriptionToExtension[selected];
+            if(const auto& choices = extensionDialog.show(); !choices.empty())
+            {
+                m_selectedExtension = descriptionToExtension[choices.front()];
+            }
         }
     }
     else
