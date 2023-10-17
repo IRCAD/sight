@@ -226,7 +226,7 @@ macro(create_resources_target TARGET TARGET_RC RES_DIR TARGET_RC_DIR)
 
     endforeach()
 
-    add_custom_target("${TARGET_RC}" ALL DEPENDS ${CREATED_RESOURCES_LIST} COMMENT "Copy resources")
+    add_custom_target("${TARGET_RC}" DEPENDS ${CREATED_RESOURCES_LIST} COMMENT "Copy resources")
 
     # Adds project into folder rc
     set_target_properties("${TARGET_RC}" PROPERTIES FOLDER "rc")
@@ -627,23 +627,21 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
                 cmake_path(RELATIVE_PATH HEADER)
                 list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/install/${HEADER})
             endforeach()
-            list(APPEND HEADERS_TO_INSTALL "${HEADER_FILE_DESTINATION}/config.hpp")
-            list(APPEND GENERATED_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/install/config.hpp")
 
             # Did not find any simple way to pass a list as argument, semi-columns are always replaced by spaces...
             # Thus, we hack this by using an another separator character
             string(REPLACE ";" "," HEADERS_REMAKE "${HEADERS_TO_INSTALL}")
 
-            add_custom_command(
-                OUTPUT ${GENERATED_HEADERS}
-                COMMAND
-                    ${CMAKE_COMMAND} ARGS -DSOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
-                    -DCONFIG_SOURCE_DIR="${HEADER_FILE_DESTINATION}" -DTARGET_DIR="${CMAKE_CURRENT_BINARY_DIR}/install"
-                    -DHEADERS="${HEADERS_REMAKE}" -P "${FWCMAKE_RESOURCE_PATH}/install/windows/generate_headers.cmake"
-                DEPENDS ${HEADERS_TO_INSTALL}
-                COMMENT "Generate headers for ${SIGHT_TARGET}"
+            install(
+                CODE "execute_process(
+                    COMMAND \"${CMAKE_COMMAND}\"
+                    -DSOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+                    -DCONFIG_SOURCE_DIR=\"${HEADER_FILE_DESTINATION}\"
+                    -DTARGET_DIR=\"${CMAKE_CURRENT_BINARY_DIR}/install\"
+                    -DHEADERS=\"${HEADERS_REMAKE}\"
+                    -P \"${FWCMAKE_RESOURCE_PATH}/install/windows/generate_headers.cmake\"
+                )"
             )
-            add_custom_target("${SIGHT_TARGET}_headers" ALL DEPENDS ${GENERATED_HEADERS} COMMENT "Copy headers")
 
             install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/install/
                     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
