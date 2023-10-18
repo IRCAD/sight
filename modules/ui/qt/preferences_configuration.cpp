@@ -21,8 +21,8 @@
  ***********************************************************************/
 #include "preferences_configuration.hpp"
 
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
@@ -97,6 +97,8 @@ preferences_configuration::preferences_configuration() noexcept
 {
     m_sigParametersModified = new_signal<parameters_modified_signal_t>(PARAMETERS_MODIFIED_SIG);
     m_sigPreferenceChanged  = new_signal<changed_signal_t>(PREFERENCE_CHANGED_SIG);
+
+    new_slot(slots::REQUEST_VALUES, &preferences_configuration::request_values, this);
 }
 
 //------------------------------------------------------------------------------
@@ -438,6 +440,17 @@ void preferences_configuration::updating()
 void preferences_configuration::stopping()
 {
     this->actionServiceStopping();
+}
+
+//------------------------------------------------------------------------------
+
+void preferences_configuration::request_values()
+{
+    for(PreferenceElt& pref : m_preferences)
+    {
+        const auto value = this->convertValue(pref);
+        m_sigPreferenceChanged->async_emit(value, pref.m_preferenceKey);
+    }
 }
 
 //------------------------------------------------------------------------------

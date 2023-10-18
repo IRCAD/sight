@@ -25,6 +25,7 @@
 #include "modules/ui/qt/config.hpp"
 
 #include <core/com/signals.hpp>
+#include <core/com/slots.hpp>
 #include <core/tools/failed.hpp>
 
 #include <data/string.hpp>
@@ -154,6 +155,9 @@ protected:
     /// Does nothing.
     MODULE_UI_QT_API void stopping() override;
 
+    /// Does nothing.
+    MODULE_UI_QT_API void request_values();
+
 private:
 
     /// Type of signal when parameters are updated.
@@ -163,6 +167,13 @@ private:
     /// Generic changed signal type
     typedef core::com::signal<void (sight::ui::parameter_t, std::string)> changed_signal_t;
     static const core::com::signals::key_t PREFERENCE_CHANGED_SIG;
+
+    /// Internal wrapper holding slots keys.
+    struct slots
+    {
+        using key_t = sight::core::com::slots::key_t;
+        static inline const key_t REQUEST_VALUES = "request_values";
+    };
 
     enum class preference_t : std::int8_t
     {
