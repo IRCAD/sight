@@ -781,8 +781,6 @@ void layer::resetCameraCoordinates()
             // Set the position of the camera
             cam_node->setPosition((world_bounding_box.getCenter() + bounding_box_length * direction));
         }
-
-        m_renderService.lock()->requestRender();
     }
 }
 

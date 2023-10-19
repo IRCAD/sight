@@ -277,7 +277,6 @@ void predefined_position_interactor::updateCameraFocalLength()
     Ogre::Camera* const camera                    =
         scene_manager->getCamera(viz::scene3d::layer::s_DEFAULT_CAMERA_NAME);
     camera->setFocalLength(focal_length);
-    m_layer.lock()->requestRender();
 }
 
 // ----------------------------------------------------------------------------

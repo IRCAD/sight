@@ -360,7 +360,7 @@ void mesh::updateMesh(data::mesh::csptr _mesh)
 
     if(m_autoResetCamera)
     {
-        this->getRenderService()->resetCameraCoordinates(m_layerID);
+        this->getLayer()->resetCameraCoordinates();
     }
 
     this->requestRender();
